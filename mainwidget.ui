@@ -16,49 +16,14 @@
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
    <item>
     <widget class="FiltersListWidget" name="treeWidget">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="dragEnabled">
-      <bool>true</bool>
-     </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::DragOnly</enum>
-     </property>
      <attribute name="headerVisible">
       <bool>false</bool>
      </attribute>
      <column>
       <property name="text">
-       <string>1</string>
+       <string notr="true">1</string>
       </property>
      </column>
-     <item>
-      <property name="text">
-       <string>Visualiseurs</string>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Filtres</string>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-      </property>
-      <item>
-       <property name="text">
-        <string>Blur</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gaussian blur</string>
-       </property>
-      </item>
-     </item>
     </widget>
    </item>
    <item>

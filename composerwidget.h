@@ -3,6 +3,8 @@
 
 #include <QGraphicsView>
 
+#include <QGraphicsScene>
+
 class ComposerWidget : public QGraphicsView
 {
     Q_OBJECT
@@ -10,8 +12,8 @@ class ComposerWidget : public QGraphicsView
     public:
         explicit ComposerWidget(QWidget *parent = NULL);
 
-    protected:
-        virtual void dragEnterEvent(QDragEnterEvent *event);
+    private:
+        QGraphicsScene *_scene;
 };
 
 #endif // COMPOSERWIDGET_H

@@ -11,7 +11,7 @@ class FiltersListWidget : public QTreeWidget
         explicit FiltersListWidget(QWidget *parent = NULL);
 
     protected:
-        virtual QStringList mimeTypes() const;
+        virtual QMimeData *mimeData(const QList<QTreeWidgetItem *> items) const;
 };
 
 #endif // FILTERSLISTWIDGET_H
