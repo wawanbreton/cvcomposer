@@ -4,6 +4,9 @@
 #include <QMimeData>
 #include <QGraphicsRectItem>
 
+#include "nodestypesmanager.h"
+#include "nodesviews/abstractnodeview.h"
+
 
 ComposerScene::ComposerScene(QObject *parent) :
     QGraphicsScene(parent)
@@ -27,9 +30,15 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     if(event->mimeData()->hasFormat("application/x-cvcomposerfilter"))
     {
-        QString nodeType = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter"));
-        QGraphicsRectItem *item = new QGraphicsRectItem(QRectF(event->scenePos(), QSizeF(100, 100)));
-        addItem(item);
         event->acceptProposedAction();
+
+        QString nodeType = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter"));
+        AbstractNode *node = NodesTypesManager::createNode(nodeType);
+        if(node)
+        {
+            AbstractNodeView *nodeView = new AbstractNodeView(node);
+            nodeView->setPos(event->scenePos());
+            addItem(nodeView);
+        }
     }
 }

@@ -22,15 +22,16 @@ SOURCES += main.cpp\
     nodestypesmanager.cpp \
     nodes/abstractnode.cpp \
     nodes/blurnode.cpp \
-    composerscene.cpp
+    composerscene.cpp \
+    nodesviews/abstractnodeview.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
     filterslistwidget.h \
     nodestypesmanager.h \
-    abstractnode.h \
     nodes/abstractnode.h \
     nodes/blurnode.h \
-    composerscene.h
+    composerscene.h \
+    nodesviews/abstractnodeview.h
 
 FORMS    += mainwidget.ui

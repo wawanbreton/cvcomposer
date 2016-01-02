@@ -17,12 +17,3 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
-/*
-void ComposerWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-    if(event->mimeData()->hasFormat("application/x-cvcomposerfilter"))
-    {
-        event->acceptProposedAction();
-    }
-}
-*/

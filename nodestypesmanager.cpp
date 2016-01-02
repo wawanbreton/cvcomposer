@@ -1,5 +1,9 @@
 #include "nodestypesmanager.h"
 
+#include <QDebug>
+
+#include "nodes/blurnode.h"
+
 
 NodesTypesManager *NodesTypesManager::_instance = NULL;
 
@@ -34,4 +38,17 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     result << filters;
 
     return result;
+}
+
+AbstractNode *NodesTypesManager::createNode(const QString &type)
+{
+    if(type == "blur")
+    {
+        return new BlurNode();
+    }
+    else
+    {
+        qCritical() << "Unable to instantiate node for type" << type;
+        return NULL;
+    }
 }

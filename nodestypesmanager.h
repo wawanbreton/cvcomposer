@@ -5,6 +5,8 @@
 
 #include <QTreeWidgetItem>
 
+class AbstractNode;
+
 class NodesTypesManager : public QObject
 {
     Q_OBJECT
@@ -16,6 +18,8 @@ class NodesTypesManager : public QObject
         static NodesTypesManager *get();
 
         static QList<QTreeWidgetItem *> getTreeItems();
+
+        static AbstractNode *createNode(const QString &type);
 
     private:
         static NodesTypesManager *_instance;
