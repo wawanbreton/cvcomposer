@@ -4,7 +4,7 @@
 
 
 BlurNode::BlurNode(QObject *parent) :
-    AbstractNode(1, 1, parent)
+    AbstractNode(1, 1, tr("Blur"), parent)
 {
 }
 

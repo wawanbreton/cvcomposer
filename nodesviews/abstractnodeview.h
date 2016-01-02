@@ -16,7 +16,11 @@ class AbstractNodeView : public QGraphicsItem
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     private:
+        static const int plugRadius = 5;
+
+    private:
         AbstractNode *_node;
+        QWidget *_nodeWidget;
 };
 
 #endif // ABSTRACTNODEVIEW_H
