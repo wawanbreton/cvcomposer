@@ -3,6 +3,8 @@
 #include <QDebug>
 
 #include "nodes/blurnode.h"
+#include "nodes/imagefilenode.h"
+#include "nodes/imagepreviewernode.h"
 
 
 NodesTypesManager *NodesTypesManager::_instance = NULL;
@@ -25,12 +27,22 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
 {
     QList<QTreeWidgetItem *> result;
 
-    QTreeWidgetItem *visualisers = new QTreeWidgetItem(QStringList() << tr("Visualisers"));
-    visualisers->setFlags(visualisers->flags() & ~Qt::ItemIsDragEnabled);
-    result << visualisers;
+    QTreeWidgetItem *inputs = new QTreeWidgetItem(QStringList() << tr("Inputs"));
+    inputs->setFlags(inputs->flags() & ~Qt::ItemIsDragEnabled);
+    QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << tr("Image from file"));
+    itemFile->setData(0, Qt::UserRole, "imagefile");
+    result << inputs;
+
+    QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << tr("Viewers"));
+    viewers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
+    QTreeWidgetItem *itemDockableViewer = new QTreeWidgetItem(viewers, QStringList() << tr("Dockable image viewer"));
+    itemDockableViewer->setData(0, Qt::UserRole, "dockableimageviewer");
+    QTreeWidgetItem *itemPreviewer = new QTreeWidgetItem(viewers, QStringList() << tr("Image previewer"));
+    itemPreviewer->setData(0, Qt::UserRole, "imagepreviewer");
+    result << viewers;
 
     QTreeWidgetItem *filters = new QTreeWidgetItem(QStringList() << tr("Filters"));
-    filters->setFlags(visualisers->flags() & ~Qt::ItemIsDragEnabled);
+    filters->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
     QTreeWidgetItem *itemBlur = new QTreeWidgetItem(filters, QStringList() << tr("Blur"));
     itemBlur->setData(0, Qt::UserRole, "blur");
     QTreeWidgetItem *itemGaussianBlur = new QTreeWidgetItem(filters, QStringList() << tr("Gaussian blur"));
@@ -42,9 +54,17 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
 
 AbstractNode *NodesTypesManager::createNode(const QString &type)
 {
-    if(type == "blur")
+    if(type == "imagepreviewer")
+    {
+        return new ImagePreviewerNode();
+    }
+    else if(type == "blur")
     {
         return new BlurNode();
+    }
+    else if(type == "imagefile")
+    {
+        return new ImageFileNode();
     }
     else
     {

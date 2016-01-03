@@ -5,6 +5,7 @@
 #include <QGraphicsRectItem>
 
 #include "nodestypesmanager.h"
+#include "nodes/abstractnode.h"
 #include "nodesviews/abstractnodeview.h"
 
 
@@ -36,6 +37,7 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         AbstractNode *node = NodesTypesManager::createNode(nodeType);
         if(node)
         {
+            node->setParent(this);
             AbstractNodeView *nodeView = new AbstractNodeView(node);
             nodeView->setPos(event->scenePos());
             addItem(nodeView);

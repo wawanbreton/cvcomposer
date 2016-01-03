@@ -1,7 +1,5 @@
 #include "blurnode.h"
 
-#include "opencv2/imgproc/imgproc.hpp"
-
 
 BlurNode::BlurNode(QObject *parent) :
     AbstractNode(1, 1, tr("Blur"), parent)

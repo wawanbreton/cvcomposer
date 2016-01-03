@@ -12,7 +12,7 @@ TARGET = cvcomposer
 TEMPLATE = app
 
 INCLUDEPATH += /usr/include/opencv2/
-LIBS += -lopencv_core -lopencv_imgproc
+LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 
 
 SOURCES += main.cpp\
@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     nodes/abstractnode.cpp \
     nodes/blurnode.cpp \
     composerscene.cpp \
-    nodesviews/abstractnodeview.cpp
+    nodesviews/abstractnodeview.cpp \
+    nodes/imagefilenode.cpp \
+    nodes/imagepreviewernode.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -32,6 +34,9 @@ HEADERS  += mainwidget.h \
     nodes/abstractnode.h \
     nodes/blurnode.h \
     composerscene.h \
-    nodesviews/abstractnodeview.h
+    nodesviews/abstractnodeview.h \
+    nodes/imagefilenode.h \
+    nodes/imagepreviewernode.h
 
-FORMS    += mainwidget.ui
+FORMS    += \
+    mainwidget.ui
