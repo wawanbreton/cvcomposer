@@ -6,7 +6,9 @@
 
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
+#include "nodes/imagepreviewernode.h"
 #include "nodesviews/abstractnodeview.h"
+#include "nodesviews/imagepreview.h"
 
 
 ComposerScene::ComposerScene(QObject *parent) :
@@ -38,7 +40,17 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         if(node)
         {
             node->setParent(this);
-            AbstractNodeView *nodeView = new AbstractNodeView(node);
+            AbstractNodeView *nodeView;
+
+            if(qobject_cast<ImagePreviewerNode *>(node))
+            {
+                nodeView = new ImagePreview(node);
+            }
+            else
+            {
+                nodeView = new AbstractNodeView(node);
+            }
+
             nodeView->setPos(event->scenePos());
             addItem(nodeView);
         }

@@ -18,7 +18,13 @@ class AbstractNode : public QObject
 
         const QString &getUserReadableName() const;
 
-        virtual QList<cv::Mat> process(const QList<cv::Mat> &inputs) = 0;
+        QList<cv::Mat> process(const QList<cv::Mat> &inputs);
+
+    protected:
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
+
+    signals:
+        void processDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
     private:
         const quint8 _nbInputs;

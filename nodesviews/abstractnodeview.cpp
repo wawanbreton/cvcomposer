@@ -13,7 +13,7 @@ AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
 
 QRectF AbstractNodeView::boundingRect() const
 {
-    return QRectF(-plugRadius, 0, 100 + 2 * plugRadius, 40);
+    return QRectF(-plugRadius, 0, 100 + 2 * plugRadius, 30);
 }
 
 void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -22,7 +22,7 @@ void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(widget)
 
     painter->drawRect(boundingRect().adjusted(plugRadius, 0, -plugRadius, 0));
-    painter->drawText(boundingRect(), Qt::AlignCenter, _node->getUserReadableName());
+    painter->drawText(boundingRect().adjusted(0, 5, 0, 0), Qt::AlignHCenter | Qt::AlignTop, _node->getUserReadableName());
 
     painter->setBrush(Qt::white);
 

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     composerscene.cpp \
     nodesviews/abstractnodeview.cpp \
     nodes/imagefilenode.cpp \
-    nodes/imagepreviewernode.cpp
+    nodes/imagepreviewernode.cpp \
+    nodesviews/imagepreview.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -36,7 +37,8 @@ HEADERS  += mainwidget.h \
     composerscene.h \
     nodesviews/abstractnodeview.h \
     nodes/imagefilenode.h \
-    nodes/imagepreviewernode.h
+    nodes/imagepreviewernode.h \
+    nodesviews/imagepreview.h
 
 FORMS    += \
     mainwidget.ui

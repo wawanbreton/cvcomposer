@@ -10,7 +10,7 @@ class ImageFileNode : public AbstractNode
     public:
         explicit ImageFileNode(QObject *parent = NULL);
 
-        virtual QList<cv::Mat> process(const QList<cv::Mat> &inputs);
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
 };
 
 #endif // IMAGEFILENODE_H

@@ -6,7 +6,7 @@ BlurNode::BlurNode(QObject *parent) :
 {
 }
 
-QList<cv::Mat> BlurNode::process(const QList<cv::Mat> &inputs)
+QList<cv::Mat> BlurNode::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat blurred = inputs[0].clone();
     cv::blur(inputs[0], blurred, cv::Size(3, 3), cv::Point(-1,-1));

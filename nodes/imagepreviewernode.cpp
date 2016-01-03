@@ -6,7 +6,7 @@ ImagePreviewerNode::ImagePreviewerNode(QObject *parent) :
 {
 }
 
-QList<cv::Mat> ImagePreviewerNode::process(const QList<cv::Mat> &inputs)
+QList<cv::Mat> ImagePreviewerNode::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat currentImage = inputs[0];
 

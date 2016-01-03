@@ -10,7 +10,7 @@ class BlurNode : public AbstractNode
     public:
         explicit BlurNode(QObject *parent = NULL);
 
-        virtual QList<cv::Mat> process(const QList<cv::Mat> &inputs);
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
 };
 
 #endif // BLURNODE_H

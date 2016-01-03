@@ -6,7 +6,7 @@ ImageFileNode::ImageFileNode(QObject *parent) :
 {
 }
 
-QList<cv::Mat> ImageFileNode::process(const QList<cv::Mat> &inputs)
+QList<cv::Mat> ImageFileNode::processImpl(const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(inputs);
 
