@@ -4,7 +4,9 @@
 #include "nodesviews/abstractnodeview.h"
 #include <QObject>
 
-class ImagePreview : public QObject, public AbstractNodeView
+#include <opencv2/core/core.hpp>
+
+class ImagePreview : public AbstractNodeView
 {
     Q_OBJECT
 
@@ -13,8 +15,14 @@ class ImagePreview : public QObject, public AbstractNodeView
 
         virtual QRectF boundingRect() const;
 
-    private slots:
+    protected:
+        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    private slots:
+        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+
+    private:
+        cv::Mat _mat;
 };
 
 #endif // IMAGEPREVIEW_H
