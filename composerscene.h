@@ -5,6 +5,8 @@
 
 #include <QGraphicsSceneDragDropEvent>
 
+class ConnectionItem;
+
 class ComposerScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -17,6 +19,16 @@ class ComposerScene : public QGraphicsScene
         virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 
         virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
+
+        virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+        virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    private:
+        ConnectionItem *_editedConnection;
+        bool _editedConnectionFromStart;
 };
 
 #endif // COMPOSERSCENE_H

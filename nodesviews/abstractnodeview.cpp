@@ -4,6 +4,7 @@
 #include <QTimer>
 
 #include "nodes/abstractnode.h"
+#include "nodesviews/plugitem.h"
 
 
 AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
@@ -14,15 +15,25 @@ AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
 {
     for(quint8 i = 0 ; i < _node->getNbInputs() ; i++)
     {
-        _inputPlugs << addPlug();
+        _inputPlugs << new PlugItem(this);
     }
 
     for(quint8 i = 0 ; i < _node->getNbOutputs() ; i++)
     {
-        _outputPlugs << addPlug();
+        _outputPlugs << new PlugItem(this);
     }
 
     QTimer::singleShot(0, this, SLOT(updatePlugs()));
+}
+
+const QList<PlugItem *> &AbstractNodeView::getInputs() const
+{
+    return _inputPlugs;
+}
+
+const QList<PlugItem *> &AbstractNodeView::getOutputs() const
+{
+    return _outputPlugs;
 }
 
 QRectF AbstractNodeView::boundingRect() const
@@ -39,24 +50,15 @@ void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->drawText(boundingRect().adjusted(0, 5, 0, 0), Qt::AlignHCenter | Qt::AlignTop, _node->getUserReadableName());
 }
 
-QGraphicsEllipseItem *AbstractNodeView::addPlug()
-{
-    QGraphicsEllipseItem *item = new QGraphicsEllipseItem(this);
-    item->setRect(-plugRadius, -plugRadius, plugRadius * 2, plugRadius * 2);
-    item->setBrush(Qt::white);
-
-    return item;
-}
-
 void AbstractNodeView::updatePlugs()
 {
     for(quint8 i = 0 ; i < _node->getNbInputs() ; i++)
     {
-        _inputPlugs[i]->setPos(QPointF(0, ((i + 1.0) / (_node->getNbInputs() + 1)) * boundingRect().height()));
+        _inputPlugs[i]->setPos(QPointF(boundingRect().left(), ((i + 1.0) / (_node->getNbInputs() + 1)) * boundingRect().height()));
     }
 
     for(quint8 i = 0 ; i < _node->getNbOutputs() ; i++)
     {
-        _outputPlugs[i]->setPos(QPointF(0, ((i + 1.0) / (_node->getNbOutputs() + 1)) * boundingRect().height()));
+        _outputPlugs[i]->setPos(QPointF(boundingRect().right(), ((i + 1.0) / (_node->getNbOutputs() + 1)) * boundingRect().height()));
     }
 }

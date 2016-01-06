@@ -4,8 +4,7 @@
 #include <QPainter>
 
 #include "nodes/abstractnode.h"
-
-#include <opencv2/highgui/highgui.hpp>
+#include "nodesviews/plugitem.h"
 
 
 ImagePreview::ImagePreview(AbstractNode *node, QGraphicsItem *parent) :
@@ -27,7 +26,7 @@ void ImagePreview::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 {
     AbstractNodeView::paint(painter, option, widget);
 
-    QRectF rect = boundingRect().adjusted(2 * plugRadius, 25, -2 * plugRadius, -5);
+    QRectF rect = boundingRect().adjusted(2 * PlugItem::radius, 25, -2 * PlugItem::radius, -5);
 
     if(_mat.total() == 0)
     {

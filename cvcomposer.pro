@@ -26,7 +26,9 @@ SOURCES += main.cpp\
     nodesviews/abstractnodeview.cpp \
     nodes/imagefilenode.cpp \
     nodes/imagepreviewernode.cpp \
-    nodesviews/imagepreview.cpp
+    nodesviews/imagepreview.cpp \
+    nodesviews/plugitem.cpp \
+    nodesviews/connectionitem.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -38,7 +40,9 @@ HEADERS  += mainwidget.h \
     nodesviews/abstractnodeview.h \
     nodes/imagefilenode.h \
     nodes/imagepreviewernode.h \
-    nodesviews/imagepreview.h
+    nodesviews/imagepreview.h \
+    nodesviews/plugitem.h \
+    nodesviews/connectionitem.h
 
 FORMS    += \
     mainwidget.ui

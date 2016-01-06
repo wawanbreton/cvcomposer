@@ -7,6 +7,7 @@
 #include <QGraphicsEllipseItem>
 
 class AbstractNode;
+class PlugItem;
 
 class AbstractNodeView : public QObject, public QGraphicsItem
 {
@@ -16,16 +17,14 @@ class AbstractNodeView : public QObject, public QGraphicsItem
     public:
         AbstractNodeView(AbstractNode *node, QGraphicsItem *parent = NULL);
 
+        const QList<PlugItem *> &getInputs() const;
+
+        const QList<PlugItem *> &getOutputs() const;
+
     protected:
         virtual QRectF boundingRect() const;
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-    protected:
-        static const int plugRadius = 5;
-
-    private:
-        QGraphicsEllipseItem *addPlug();
 
     private slots:
         void updatePlugs();
@@ -33,8 +32,8 @@ class AbstractNodeView : public QObject, public QGraphicsItem
     private:
         AbstractNode *_node;
         QWidget *_nodeWidget;
-        QList<QGraphicsEllipseItem *> _inputPlugs;
-        QList<QGraphicsEllipseItem *> _outputPlugs;
+        QList<PlugItem *> _inputPlugs;
+        QList<PlugItem *> _outputPlugs;
 };
 
 #endif // ABSTRACTNODEVIEW_H
