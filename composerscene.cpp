@@ -91,14 +91,14 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         AbstractNodeView *node = static_cast<AbstractNodeView *>(item->parentItem());
         if(node->getInputs().contains(plug))
         {
-            _editedConnection->setStartPlug(plug);
+            _editedConnection->setStart(plug->mapToScene(QPointF(0, 0)));
             _editedConnection->setEnd(event->scenePos());
             _editedConnectionFromStart = true;
         }
         else if(node->getOutputs().contains(plug))
         {
             _editedConnection->setStart(event->scenePos());
-            _editedConnection->setEndPlug(plug);
+            _editedConnection->setEnd(plug->mapToScene(QPointF(0, 0)));
             _editedConnectionFromStart = false;
         }
         else
@@ -122,12 +122,12 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             AbstractNodeView *node = static_cast<AbstractNodeView *>(itemUnderMouse->parentItem());
             if(node->getOutputs().contains(plug) && _editedConnectionFromStart)
             {
-                _editedConnection->setEndPlug(plug);
+                _editedConnection->setEnd(plug->mapToScene(QPointF(0, 0)));
                 return;
             }
             if(node->getInputs().contains(plug) && not _editedConnectionFromStart)
             {
-                _editedConnection->setStartPlug(plug);
+                _editedConnection->setStart(plug->mapToScene(QPointF(0, 0)));
                 return;
             }
         }
@@ -147,7 +147,7 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(_editedConnection)
     {
-        if(_editedConnection->getStartPlug() && _editedConnection->getEndPlug())
+        if(false/*_editedConnection->getStartPlug() && _editedConnection->getEndPlug()*/)
         {
             // Update model
         }
