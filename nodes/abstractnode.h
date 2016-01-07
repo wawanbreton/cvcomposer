@@ -45,7 +45,7 @@ class AbstractNode : public QObject
 
     private:
         const quint8 _nbInputs;
-        const quint8 _nbOutputs;
+        QList<AbstractNode *> _outputs;
         QString _userReadableName;
 };
 
