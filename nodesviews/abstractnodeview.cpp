@@ -21,6 +21,7 @@
 #include <QTimer>
 
 #include "nodes/abstractnode.h"
+#include "nodesviews/customitems.h"
 #include "nodesviews/plugitem.h"
 
 
@@ -41,6 +42,11 @@ AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
     }
 
     QTimer::singleShot(0, this, SLOT(updatePlugs()));
+}
+
+int AbstractNodeView::type() const
+{
+    return CustomItems::Node;
 }
 
 const QList<PlugItem *> &AbstractNodeView::getInputs() const

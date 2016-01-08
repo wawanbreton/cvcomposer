@@ -60,9 +60,17 @@ class ComposerScene : public QGraphicsScene
             QUuid plugOutputId;
         } EditedConnection;
 
+        typedef struct
+        {
+            AbstractNodeView *item;
+            QPointF initClickPos;
+            QPointF initNodePose;
+        } EditedNode;
+
     private:
         ComposerModel *_model;
         EditedConnection _editedConnection;
+        EditedNode _editedNode;
         QList<ConnectionItem *> _connections;
         QList<AbstractNodeView *> _nodes;
 };
