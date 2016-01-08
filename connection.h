@@ -15,19 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "blurnode.h"
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
-#include <opencv2/imgproc/imgproc.hpp>
+#include <QUuid>
 
-
-BlurNode::BlurNode(QObject *parent) :
-    AbstractNode(1, 1, tr("Blur"), parent)
+typedef struct
 {
-}
+    QUuid output;
+    QUuid input;
+} Connection;
 
-QList<cv::Mat> BlurNode::processImpl(const QList<cv::Mat> &inputs)
-{
-    cv::Mat blurred = inputs[0].clone();
-    cv::blur(inputs[0], blurred, cv::Size(9, 9), cv::Point(-1,-1));
-    return QList<cv::Mat>() << blurred;
-}
+#endif // CONNECTION_H

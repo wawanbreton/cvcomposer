@@ -79,6 +79,10 @@ QList<cv::Mat> AbstractNode::process(const QList<cv::Mat> &inputs)
     QList<cv::Mat> outputs = processImpl(inputs);
     Q_ASSERT(outputs.count() == getNbOutputs());
 
-    emit processDone(outputs, inputs);
     return outputs;
+}
+
+void AbstractNode::signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+{
+    emit processDone(outputs, inputs);
 }

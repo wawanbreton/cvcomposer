@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     nodesviews/imagepreview.cpp \
     nodesviews/plugitem.cpp \
     nodesviews/connectionitem.cpp \
-    composermodel.cpp
+    composermodel.cpp \
+    composerexecutor.cpp \
+    composerscheduler.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -45,7 +47,10 @@ HEADERS  += mainwidget.h \
     nodesviews/plugitem.h \
     nodesviews/connectionitem.h \
     composermodel.h \
-    nodesviews/customitems.h
+    nodesviews/customitems.h \
+    composerexecutor.h \
+    composerscheduler.h \
+    connection.h
 
 FORMS    += \
     mainwidget.ui

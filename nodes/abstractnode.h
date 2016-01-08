@@ -48,6 +48,8 @@ class AbstractNode : public QObject
 
         QList<cv::Mat> process(const QList<cv::Mat> &inputs);
 
+        void signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+
     protected:
         virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
 

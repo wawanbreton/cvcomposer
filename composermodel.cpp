@@ -19,12 +19,15 @@
 
 #include <QDebug>
 
+#include "composerscheduler.h"
 #include "nodes/abstractnode.h"
 
 
 ComposerModel::ComposerModel(QObject *parent) :
     QObject(parent),
-    _nodes()
+    _nodes(),
+    _connections(),
+    _scheduler(new ComposerScheduler(this))
 {
 
 }
@@ -62,7 +65,7 @@ AbstractNode *ComposerModel::findPlug(const QUuid &plugId, bool fromInputs, bool
     return NULL;
 }
 
-QUuid ComposerModel::addConnection(const QUuid &output, const QUuid &input)
+void ComposerModel::addConnection(const QUuid &output, const QUuid &input)
 {
     #warning Do appropriate checks
 
@@ -85,7 +88,7 @@ QUuid ComposerModel::addConnection(const QUuid &output, const QUuid &input)
     _connections.insert(connectionId, connection);
     emit connectionAdded(connectionId);
 
-    return connectionId;
+    startExecution();
 }
 
 void ComposerModel::removeConnection(const QUuid &connectionId)
@@ -93,6 +96,8 @@ void ComposerModel::removeConnection(const QUuid &connectionId)
     if(_connections.remove(connectionId))
     {
         emit connectionRemoved(connectionId);
+
+        startExecution();
     }
     else
     {
@@ -103,4 +108,9 @@ void ComposerModel::removeConnection(const QUuid &connectionId)
 Connection ComposerModel::getConnection(const QUuid &connectionId) const
 {
     return _connections.value(connectionId);
+}
+
+void ComposerModel::startExecution()
+{
+    _scheduler->execute(_nodes, _connections.values());
 }

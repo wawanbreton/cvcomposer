@@ -24,13 +24,10 @@
 #include <QPair>
 #include <QUuid>
 
-typedef struct
-{
-    QUuid output;
-    QUuid input;
-} Connection;
+#include "connection.h"
 
 class AbstractNode;
+class ComposerScheduler;
 
 class ComposerModel : public QObject
 {
@@ -49,7 +46,7 @@ class ComposerModel : public QObject
                                bool fromInputs = true,
                                bool fromOutputs = true) const;
 
-        QUuid addConnection(const QUuid &output, const QUuid &input);
+        void addConnection(const QUuid &output, const QUuid &input);
 
         void removeConnection(const QUuid &connectionId);
 
@@ -61,8 +58,12 @@ class ComposerModel : public QObject
         void connectionRemoved(const QUuid &connectionId);
 
     private:
+        void startExecution();
+
+    private:
         QList<AbstractNode *> _nodes;
         QMap<QUuid, Connection> _connections;
+        ComposerScheduler *_scheduler;
 };
 
 #endif // COMPOSERMODEL_H
