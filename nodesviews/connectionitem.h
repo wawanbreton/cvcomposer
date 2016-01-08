@@ -20,14 +20,25 @@
 
 #include <QGraphicsLineItem>
 
+#include <QUuid>
+
 class ConnectionItem : public QGraphicsLineItem
 {
     public:
         ConnectionItem(QGraphicsItem *parent = NULL);
 
-        void setStart(const QPointF &start);
+        QPointF getOutput() const;
 
-        void setEnd(const QPointF &end);
+        void setOutput(const QPointF &output);
+
+        void setInput(const QPointF &input);
+
+        void setConnectionId(const QUuid &connectionId);
+
+        const QUuid &getConnectionId() const;
+
+    private:
+        QUuid _connectionId;
 };
 
 #endif // CONNECTIONITEM_H

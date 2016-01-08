@@ -20,15 +20,20 @@
 
 #include <QGraphicsEllipseItem>
 
+#include <QUuid>
+
 class PlugItem : public QGraphicsEllipseItem
 {
     public:
-        PlugItem(QGraphicsItem *parent = NULL);
+        PlugItem(const QUuid &plugId, QGraphicsItem *parent = NULL);
 
         virtual int type() const;
 
+        const QUuid &getPlugId() const;
+
     public:
         static const int radius = 5;
+        const QUuid _plugId;
 };
 
 #endif // PLUGITEM_H

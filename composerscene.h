@@ -21,8 +21,11 @@
 #include <QGraphicsScene>
 
 #include <QGraphicsSceneDragDropEvent>
+#include <QUuid>
 
+class ComposerModel;
 class ConnectionItem;
+class AbstractNodeView;
 
 class ComposerScene : public QGraphicsScene
 {
@@ -43,9 +46,25 @@ class ComposerScene : public QGraphicsScene
 
         virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+    private slots:
+        void onConnectionAdded(const QUuid &connectionId);
+
+        void onConnectionRemoved(const QUuid &connectionId);
+
     private:
-        ConnectionItem *_editedConnection;
-        bool _editedConnectionFromStart;
+        typedef struct
+        {
+            ConnectionItem *item;
+            bool fromOutput;
+            QUuid plugInputId;
+            QUuid plugOutputId;
+        } EditedConnection;
+
+    private:
+        ComposerModel *_model;
+        EditedConnection _editedConnection;
+        QList<ConnectionItem *> _connections;
+        QList<AbstractNodeView *> _nodes;
 };
 
 #endif // COMPOSERSCENE_H

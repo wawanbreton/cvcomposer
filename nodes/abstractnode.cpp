@@ -17,28 +17,55 @@
 
 #include "abstractnode.h"
 
+#include <QDebug>
+
 
 AbstractNode::AbstractNode(quint8 nbInputs, quint8 nbOutputs, const QString &userReadableName, QObject *parent) :
     QObject(parent),
-    _nbInputs(nbInputs),
+    _inputs(),
     _outputs(),
     _userReadableName(userReadableName)
 {
-    _outputs.reserve(nbOutputs);
+    _inputs.reserve(nbInputs);
+    for(quint8 i = 0 ; i < nbInputs ; i++)
+    {
+        _inputs << QUuid::createUuid();
+    }
+
     for(quint8 i = 0 ; i < nbOutputs ; i++)
     {
-        _outputs << NULL;
+        _outputs << QUuid::createUuid();
     }
 }
 
 quint8 AbstractNode::getNbInputs() const
 {
-    return _nbInputs;
+    return _inputs.count();
+}
+
+const QList<QUuid> &AbstractNode::getInputs() const
+{
+    return _inputs;
+}
+
+bool AbstractNode::hasInput(const QUuid &input) const
+{
+    return _inputs.contains(input);
 }
 
 quint8 AbstractNode::getNbOutputs() const
 {
     return _outputs.count();
+}
+
+const QList<QUuid> &AbstractNode::getOutputs() const
+{
+    return _outputs;
+}
+
+bool AbstractNode::hasOutput(const QUuid &output) const
+{
+    return _outputs.contains(output);
 }
 
 const QString &AbstractNode::getUserReadableName() const
@@ -48,9 +75,9 @@ const QString &AbstractNode::getUserReadableName() const
 
 QList<cv::Mat> AbstractNode::process(const QList<cv::Mat> &inputs)
 {
-    Q_ASSERT(inputs.count() == _nbInputs);
+    Q_ASSERT(inputs.count() == getNbInputs());
     QList<cv::Mat> outputs = processImpl(inputs);
-    Q_ASSERT(outputs.count() == _outputs.count());
+    Q_ASSERT(outputs.count() == getNbOutputs());
 
     emit processDone(outputs, inputs);
     return outputs;

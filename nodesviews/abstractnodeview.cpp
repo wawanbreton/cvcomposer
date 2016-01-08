@@ -30,14 +30,14 @@ AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
     _inputPlugs(),
     _outputPlugs()
 {
-    for(quint8 i = 0 ; i < _node->getNbInputs() ; i++)
+    foreach(const QUuid &inputId, _node->getInputs())
     {
-        _inputPlugs << new PlugItem(this);
+        _inputPlugs << new PlugItem(inputId, this);
     }
 
-    for(quint8 i = 0 ; i < _node->getNbOutputs() ; i++)
+    foreach(const QUuid &outputId, _node->getOutputs())
     {
-        _outputPlugs << new PlugItem(this);
+        _outputPlugs << new PlugItem(outputId, this);
     }
 
     QTimer::singleShot(0, this, SLOT(updatePlugs()));

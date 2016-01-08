@@ -19,20 +19,36 @@
 
 
 ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
-    QGraphicsLineItem(parent)
+    QGraphicsLineItem(parent),
+    _connectionId()
 {
 }
 
-void ConnectionItem::setStart(const QPointF &start)
+QPointF ConnectionItem::getOutput() const
+{
+    return line().p1();
+}
+
+void ConnectionItem::setOutput(const QPointF &output)
 {
     QLineF currentLine = line();
-    currentLine.setP1(start);
+    currentLine.setP1(output);
     setLine(currentLine);
 }
 
-void ConnectionItem::setEnd(const QPointF &end)
+void ConnectionItem::setInput(const QPointF &input)
 {
     QLineF currentLine = line();
-    currentLine.setP2(end);
+    currentLine.setP2(input);
     setLine(currentLine);
+}
+
+void ConnectionItem::setConnectionId(const QUuid &connectionId)
+{
+    _connectionId = connectionId;
+}
+
+const QUuid &ConnectionItem::getConnectionId() const
+{
+    return _connectionId;
 }
