@@ -44,7 +44,8 @@ HEADERS  += mainwidget.h \
     nodesviews/imagepreview.h \
     nodesviews/plugitem.h \
     nodesviews/connectionitem.h \
-    composermodel.h
+    composermodel.h \
+    nodesviews/customitems.h
 
 FORMS    += \
     mainwidget.ui

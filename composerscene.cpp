@@ -27,6 +27,7 @@
 #include "nodes/abstractnode.h"
 #include "nodes/imagepreviewernode.h"
 #include "nodesviews/abstractnodeview.h"
+#include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
 #include "nodesviews/imagepreview.h"
 #include "nodesviews/plugitem.h"
@@ -88,8 +89,10 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    event->widget()->setMouseTracking(true);
+
     QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
-    if(item->type() == QGraphicsItem::UserType + 1)
+    if(item && item->type() == CustomItems::Plug)
     {
         PlugItem *plug = static_cast<PlugItem *>(item);
         bool isInput = _model->findInputPlug(plug->getPlugId()) != NULL;
@@ -141,43 +144,68 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    QCursor cursor = Qt::ArrowCursor;
+
     if(_editedConnection.item)
     {
+        bool plugFound = false;
+
+        #warning Replace the itemAt by something which is not sensitive to connection lines
         QGraphicsItem *itemUnderMouse = itemAt(event->scenePos(), QTransform());
         if(itemUnderMouse &&
            itemUnderMouse != _editedConnection.item &&
-           itemUnderMouse->type() == QGraphicsItem::UserType + 1)
+           itemUnderMouse->type() == CustomItems::Plug)
         {
             PlugItem *plugUnderMouse = static_cast<PlugItem *>(itemUnderMouse);
 
-            if(_model->findInputPlug(plugUnderMouse->getPlugId()) &&
-               _editedConnection.fromOutput)
+            if(_editedConnection.fromOutput)
             {
-                _editedConnection.item->setInput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                _editedConnection.plugInputId = plugUnderMouse->getPlugId();
-                return;
+                if(_model->findInputPlug(plugUnderMouse->getPlugId()))
+                {
+                    _editedConnection.item->setInput(plugUnderMouse->mapToScene(QPointF(0, 0)));
+                    _editedConnection.plugInputId = plugUnderMouse->getPlugId();
+                    cursor = Qt::PointingHandCursor;
+                    plugFound = true;
+                }
+            }
+            else
+            {
+                if(_model->findOutputPlug(plugUnderMouse->getPlugId()))
+                {
+                    _editedConnection.item->setOutput(plugUnderMouse->mapToScene(QPointF(0, 0)));
+                    _editedConnection.plugOutputId = plugUnderMouse->getPlugId();
+                    cursor = Qt::PointingHandCursor;
+                    plugFound = true;
+                }
             }
 
-            if(_model->findOutputPlug(plugUnderMouse->getPlugId()) &&
-               not _editedConnection.fromOutput)
-            {
-                _editedConnection.item->setOutput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                _editedConnection.plugOutputId = plugUnderMouse->getPlugId();
-                return;
-            }
         }
 
-        if(_editedConnection.fromOutput)
+        if(not plugFound)
         {
-            _editedConnection.item->setInput(event->scenePos());
-            _editedConnection.plugInputId = QUuid();
-        }
-        else
-        {
-            _editedConnection.item->setOutput(event->scenePos());
-            _editedConnection.plugOutputId = QUuid();
+            if(_editedConnection.fromOutput)
+            {
+                _editedConnection.item->setInput(event->scenePos());
+                _editedConnection.plugInputId = QUuid();
+            }
+            else
+            {
+                _editedConnection.item->setOutput(event->scenePos());
+                _editedConnection.plugOutputId = QUuid();
+            }
         }
     }
+    else
+    {
+        // We are not editing anything
+        QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
+        if(item && item->type() == CustomItems::Plug)
+        {
+            cursor = Qt::PointingHandCursor;
+        }
+    }
+
+    event->widget()->setCursor(cursor);
 }
 
 void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

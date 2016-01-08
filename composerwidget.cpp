@@ -33,4 +33,5 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     setSceneRect(-5000, -5000, 10000, 10000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setMouseTracking(true);
 }

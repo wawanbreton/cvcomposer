@@ -15,28 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "plugitem.h"
+#ifndef CUSTOMITEMS_H
+#define CUSTOMITEMS_H
 
-#include <QBrush>
-#include <QCursor>
+#include <QGraphicsItem>
 
-#include "nodesviews/customitems.h"
-
-
-PlugItem::PlugItem(const QUuid &plugId, QGraphicsItem *parent) :
-    QGraphicsEllipseItem(parent),
-    _plugId(plugId)
+namespace CustomItems
 {
-    setRect(-radius, -radius, radius * 2, radius * 2);
-    setBrush(Qt::white);
+    typedef enum
+    {
+        Plug = QGraphicsItem::UserType + 1
+    } Enum;
 }
 
-int PlugItem::type() const
-{
-    return CustomItems::Plug;
-}
+#endif // CUSTOMITEMS_H
 
-const QUuid &PlugItem::getPlugId() const
-{
-    return _plugId;
-}
