@@ -190,7 +190,6 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                     plugFound = true;
                 }
             }
-
         }
 
         if(not plugFound)
@@ -210,7 +209,21 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     else if(_editedNode.item)
     {
         cursor = Qt::ClosedHandCursor;
+
+        // Move node, easy part
         _editedNode.item->setPos(_editedNode.initNodePose + (event->scenePos() - _editedNode.initClickPos));
+
+        // Move connections, hard part
+        foreach(ConnectionItem *connectionItem, _connections)
+        {
+            Connection connection = _model->getConnection(connectionItem->getConnectionId());
+
+            End this
+            if(_editedNode.item->getNode()->hasInput(connection.input))
+            {
+                _editedNode.item->getInputs()
+            }
+        }
     }
     else
     {

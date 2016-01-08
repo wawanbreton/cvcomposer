@@ -49,6 +49,11 @@ int AbstractNodeView::type() const
     return CustomItems::Node;
 }
 
+const AbstractNode *AbstractNodeView::getNode() const
+{
+    return _node;
+}
+
 const QList<PlugItem *> &AbstractNodeView::getInputs() const
 {
     return _inputPlugs;

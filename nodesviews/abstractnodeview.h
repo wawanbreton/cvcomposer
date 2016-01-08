@@ -36,6 +36,8 @@ class AbstractNodeView : public QObject, public QGraphicsItem
 
         virtual int type() const;
 
+        const AbstractNode *getNode() const;
+
         const QList<PlugItem *> &getInputs() const;
 
         const QList<PlugItem *> &getOutputs() const;
