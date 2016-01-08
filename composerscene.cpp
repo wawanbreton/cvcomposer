@@ -218,10 +218,28 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         {
             Connection connection = _model->getConnection(connectionItem->getConnectionId());
 
-            End this
             if(_editedNode.item->getNode()->hasInput(connection.input))
             {
-                _editedNode.item->getInputs()
+                foreach(PlugItem *plugItem, _editedNode.item->getInputs())
+                {
+                    if(plugItem->getPlugId() == connection.input)
+                    {
+                        connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
+                        break;
+                    }
+                }
+            }
+
+            if(_editedNode.item->getNode()->hasOutput(connection.output))
+            {
+                foreach(PlugItem *plugItem, _editedNode.item->getOutputs())
+                {
+                    if(plugItem->getPlugId() == connection.output)
+                    {
+                        connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
+                        break;
+                    }
+                }
             }
         }
     }
