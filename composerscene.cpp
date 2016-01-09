@@ -195,7 +195,6 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
         }
 
-
         if(not plugFound)
         {
             if(_editedConnection.fromOutput)

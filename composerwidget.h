@@ -38,6 +38,10 @@ class ComposerWidget : public QGraphicsView
     protected:
         virtual void wheelEvent(QWheelEvent *event);
 
+        virtual void mousePressEvent(QMouseEvent *event);
+
+        virtual void mouseReleaseEvent(QMouseEvent *event);
+
     private:
         void zoom(int scale);
 
@@ -45,9 +49,7 @@ class ComposerWidget : public QGraphicsView
 
     private:
         QGraphicsScene *_scene;
-
-    private:
-        int _scale;
+        int _zoom;
 };
 
 #endif // COMPOSERWIDGET_H

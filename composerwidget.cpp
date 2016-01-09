@@ -21,6 +21,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QtMath>
 
 #include "composerscene.h"
 
@@ -28,10 +29,10 @@
 ComposerWidget::ComposerWidget(QWidget *parent) :
     QGraphicsView(parent),
     _scene(new ComposerScene(this)),
-    _scale(0)
+    _zoom(0)
 {
     setScene(_scene);
-    setSceneRect(-5000, -5000, 10000, 10000);
+    setSceneRect(-2000, -2000, 4000, 4000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
@@ -42,32 +43,71 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
 
 void ComposerWidget::zoomIn()
 {
-    zoom(_scale + 1);
+    zoom(_zoom + 1);
 }
 
 void ComposerWidget::zoomOut()
 {
-    zoom(_scale - 1);
+    zoom(_zoom - 1);
 }
 
 void ComposerWidget::resetZoom()
 {
-    zoom(10);
+    zoom(5);
 }
 
 void ComposerWidget::wheelEvent(QWheelEvent *event)
 {
-    #warning TODO smart zoom according to mouse position
-    zoom(_scale + event->delta() / 120);
+    zoom(_zoom + event->delta() / 120);
+}
+
+void ComposerWidget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::MiddleButton)
+    {
+        // We want to drag the scene with the middle button, and Qt implements it with the left
+        // button, so make it believe the left button has been pressed;
+        setDragMode(QGraphicsView::ScrollHandDrag);
+        QMouseEvent pseudoEvent(QMouseEvent::MouseButtonPress,
+                                event->pos(),
+                                Qt::LeftButton,
+                                event->buttons(),
+                                event->modifiers());
+        QGraphicsView::mousePressEvent(&pseudoEvent);
+        viewport()->setCursor(Qt::ClosedHandCursor);
+    }
+    else
+    {
+        QGraphicsView::mousePressEvent(event);
+    }
+}
+
+void ComposerWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::MiddleButton)
+    {
+        QMouseEvent pseudoEvent(QMouseEvent::MouseButtonRelease,
+                                event->pos(),
+                                Qt::LeftButton,
+                                event->buttons(),
+                                event->modifiers());
+        QGraphicsView::mouseReleaseEvent(&pseudoEvent);
+        viewport()->setCursor(Qt::ArrowCursor);
+        setDragMode(QGraphicsView::NoDrag);
+    }
+    else
+    {
+        QGraphicsView::mouseReleaseEvent(event);
+    }
 }
 
 void ComposerWidget::zoom(int scale)
 {
-    scale = qMax(qMin(scale, 30), 1);
+    scale = qMax(qMin(scale, 10), 1);
 
-    if(scale != _scale)
+    if(scale != _zoom)
     {
-        _scale = scale;
+        _zoom = scale;
         updateTransform();
     }
 }
@@ -75,6 +115,6 @@ void ComposerWidget::zoom(int scale)
 void ComposerWidget::updateTransform()
 {
     resetTransform();
-    qreal scaleValue =_scale / 10.0;
+    qreal scaleValue = qExp(((_zoom / 5.0) - 1) * 2);
     scale(scaleValue, scaleValue);
 }
