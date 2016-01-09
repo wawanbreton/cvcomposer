@@ -19,6 +19,7 @@
 
 #include <QDebug>
 
+#include "nodes/gaussianblurnode.h"
 #include "nodes/blurnode.h"
 #include "nodes/imagefilenode.h"
 #include "nodes/imagepreviewernode.h"
@@ -78,6 +79,10 @@ AbstractNode *NodesTypesManager::createNode(const QString &type)
     else if(type == "blur")
     {
         return new BlurNode();
+    }
+    else if(type == "gaussianblur")
+    {
+        return new GaussianBlurNode();
     }
     else if(type == "imagefile")
     {

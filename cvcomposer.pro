@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     nodesviews/connectionitem.cpp \
     composermodel.cpp \
     composerexecutor.cpp \
-    composerscheduler.cpp
+    composerscheduler.cpp \
+    nodes/gaussianblurnode.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwidget.h \
     nodesviews/customitems.h \
     composerexecutor.h \
     composerscheduler.h \
-    connection.h
+    connection.h \
+    nodes/gaussianblurnode.h
 
 FORMS    += \
     mainwidget.ui
