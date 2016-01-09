@@ -27,11 +27,54 @@
 
 ComposerWidget::ComposerWidget(QWidget *parent) :
     QGraphicsView(parent),
-    _scene(new ComposerScene(this))
+    _scene(new ComposerScene(this)),
+    _scale(0)
 {
     setScene(_scene);
     setSceneRect(-5000, -5000, 10000, 10000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
+    setRenderHint(QPainter::Antialiasing, true);
+
+    resetZoom();
+}
+
+void ComposerWidget::zoomIn()
+{
+    zoom(_scale + 1);
+}
+
+void ComposerWidget::zoomOut()
+{
+    zoom(_scale - 1);
+}
+
+void ComposerWidget::resetZoom()
+{
+    zoom(10);
+}
+
+void ComposerWidget::wheelEvent(QWheelEvent *event)
+{
+    #warning TODO smart zoom according to mouse position
+    zoom(_scale + event->delta() / 120);
+}
+
+void ComposerWidget::zoom(int scale)
+{
+    scale = qMax(qMin(scale, 30), 1);
+
+    if(scale != _scale)
+    {
+        _scale = scale;
+        updateTransform();
+    }
+}
+
+void ComposerWidget::updateTransform()
+{
+    resetTransform();
+    qreal scaleValue =_scale / 10.0;
+    scale(scaleValue, scaleValue);
 }

@@ -29,8 +29,25 @@ class ComposerWidget : public QGraphicsView
     public:
         explicit ComposerWidget(QWidget *parent = NULL);
 
+        void zoomIn();
+
+        void zoomOut();
+
+        void resetZoom();
+
+    protected:
+        virtual void wheelEvent(QWheelEvent *event);
+
+    private:
+        void zoom(int scale);
+
+        void updateTransform();
+
     private:
         QGraphicsScene *_scene;
+
+    private:
+        int _scale;
 };
 
 #endif // COMPOSERWIDGET_H

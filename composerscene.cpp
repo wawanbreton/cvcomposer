@@ -91,65 +91,66 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    event->widget()->setMouseTracking(true);
-
-    QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
-    if(item)
+    if(event->button() == Qt::LeftButton)
     {
-        if(item->type() == CustomItems::Plug)
+        QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
+        if(item)
         {
-            PlugItem *plug = static_cast<PlugItem *>(item);
-            bool isInput = _model->findInputPlug(plug->getPlugId()) != NULL;
-            bool isOutput = _model->findOutputPlug(plug->getPlugId()) != NULL;
-
-            _editedConnection.item = new ConnectionItem();
-            addItem(_editedConnection.item);
-
-            // When editing an input node, edit its actual connection if there is one
-            if(isInput)
+            if(item->type() == CustomItems::Plug)
             {
-                foreach(ConnectionItem *connectionItem, _connections)
+                PlugItem *plug = static_cast<PlugItem *>(item);
+                bool isInput = _model->findInputPlug(plug->getPlugId()) != NULL;
+                bool isOutput = _model->findOutputPlug(plug->getPlugId()) != NULL;
+
+                _editedConnection.item = new ConnectionItem();
+                addItem(_editedConnection.item);
+
+                // When editing an input node, edit its actual connection if there is one
+                if(isInput)
                 {
-                    Connection connection = _model->getConnection(connectionItem->getConnectionId());
-                    if(connection.input == plug->getPlugId())
+                    foreach(ConnectionItem *connectionItem, _connections)
                     {
-                        // We have found an existing connection, edit it
-                        _editedConnection.item->setOutput(connectionItem->getOutput());
-                        _editedConnection.item->setInput(event->scenePos());
-                        _editedConnection.plugOutputId = connection.output;
-                        _editedConnection.fromOutput = true;
-                        _model->removeConnection(connectionItem->getConnectionId());
-                        return;
+                        Connection connection = _model->getConnection(connectionItem->getConnectionId());
+                        if(connection.input == plug->getPlugId())
+                        {
+                            // We have found an existing connection, edit it
+                            _editedConnection.item->setOutput(connectionItem->getOutput());
+                            _editedConnection.item->setInput(event->scenePos());
+                            _editedConnection.plugOutputId = connection.output;
+                            _editedConnection.fromOutput = true;
+                            _model->removeConnection(connectionItem->getConnectionId());
+                            return;
+                        }
                     }
                 }
-            }
 
-            // We are not editing an existing connection
-            if(isInput)
-            {
-                _editedConnection.item->setOutput(event->scenePos());
-                _editedConnection.item->setInput(plug->mapToScene(QPointF(0, 0)));
-                _editedConnection.plugInputId = plug->getPlugId();
-                _editedConnection.fromOutput = false;
+                // We are not editing an existing connection
+                if(isInput)
+                {
+                    _editedConnection.item->setOutput(event->scenePos());
+                    _editedConnection.item->setInput(plug->mapToScene(QPointF(0, 0)));
+                    _editedConnection.plugInputId = plug->getPlugId();
+                    _editedConnection.fromOutput = false;
+                }
+                else if(isOutput)
+                {
+                    _editedConnection.item->setOutput(plug->mapToScene(QPointF(0, 0)));
+                    _editedConnection.item->setInput(event->scenePos());
+                    _editedConnection.plugOutputId = plug->getPlugId();
+                    _editedConnection.fromOutput = true;
+                }
+                else
+                {
+                    qCritical("Selected plug not found in node inputs/outputs");
+                }
             }
-            else if(isOutput)
+            else if(item->type() == CustomItems::Node)
             {
-                _editedConnection.item->setOutput(plug->mapToScene(QPointF(0, 0)));
-                _editedConnection.item->setInput(event->scenePos());
-                _editedConnection.plugOutputId = plug->getPlugId();
-                _editedConnection.fromOutput = true;
+                event->widget()->setCursor(Qt::ClosedHandCursor);
+                _editedNode.item = static_cast<AbstractNodeView *>(item);
+                _editedNode.initClickPos = event->scenePos();
+                _editedNode.initNodePose = _editedNode.item->pos();
             }
-            else
-            {
-                qCritical("Selected plug not found in node inputs/outputs");
-            }
-        }
-        else if(item->type() == CustomItems::Node)
-        {
-            event->widget()->setCursor(Qt::ClosedHandCursor);
-            _editedNode.item = static_cast<AbstractNodeView *>(item);
-            _editedNode.initClickPos = event->scenePos();
-            _editedNode.initNodePose = _editedNode.item->pos();
         }
     }
 }
