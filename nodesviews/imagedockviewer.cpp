@@ -15,19 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEPREVIEWERNODE_H
-#define IMAGEPREVIEWERNODE_H
+#include "imagedockviewer.h"
+
+#include <QApplication>
 
 #include "nodes/abstractnode.h"
+#include "nodesviews/imagedockwidget.h"
 
-class ImagePreviewerNode : public AbstractNode
+
+ImageDockViewer::ImageDockViewer(AbstractNode *node, QGraphicsItem *parent) :
+    AbstractNodeView(node, parent),
+    _dockWidget(new ImageDockWidget(QApplication::activeWindow()))
 {
-    Q_OBJECT
+    _dockWidget->show();
 
-    public:
-        explicit ImagePreviewerNode(QObject *parent = NULL);
+    connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
+                  SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
+}
 
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
-};
-
-#endif // IMAGEPREVIEWERNODE_H
+void ImageDockViewer::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(outputs); // Viewer has no ouput, it only displays the input image
+    _dockWidget->setImage(inputs[0]);
+}

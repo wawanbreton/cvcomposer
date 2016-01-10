@@ -22,7 +22,7 @@
 #include "nodes/gaussianblurnode.h"
 #include "nodes/blurnode.h"
 #include "nodes/imagefilenode.h"
-#include "nodes/imagepreviewernode.h"
+#include "nodes/imageviewernode.h"
 
 
 NodesTypesManager *NodesTypesManager::_instance = NULL;
@@ -74,7 +74,11 @@ AbstractNode *NodesTypesManager::createNode(const QString &type)
 {
     if(type == "imagepreviewer")
     {
-        return new ImagePreviewerNode();
+        return new ImageViewerNode(true);
+    }
+    else if(type == "dockableimageviewer")
+    {
+        return new ImageViewerNode(false);
     }
     else if(type == "blur")
     {

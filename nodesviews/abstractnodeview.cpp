@@ -74,8 +74,11 @@ void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
+    painter->setBrush(Qt::white);
     painter->drawRect(boundingRect());
-    painter->drawText(boundingRect().adjusted(0, 5, 0, 0), Qt::AlignHCenter | Qt::AlignTop, _node->getUserReadableName());
+    painter->drawText(boundingRect().adjusted(0, 5, 0, 0),
+                      Qt::AlignHCenter | Qt::AlignTop,
+                      _node->getUserReadableName());
 }
 
 void AbstractNodeView::updatePlugs()

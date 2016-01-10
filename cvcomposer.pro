@@ -25,14 +25,16 @@ SOURCES += main.cpp\
     composerscene.cpp \
     nodesviews/abstractnodeview.cpp \
     nodes/imagefilenode.cpp \
-    nodes/imagepreviewernode.cpp \
     nodesviews/imagepreview.cpp \
     nodesviews/plugitem.cpp \
     nodesviews/connectionitem.cpp \
     composermodel.cpp \
     composerexecutor.cpp \
     composerscheduler.cpp \
-    nodes/gaussianblurnode.cpp
+    nodes/gaussianblurnode.cpp \
+    nodesviews/imagedockviewer.cpp \
+    nodes/imageviewernode.cpp \
+    nodesviews/imagedockwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -43,7 +45,6 @@ HEADERS  += mainwidget.h \
     composerscene.h \
     nodesviews/abstractnodeview.h \
     nodes/imagefilenode.h \
-    nodes/imagepreviewernode.h \
     nodesviews/imagepreview.h \
     nodesviews/plugitem.h \
     nodesviews/connectionitem.h \
@@ -52,7 +53,11 @@ HEADERS  += mainwidget.h \
     composerexecutor.h \
     composerscheduler.h \
     connection.h \
-    nodes/gaussianblurnode.h
+    nodes/gaussianblurnode.h \
+    nodesviews/imagedockviewer.h \
+    nodes/imageviewernode.h \
+    nodesviews/imagedockwidget.h
 
 FORMS    += \
-    mainwidget.ui
+    mainwidget.ui \
+    nodesviews/imagedockwidget.ui

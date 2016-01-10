@@ -25,11 +25,12 @@
 #include "composermodel.h"
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
-#include "nodes/imagepreviewernode.h"
+#include "nodes/imageviewernode.h"
 #include "nodesviews/abstractnodeview.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
 #include "nodesviews/imagepreview.h"
+#include "nodesviews/imagedockviewer.h"
 #include "nodesviews/plugitem.h"
 
 
@@ -73,9 +74,17 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
             _model->addNode(node);
             AbstractNodeView *nodeView;
 
-            if(qobject_cast<ImagePreviewerNode *>(node))
+            ImageViewerNode *viewer = qobject_cast<ImageViewerNode *>(node);
+            if(viewer)
             {
-                nodeView = new ImagePreview(node);
+                if(viewer->getPreview())
+                {
+                    nodeView = new ImagePreview(node);
+                }
+                else
+                {
+                    nodeView = new ImageDockViewer(node);
+                }
             }
             else
             {

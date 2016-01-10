@@ -115,6 +115,6 @@ void ComposerWidget::zoom(int scale)
 void ComposerWidget::updateTransform()
 {
     resetTransform();
-    qreal scaleValue = qExp(((_zoom / 5.0) - 1) * 2);
+    qreal scaleValue = qExp(((_zoom / 5.0) - 1) * 1.6);
     scale(scaleValue, scaleValue);
 }
