@@ -15,22 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERWIDGET_H
-#define COMPOSERWIDGET_H
+#ifndef INTERACTIVEGRAPHICSVIEW_H
+#define INTERACTIVEGRAPHICSVIEW_H
 
-#include "interactivegraphicsview.h"
+#include <QGraphicsView>
 
-#include <QGraphicsScene>
-
-class ComposerWidget : public InteractiveGraphicsView
+class InteractiveGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 
     public:
-        explicit ComposerWidget(QWidget *parent = NULL);
+        explicit InteractiveGraphicsView(QWidget *parent = NULL);
+
+        void zoomIn();
+
+        void zoomOut();
+
+        void resetZoom();
+
+    protected:
+        virtual void wheelEvent(QWheelEvent *event);
+
+        virtual void mousePressEvent(QMouseEvent *event);
+
+        virtual void mouseReleaseEvent(QMouseEvent *event);
 
     private:
-        QGraphicsScene *_scene;
+        void zoom(int scale);
+
+        void updateTransform();
+
+    private:
+        int _zoom;
 };
 
-#endif // COMPOSERWIDGET_H
+#endif // INTERACTIVEGRAPHICSVIEW_H

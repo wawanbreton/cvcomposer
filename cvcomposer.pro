@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     nodes/gaussianblurnode.cpp \
     nodesviews/imagedockviewer.cpp \
     nodes/imageviewernode.cpp \
-    nodesviews/imagedockwidget.cpp
+    nodesviews/imagedockwidget.cpp \
+    interactivegraphicsview.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -56,7 +57,8 @@ HEADERS  += mainwidget.h \
     nodes/gaussianblurnode.h \
     nodesviews/imagedockviewer.h \
     nodes/imageviewernode.h \
-    nodesviews/imagedockwidget.h
+    nodesviews/imagedockwidget.h \
+    interactivegraphicsview.h
 
 FORMS    += \
     mainwidget.ui \

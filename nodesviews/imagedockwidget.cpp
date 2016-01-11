@@ -26,6 +26,12 @@ ImageDockWidget::ImageDockWidget(QWidget *parent) :
     _ui(new Ui::ImageDockWidget)
 {
     _ui->setupUi(this);
+
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    _ui->graphicsView->setScene(scene);
+
+    _pixmapItem = new QGraphicsPixmapItem();
+    scene->addItem(_pixmapItem);
 }
 
 ImageDockWidget::~ImageDockWidget()
@@ -63,6 +69,8 @@ void ImageDockWidget::setImage(const cv::Mat &image)
 
     if(not qImage.isNull())
     {
-        _ui->label->setPixmap(QPixmap::fromImage(qImage));
+        //_ui->label->setPixmap();
+        _pixmapItem->setPixmap(QPixmap::fromImage(qImage));
+        _ui->graphicsView->setSceneRect(0, 0, qImage.width(), qImage.height());
     }
 }

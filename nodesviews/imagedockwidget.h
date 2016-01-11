@@ -22,6 +22,8 @@
 
 #include <opencv2/core/core.hpp>
 
+#include <QGraphicsPixmapItem>
+
 namespace Ui { class ImageDockWidget; }
 
 class ImageDockWidget : public QDockWidget
@@ -36,6 +38,7 @@ class ImageDockWidget : public QDockWidget
 
     private:
         Ui::ImageDockWidget *_ui;
+        QGraphicsPixmapItem *_pixmapItem;
 };
 
 #endif // IMAGEDOCKWIDGET_H
