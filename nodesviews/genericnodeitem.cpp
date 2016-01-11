@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "abstractnodeview.h"
+#include "genericnodeitem.h"
 
 #include <QPainter>
 #include <QTimer>
@@ -25,7 +25,7 @@
 #include "nodesviews/plugitem.h"
 
 
-AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
+GenericNodeItem::GenericNodeItem(AbstractNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
     _inputPlugs(),
@@ -44,32 +44,32 @@ AbstractNodeView::AbstractNodeView(AbstractNode *node, QGraphicsItem *parent) :
     QTimer::singleShot(0, this, SLOT(updatePlugs()));
 }
 
-int AbstractNodeView::type() const
+int GenericNodeItem::type() const
 {
     return CustomItems::Node;
 }
 
-const AbstractNode *AbstractNodeView::getNode() const
+const AbstractNode *GenericNodeItem::getNode() const
 {
     return _node;
 }
 
-const QList<PlugItem *> &AbstractNodeView::getInputs() const
+const QList<PlugItem *> &GenericNodeItem::getInputs() const
 {
     return _inputPlugs;
 }
 
-const QList<PlugItem *> &AbstractNodeView::getOutputs() const
+const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 {
     return _outputPlugs;
 }
 
-QRectF AbstractNodeView::boundingRect() const
+QRectF GenericNodeItem::boundingRect() const
 {
     return QRectF(0, 0, 100, 30);
 }
 
-void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -81,7 +81,7 @@ void AbstractNodeView::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                       _node->getUserReadableName());
 }
 
-void AbstractNodeView::updatePlugs()
+void GenericNodeItem::updatePlugs()
 {
     for(quint8 i = 0 ; i < _node->getNbInputs() ; i++)
     {

@@ -15,27 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEDOCKVIEWER_H
-#define IMAGEDOCKVIEWER_H
+#include "nodeslistwidget.h"
 
-#include "nodesviews/abstractnodeview.h"
+#include <QMimeData>
 
-#include <opencv2/core/core.hpp>
 
-class ImageDockWidget;
-
-class ImageDockViewer : public AbstractNodeView
+NodesListWidget::NodesListWidget(QWidget *parent) :
+    QTreeWidget(parent)
 {
-    Q_OBJECT
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragOnly);
+}
 
-    public:
-        ImageDockViewer(AbstractNode *node, QGraphicsItem *parent = NULL);
-
-    private slots:
-        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
-
-    private:
-        ImageDockWidget *_dockWidget;
-};
-
-#endif // IMAGEDOCKVIEWER_H
+QMimeData *NodesListWidget::mimeData(const QList<QTreeWidgetItem *> items) const
+{
+    QMimeData *data = new QMimeData();
+    data->setData("application/x-cvcomposerfilter", items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
+    return data;
+}

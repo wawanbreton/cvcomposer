@@ -15,46 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTNODEVIEW_H
-#define ABSTRACTNODEVIEW_H
+#ifndef IMAGEPREVIEWITEM_H
+#define IMAGEPREVIEWITEM_H
 
-#include <QObject>
-#include <QGraphicsItem>
+#include "nodesviews/genericnodeitem.h"
 
-#include <QGraphicsEllipseItem>
+#include <opencv2/core/core.hpp>
 
-class AbstractNode;
-class PlugItem;
-
-class AbstractNodeView : public QObject, public QGraphicsItem
+class ImagePreviewItem : public GenericNodeItem
 {
     Q_OBJECT
-    Q_INTERFACES(QGraphicsItem)
 
     public:
-        AbstractNodeView(AbstractNode *node, QGraphicsItem *parent = NULL);
+        ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent = NULL);
 
-        virtual int type() const;
-
-        const AbstractNode *getNode() const;
-
-        const QList<PlugItem *> &getInputs() const;
-
-        const QList<PlugItem *> &getOutputs() const;
-
-    protected:
         virtual QRectF boundingRect() const;
 
+    protected:
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     private slots:
-        void updatePlugs();
+        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
     private:
-        AbstractNode *_node;
-        QWidget *_nodeWidget;
-        QList<PlugItem *> _inputPlugs;
-        QList<PlugItem *> _outputPlugs;
+        cv::Mat _mat;
 };
 
-#endif // ABSTRACTNODEVIEW_H
+#endif // IMAGEPREVIEWITEM_H

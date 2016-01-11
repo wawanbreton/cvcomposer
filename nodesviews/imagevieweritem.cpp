@@ -15,22 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "filterslistwidget.h"
+#include "imagevieweritem.h"
 
-#include <QMimeData>
+#include <QApplication>
+
+#include "nodes/abstractnode.h"
+#include "nodesviews/imageviewerwidget.h"
 
 
-FiltersListWidget::FiltersListWidget(QWidget *parent) :
-    QTreeWidget(parent)
+ImageViewerItem::ImageViewerItem(AbstractNode *node, QGraphicsItem *parent) :
+    GenericNodeItem(node, parent),
+    _dockWidget(new ImageViewerWidget(QApplication::activeWindow()))
 {
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::DragOnly);
+    _dockWidget->show();
+
+    connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
+                  SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
 }
 
-QMimeData *FiltersListWidget::mimeData(const QList<QTreeWidgetItem *> items) const
+void ImageViewerItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
 {
-    QMimeData *data = new QMimeData();
-    data->setData("application/x-cvcomposerfilter", items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
-    return data;
+    Q_UNUSED(outputs); // Viewer has no ouput, it only displays the input image
+    _dockWidget->setImage(inputs[0]);
 }

@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagedockwidget.h"
+#include "imageviewerwidget.h"
 #include "ui_imagedockwidget.h"
 
 #include <QDebug>
 
 
-ImageDockWidget::ImageDockWidget(QWidget *parent) :
+ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
     QDockWidget(parent),
     _ui(new Ui::ImageDockWidget)
 {
@@ -34,12 +34,12 @@ ImageDockWidget::ImageDockWidget(QWidget *parent) :
     scene->addItem(_pixmapItem);
 }
 
-ImageDockWidget::~ImageDockWidget()
+ImageViewerWidget::~ImageViewerWidget()
 {
     delete _ui;
 }
 
-void ImageDockWidget::setImage(const cv::Mat &image)
+void ImageViewerWidget::setImage(const cv::Mat &image)
 {
     QImage qImage;
 

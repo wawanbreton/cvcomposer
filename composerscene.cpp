@@ -26,11 +26,11 @@
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
 #include "nodes/imageviewernode.h"
-#include "nodesviews/abstractnodeview.h"
+#include "nodesviews/genericnodeitem.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
-#include "nodesviews/imagepreview.h"
-#include "nodesviews/imagedockviewer.h"
+#include "nodesviews/imagepreviewitem.h"
+#include "nodesviews/imagevieweritem.h"
 #include "nodesviews/plugitem.h"
 
 
@@ -72,23 +72,23 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         if(node)
         {
             _model->addNode(node);
-            AbstractNodeView *nodeView;
+            GenericNodeItem *nodeView;
 
             ImageViewerNode *viewer = qobject_cast<ImageViewerNode *>(node);
             if(viewer)
             {
                 if(viewer->getPreview())
                 {
-                    nodeView = new ImagePreview(node);
+                    nodeView = new ImagePreviewItem(node);
                 }
                 else
                 {
-                    nodeView = new ImageDockViewer(node);
+                    nodeView = new ImageViewerItem(node);
                 }
             }
             else
             {
-                nodeView = new AbstractNodeView(node);
+                nodeView = new GenericNodeItem(node);
             }
 
             nodeView->setPos(event->scenePos());
@@ -156,7 +156,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if(item->type() == CustomItems::Node)
             {
                 event->widget()->setCursor(Qt::ClosedHandCursor);
-                _editedNode.item = static_cast<AbstractNodeView *>(item);
+                _editedNode.item = static_cast<GenericNodeItem *>(item);
                 _editedNode.initClickPos = event->scenePos();
                 _editedNode.initNodePose = _editedNode.item->pos();
             }
@@ -307,7 +307,7 @@ void ComposerScene::onConnectionAdded(const QUuid &connectionId)
     ConnectionItem *connectionItem = new ConnectionItem();
     connectionItem->setConnectionId(connectionId);
 
-    foreach(const AbstractNodeView *nodeView, _nodes)
+    foreach(const GenericNodeItem *nodeView, _nodes)
     {
         foreach(const PlugItem *plugItem, nodeView->getInputs())
         {

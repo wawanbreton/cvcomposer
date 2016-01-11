@@ -25,7 +25,7 @@
 
 class ComposerModel;
 class ConnectionItem;
-class AbstractNodeView;
+class GenericNodeItem;
 
 class ComposerScene : public QGraphicsScene
 {
@@ -62,7 +62,7 @@ class ComposerScene : public QGraphicsScene
 
         typedef struct
         {
-            AbstractNodeView *item;
+            GenericNodeItem *item;
             QPointF initClickPos;
             QPointF initNodePose;
         } EditedNode;
@@ -72,7 +72,7 @@ class ComposerScene : public QGraphicsScene
         EditedConnection _editedConnection;
         EditedNode _editedNode;
         QList<ConnectionItem *> _connections;
-        QList<AbstractNodeView *> _nodes;
+        QList<GenericNodeItem *> _nodes;
 };
 
 #endif // COMPOSERSCENE_H

@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEDOCKWIDGET_H
-#define IMAGEDOCKWIDGET_H
+#ifndef IMAGEVIEWERWIDGET_H
+#define IMAGEVIEWERWIDGET_H
 
 #include <QDockWidget>
 
@@ -26,13 +26,13 @@
 
 namespace Ui { class ImageDockWidget; }
 
-class ImageDockWidget : public QDockWidget
+class ImageViewerWidget : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        explicit ImageDockWidget(QWidget *parent = NULL);
-        ~ImageDockWidget();
+        explicit ImageViewerWidget(QWidget *parent = NULL);
+        ~ImageViewerWidget();
 
         void setImage(const cv::Mat &image);
 
@@ -41,4 +41,4 @@ class ImageDockWidget : public QDockWidget
         QGraphicsPixmapItem *_pixmapItem;
 };
 
-#endif // IMAGEDOCKWIDGET_H
+#endif // IMAGEVIEWERWIDGET_H
