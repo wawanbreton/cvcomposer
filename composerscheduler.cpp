@@ -36,15 +36,12 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
                                 const QList<Connection *> &connections)
 {
     QList<AbstractNode *> pseudoProcessedNodes;
-    QList<AbstractNode *> previousPseudoProcessedNodes;
     QList<AbstractNode *> nodesToProcess = nodes;
     QList<AbstractNode *> unreachableNodes;
     _executionList.clear();
 
     do
     {
-        previousPseudoProcessedNodes = pseudoProcessedNodes;
-
         QMutableListIterator<AbstractNode *> iterator(nodesToProcess);
         while(iterator.hasNext())
         {
@@ -59,36 +56,49 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
             foreach(Plug *input, nodeToProcess->getInputs())
             {
                 // Find the connection to this input
-                bool connectionFound = false;
-                foreach(const Connection *connection, connections)
+                const Connection *connection = NULL;
+                foreach(const Connection *aConnection, connections)
                 {
-                    if(connection->getInput() == input)
+                    if(aConnection->getInput() == input)
                     {
-                        connectionFound = true;
-
-                        // We have found the connection, now check whether the output of the other
-                        // node is processed
-                        bool outputProcessed = false;
-                        foreach(AbstractNode *node, pseudoProcessedNodes)
-                        {
-                            if(node->hasOutput(connection->getOutput()))
-                            {
-                                // Output of previous node has been processed
-                                outputProcessed = true;
-                                dependancies << node;
-                            }
-                        }
-
-                        allInputsProcessed &= outputProcessed;
+                        connection = aConnection;
+                        break;
                     }
                 }
 
-                if(not connectionFound)
+                // We have found the connection, now find the previous node
+                AbstractNode *previousNode = NULL;
+                if(connection)
                 {
-                    // Input is not connected, there is no way we can process the node
+                    foreach(AbstractNode *node, nodes)
+                    {
+                        if(node->hasOutput(connection->getOutput()))
+                        {
+                            previousNode = node;
+                            break;
+                        }
+                    }
+                }
+
+                if(previousNode == NULL || unreachableNodes.contains(previousNode))
+                {
+                    // Input is not connected or previous node is unreachable, there is no way
+                    // we can process the node
                     unreachableNodes << iterator.value();
                     iterator.remove();
                     allInputsProcessed = false;
+                    break; // Don't bother checking other plugs
+
+                }
+                else if(pseudoProcessedNodes.contains(previousNode))
+                {
+                    // Output of previous node has been processed
+                    dependancies << previousNode;
+                }
+                else
+                {
+                    allInputsProcessed = false;
+                    break; // Don't bother checking other plugs
                 }
             }
 
@@ -100,7 +110,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
                 iterator.remove();
             }
         }
-    } while(not nodesToProcess.isEmpty() && pseudoProcessedNodes != previousPseudoProcessedNodes);
+    } while(not nodesToProcess.isEmpty());
 
     if(not _executionList.isEmpty())
     {
