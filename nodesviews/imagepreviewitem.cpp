@@ -26,10 +26,12 @@
 
 ImagePreviewItem::ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent) :
     GenericNodeItem(node, parent),
-    _mat()
+    _image()
 {
     connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
                   SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
+
+    connect(node, SIGNAL(processUnavailable()), SLOT(onProcessUnavailable()));
 }
 
 QRectF ImagePreviewItem::boundingRect() const
@@ -45,15 +47,29 @@ void ImagePreviewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     QRectF rect = boundingRect().adjusted(2 * PlugItem::radius, 25, -2 * PlugItem::radius, -5);
 
-    if(_mat.total() == 0)
+    if(_image.isNull())
     {
         painter->fillRect(rect, Qt::gray);
     }
     else
     {
+        painter->drawPixmap(rect, _image, _image.rect());
+    }
+}
+
+void ImagePreviewItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
+
+    cv::Mat mat = inputs[0];
+
+    _image = QPixmap();
+
+    if(mat.total() != 0)
+    {
         QImage image;
 
-        if(_mat.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
+        if(mat.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
         {
             // Set the color table (used to translate colour indexes to qRgb values)
             QVector<QRgb> colorTable;
@@ -63,12 +79,12 @@ void ImagePreviewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             }
 
             // Create QImage with same dimensions as input Mat
-            image = QImage((const uchar*)_mat.data, _mat.cols, _mat.rows, _mat.step, QImage::Format_Indexed8);
+            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
             image.setColorTable(colorTable);
         }
-        if(_mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
+        if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
         {
-            image = QImage((const uchar*)_mat.data, _mat.cols, _mat.rows, _mat.step, QImage::Format_RGB888);
+            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
             image = image.rgbSwapped();
         }
         else
@@ -78,14 +94,15 @@ void ImagePreviewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
         if(not image.isNull())
         {
-            painter->drawImage(rect, image);
+            _image = QPixmap::fromImage(image);
         }
     }
+
+    update();
 }
 
-void ImagePreviewItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+void ImagePreviewItem::onProcessUnavailable()
 {
-    Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
-    _mat = inputs[0];
+    _image = QPixmap();
     update();
 }

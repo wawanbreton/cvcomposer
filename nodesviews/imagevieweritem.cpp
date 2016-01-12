@@ -31,10 +31,17 @@ ImageViewerItem::ImageViewerItem(AbstractNode *node, QGraphicsItem *parent) :
 
     connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
                   SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
+
+    connect(node, SIGNAL(processUnavailable()), SLOT(onProcessUnavailable()));
 }
 
 void ImageViewerItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(outputs); // Viewer has no ouput, it only displays the input image
     _dockWidget->setImage(inputs[0]);
+}
+
+void ImageViewerItem::onProcessUnavailable()
+{
+    _dockWidget->setImage(cv::Mat());
 }

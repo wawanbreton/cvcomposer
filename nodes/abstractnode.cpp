@@ -86,3 +86,8 @@ void AbstractNode::signalProcessDone(const QList<cv::Mat> &outputs, const QList<
 {
     emit processDone(outputs, inputs);
 }
+
+void AbstractNode::signalProcessUnavailable()
+{
+    emit processUnavailable();
+}

@@ -38,6 +38,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
     QList<AbstractNode *> pseudoProcessedNodes;
     QList<AbstractNode *> previousPseudoProcessedNodes;
     QList<AbstractNode *> nodesToProcess = nodes;
+    QList<AbstractNode *> unreachableNodes;
     _executionList.clear();
 
     do
@@ -85,6 +86,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
                 if(not connectionFound)
                 {
                     // Input is not connected, there is no way we can process the node
+                    unreachableNodes << iterator.value();
                     iterator.remove();
                     allInputsProcessed = false;
                 }
@@ -103,6 +105,12 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
     if(not _executionList.isEmpty())
     {
         _executor->processNode(_executionList.head().first, QList<cv::Mat>());
+    }
+
+    unreachableNodes << nodesToProcess;
+    foreach(AbstractNode *node, unreachableNodes)
+    {
+        node->signalProcessUnavailable();
     }
 }
 

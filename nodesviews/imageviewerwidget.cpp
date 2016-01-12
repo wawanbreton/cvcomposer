@@ -44,33 +44,32 @@ void ImageViewerWidget::setImage(const cv::Mat &image)
     QImage qImage;
 
     #warning factorize this
-    if(image.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
+    if(image.total() != 0)
     {
-        // Set the color table (used to translate colour indexes to qRgb values)
-        QVector<QRgb> colorTable;
-        for(int i = 0 ; i < 256; i++)
+        if(image.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
         {
-            colorTable.push_back(qRgb(i,i,i));
+            // Set the color table (used to translate colour indexes to qRgb values)
+            QVector<QRgb> colorTable;
+            for(int i = 0 ; i < 256; i++)
+            {
+                colorTable.push_back(qRgb(i,i,i));
+            }
+
+            // Create QImage with same dimensions as input Mat
+            qImage = QImage((const uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_Indexed8);
+            qImage.setColorTable(colorTable);
         }
-
-        // Create QImage with same dimensions as input Mat
-        qImage = QImage((const uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_Indexed8);
-        qImage.setColorTable(colorTable);
-    }
-    if(image.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
-    {
-        qImage = QImage((const uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_RGB888);
-        qImage = qImage.rgbSwapped();
-    }
-    else
-    {
-        qWarning() << "Mat could not be converted to QImage.";
+        if(image.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
+        {
+            qImage = QImage((const uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_RGB888);
+            qImage = qImage.rgbSwapped();
+        }
+        else
+        {
+            qWarning() << "Mat could not be converted to QImage.";
+        }
     }
 
-    if(not qImage.isNull())
-    {
-        //_ui->label->setPixmap();
-        _pixmapItem->setPixmap(QPixmap::fromImage(qImage));
-        _ui->graphicsView->setSceneRect(0, 0, qImage.width(), qImage.height());
-    }
+    _pixmapItem->setPixmap(QPixmap::fromImage(qImage));
+    _ui->graphicsView->setSceneRect(0, 0, qImage.width(), qImage.height());
 }

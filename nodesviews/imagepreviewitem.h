@@ -37,8 +37,10 @@ class ImagePreviewItem : public GenericNodeItem
     private slots:
         void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
+        void onProcessUnavailable();
+
     private:
-        cv::Mat _mat;
+        QPixmap _image;
 };
 
 #endif // IMAGEPREVIEWITEM_H

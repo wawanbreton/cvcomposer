@@ -34,6 +34,8 @@ class ImageViewerItem : public GenericNodeItem
     private slots:
         void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
+        void onProcessUnavailable();
+
     private:
         ImageViewerWidget *_dockWidget;
 };

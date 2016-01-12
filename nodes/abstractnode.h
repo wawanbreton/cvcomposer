@@ -54,11 +54,15 @@ class AbstractNode : public QObject
 
         void signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
+        void signalProcessUnavailable();
+
     protected:
         virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
 
     signals:
         void processDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+
+        void processUnavailable();
 
     private:
         QList<Plug *> _inputs;

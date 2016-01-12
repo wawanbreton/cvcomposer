@@ -74,8 +74,10 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
+    qreal semiWidth = painter->pen().widthF() / 2;
+
     painter->setBrush(Qt::white);
-    painter->drawRect(boundingRect());
+    painter->drawRect(boundingRect().adjusted(semiWidth, semiWidth, -semiWidth, -semiWidth));
     painter->drawText(boundingRect().adjusted(0, 5, 0, 0),
                       Qt::AlignHCenter | Qt::AlignTop,
                       _node->getUserReadableName());
