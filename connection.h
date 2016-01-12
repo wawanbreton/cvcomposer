@@ -18,12 +18,24 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include <QUuid>
+#include <QObject>
 
-typedef struct
+#include "plug.h"
+
+class Connection : public QObject
 {
-    QUuid output;
-    QUuid input;
-} Connection;
+    Q_OBJECT
+
+    public:
+        Connection(Plug *output, Plug *input, QObject *parent = NULL);
+
+        Plug *getOutput() const;
+
+        Plug *getInput() const;
+
+    private:
+        Plug *_output;
+        Plug *_input;
+};
 
 #endif // CONNECTION_H

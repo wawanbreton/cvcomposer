@@ -21,8 +21,10 @@
 #include <QGraphicsScene>
 
 #include <QGraphicsSceneDragDropEvent>
-#include <QUuid>
 
+#include "plug.h"
+
+class Connection;
 class ComposerModel;
 class ConnectionItem;
 class GenericNodeItem;
@@ -47,17 +49,17 @@ class ComposerScene : public QGraphicsScene
         virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     private slots:
-        void onConnectionAdded(const QUuid &connectionId);
+        void onConnectionAdded(Connection *connection);
 
-        void onConnectionRemoved(const QUuid &connectionId);
+        void onConnectionRemoved(Connection *connection);
 
     private:
         typedef struct
         {
             ConnectionItem *item;
             bool fromOutput;
-            QUuid plugInputId;
-            QUuid plugOutputId;
+            Plug *plugInput;
+            Plug *plugOutput;
         } EditedConnection;
 
         typedef struct

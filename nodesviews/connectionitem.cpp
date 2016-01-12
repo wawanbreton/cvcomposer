@@ -20,7 +20,7 @@
 
 ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
     QGraphicsLineItem(parent),
-    _connectionId()
+    _connection(NULL)
 {
 }
 
@@ -43,12 +43,12 @@ void ConnectionItem::setInput(const QPointF &input)
     setLine(currentLine);
 }
 
-void ConnectionItem::setConnectionId(const QUuid &connectionId)
+void ConnectionItem::setConnection(Connection *connection)
 {
-    _connectionId = connectionId;
+    _connection = connection;
 }
 
-const QUuid &ConnectionItem::getConnectionId() const
+Connection *ConnectionItem::getConnection() const
 {
-    return _connectionId;
+    return _connection;
 }

@@ -20,7 +20,7 @@
 
 #include <QGraphicsLineItem>
 
-#include <QUuid>
+class Connection;
 
 class ConnectionItem : public QGraphicsLineItem
 {
@@ -33,12 +33,12 @@ class ConnectionItem : public QGraphicsLineItem
 
         void setInput(const QPointF &input);
 
-        void setConnectionId(const QUuid &connectionId);
+        void setConnection(Connection *connection);
 
-        const QUuid &getConnectionId() const;
+        Connection *getConnection() const;
 
     private:
-        QUuid _connectionId;
+        Connection *_connection;
 };
 
 #endif // CONNECTIONITEM_H

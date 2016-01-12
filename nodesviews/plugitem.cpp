@@ -23,9 +23,9 @@
 #include "nodesviews/customitems.h"
 
 
-PlugItem::PlugItem(const QUuid &plugId, QGraphicsItem *parent) :
+PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     QGraphicsEllipseItem(parent),
-    _plugId(plugId)
+    _plug(plug)
 {
     setRect(-radius, -radius, radius * 2, radius * 2);
     setBrush(Qt::white);
@@ -36,7 +36,7 @@ int PlugItem::type() const
     return CustomItems::Plug;
 }
 
-const QUuid &PlugItem::getPlugId() const
+Plug *PlugItem::getPlug() const
 {
-    return _plugId;
+    return _plug;
 }

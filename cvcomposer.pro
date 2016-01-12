@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     nodesviews/imagepreviewitem.cpp \
     nodesviews/imagevieweritem.cpp \
     nodesviews/imageviewerwidget.cpp \
-    nodeslistwidget.cpp
+    nodeslistwidget.cpp \
+    connection.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -65,7 +66,8 @@ HEADERS  += mainwidget.h \
     nodesviews/imagepreviewitem.h \
     nodesviews/imagevieweritem.h \
     nodesviews/imageviewerwidget.h \
-    nodeslistwidget.h
+    nodeslistwidget.h \
+    plug.h
 
 FORMS    += \
     mainwidget.ui \

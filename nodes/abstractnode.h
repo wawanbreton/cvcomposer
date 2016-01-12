@@ -21,28 +21,32 @@
 #include <QObject>
 
 #include <QMap>
-#include <QUuid>
 
 #include <opencv2/core/core.hpp>
+
+#include "plug.h"
 
 class AbstractNode : public QObject
 {
     Q_OBJECT
 
     public:
-        explicit AbstractNode(quint8 nbInputs, quint8 nbOutputs, const QString &userReadableName, QObject *parent = NULL);
+        explicit AbstractNode(quint8 nbInputs,
+                              quint8 nbOutputs,
+                              const QString &userReadableName,
+                              QObject *parent = NULL);
 
         quint8 getNbInputs() const;
 
-        const QList<QUuid> &getInputs() const;
+        const QList<Plug *> &getInputs() const;
 
-        bool hasInput(const QUuid &input) const;
+        bool hasInput(Plug *input) const;
 
         quint8 getNbOutputs() const;
 
-        const QList<QUuid> &getOutputs() const;
+        const QList<Plug *> &getOutputs() const;
 
-        bool hasOutput(const QUuid &output) const;
+        bool hasOutput(Plug *output) const;
 
         const QString &getUserReadableName() const;
 
@@ -57,8 +61,8 @@ class AbstractNode : public QObject
         void processDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
     private:
-        QList<QUuid> _inputs;
-        QList<QUuid> _outputs;
+        QList<Plug *> _inputs;
+        QList<Plug *> _outputs;
         QString _userReadableName;
 };
 

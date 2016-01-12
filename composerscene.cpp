@@ -23,6 +23,7 @@
 #include <QGraphicsView>
 
 #include "composermodel.h"
+#include "connection.h"
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
 #include "nodes/imageviewernode.h"
@@ -42,10 +43,15 @@ ComposerScene::ComposerScene(QObject *parent) :
     _connections()
 {
     _editedConnection.item = NULL;
+    _editedConnection.plugInput = NULL;
+    _editedConnection.plugOutput = NULL;
+
     _editedNode.item = NULL;
 
-    connect(_model, SIGNAL(connectionAdded(QUuid)), SLOT(onConnectionAdded(QUuid)));
-    connect(_model, SIGNAL(connectionRemoved(QUuid)), SLOT(onConnectionRemoved(QUuid)));
+    connect(_model, SIGNAL(connectionAdded(Connection *)),
+                    SLOT(onConnectionAdded(Connection *)));
+    connect(_model, SIGNAL(connectionRemoved(Connection *)),
+                    SLOT(onConnectionRemoved(Connection *)));
 }
 
 void ComposerScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
@@ -108,8 +114,8 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if(item->type() == CustomItems::Plug)
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
-                bool isInput = _model->findInputPlug(plug->getPlugId()) != NULL;
-                bool isOutput = _model->findOutputPlug(plug->getPlugId()) != NULL;
+                bool isInput = _model->findInputPlug(plug->getPlug()) != NULL;
+                bool isOutput = _model->findOutputPlug(plug->getPlug()) != NULL;
 
                 _editedConnection.item = new ConnectionItem();
                 addItem(_editedConnection.item);
@@ -119,15 +125,15 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 {
                     foreach(ConnectionItem *connectionItem, _connections)
                     {
-                        Connection connection = _model->getConnection(connectionItem->getConnectionId());
-                        if(connection.input == plug->getPlugId())
+                        Connection *connection = connectionItem->getConnection();
+                        if(connection->getInput() == plug->getPlug())
                         {
                             // We have found an existing connection, edit it
                             _editedConnection.item->setOutput(connectionItem->getOutput());
                             _editedConnection.item->setInput(event->scenePos());
-                            _editedConnection.plugOutputId = connection.output;
+                            _editedConnection.plugOutput = connection->getOutput();
                             _editedConnection.fromOutput = true;
-                            _model->removeConnection(connectionItem->getConnectionId());
+                            _model->removeConnection(connectionItem->getConnection());
                             return;
                         }
                     }
@@ -138,14 +144,14 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 {
                     _editedConnection.item->setOutput(event->scenePos());
                     _editedConnection.item->setInput(plug->mapToScene(QPointF(0, 0)));
-                    _editedConnection.plugInputId = plug->getPlugId();
+                    _editedConnection.plugInput = plug->getPlug();
                     _editedConnection.fromOutput = false;
                 }
                 else if(isOutput)
                 {
                     _editedConnection.item->setOutput(plug->mapToScene(QPointF(0, 0)));
                     _editedConnection.item->setInput(event->scenePos());
-                    _editedConnection.plugOutputId = plug->getPlugId();
+                    _editedConnection.plugOutput = plug->getPlug();
                     _editedConnection.fromOutput = true;
                 }
                 else
@@ -181,20 +187,20 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
                 if(_editedConnection.fromOutput)
                 {
-                    if(_model->findInputPlug(plugUnderMouse->getPlugId()))
+                    if(_model->findInputPlug(plugUnderMouse->getPlug()))
                     {
                         _editedConnection.item->setInput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugInputId = plugUnderMouse->getPlugId();
+                        _editedConnection.plugInput = plugUnderMouse->getPlug();
                         cursor = Qt::PointingHandCursor;
                         plugFound = true;
                     }
                 }
                 else
                 {
-                    if(_model->findOutputPlug(plugUnderMouse->getPlugId()))
+                    if(_model->findOutputPlug(plugUnderMouse->getPlug()))
                     {
                         _editedConnection.item->setOutput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugOutputId = plugUnderMouse->getPlugId();
+                        _editedConnection.plugOutput = plugUnderMouse->getPlug();
                         cursor = Qt::PointingHandCursor;
                         plugFound = true;
                     }
@@ -209,12 +215,12 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             if(_editedConnection.fromOutput)
             {
                 _editedConnection.item->setInput(event->scenePos());
-                _editedConnection.plugInputId = QUuid();
+                _editedConnection.plugInput = NULL;
             }
             else
             {
                 _editedConnection.item->setOutput(event->scenePos());
-                _editedConnection.plugOutputId = QUuid();
+                _editedConnection.plugOutput = NULL;
             }
         }
     }
@@ -228,13 +234,13 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         // Move connections, hard part
         foreach(ConnectionItem *connectionItem, _connections)
         {
-            Connection connection = _model->getConnection(connectionItem->getConnectionId());
+            Connection *connection = connectionItem->getConnection();
 
-            if(_editedNode.item->getNode()->hasInput(connection.input))
+            if(_editedNode.item->getNode()->hasInput(connection->getInput()))
             {
                 foreach(PlugItem *plugItem, _editedNode.item->getInputs())
                 {
-                    if(plugItem->getPlugId() == connection.input)
+                    if(plugItem->getPlug() == connection->getInput())
                     {
                         connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
                         break;
@@ -242,11 +248,11 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 }
             }
 
-            if(_editedNode.item->getNode()->hasOutput(connection.output))
+            if(_editedNode.item->getNode()->hasOutput(connection->getOutput()))
             {
                 foreach(PlugItem *plugItem, _editedNode.item->getOutputs())
                 {
-                    if(plugItem->getPlugId() == connection.output)
+                    if(plugItem->getPlug() == connection->getOutput())
                     {
                         connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
                         break;
@@ -281,18 +287,17 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     if(_editedConnection.item)
     {
-        if(not _editedConnection.plugInputId.isNull() &&
-           not _editedConnection.plugOutputId.isNull())
+        if(_editedConnection.plugInput && _editedConnection.plugOutput)
         {
-            _model->addConnection(_editedConnection.plugOutputId, _editedConnection.plugInputId);
+            _model->addConnection(_editedConnection.plugOutput, _editedConnection.plugInput);
         }
 
         removeItem(_editedConnection.item);
         delete _editedConnection.item;
 
         _editedConnection.item = NULL;
-        _editedConnection.plugInputId = QUuid();
-        _editedConnection.plugOutputId = QUuid();
+        _editedConnection.plugInput = NULL;
+        _editedConnection.plugOutput = NULL;
     }
     else if(_editedNode.item)
     {
@@ -301,17 +306,16 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void ComposerScene::onConnectionAdded(const QUuid &connectionId)
+void ComposerScene::onConnectionAdded(Connection *connection)
 {
-    Connection connection = _model->getConnection(connectionId);
     ConnectionItem *connectionItem = new ConnectionItem();
-    connectionItem->setConnectionId(connectionId);
+    connectionItem->setConnection(connection);
 
     foreach(const GenericNodeItem *nodeView, _nodes)
     {
         foreach(const PlugItem *plugItem, nodeView->getInputs())
         {
-            if(plugItem->getPlugId() == connection.input)
+            if(plugItem->getPlug() == connection->getInput())
             {
                 connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
@@ -319,7 +323,7 @@ void ComposerScene::onConnectionAdded(const QUuid &connectionId)
         }
         foreach(const PlugItem *plugItem, nodeView->getOutputs())
         {
-            if(plugItem->getPlugId() == connection.output)
+            if(plugItem->getPlug() == connection->getOutput())
             {
                 connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
@@ -331,11 +335,11 @@ void ComposerScene::onConnectionAdded(const QUuid &connectionId)
     _connections << connectionItem;
 }
 
-void ComposerScene::onConnectionRemoved(const QUuid &connectionId)
+void ComposerScene::onConnectionRemoved(Connection *connection)
 {
     foreach(ConnectionItem *connectionItem, _connections)
     {
-        if(connectionItem->getConnectionId() == connectionId)
+        if(connectionItem->getConnection() == connection)
         {
             removeItem(connectionItem);
             delete connectionItem;

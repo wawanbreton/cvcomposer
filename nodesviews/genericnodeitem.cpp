@@ -31,14 +31,14 @@ GenericNodeItem::GenericNodeItem(AbstractNode *node, QGraphicsItem *parent) :
     _inputPlugs(),
     _outputPlugs()
 {
-    foreach(const QUuid &inputId, _node->getInputs())
+    foreach(Plug *input, _node->getInputs())
     {
-        _inputPlugs << new PlugItem(inputId, this);
+        _inputPlugs << new PlugItem(input, this);
     }
 
-    foreach(const QUuid &outputId, _node->getOutputs())
+    foreach(Plug *output, _node->getOutputs())
     {
-        _outputPlugs << new PlugItem(outputId, this);
+        _outputPlugs << new PlugItem(output, this);
     }
 
     QTimer::singleShot(0, this, SLOT(updatePlugs()));

@@ -20,6 +20,7 @@
 #include <QDebug>
 
 #include "composerscheduler.h"
+#include "connection.h"
 #include "nodes/abstractnode.h"
 
 
@@ -38,25 +39,25 @@ void ComposerModel::addNode(AbstractNode *node)
     node->setParent(this);
 }
 
-AbstractNode *ComposerModel::findInputPlug(const QUuid &plugId) const
+AbstractNode *ComposerModel::findInputPlug(Plug *plug) const
 {
-    return findPlug(plugId, true, false);
+    return findPlug(plug, true, false);
 }
 
-AbstractNode *ComposerModel::findOutputPlug(const QUuid &plugId) const
+AbstractNode *ComposerModel::findOutputPlug(Plug *plug) const
 {
-    return findPlug(plugId, false, true);
+    return findPlug(plug, false, true);
 }
 
-AbstractNode *ComposerModel::findPlug(const QUuid &plugId, bool fromInputs, bool fromOutputs) const
+AbstractNode *ComposerModel::findPlug(Plug *plug, bool fromInputs, bool fromOutputs) const
 {
     foreach(AbstractNode *node, _nodes)
     {
-        if(fromInputs && node->hasInput(plugId))
+        if(fromInputs && node->hasInput(plug))
         {
             return node;
         }
-        if(fromOutputs && node->hasOutput(plugId))
+        if(fromOutputs && node->hasOutput(plug))
         {
             return node;
         }
@@ -65,52 +66,46 @@ AbstractNode *ComposerModel::findPlug(const QUuid &plugId, bool fromInputs, bool
     return NULL;
 }
 
-void ComposerModel::addConnection(const QUuid &output, const QUuid &input)
+void ComposerModel::addConnection(Plug *output, Plug *input)
 {
     #warning Do appropriate checks
 
-    QMutableMapIterator<QUuid, Connection> iterator(_connections);
+    QMutableListIterator<Connection *> iterator(_connections);
     while(iterator.hasNext())
     {
         iterator.next();
-        if(iterator.value().input == input)
+        if(iterator.value()->getInput() == input)
         {
-            QUuid removedKey = iterator.key();
+            Connection *connection = iterator.value();
             iterator.remove();
-            emit connectionRemoved(removedKey);
+            delete connection;
+            emit connectionRemoved(connection);
         }
     }
 
-    QUuid connectionId = QUuid::createUuid();
-    Connection connection;
-    connection.output = output;
-    connection.input = input;
-    _connections.insert(connectionId, connection);
-    emit connectionAdded(connectionId);
+    Connection *connection = new Connection(output, input, this);
+    _connections << connection;
+    emit connectionAdded(connection);
 
     startExecution();
 }
 
-void ComposerModel::removeConnection(const QUuid &connectionId)
+void ComposerModel::removeConnection(Connection *connection)
 {
-    if(_connections.remove(connectionId))
+    if(_connections.removeAll(connection))
     {
-        emit connectionRemoved(connectionId);
+        emit connectionRemoved(connection);
+        delete connection;
 
         startExecution();
     }
     else
     {
-        qWarning() << "ComposerModel::removeConnection" << "No connection with ID" << connectionId;
+        qWarning() << "ComposerModel::removeConnection No such connection";
     }
-}
-
-Connection ComposerModel::getConnection(const QUuid &connectionId) const
-{
-    return _connections.value(connectionId);
 }
 
 void ComposerModel::startExecution()
 {
-    _scheduler->execute(_nodes, _connections.values());
+    _scheduler->execute(_nodes, _connections);
 }

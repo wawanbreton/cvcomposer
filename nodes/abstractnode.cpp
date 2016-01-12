@@ -29,12 +29,12 @@ AbstractNode::AbstractNode(quint8 nbInputs, quint8 nbOutputs, const QString &use
     _inputs.reserve(nbInputs);
     for(quint8 i = 0 ; i < nbInputs ; i++)
     {
-        _inputs << QUuid::createUuid();
+        _inputs << new Plug(this);
     }
 
     for(quint8 i = 0 ; i < nbOutputs ; i++)
     {
-        _outputs << QUuid::createUuid();
+        _outputs << new Plug(this);
     }
 }
 
@@ -43,12 +43,12 @@ quint8 AbstractNode::getNbInputs() const
     return _inputs.count();
 }
 
-const QList<QUuid> &AbstractNode::getInputs() const
+const QList<Plug *> &AbstractNode::getInputs() const
 {
     return _inputs;
 }
 
-bool AbstractNode::hasInput(const QUuid &input) const
+bool AbstractNode::hasInput(Plug *input) const
 {
     return _inputs.contains(input);
 }
@@ -58,12 +58,12 @@ quint8 AbstractNode::getNbOutputs() const
     return _outputs.count();
 }
 
-const QList<QUuid> &AbstractNode::getOutputs() const
+const QList<Plug *> &AbstractNode::getOutputs() const
 {
     return _outputs;
 }
 
-bool AbstractNode::hasOutput(const QUuid &output) const
+bool AbstractNode::hasOutput(Plug *output) const
 {
     return _outputs.contains(output);
 }

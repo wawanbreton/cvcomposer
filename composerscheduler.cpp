@@ -19,6 +19,7 @@
 
 #include <QDebug>
 
+#include "connection.h"
 #include "nodes/abstractnode.h"
 #include "composerexecutor.h"
 
@@ -32,7 +33,7 @@ ComposerScheduler::ComposerScheduler(QObject *parent) :
 }
 
 void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
-                                const QList<Connection> &connections)
+                                const QList<Connection *> &connections)
 {
     QList<AbstractNode *> pseudoProcessedNodes;
     QList<AbstractNode *> previousPseudoProcessedNodes;
@@ -54,13 +55,13 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
             // process it now
 
             bool allInputsProcessed = true;
-            foreach(const QUuid &input, nodeToProcess->getInputs())
+            foreach(Plug *input, nodeToProcess->getInputs())
             {
                 // Find the connection to this input
                 bool connectionFound = false;
-                foreach(const Connection &connection, connections)
+                foreach(const Connection *connection, connections)
                 {
-                    if(connection.input == input)
+                    if(connection->getInput() == input)
                     {
                         connectionFound = true;
 
@@ -69,7 +70,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
                         bool outputProcessed = false;
                         foreach(AbstractNode *node, pseudoProcessedNodes)
                         {
-                            if(node->hasOutput(connection.output))
+                            if(node->hasOutput(connection->getOutput()))
                             {
                                 // Output of previous node has been processed
                                 outputProcessed = true;
@@ -99,10 +100,6 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
         }
     } while(not nodesToProcess.isEmpty() && pseudoProcessedNodes != previousPseudoProcessedNodes);
 
-    /*foreach(AbstractNode *node, _executionList)
-    {
-        qDebug() << node->getUserReadableName();
-    }*/
     if(not _executionList.isEmpty())
     {
         _executor->processNode(_executionList.head().first, QList<cv::Mat>());
@@ -119,7 +116,7 @@ void ComposerScheduler::onNodeProcessed(const QList<cv::Mat> &outputs)
         QList<cv::Mat> inputs;
         foreach(AbstractNode *dependancy, _executionList.head().second)
         {
-            #warning Dependancies should be sorted in inputs order
+            #warning Dependancies should be sorted in inputs order (for nodes with multiple inputs)
             inputs << _processedNodes[dependancy];
         }
 

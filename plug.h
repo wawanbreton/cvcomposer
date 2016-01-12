@@ -15,37 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERSCHEDULER_H
-#define COMPOSERSCHEDULER_H
+#ifndef PLUG_H
+#define PLUG_H
 
 #include <QObject>
 
-#include <opencv2/core/core.hpp>
+typedef QObject Plug;
 
-#include <QMap>
-#include <QQueue>
 
-class Connection;
-class AbstractNode;
-class ComposerExecutor;
+#endif // PLUG_H
 
-class ComposerScheduler : public QObject
-{
-    Q_OBJECT
-
-    public:
-        explicit ComposerScheduler(QObject *parent = NULL);
-
-        void execute(const QList<AbstractNode *> &nodes,
-                     const QList<Connection *> &connections);
-
-    private slots:
-        void onNodeProcessed(const QList<cv::Mat> &outputs);
-
-    private:
-        ComposerExecutor *_executor;
-        QQueue<QPair<AbstractNode *, QList<AbstractNode *> > > _executionList;
-        QMap<AbstractNode *, QList<cv::Mat> > _processedNodes;
-};
-
-#endif // COMPOSERSCHEDULER_H

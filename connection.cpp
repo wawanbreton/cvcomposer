@@ -15,25 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGITEM_H
-#define PLUGITEM_H
+#include "connection.h"
 
-#include <QGraphicsEllipseItem>
 
-#include "plug.h"
-
-class PlugItem : public QGraphicsEllipseItem
+Connection::Connection(Plug *output, Plug *input, QObject *parent) :
+    QObject(parent),
+    _output(output),
+    _input(input)
 {
-    public:
-        PlugItem(Plug *plug, QGraphicsItem *parent = NULL);
+}
 
-        virtual int type() const;
+Plug *Connection::getOutput() const
+{
+    return _output;
+}
 
-        Plug *getPlug() const;
-
-    public:
-        static const int radius = 5;
-        Plug *_plug;
-};
-
-#endif // PLUGITEM_H
+Plug *Connection::getInput() const
+{
+    return _input;
+}

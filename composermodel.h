@@ -22,10 +22,10 @@
 
 #include <QMap>
 #include <QPair>
-#include <QUuid>
 
-#include "connection.h"
+#include "plug.h"
 
+class Connection;
 class AbstractNode;
 class ComposerScheduler;
 
@@ -38,31 +38,29 @@ class ComposerModel : public QObject
 
         void addNode(AbstractNode *node);
 
-        AbstractNode *findInputPlug(const QUuid &plugId) const;
+        AbstractNode *findInputPlug(Plug *plug) const;
 
-        AbstractNode *findOutputPlug(const QUuid &plugId) const;
+        AbstractNode *findOutputPlug(Plug *plug) const;
 
-        AbstractNode *findPlug(const QUuid &plugId,
+        AbstractNode *findPlug(Plug *plug,
                                bool fromInputs = true,
                                bool fromOutputs = true) const;
 
-        void addConnection(const QUuid &output, const QUuid &input);
+        void addConnection(Plug *output, Plug *input);
 
-        void removeConnection(const QUuid &connectionId);
-
-        Connection getConnection(const QUuid &connectionId) const;
+        void removeConnection(Connection *connection);
 
     signals:
-        void connectionAdded(const QUuid &connectionId);
+        void connectionAdded(Connection *connectionId);
 
-        void connectionRemoved(const QUuid &connectionId);
+        void connectionRemoved(Connection *connectionId);
 
     private:
         void startExecution();
 
     private:
         QList<AbstractNode *> _nodes;
-        QMap<QUuid, Connection> _connections;
+        QList<Connection *> _connections;
         ComposerScheduler *_scheduler;
 };
 
