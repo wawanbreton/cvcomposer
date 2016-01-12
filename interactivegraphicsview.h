@@ -15,22 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "filterslistwidget.h"
+#ifndef INTERACTIVEGRAPHICSVIEW_H
+#define INTERACTIVEGRAPHICSVIEW_H
 
-#include <QMimeData>
+#include <QGraphicsView>
 
-
-FiltersListWidget::FiltersListWidget(QWidget *parent) :
-    QTreeWidget(parent)
+class InteractiveGraphicsView : public QGraphicsView
 {
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::DragOnly);
-}
+    Q_OBJECT
 
-QMimeData *FiltersListWidget::mimeData(const QList<QTreeWidgetItem *> items) const
-{
-    QMimeData *data = new QMimeData();
-    data->setData("application/x-cvcomposerfilter", items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
-    return data;
-}
+    public:
+        explicit InteractiveGraphicsView(QWidget *parent = NULL);
+
+        void zoomIn();
+
+        void zoomOut();
+
+        void resetZoom();
+
+    protected:
+        virtual void wheelEvent(QWheelEvent *event);
+
+        virtual void mousePressEvent(QMouseEvent *event);
+
+        virtual void mouseReleaseEvent(QMouseEvent *event);
+
+    private:
+        void zoom(int scale);
+
+        void updateTransform();
+
+    private:
+        int _zoom;
+};
+
+#endif // INTERACTIVEGRAPHICSVIEW_H

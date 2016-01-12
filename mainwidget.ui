@@ -13,7 +13,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
     <item>
-     <widget class="FiltersListWidget" name="treeWidget">
+     <widget class="NodesListWidget" name="treeWidget">
       <attribute name="headerVisible">
        <bool>false</bool>
       </attribute>
@@ -48,9 +48,9 @@
    <header>composerwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>FiltersListWidget</class>
+   <class>NodesListWidget</class>
    <extends>QTreeWidget</extends>
-   <header>filterslistwidget.h</header>
+   <header>nodeslistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -15,26 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagedockviewer.h"
+#ifndef NODESLISTWIDGET_H
+#define NODESLISTWIDGET_H
 
-#include <QApplication>
+#include <QTreeWidget>
 
-#include "nodes/abstractnode.h"
-#include "nodesviews/imagedockwidget.h"
-
-
-ImageDockViewer::ImageDockViewer(AbstractNode *node, QGraphicsItem *parent) :
-    AbstractNodeView(node, parent),
-    _dockWidget(new ImageDockWidget(QApplication::activeWindow()))
+class NodesListWidget : public QTreeWidget
 {
-    _dockWidget->show();
+    Q_OBJECT
 
-    connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
-                  SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
-}
+    public:
+        explicit NodesListWidget(QWidget *parent = NULL);
 
-void ImageDockViewer::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
-{
-    Q_UNUSED(outputs); // Viewer has no ouput, it only displays the input image
-    _dockWidget->setImage(inputs[0]);
-}
+    protected:
+        virtual QMimeData *mimeData(const QList<QTreeWidgetItem *> items) const;
+};
+
+#endif // NODESLISTWIDGET_H

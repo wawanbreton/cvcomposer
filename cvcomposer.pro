@@ -25,34 +25,32 @@ else {
 SOURCES += main.cpp\
         mainwidget.cpp \
     composerwidget.cpp \
-    filterslistwidget.cpp \
     nodestypesmanager.cpp \
     nodes/abstractnode.cpp \
     nodes/blurnode.cpp \
     composerscene.cpp \
-    nodesviews/abstractnodeview.cpp \
     nodes/imagefilenode.cpp \
-    nodesviews/imagepreview.cpp \
     nodesviews/plugitem.cpp \
     nodesviews/connectionitem.cpp \
     composermodel.cpp \
     composerexecutor.cpp \
     composerscheduler.cpp \
     nodes/gaussianblurnode.cpp \
-    nodesviews/imagedockviewer.cpp \
     nodes/imageviewernode.cpp \
-    nodesviews/imagedockwidget.cpp
+    interactivegraphicsview.cpp \
+    nodesviews/genericnodeitem.cpp \
+    nodesviews/imagepreviewitem.cpp \
+    nodesviews/imagevieweritem.cpp \
+    nodesviews/imageviewerwidget.cpp \
+    nodeslistwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
-    filterslistwidget.h \
     nodestypesmanager.h \
     nodes/abstractnode.h \
     nodes/blurnode.h \
     composerscene.h \
-    nodesviews/abstractnodeview.h \
     nodes/imagefilenode.h \
-    nodesviews/imagepreview.h \
     nodesviews/plugitem.h \
     nodesviews/connectionitem.h \
     composermodel.h \
@@ -61,9 +59,13 @@ HEADERS  += mainwidget.h \
     composerscheduler.h \
     connection.h \
     nodes/gaussianblurnode.h \
-    nodesviews/imagedockviewer.h \
     nodes/imageviewernode.h \
-    nodesviews/imagedockwidget.h
+    interactivegraphicsview.h \
+    nodesviews/genericnodeitem.h \
+    nodesviews/imagepreviewitem.h \
+    nodesviews/imagevieweritem.h \
+    nodesviews/imageviewerwidget.h \
+    nodeslistwidget.h
 
 FORMS    += \
     mainwidget.ui \

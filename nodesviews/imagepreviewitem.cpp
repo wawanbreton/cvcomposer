@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagepreview.h"
+#include "imagepreviewitem.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -24,24 +24,24 @@
 #include "nodesviews/plugitem.h"
 
 
-ImagePreview::ImagePreview(AbstractNode *node, QGraphicsItem *parent) :
-    AbstractNodeView(node, parent),
+ImagePreviewItem::ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent) :
+    GenericNodeItem(node, parent),
     _mat()
 {
     connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
                   SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
 }
 
-QRectF ImagePreview::boundingRect() const
+QRectF ImagePreviewItem::boundingRect() const
 {
-    QRectF parent = AbstractNodeView::boundingRect();
+    QRectF parent = GenericNodeItem::boundingRect();
     parent.setHeight(parent.width());
     return parent;
 }
 
-void ImagePreview::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ImagePreviewItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    AbstractNodeView::paint(painter, option, widget);
+    GenericNodeItem::paint(painter, option, widget);
 
     QRectF rect = boundingRect().adjusted(2 * PlugItem::radius, 25, -2 * PlugItem::radius, -5);
 
@@ -83,7 +83,7 @@ void ImagePreview::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     }
 }
 
-void ImagePreview::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+void ImagePreviewItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
     _mat = inputs[0];

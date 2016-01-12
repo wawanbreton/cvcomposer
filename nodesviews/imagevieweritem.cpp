@@ -15,22 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERWIDGET_H
-#define COMPOSERWIDGET_H
+#include "imagevieweritem.h"
 
-#include "interactivegraphicsview.h"
+#include <QApplication>
 
-#include <QGraphicsScene>
+#include "nodes/abstractnode.h"
+#include "nodesviews/imageviewerwidget.h"
 
-class ComposerWidget : public InteractiveGraphicsView
+
+ImageViewerItem::ImageViewerItem(AbstractNode *node, QGraphicsItem *parent) :
+    GenericNodeItem(node, parent),
+    _dockWidget(new ImageViewerWidget(QApplication::activeWindow()))
 {
-    Q_OBJECT
+    _dockWidget->show();
 
-    public:
-        explicit ComposerWidget(QWidget *parent = NULL);
+    connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
+                  SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
+}
 
-    private:
-        QGraphicsScene *_scene;
-};
-
-#endif // COMPOSERWIDGET_H
+void ImageViewerItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(outputs); // Viewer has no ouput, it only displays the input image
+    _dockWidget->setImage(inputs[0]);
+}

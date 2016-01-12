@@ -15,20 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef FILTERSLISTWIDGET_H
-#define FILTERSLISTWIDGET_H
+#ifndef IMAGEVIEWERWIDGET_H
+#define IMAGEVIEWERWIDGET_H
 
-#include <QTreeWidget>
+#include <QDockWidget>
 
-class FiltersListWidget : public QTreeWidget
+#include <opencv2/core/core.hpp>
+
+#include <QGraphicsPixmapItem>
+
+namespace Ui { class ImageDockWidget; }
+
+class ImageViewerWidget : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        explicit FiltersListWidget(QWidget *parent = NULL);
+        explicit ImageViewerWidget(QWidget *parent = NULL);
+        ~ImageViewerWidget();
 
-    protected:
-        virtual QMimeData *mimeData(const QList<QTreeWidgetItem *> items) const;
+        void setImage(const cv::Mat &image);
+
+    private:
+        Ui::ImageDockWidget *_ui;
+        QGraphicsPixmapItem *_pixmapItem;
 };
 
-#endif // FILTERSLISTWIDGET_H
+#endif // IMAGEVIEWERWIDGET_H

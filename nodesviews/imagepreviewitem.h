@@ -15,27 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEDOCKWIDGET_H
-#define IMAGEDOCKWIDGET_H
+#ifndef IMAGEPREVIEWITEM_H
+#define IMAGEPREVIEWITEM_H
 
-#include <QDockWidget>
+#include "nodesviews/genericnodeitem.h"
 
 #include <opencv2/core/core.hpp>
 
-namespace Ui { class ImageDockWidget; }
-
-class ImageDockWidget : public QDockWidget
+class ImagePreviewItem : public GenericNodeItem
 {
     Q_OBJECT
 
     public:
-        explicit ImageDockWidget(QWidget *parent = NULL);
-        ~ImageDockWidget();
+        ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent = NULL);
 
-        void setImage(const cv::Mat &image);
+        virtual QRectF boundingRect() const;
+
+    protected:
+        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    private slots:
+        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
     private:
-        Ui::ImageDockWidget *_ui;
+        cv::Mat _mat;
 };
 
-#endif // IMAGEDOCKWIDGET_H
+#endif // IMAGEPREVIEWITEM_H

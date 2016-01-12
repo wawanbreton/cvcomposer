@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTNODEVIEW_H
-#define ABSTRACTNODEVIEW_H
+#ifndef GENERICNODEITEM_H
+#define GENERICNODEITEM_H
 
 #include <QObject>
 #include <QGraphicsItem>
@@ -26,13 +26,13 @@
 class AbstractNode;
 class PlugItem;
 
-class AbstractNodeView : public QObject, public QGraphicsItem
+class GenericNodeItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
 
     public:
-        AbstractNodeView(AbstractNode *node, QGraphicsItem *parent = NULL);
+        GenericNodeItem(AbstractNode *node, QGraphicsItem *parent = NULL);
 
         virtual int type() const;
 
@@ -45,7 +45,9 @@ class AbstractNodeView : public QObject, public QGraphicsItem
     protected:
         virtual QRectF boundingRect() const;
 
-        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+        virtual void paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget);
 
     private slots:
         void updatePlugs();
@@ -57,4 +59,4 @@ class AbstractNodeView : public QObject, public QGraphicsItem
         QList<PlugItem *> _outputPlugs;
 };
 
-#endif // ABSTRACTNODEVIEW_H
+#endif // GENERICNODEITEM_H
