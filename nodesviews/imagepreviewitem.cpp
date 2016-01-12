@@ -22,6 +22,7 @@
 
 #include "nodes/abstractnode.h"
 #include "nodesviews/plugitem.h"
+#include "cvutils.h"
 
 
 ImagePreviewItem::ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent) :
@@ -61,42 +62,7 @@ void ImagePreviewItem::onProcessDone(const QList<cv::Mat> &outputs, const QList<
 {
     Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
 
-    cv::Mat mat = inputs[0];
-
-    _image = QPixmap();
-
-    if(mat.total() != 0)
-    {
-        QImage image;
-
-        if(mat.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
-        {
-            // Set the color table (used to translate colour indexes to qRgb values)
-            QVector<QRgb> colorTable;
-            for(int i = 0 ; i < 256; i++)
-            {
-                colorTable.push_back(qRgb(i,i,i));
-            }
-
-            // Create QImage with same dimensions as input Mat
-            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
-            image.setColorTable(colorTable);
-        }
-        if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
-        {
-            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-            image = image.rgbSwapped();
-        }
-        else
-        {
-            qWarning() << "Mat could not be converted to QImage.";
-        }
-
-        if(not image.isNull())
-        {
-            _image = QPixmap::fromImage(image);
-        }
-    }
+    _image = QPixmap::fromImage(CvUtils::toQImage(inputs[0]));
 
     update();
 }

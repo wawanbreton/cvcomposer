@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     nodesviews/imagevieweritem.cpp \
     nodesviews/imageviewerwidget.cpp \
     nodeslistwidget.cpp \
-    connection.cpp
+    connection.cpp \
+    cvutils.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -67,7 +68,8 @@ HEADERS  += mainwidget.h \
     nodesviews/imagevieweritem.h \
     nodesviews/imageviewerwidget.h \
     nodeslistwidget.h \
-    plug.h
+    plug.h \
+    cvutils.h
 
 FORMS    += \
     mainwidget.ui \

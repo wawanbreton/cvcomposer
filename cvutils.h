@@ -15,35 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imageviewerwidget.h"
-#include "ui_imagedockwidget.h"
+#ifndef CVUTILS_H
+#define CVUTILS_H
 
-#include <QDebug>
+#include <QImage>
+#include <opencv2/core/core.hpp>
 
-#include "cvutils.h"
-
-
-ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
-    QDockWidget(parent),
-    _ui(new Ui::ImageDockWidget)
+namespace CvUtils
 {
-    _ui->setupUi(this);
-
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    _ui->graphicsView->setScene(scene);
-
-    _pixmapItem = new QGraphicsPixmapItem();
-    scene->addItem(_pixmapItem);
+    QImage toQImage(const cv::Mat &mat);
 }
 
-ImageViewerWidget::~ImageViewerWidget()
-{
-    delete _ui;
-}
-
-void ImageViewerWidget::setImage(const cv::Mat &image)
-{
-    QImage qImage = CvUtils::toQImage(image);
-    _pixmapItem->setPixmap(QPixmap::fromImage(qImage));
-    _ui->graphicsView->setSceneRect(0, 0, qImage.width(), qImage.height());
-}
+#endif // CVUTILS_H
