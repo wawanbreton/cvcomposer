@@ -11,8 +11,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = cvcomposer
 TEMPLATE = app
 
-INCLUDEPATH += /usr/include/opencv2/
-LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
+win32 {
+    INCLUDEPATH += "C:\Program Files\opencv2.4.6\build\include"
+    LIBS += -L"C:\Program Files\opencv2.4.6\build-mingw\lib"
+    LIBS += -lopencv_core249 -lopencv_imgproc249 -lopencv_highgui249
+}
+else {
+    INCLUDEPATH += /usr/include/opencv2/
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
+}
 
 
 SOURCES += main.cpp\
