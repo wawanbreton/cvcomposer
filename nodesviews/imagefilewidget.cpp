@@ -15,25 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEFILENODE_H
-#define IMAGEFILENODE_H
+#include "imagefilewidget.h"
+#include "ui_imagefilewidget.h"
 
-#include "nodes/abstractnode.h"
 
-class ImageFileNode : public AbstractNode
+ImageFileWidget::ImageFileWidget(QWidget *parent) :
+    QWidget(parent),
+    _ui(new Ui::ImageFileWidget)
 {
-    Q_OBJECT
+    _ui->setupUi(this);
 
-    public:
-        explicit ImageFileNode(QObject *parent = NULL);
+    connect(_ui->lineEdit, SIGNAL(editingFinished()), SLOT(onEditingFinished()));
+}
 
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
+ImageFileWidget::~ImageFileWidget()
+{
+    delete _ui;
+}
 
-    public slots:
-        void setImagePath(const QString &imagePath);
+void ImageFileWidget::onEditingFinished()
+{
+    emit imagePathChanged(_ui->lineEdit->text());
+}
 
-    private:
-        QString _imagePath;
-};
+void ImageFileWidget::onButtonPressed()
+{
 
-#endif // IMAGEFILENODE_H
+}

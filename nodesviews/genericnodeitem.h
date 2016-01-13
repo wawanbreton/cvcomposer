@@ -22,6 +22,7 @@
 #include <QGraphicsItem>
 
 #include <QGraphicsEllipseItem>
+#include <QWidget>
 
 class AbstractNode;
 class PlugItem;
@@ -49,12 +50,14 @@ class GenericNodeItem : public QObject, public QGraphicsItem
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget);
 
+        void setWidget(QWidget *widget);
+
     private slots:
         void updatePlugs();
 
     private:
         AbstractNode *_node;
-        QWidget *_nodeWidget;
+        QWidget *_widget;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
 };

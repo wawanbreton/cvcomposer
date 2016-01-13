@@ -55,7 +55,7 @@ class ComposerModel : public QObject
 
         void connectionRemoved(Connection *connectionId);
 
-    private:
+    private slots:
         void startExecution();
 
     private:

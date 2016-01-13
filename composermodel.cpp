@@ -37,6 +37,7 @@ void ComposerModel::addNode(AbstractNode *node)
 {
     _nodes << node;
     node->setParent(this);
+    connect(node, SIGNAL(changed()), SLOT(startExecution()));
 }
 
 AbstractNode *ComposerModel::findInputPlug(Plug *plug) const

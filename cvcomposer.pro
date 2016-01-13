@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     nodesviews/imageviewerwidget.cpp \
     nodeslistwidget.cpp \
     connection.cpp \
-    cvutils.cpp
+    cvutils.cpp \
+    nodesviews/imagefilewidget.cpp \
+    nodesviews/imagefileitem.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -69,8 +71,11 @@ HEADERS  += mainwidget.h \
     nodesviews/imageviewerwidget.h \
     nodeslistwidget.h \
     plug.h \
-    cvutils.h
+    cvutils.h \
+    nodesviews/imagefilewidget.h \
+    nodesviews/imagefileitem.h
 
 FORMS    += \
     mainwidget.ui \
-    nodesviews/imagedockwidget.ui
+    nodesviews/imagedockwidget.ui \
+    nodesviews/imagefilewidget.ui

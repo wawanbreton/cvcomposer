@@ -21,13 +21,23 @@
 
 
 ImageFileNode::ImageFileNode(QObject *parent) :
-    AbstractNode(0, 1, tr("Image file"), parent)
+    AbstractNode(0, 1, tr("Image file"), parent),
+    _imagePath()
 {
+}
+
+void ImageFileNode::setImagePath(const QString &imagePath)
+{
+    if(imagePath != _imagePath)
+    {
+        _imagePath = imagePath;
+        emit changed();
+    }
 }
 
 QList<cv::Mat> ImageFileNode::processImpl(const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(inputs);
 
-    return QList<cv::Mat>() << cv::imread("4.jpg", CV_LOAD_IMAGE_COLOR);
+    return QList<cv::Mat>() << cv::imread(_imagePath.toStdString(), CV_LOAD_IMAGE_COLOR);
 }

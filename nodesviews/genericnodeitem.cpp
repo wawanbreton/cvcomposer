@@ -17,6 +17,7 @@
 
 #include "genericnodeitem.h"
 
+#include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QTimer>
 
@@ -28,6 +29,7 @@
 GenericNodeItem::GenericNodeItem(AbstractNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
+    _widget(NULL),
     _inputPlugs(),
     _outputPlugs()
 {
@@ -66,7 +68,17 @@ const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 
 QRectF GenericNodeItem::boundingRect() const
 {
-    return QRectF(0, 0, 100, 30);
+    if(_widget)
+    {
+        return QRectF(0,
+                      0,
+                      _widget->sizeHint().width() + 4 * PlugItem::radius,
+                      30 + _widget->sizeHint().height() + 2 * PlugItem::radius);
+    }
+    else
+    {
+        return QRectF(0, 0, 100, 30);
+    }
 }
 
 void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -81,6 +93,19 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->drawText(boundingRect().adjusted(0, 5, 0, 0),
                       Qt::AlignHCenter | Qt::AlignTop,
                       _node->getUserReadableName());
+}
+
+void GenericNodeItem::setWidget(QWidget *widget)
+{
+    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
+    proxy->setWidget(widget);
+    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+    _widget = widget;
+    _widget->resize(_widget->sizeHint());
+    _widget->setAutoFillBackground(false);
+    _widget->setAttribute(Qt::WA_NoBackground, true);
+
+    prepareGeometryChange();
 }
 
 void GenericNodeItem::updatePlugs()

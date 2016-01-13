@@ -21,15 +21,18 @@
 #include <QMimeData>
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
+#include <QGraphicsProxyWidget>
 
 #include "composermodel.h"
 #include "connection.h"
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
 #include "nodes/imageviewernode.h"
+#include "nodes/imagefilenode.h"
 #include "nodesviews/genericnodeitem.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
+#include "nodesviews/imagefileitem.h"
 #include "nodesviews/imagepreviewitem.h"
 #include "nodesviews/imagevieweritem.h"
 #include "nodesviews/plugitem.h"
@@ -80,8 +83,7 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
             _model->addNode(node);
             GenericNodeItem *nodeView;
 
-            ImageViewerNode *viewer = qobject_cast<ImageViewerNode *>(node);
-            if(viewer)
+            if(ImageViewerNode *viewer = qobject_cast<ImageViewerNode *>(node))
             {
                 if(viewer->getPreview())
                 {
@@ -91,6 +93,10 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
                 {
                     nodeView = new ImageViewerItem(node);
                 }
+            }
+            else if(ImageFileNode *imageFileNode = qobject_cast<ImageFileNode *>(node))
+            {
+                nodeView = new ImageFileItem(imageFileNode);
             }
             else
             {
@@ -111,7 +117,12 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
-            if(item->type() == CustomItems::Plug)
+            if(item->type() == QGraphicsProxyWidget::Type)
+            {
+                // Let the parent do its job fully
+                return QGraphicsScene::mousePressEvent(event);
+            }
+            else if(item->type() == CustomItems::Plug)
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
                 bool isInput = _model->findInputPlug(plug->getPlug()) != NULL;
@@ -267,7 +278,12 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
-            if(item->type() == CustomItems::Plug)
+            if(item->type() == QGraphicsProxyWidget::Type)
+            {
+                // Let the parent do its job fully
+                return QGraphicsScene::mouseMoveEvent(event);
+            }
+            else if(item->type() == CustomItems::Plug)
             {
                 cursor = Qt::PointingHandCursor;
             }
@@ -303,6 +319,11 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         _editedNode.item = NULL;
         event->widget()->setCursor(Qt::OpenHandCursor);
+    }
+    else
+    {
+        // Let the parent do its job fully
+        return QGraphicsScene::mouseReleaseEvent(event);
     }
 }
 
