@@ -18,6 +18,7 @@
 #include "imagefilewidget.h"
 #include "ui_imagefilewidget.h"
 
+#include <QApplication>
 #include <QFileDialog>
 
 
@@ -76,7 +77,7 @@ void ImageFileWidget::onButtonPressed()
         filters << formats[i].first + " (" + extensions.join(" ") + ")";
     }
 
-    QString fileName = QFileDialog::getOpenFileName(NULL,
+    QString fileName = QFileDialog::getOpenFileName(QApplication::activeWindow(),
                                                     "Open image file",
                                                     _ui->lineEdit->text(),
                                                     filters.join(";;"));
