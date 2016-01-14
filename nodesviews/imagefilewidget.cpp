@@ -18,6 +18,8 @@
 #include "imagefilewidget.h"
 #include "ui_imagefilewidget.h"
 
+#include <QFileDialog>
+
 
 ImageFileWidget::ImageFileWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +28,7 @@ ImageFileWidget::ImageFileWidget(QWidget *parent) :
     _ui->setupUi(this);
 
     connect(_ui->lineEdit, SIGNAL(editingFinished()), SLOT(onEditingFinished()));
+    connect(_ui->buttonBrowse, SIGNAL(clicked(bool)), SLOT(onButtonPressed()));
 }
 
 ImageFileWidget::~ImageFileWidget()
@@ -40,5 +43,46 @@ void ImageFileWidget::onEditingFinished()
 
 void ImageFileWidget::onButtonPressed()
 {
+    QList<QPair<QString, QStringList> > formats;
+    formats << qMakePair(QString("JPEG"), QStringList() << "jpeg" << "jpg" << "jpe");
+    formats << qMakePair(QString("Portable network graphics"), QStringList() << "png");
+    formats << qMakePair(QString("TIFF"), QStringList() << "tiff" << "tif");
+    formats << qMakePair(QString("JPEG 2000"), QStringList() << "jp2");
+    formats << qMakePair(QString("Windows Bitmap"), QStringList() << "bmp");
+    formats << qMakePair(QString("OpenEXR"), QStringList() << "exr");
+    formats << qMakePair(QString("Sun raster"), QStringList() << "sr" << "ras");
+    formats << qMakePair(QString("Portable image formats"), QStringList() << "pbm" << "pgm" << "ppm");
 
+    QStringList allImagesFilter;
+    for(int i = 0 ; i < formats.count() ; i++)
+    {
+        foreach(const QString &format, formats[i].second)
+        {
+            allImagesFilter << ("*." + format);
+        }
+    }
+
+    QStringList filters;
+    filters << "All supported images (" + allImagesFilter.join(" ") + ")";
+
+    for(int i = 0 ; i < formats.count() ; i++)
+    {
+        QStringList extensions;
+        foreach(const QString &format, formats[i].second)
+        {
+            extensions << ("*." + format);
+        }
+
+        filters << formats[i].first + " (" + extensions.join(" ") + ")";
+    }
+
+    QString fileName = QFileDialog::getOpenFileName(NULL,
+                                                    "Open image file",
+                                                    _ui->lineEdit->text(),
+                                                    filters.join(";;"));
+    if(not fileName.isEmpty())
+    {
+        _ui->lineEdit->setText(fileName);
+        onEditingFinished();
+    }
 }
