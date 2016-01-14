@@ -27,8 +27,10 @@
 #include "connection.h"
 #include "nodestypesmanager.h"
 #include "nodes/abstractnode.h"
+#include "nodes/blurnode.h"
 #include "nodes/imageviewernode.h"
 #include "nodes/imagefilenode.h"
+#include "nodesviews/bluritem.h"
 #include "nodesviews/genericnodeitem.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
@@ -97,6 +99,10 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
             else if(ImageFileNode *imageFileNode = qobject_cast<ImageFileNode *>(node))
             {
                 nodeView = new ImageFileItem(imageFileNode);
+            }
+            else if(BlurNode *blurNode = qobject_cast<BlurNode *>(node))
+            {
+                nodeView = new BlurItem(blurNode);
             }
             else
             {

@@ -46,7 +46,9 @@ SOURCES += main.cpp\
     connection.cpp \
     cvutils.cpp \
     nodesviews/imagefilewidget.cpp \
-    nodesviews/imagefileitem.cpp
+    nodesviews/imagefileitem.cpp \
+    nodesviews/bluritem.cpp \
+    nodesviews/blurwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -73,9 +75,12 @@ HEADERS  += mainwidget.h \
     plug.h \
     cvutils.h \
     nodesviews/imagefilewidget.h \
-    nodesviews/imagefileitem.h
+    nodesviews/imagefileitem.h \
+    nodesviews/bluritem.h \
+    nodesviews/blurwidget.h
 
 FORMS    += \
     mainwidget.ui \
     nodesviews/imagedockwidget.ui \
-    nodesviews/imagefilewidget.ui
+    nodesviews/imagefilewidget.ui \
+    nodesviews/blurwidget.ui

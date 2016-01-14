@@ -21,13 +21,44 @@
 
 
 BlurNode::BlurNode(QObject *parent) :
-    AbstractNode(1, 1, tr("Blur"), parent)
+    AbstractNode(1, 1, tr("Blur"), parent),
+    _size(1, 1),
+    _anchor(-1, -1)
 {
 }
 
 QList<cv::Mat> BlurNode::processImpl(const QList<cv::Mat> &inputs)
 {
+    #warning catch exception with invalid values !
     cv::Mat blurred = inputs[0].clone();
-    cv::blur(inputs[0], blurred, cv::Size(9, 9), cv::Point(-1,-1));
+    cv::blur(inputs[0], blurred, _size, _anchor);
     return QList<cv::Mat>() << blurred;
+}
+
+const cv::Size BlurNode::getSize() const
+{
+    return _size;
+}
+
+void BlurNode::setSize(const cv::Size &size)
+{
+    if(size != _size)
+    {
+        _size = size;
+        emit changed();
+    }
+}
+
+const cv::Point &BlurNode::getAnchor() const
+{
+    return _anchor;
+}
+
+void BlurNode::setAnchor(const cv::Point &anchor)
+{
+    if(anchor != _anchor)
+    {
+        _anchor = anchor;
+        emit changed();
+    }
 }

@@ -15,32 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURNODE_H
-#define BLURNODE_H
+#include "bluritem.h"
 
-#include "nodes/abstractnode.h"
+#include "blurwidget.h"
+#include "nodes/blurnode.h"
 
-class BlurNode : public AbstractNode
+
+BlurItem::BlurItem(BlurNode *node, QGraphicsItem *parent) :
+    GenericNodeItem(node, parent)
 {
-    Q_OBJECT
-
-    public:
-        explicit BlurNode(QObject *parent = NULL);
-
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
-
-        const cv::Size getSize() const;
-
-        const cv::Point &getAnchor() const;
-
-    public slots:
-        void setSize(const cv::Size &size);
-
-        void setAnchor(const cv::Point &anchor);
-
-    private:
-        cv::Size _size;
-        cv::Point _anchor;
-};
-
-#endif // BLURNODE_H
+    BlurWidget *widget = new BlurWidget(node->getSize(), node->getAnchor());
+    setWidget(widget);
+    connect(widget, SIGNAL(sizeChanged(cv::Size)),    node, SLOT(setSize(cv::Size)));
+    connect(widget, SIGNAL(anchorChanged(cv::Point)), node, SLOT(setAnchor(cv::Point)));
+}
