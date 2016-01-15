@@ -22,7 +22,7 @@
 
 #include <opencv2/core/core.hpp>
 
-class ImageViewerWidget;
+class ImageViewerDockWidget;
 
 class ImageViewerItem : public GenericNodeItem
 {
@@ -37,7 +37,7 @@ class ImageViewerItem : public GenericNodeItem
         void onProcessUnavailable();
 
     private:
-        ImageViewerWidget *_dockWidget;
+        ImageViewerDockWidget *_dockWidget;
 };
 
 #endif // IMAGEVIEWERITEM_H

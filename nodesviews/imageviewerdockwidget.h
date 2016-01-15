@@ -15,21 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imageviewerwidget.h"
-#include "ui_imageviewerwidget.h"
+#ifndef IMAGEVIEWERDOCKWIDGET_H
+#define IMAGEVIEWERDOCKWIDGET_H
 
+#include <QDockWidget>
 
-ImageViewerWidget::ImageViewerWidget(const QString &name, QWidget *parent) :
-    QWidget(parent),
-    _ui(new Ui::ImageViewerWidget)
+#include <opencv2/core/core.hpp>
+
+#include <QGraphicsPixmapItem>
+
+namespace Ui { class ImageDockWidget; }
+
+class ImageViewerDockWidget : public QDockWidget
 {
-    _ui->setupUi(this);
+    Q_OBJECT
 
-    _ui->lineEdit->setText(name);
-    connect(_ui->lineEdit, SIGNAL(textChanged(QString)), SIGNAL(nameChanged(QString)));
-}
+    public:
+        explicit ImageViewerDockWidget(QWidget *parent = NULL);
+        ~ImageViewerDockWidget();
 
-ImageViewerWidget::~ImageViewerWidget()
-{
-    delete _ui;
-}
+        void setImage(const cv::Mat &image);
+
+    private:
+        Ui::ImageDockWidget *_ui;
+        QGraphicsPixmapItem *_pixmapItem;
+};
+
+#endif // IMAGEVIEWERDOCKWIDGET_H

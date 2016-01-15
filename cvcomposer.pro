@@ -41,14 +41,15 @@ SOURCES += main.cpp\
     nodesviews/genericnodeitem.cpp \
     nodesviews/imagepreviewitem.cpp \
     nodesviews/imagevieweritem.cpp \
-    nodesviews/imageviewerwidget.cpp \
     nodeslistwidget.cpp \
     connection.cpp \
     cvutils.cpp \
     nodesviews/imagefilewidget.cpp \
     nodesviews/imagefileitem.cpp \
     nodesviews/bluritem.cpp \
-    nodesviews/blurwidget.cpp
+    nodesviews/blurwidget.cpp \
+    nodesviews/imageviewerdockwidget.cpp \
+    nodesviews/imageviewerwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -70,17 +71,19 @@ HEADERS  += mainwidget.h \
     nodesviews/genericnodeitem.h \
     nodesviews/imagepreviewitem.h \
     nodesviews/imagevieweritem.h \
-    nodesviews/imageviewerwidget.h \
     nodeslistwidget.h \
     plug.h \
     cvutils.h \
     nodesviews/imagefilewidget.h \
     nodesviews/imagefileitem.h \
     nodesviews/bluritem.h \
-    nodesviews/blurwidget.h
+    nodesviews/blurwidget.h \
+    nodesviews/imageviewerdockwidget.h \
+    nodesviews/imageviewerwidget.h
 
 FORMS    += \
     mainwidget.ui \
     nodesviews/imagedockwidget.ui \
     nodesviews/imagefilewidget.ui \
-    nodesviews/blurwidget.ui
+    nodesviews/blurwidget.ui \
+    nodesviews/imageviewerwidget.ui

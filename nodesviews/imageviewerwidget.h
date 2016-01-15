@@ -18,27 +18,23 @@
 #ifndef IMAGEVIEWERWIDGET_H
 #define IMAGEVIEWERWIDGET_H
 
-#include <QDockWidget>
+#include <QWidget>
 
-#include <opencv2/core/core.hpp>
+namespace Ui { class ImageViewerWidget; }
 
-#include <QGraphicsPixmapItem>
-
-namespace Ui { class ImageDockWidget; }
-
-class ImageViewerWidget : public QDockWidget
+class ImageViewerWidget : public QWidget
 {
     Q_OBJECT
 
     public:
-        explicit ImageViewerWidget(QWidget *parent = NULL);
+        explicit ImageViewerWidget(const QString &name, QWidget *parent = NULL);
         ~ImageViewerWidget();
 
-        void setImage(const cv::Mat &image);
+    signals:
+        void nameChanged(const QString &name);
 
     private:
-        Ui::ImageDockWidget *_ui;
-        QGraphicsPixmapItem *_pixmapItem;
+        Ui::ImageViewerWidget *_ui;
 };
 
 #endif // IMAGEVIEWERWIDGET_H

@@ -20,14 +20,22 @@
 #include <QApplication>
 
 #include "nodes/abstractnode.h"
+#include "nodesviews/imageviewerdockwidget.h"
 #include "nodesviews/imageviewerwidget.h"
 
 
 ImageViewerItem::ImageViewerItem(AbstractNode *node, QGraphicsItem *parent) :
     GenericNodeItem(node, parent),
-    _dockWidget(new ImageViewerWidget(QApplication::activeWindow()))
+    _dockWidget(new ImageViewerDockWidget(QApplication::activeWindow()))
 {
+    QString title = "Image viewer";
+
     _dockWidget->show();
+    _dockWidget->setWindowTitle(title);
+
+    ImageViewerWidget *widget = new ImageViewerWidget(title);
+    setWidget(widget);
+    connect(widget, SIGNAL(nameChanged(QString)), _dockWidget, SLOT(setWindowTitle(QString)));
 
     connect(node, SIGNAL(processDone(QList<cv::Mat>, QList<cv::Mat>)),
                   SLOT(onProcessDone(QList<cv::Mat>, QList<cv::Mat>)));
