@@ -48,5 +48,5 @@ void BlurWidget::onSizeChanged()
 
 void BlurWidget::onAnchorChanged()
 {
-    emit sizeChanged(cv::Point(_ui->spinBoxAnchorX->value(), _ui->spinBoxAnchorY->value()));
+    emit anchorChanged(cv::Point(_ui->spinBoxAnchorX->value(), _ui->spinBoxAnchorY->value()));
 }
