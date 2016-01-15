@@ -17,6 +17,8 @@
 
 #include "blurnode.h"
 
+#include <QDebug>
+
 #include <opencv2/imgproc/imgproc.hpp>
 
 
@@ -29,7 +31,6 @@ BlurNode::BlurNode(QObject *parent) :
 
 QList<cv::Mat> BlurNode::processImpl(const QList<cv::Mat> &inputs)
 {
-    #warning catch exception with invalid values !
     cv::Mat blurred = inputs[0].clone();
     cv::blur(inputs[0], blurred, _size, _anchor);
     return QList<cv::Mat>() << blurred;

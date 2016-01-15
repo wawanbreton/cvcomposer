@@ -28,8 +28,8 @@ ComposerScheduler::ComposerScheduler(QObject *parent) :
     QObject(parent),
     _executor(new ComposerExecutor(this))
 {
-    connect(_executor, SIGNAL(nodeProcessed(QList<cv::Mat>)),
-                       SLOT(onNodeProcessed(QList<cv::Mat>)));
+    connect(_executor, SIGNAL(nodeProcessed(bool, QList<cv::Mat>)),
+                       SLOT(onNodeProcessed(bool, QList<cv::Mat>)));
 }
 
 void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
@@ -124,10 +124,43 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
     }
 }
 
-void ComposerScheduler::onNodeProcessed(const QList<cv::Mat> &outputs)
+void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outputs)
 {
     QPair<AbstractNode *, QList<AbstractNode *> > processedNode = _executionList.dequeue();
-    _processedNodes[processedNode.first] = outputs;
+    if(success)
+    {
+        _processedNodes[processedNode.first] = outputs;
+    }
+    else
+    {
+        // One node execution has failed, now find all the nodes dependant of it
+        bool nodeRemoved;
+        QList<AbstractNode *> removedNodes;
+        removedNodes << processedNode.first;
+        do
+        {
+            nodeRemoved = false;
+            QMutableListIterator<QPair<AbstractNode *, QList<AbstractNode *> > > iterator(_executionList);
+            while(iterator.hasNext())
+            {
+                iterator.next();
+
+                foreach(AbstractNode *removedNode, removedNodes)
+                {
+                    if(iterator.value().second.contains(removedNode))
+                    {
+                        // This node has a removed dependancy, tag is as unavailable and add it to
+                        // the list so that the nodes dependant of it become unavailable too
+                        iterator.value().first->signalProcessUnavailable();
+                        nodeRemoved = true;
+                        removedNodes << iterator.value().first;
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+        } while(nodeRemoved);
+    }
 
     if(not _executionList.isEmpty())
     {

@@ -40,7 +40,7 @@ class ComposerScheduler : public QObject
                      const QList<Connection *> &connections);
 
     private slots:
-        void onNodeProcessed(const QList<cv::Mat> &outputs);
+        void onNodeProcessed(bool success, const QList<cv::Mat> &outputs);
 
     private:
         ComposerExecutor *_executor;

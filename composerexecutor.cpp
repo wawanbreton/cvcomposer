@@ -35,6 +35,7 @@ void ComposerExecutor::processNode(AbstractNode *node, const QList<cv::Mat> &inp
     {
         _job.node = node;
         _job.inputs = inputs;
+        _job.success = false;
 
         start();
     }
@@ -47,11 +48,26 @@ void ComposerExecutor::processNode(AbstractNode *node, const QList<cv::Mat> &inp
 
 void ComposerExecutor::run()
 {
-    _job.outputs = _job.node->process(_job.inputs);
+    try
+    {
+        _job.outputs = _job.node->process(_job.inputs);
+        _job.success = true;
+    }
+    catch(const std::exception &exception)
+    {
+        qDebug() << "Exception when executing node" << _job.node->getUserReadableName() << " : " << exception.what();
+    }
 }
 
 void ComposerExecutor::onFinished()
 {
-    _job.node->signalProcessDone(_job.outputs, _job.inputs);
-    emit nodeProcessed(_job.outputs);
+    if(_job.success)
+    {
+        _job.node->signalProcessDone(_job.outputs, _job.inputs);
+    }
+    else
+    {
+        _job.node->signalProcessUnavailable();
+    }
+    emit nodeProcessed(_job.success, _job.outputs);
 }

@@ -37,7 +37,7 @@ class ComposerExecutor : public QThread
         void processNode(AbstractNode *node, const QList<cv::Mat> &inputs);
 
     signals:
-        void nodeProcessed(const QList<cv::Mat> &outputs);
+        void nodeProcessed(bool success, const QList<cv::Mat> &outputs);
 
     protected:
         virtual void run();
@@ -51,6 +51,7 @@ class ComposerExecutor : public QThread
             AbstractNode *node;
             QList<cv::Mat> inputs;
             QList<cv::Mat> outputs;
+            bool success;
         } Job;
 
     private:
