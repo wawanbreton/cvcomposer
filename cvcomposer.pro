@@ -49,7 +49,10 @@ SOURCES += main.cpp\
     nodesviews/bluritem.cpp \
     nodesviews/blurwidget.cpp \
     nodesviews/imageviewerdockwidget.cpp \
-    nodesviews/imageviewerwidget.cpp
+    nodesviews/imageviewerwidget.cpp \
+    nodes/genericnode.cpp \
+    processors/abstractprocessor.cpp \
+    nodesviews/genericitem.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -79,7 +82,10 @@ HEADERS  += mainwidget.h \
     nodesviews/bluritem.h \
     nodesviews/blurwidget.h \
     nodesviews/imageviewerdockwidget.h \
-    nodesviews/imageviewerwidget.h
+    nodesviews/imageviewerwidget.h \
+    nodes/genericnode.h \
+    processors/abstractprocessor.h \
+    nodesviews/genericitem.h
 
 FORMS    += \
     mainwidget.ui \
