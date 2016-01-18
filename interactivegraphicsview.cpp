@@ -20,6 +20,7 @@
 #include <QDebug>
 #include <QtMath>
 #include <QWheelEvent>
+#include <QGraphicsProxyWidget>
 
 
 InteractiveGraphicsView::InteractiveGraphicsView(QWidget *parent) :
@@ -46,7 +47,15 @@ void InteractiveGraphicsView::resetZoom()
 
 void InteractiveGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    zoom(_zoom + event->delta() / 120);
+    QGraphicsItem *item = itemAt(event->pos());
+    if(item && item->type() == QGraphicsProxyWidget::Type)
+    {
+        QGraphicsView::wheelEvent(event);
+    }
+    else
+    {
+        zoom(_zoom + event->delta() / 120);
+    }
 }
 
 void InteractiveGraphicsView::mousePressEvent(QMouseEvent *event)
