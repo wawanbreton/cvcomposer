@@ -26,8 +26,9 @@
 #include <QQueue>
 
 class Connection;
-class AbstractNode;
+class GenericNode;
 class ComposerExecutor;
+class AbstractProcessor;
 
 class ComposerScheduler : public QObject
 {
@@ -36,7 +37,7 @@ class ComposerScheduler : public QObject
     public:
         explicit ComposerScheduler(QObject *parent = NULL);
 
-        void execute(const QList<AbstractNode *> &nodes,
+        void execute(const QList<GenericNode *> &nodes,
                      const QList<Connection *> &connections);
 
     private slots:
@@ -44,8 +45,8 @@ class ComposerScheduler : public QObject
 
     private:
         ComposerExecutor *_executor;
-        QQueue<QPair<AbstractNode *, QList<AbstractNode *> > > _executionList;
-        QMap<AbstractNode *, QList<cv::Mat> > _processedNodes;
+        QQueue<QPair<GenericNode *, QList<GenericNode *> > > _executionList;
+        QMap<GenericNode *, QList<cv::Mat> > _processedNodes;
 };
 
 #endif // COMPOSERSCHEDULER_H

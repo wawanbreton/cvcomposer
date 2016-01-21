@@ -18,19 +18,31 @@
 #ifndef ABSTRACTPROCESSOR_H
 #define ABSTRACTPROCESSOR_H
 
-#include <QList>
-
 #include <opencv2/core/core.hpp>
+
+#include "properties.h"
 
 class AbstractProcessor
 {
     public:
         AbstractProcessor();
+        virtual ~AbstractProcessor();
+
+        void setProperties(const Properties &properties);
+
+        virtual quint8 getNbInputs() const = 0;
+
+        virtual quint8 getNbOutputs() const = 0;
 
         QList<cv::Mat> process(const QList<cv::Mat> &inputs);
 
     protected:
         virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
+
+        QVariant getProperty(const QString &name) const;
+
+    private:
+        Properties _properties;
 };
 
 #endif // ABSTRACTPROCESSOR_H

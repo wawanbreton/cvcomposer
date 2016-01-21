@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = cvcomposer
 TEMPLATE = app
+QMAKE_CXXFLAGS = -std=c++11
 
 win32 {
     INCLUDEPATH += "C:\Program Files\opencv2.4.6\build\include"
@@ -26,41 +27,34 @@ SOURCES += main.cpp\
         mainwidget.cpp \
     composerwidget.cpp \
     nodestypesmanager.cpp \
-    nodes/abstractnode.cpp \
-    nodes/blurnode.cpp \
     composerscene.cpp \
-    nodes/imagefilenode.cpp \
     nodesviews/plugitem.cpp \
     nodesviews/connectionitem.cpp \
     composermodel.cpp \
     composerexecutor.cpp \
     composerscheduler.cpp \
-    nodes/gaussianblurnode.cpp \
-    nodes/imageviewernode.cpp \
     interactivegraphicsview.cpp \
     nodesviews/genericnodeitem.cpp \
-    nodesviews/imagepreviewitem.cpp \
-    nodesviews/imagevieweritem.cpp \
     nodeslistwidget.cpp \
     connection.cpp \
     cvutils.cpp \
-    nodesviews/imagefilewidget.cpp \
-    nodesviews/imagefileitem.cpp \
-    nodesviews/bluritem.cpp \
     nodesviews/blurwidget.cpp \
     nodesviews/imageviewerdockwidget.cpp \
-    nodesviews/imageviewerwidget.cpp \
     nodes/genericnode.cpp \
     processors/abstractprocessor.cpp \
-    nodesviews/genericitem.cpp
+    processors/blurprocessor.cpp \
+    processors/imagefromfileprocessor.cpp \
+    nodesviews/imagefromfilewidget.cpp \
+    nodesviews/abstractnodewidget.cpp \
+    nodesviews/imagepreviewerwidget.cpp \
+    processors/imagepreviewerprocessor.cpp \
+    nodesviews/dockableimageviewerwidget.cpp \
+    processors/dockableimageviewerprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
     nodestypesmanager.h \
-    nodes/abstractnode.h \
-    nodes/blurnode.h \
     composerscene.h \
-    nodes/imagefilenode.h \
     nodesviews/plugitem.h \
     nodesviews/connectionitem.h \
     composermodel.h \
@@ -68,28 +62,29 @@ HEADERS  += mainwidget.h \
     composerexecutor.h \
     composerscheduler.h \
     connection.h \
-    nodes/gaussianblurnode.h \
-    nodes/imageviewernode.h \
     interactivegraphicsview.h \
     nodesviews/genericnodeitem.h \
-    nodesviews/imagepreviewitem.h \
-    nodesviews/imagevieweritem.h \
     nodeslistwidget.h \
     plug.h \
     cvutils.h \
-    nodesviews/imagefilewidget.h \
-    nodesviews/imagefileitem.h \
-    nodesviews/bluritem.h \
     nodesviews/blurwidget.h \
     nodesviews/imageviewerdockwidget.h \
-    nodesviews/imageviewerwidget.h \
     nodes/genericnode.h \
     processors/abstractprocessor.h \
-    nodesviews/genericitem.h
+    processors/blurprocessor.h \
+    processors/imagefromfileprocessor.h \
+    nodesviews/imagefromfilewidget.h \
+    nodesviews/abstractnodewidget.h \
+    properties.h \
+    nodesviews/imagepreviewerwidget.h \
+    processors/imagepreviewerprocessor.h \
+    nodesviews/dockableimageviewerwidget.h \
+    processors/dockableimageviewerprocessor.h
 
 FORMS    += \
     mainwidget.ui \
     nodesviews/imagedockwidget.ui \
-    nodesviews/imagefilewidget.ui \
     nodesviews/blurwidget.ui \
-    nodesviews/imageviewerwidget.ui
+    nodesviews/imagefromfilewidget.ui \
+    nodesviews/imagepreviewerwidget.ui \
+    nodesviews/dockableimageviewerwidget.ui

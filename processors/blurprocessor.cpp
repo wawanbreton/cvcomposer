@@ -15,19 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEFILEITEM_H
-#define IMAGEFILEITEM_H
+#include "blurprocessor.h"
 
-#include "nodesviews/genericnodeitem.h"
+#include <opencv2/imgproc/imgproc.hpp>
 
-class ImageFileNode;
+#include <QDebug>
 
-class ImageFileItem : public GenericNodeItem
+#include "cvutils.h"
+
+
+BlurProcessor::BlurProcessor() :
+    AbstractProcessor()
 {
-    Q_OBJECT
 
-    public:
-        explicit ImageFileItem(ImageFileNode *node, QGraphicsItem *parent = NULL);
-};
+}
 
-#endif // IMAGEFILEITEM_H
+quint8 BlurProcessor::getNbInputs() const
+{
+    return 1;
+}
+
+quint8 BlurProcessor::getNbOutputs() const
+{
+    return 1;
+}
+
+QList<cv::Mat> BlurProcessor::processImpl(const QList<cv::Mat> &inputs)
+{
+    cv::Mat blurred = inputs[0].clone();
+    cv::blur(inputs[0],
+            blurred,
+            getProperty("size").value<cv::Size>(),
+            getProperty("anchor").value<cv::Point>());
+    return QList<cv::Mat>() << blurred;
+}
+

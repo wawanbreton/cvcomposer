@@ -21,6 +21,9 @@
 #include <QObject>
 
 #include "plug.h"
+#include "properties.h"
+
+#include <opencv2/core/core.hpp>
 
 class GenericNode : public QObject
 {
@@ -29,8 +32,6 @@ class GenericNode : public QObject
     public:
         explicit GenericNode(const QString &name,
                              const QString &userReadableName,
-                             quint8 nbInputs,
-                             quint8 nbOutputs,
                              QObject *parent = NULL);
 
         const QString &getName() const;
@@ -49,17 +50,30 @@ class GenericNode : public QObject
 
         bool hasOutput(Plug *output) const;
 
-    signals:
-        void propertyChanged(const QString &propertyName, const QVariant &value);
+        void signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
-    protected:
-        virtual bool event(QEvent *event);
+        void signalProcessUnavailable();
+
+        const Properties &getProperties() const;
+
+        void setProperties(const Properties &properties);
+
+    public slots:
+        void setProperty(const QString &name, const QVariant &value);
+
+    signals:
+        void propertyChanged(const QString &name, const QVariant &value);
+
+        void processDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+
+        void processUnavailable();
 
     private:
         const QString _name;
         const QString _userReadableName;
         QList<Plug *> _inputs;
         QList<Plug *> _outputs;
+        Properties _properties;
 };
 
 #endif // GENERICNODE_H

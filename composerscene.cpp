@@ -26,18 +26,12 @@
 #include "composermodel.h"
 #include "connection.h"
 #include "nodestypesmanager.h"
-#include "nodes/abstractnode.h"
-#include "nodes/blurnode.h"
-#include "nodes/imageviewernode.h"
-#include "nodes/imagefilenode.h"
-#include "nodesviews/bluritem.h"
+#include "nodes/genericnode.h"
 #include "nodesviews/genericnodeitem.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
-#include "nodesviews/imagefileitem.h"
-#include "nodesviews/imagepreviewitem.h"
-#include "nodesviews/imagevieweritem.h"
 #include "nodesviews/plugitem.h"
+#include "nodesviews/abstractnodewidget.h"
 
 
 ComposerScene::ComposerScene(QObject *parent) :
@@ -79,40 +73,33 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         event->acceptProposedAction();
 
         QString nodeType = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter"));
-        AbstractNode *node = NodesTypesManager::createNode(nodeType);
-        if(node)
+        QString nodeName = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposername"));
+
+        GenericNode *node = new GenericNode(nodeType, nodeName);
+        _model->addNode(node);
+
+        GenericNodeItem *item = new GenericNodeItem(node);
+        QMetaType widgetType(QMetaType::type((nodeType + "Widget").toUtf8()));
+        if(widgetType.isValid())
         {
-            _model->addNode(node);
-            GenericNodeItem *nodeView;
-
-            if(ImageViewerNode *viewer = qobject_cast<ImageViewerNode *>(node))
-            {
-                if(viewer->getPreview())
-                {
-                    nodeView = new ImagePreviewItem(node);
-                }
-                else
-                {
-                    nodeView = new ImageViewerItem(node);
-                }
-            }
-            else if(ImageFileNode *imageFileNode = qobject_cast<ImageFileNode *>(node))
-            {
-                nodeView = new ImageFileItem(imageFileNode);
-            }
-            else if(BlurNode *blurNode = qobject_cast<BlurNode *>(node))
-            {
-                nodeView = new BlurItem(blurNode);
-            }
-            else
-            {
-                nodeView = new GenericNodeItem(node);
-            }
-
-            nodeView->setPos(event->scenePos());
-            addItem(nodeView);
-            _nodes << nodeView;
+            AbstractNodeWidget *widget = static_cast<AbstractNodeWidget *>(widgetType.create());
+            item->setWidget(widget);
+            connect(widget, SIGNAL(propertyChanged(QString,QVariant)),
+                    node,   SLOT(setProperty(QString,QVariant)));
+            connect(node,   SIGNAL(processDone(QList<cv::Mat>,QList<cv::Mat>)),
+                    widget, SLOT(onProcessDone(QList<cv::Mat>,QList<cv::Mat>)));
+            connect(node,   SIGNAL(processUnavailable()),
+                    widget, SLOT(onProcessUnavailable()));
+            node->setProperties(widget->getProperties());
         }
+        else
+        {
+            qCritical() << "ComposerScene::dropEvent" << "Unable to find widget for" << nodeType;
+        }
+
+        item->setPos(event->scenePos());
+        addItem(item);
+        _nodes << item;
     }
 }
 

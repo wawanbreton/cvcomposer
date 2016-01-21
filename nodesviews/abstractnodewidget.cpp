@@ -15,17 +15,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "bluritem.h"
+#include "abstractnodewidget.h"
 
-#include "blurwidget.h"
-#include "nodes/blurnode.h"
-
-
-BlurItem::BlurItem(BlurNode *node, QGraphicsItem *parent) :
-    GenericNodeItem(node, parent)
+AbstractNodeWidget::AbstractNodeWidget(QWidget *parent) : QWidget(parent)
 {
-    BlurWidget *widget = new BlurWidget(node->getSize(), node->getAnchor());
-    setWidget(widget);
-    connect(widget, SIGNAL(sizeChanged(cv::Size)),    node, SLOT(setSize(cv::Size)));
-    connect(widget, SIGNAL(anchorChanged(cv::Point)), node, SLOT(setAnchor(cv::Point)));
+
 }
+
+Properties AbstractNodeWidget::getProperties() const
+{
+    Properties properties;
+    foreach(const QString &propertyName, getPropertiesNames())
+    {
+        properties.insert(propertyName, getProperty((propertyName)));
+    }
+
+    return properties;
+}
+
+void AbstractNodeWidget::onPropertyChanged(const QString &name)
+{
+    emit propertyChanged(name, getProperty(name));
+}
+
+void AbstractNodeWidget::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(outputs);
+    Q_UNUSED(inputs);
+}
+
+void AbstractNodeWidget::onProcessUnavailable()
+{
+}
+

@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefilewidget.h"
-#include "ui_imagefilewidget.h"
+#include "imagefromfilewidget.h"
+#include "ui_imagefromfilewidget.h"
 
 #include <QApplication>
 #include <QFileDialog>
 
 
-ImageFileWidget::ImageFileWidget(QWidget *parent) :
-    QWidget(parent),
-    _ui(new Ui::ImageFileWidget)
+ImageFromFileWidget::ImageFromFileWidget(QWidget *parent) :
+    AbstractNodeWidget(parent),
+    _ui(new Ui::ImageFromFileWidget)
 {
     _ui->setupUi(this);
 
@@ -32,17 +32,46 @@ ImageFileWidget::ImageFileWidget(QWidget *parent) :
     connect(_ui->buttonBrowse, SIGNAL(clicked(bool)), SLOT(onButtonPressed()));
 }
 
-ImageFileWidget::~ImageFileWidget()
+ImageFromFileWidget::ImageFromFileWidget(const ImageFromFileWidget &other) :
+    AbstractNodeWidget(other.parentWidget())
+{
+    qFatal("ImageFromFileWidget::ImageFromFileWidget");
+}
+
+ImageFromFileWidget::~ImageFromFileWidget()
 {
     delete _ui;
 }
 
-void ImageFileWidget::onEditingFinished()
+QVariant ImageFromFileWidget::getProperty(const QString &name) const
 {
-    emit imagePathChanged(_ui->lineEdit->text());
+    if(name == "path")
+    {
+        return _ui->lineEdit->text();
+    }
+
+    return QVariant();
 }
 
-void ImageFileWidget::onButtonPressed()
+void ImageFromFileWidget::setProperty(const QString &name, const QVariant &value)
+{
+    if(name == "path")
+    {
+        _ui->lineEdit->setText(value.toString());
+    }
+}
+
+QStringList ImageFromFileWidget::getPropertiesNames() const
+{
+    return QStringList() << "path";
+}
+
+void ImageFromFileWidget::onEditingFinished()
+{
+    onPropertyChanged("path");
+}
+
+void ImageFromFileWidget::onButtonPressed()
 {
     QList<QPair<QString, QStringList> > formats;
     formats << qMakePair(QString("JPEG"), QStringList() << "jpeg" << "jpg" << "jpe");

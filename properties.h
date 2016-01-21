@@ -15,19 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURITEM_H
-#define BLURITEM_H
+#ifndef PROPERTIES_H
+#define PROPERTIES_H
 
-#include "nodesviews/genericnodeitem.h"
+#include <QMap>
+#include <QVariant>
 
-class BlurNode;
+typedef QMap<QString, QVariant> Properties;
 
-class BlurItem : public GenericNodeItem
-{
-    Q_OBJECT
+#endif // PROPERTIES_H
 
-    public:
-        explicit BlurItem(BlurNode *node, QGraphicsItem *parent = NULL);
-};
-
-#endif // BLURITEM_H

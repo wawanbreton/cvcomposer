@@ -19,10 +19,14 @@
 
 #include <QDebug>
 
-#include "nodes/gaussianblurnode.h"
-#include "nodes/blurnode.h"
-#include "nodes/imagefilenode.h"
-#include "nodes/imageviewernode.h"
+#include "nodesviews/blurwidget.h"
+#include "nodesviews/dockableimageviewerwidget.h"
+#include "nodesviews/imagefromfilewidget.h"
+#include "nodesviews/imagepreviewerwidget.h"
+#include "processors/blurprocessor.h"
+#include "processors/imagefromfileprocessor.h"
+#include "processors/imagepreviewerprocessor.h"
+#include "processors/dockableimageviewerprocessor.h"
 
 
 NodesTypesManager *NodesTypesManager::_instance = NULL;
@@ -43,58 +47,39 @@ NodesTypesManager *NodesTypesManager::get()
 
 QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
 {
+    #warning Do this somewhere else
+    qRegisterMetaType<BlurProcessor>();
+    qRegisterMetaType<BlurWidget>();
+    qRegisterMetaType<ImageFromFileProcessor>();
+    qRegisterMetaType<ImageFromFileWidget>();
+    qRegisterMetaType<ImagePreviewerProcessor>();
+    qRegisterMetaType<ImagePreviewerWidget>();
+    qRegisterMetaType<DockableImageViewerProcessor>();
+    qRegisterMetaType<DockableImageViewerWidget>();
+
     QList<QTreeWidgetItem *> result;
 
     QTreeWidgetItem *inputs = new QTreeWidgetItem(QStringList() << tr("Inputs"));
     inputs->setFlags(inputs->flags() & ~Qt::ItemIsDragEnabled);
     QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << tr("Image from file"));
-    itemFile->setData(0, Qt::UserRole, "imagefile");
+    itemFile->setData(0, Qt::UserRole, "ImageFromFile");
     result << inputs;
 
     QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << tr("Viewers"));
     viewers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
     QTreeWidgetItem *itemDockableViewer = new QTreeWidgetItem(viewers, QStringList() << tr("Dockable image viewer"));
-    itemDockableViewer->setData(0, Qt::UserRole, "dockableimageviewer");
+    itemDockableViewer->setData(0, Qt::UserRole, "DockableImageViewer");
     QTreeWidgetItem *itemPreviewer = new QTreeWidgetItem(viewers, QStringList() << tr("Image previewer"));
-    itemPreviewer->setData(0, Qt::UserRole, "imagepreviewer");
+    itemPreviewer->setData(0, Qt::UserRole, "ImagePreviewer");
     result << viewers;
 
     QTreeWidgetItem *filters = new QTreeWidgetItem(QStringList() << tr("Filters"));
     filters->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
     QTreeWidgetItem *itemBlur = new QTreeWidgetItem(filters, QStringList() << tr("Blur"));
-    itemBlur->setData(0, Qt::UserRole, "blur");
+    itemBlur->setData(0, Qt::UserRole, "Blur");
     QTreeWidgetItem *itemGaussianBlur = new QTreeWidgetItem(filters, QStringList() << tr("Gaussian blur"));
-    itemGaussianBlur->setData(0, Qt::UserRole, "gaussianblur");
+    itemGaussianBlur->setData(0, Qt::UserRole, "GaussianBlur");
     result << filters;
 
     return result;
-}
-
-AbstractNode *NodesTypesManager::createNode(const QString &type)
-{
-    if(type == "imagepreviewer")
-    {
-        return new ImageViewerNode(true);
-    }
-    else if(type == "dockableimageviewer")
-    {
-        return new ImageViewerNode(false);
-    }
-    else if(type == "blur")
-    {
-        return new BlurNode();
-    }
-    else if(type == "gaussianblur")
-    {
-        return new GaussianBlurNode();
-    }
-    else if(type == "imagefile")
-    {
-        return new ImageFileNode();
-    }
-    else
-    {
-        qCritical() << "Unable to instantiate node for type" << type;
-        return NULL;
-    }
 }

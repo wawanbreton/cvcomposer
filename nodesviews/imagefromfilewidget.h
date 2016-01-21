@@ -15,29 +15,39 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEVIEWERITEM_H
-#define IMAGEVIEWERITEM_H
+#ifndef IMAGEFROMFILEWIDGET_H
+#define IMAGEFROMFILEWIDGET_H
 
-#include "nodesviews/genericnodeitem.h"
+#include "nodesviews/abstractnodewidget.h"
 
-#include <opencv2/core/core.hpp>
+namespace Ui { class ImageFromFileWidget; }
 
-class ImageViewerDockWidget;
-
-class ImageViewerItem : public GenericNodeItem
+class ImageFromFileWidget : public AbstractNodeWidget
 {
     Q_OBJECT
 
     public:
-        ImageViewerItem(AbstractNode *node, QGraphicsItem *parent = NULL);
+        explicit ImageFromFileWidget(QWidget *parent = NULL);
+        ImageFromFileWidget(const ImageFromFileWidget &other);
+        ~ImageFromFileWidget();
+
+        virtual QVariant getProperty(const QString &name) const override;
+
+    public slots:
+        virtual void setProperty(const QString &name, const QVariant &value) override;
+
+    protected:
+        virtual QStringList getPropertiesNames() const override;
 
     private slots:
-        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+        void onEditingFinished();
 
-        void onProcessUnavailable();
+        void onButtonPressed();
 
     private:
-        ImageViewerDockWidget *_dockWidget;
+        Ui::ImageFromFileWidget *_ui;
 };
 
-#endif // IMAGEVIEWERITEM_H
+Q_DECLARE_METATYPE(ImageFromFileWidget)
+
+#endif // IMAGEFROMFILEWIDGET_H

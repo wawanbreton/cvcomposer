@@ -25,7 +25,8 @@
 
 #include <opencv2/core/core.hpp>
 
-class AbstractNode;
+class GenericNode;
+class AbstractProcessor;
 
 class ComposerExecutor : public QThread
 {
@@ -34,7 +35,7 @@ class ComposerExecutor : public QThread
     public:
         explicit ComposerExecutor(QObject *parent = NULL);
 
-        void processNode(AbstractNode *node, const QList<cv::Mat> &inputs);
+        void processNode(GenericNode *node, const QList<cv::Mat> &inputs);
 
     signals:
         void nodeProcessed(bool success, const QList<cv::Mat> &outputs);
@@ -46,9 +47,13 @@ class ComposerExecutor : public QThread
         void onFinished();
 
     private:
+        AbstractProcessor *createProcessor(GenericNode *node);
+
+    private:
         typedef struct
         {
-            AbstractNode *node;
+            GenericNode *node;
+            AbstractProcessor *processor;
             QList<cv::Mat> inputs;
             QList<cv::Mat> outputs;
             bool success;

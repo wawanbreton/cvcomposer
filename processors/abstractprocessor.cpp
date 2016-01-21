@@ -17,9 +17,44 @@
 
 #include "abstractprocessor.h"
 
+#include <QDebug>
 
-AbstractProcessor::AbstractProcessor()
+
+AbstractProcessor::AbstractProcessor() :
+    _properties()
 {
 
 }
 
+AbstractProcessor::~AbstractProcessor()
+{
+
+}
+
+void AbstractProcessor::setProperties(const Properties &properties)
+{
+    _properties = properties;
+}
+
+QList<cv::Mat> AbstractProcessor::process(const QList<cv::Mat> &inputs)
+{
+    Q_ASSERT(inputs.count() == getNbInputs());
+    QList<cv::Mat> outputs = processImpl(inputs);
+    Q_ASSERT(outputs.count() == getNbOutputs());
+
+    return outputs;
+}
+
+QVariant AbstractProcessor::getProperty(const QString &name) const
+{
+    Properties::const_iterator iterator = _properties.find(name);
+    if(iterator != _properties.end())
+    {
+        return iterator.value();
+    }
+    else
+    {
+        qCritical() << "AbstractProcessor::getProperty" << "No property named" << name;
+        return QVariant();
+    }
+}

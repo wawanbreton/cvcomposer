@@ -15,25 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEFILENODE_H
-#define IMAGEFILENODE_H
+#ifndef IMAGEFROMFILEPROCESSOR_H
+#define IMAGEFROMFILEPROCESSOR_H
 
-#include "nodes/abstractnode.h"
+#include "processors/abstractprocessor.h"
 
-class ImageFileNode : public AbstractNode
+class ImageFromFileProcessor : public AbstractProcessor
 {
-    Q_OBJECT
-
     public:
-        explicit ImageFileNode(QObject *parent = NULL);
+        ImageFromFileProcessor();
 
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
+        quint8 getNbInputs() const override;
 
-    public slots:
-        void setImagePath(const QString &imagePath);
+        quint8 getNbOutputs() const override;
 
-    private:
-        QString _imagePath;
+    protected:
+        QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
 };
 
-#endif // IMAGEFILENODE_H
+Q_DECLARE_METATYPE(ImageFromFileProcessor)
+
+#endif // IMAGEFROMFILEPROCESSOR_H

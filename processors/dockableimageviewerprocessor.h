@@ -15,31 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEFILEWIDGET_H
-#define IMAGEFILEWIDGET_H
+#ifndef DOCKABLEIMAGEVIEWERPROCESSOR_H
+#define DOCKABLEIMAGEVIEWERPROCESSOR_H
 
-#include <QWidget>
+#include "processors/abstractprocessor.h"
 
-namespace Ui { class ImageFileWidget; }
-
-class ImageFileWidget : public QWidget
+class DockableImageViewerProcessor : public AbstractProcessor
 {
-    Q_OBJECT
-
     public:
-        explicit ImageFileWidget(QWidget *parent = NULL);
-        ~ImageFileWidget();
+        DockableImageViewerProcessor();
 
-    signals:
-        void imagePathChanged(const QString &path);
+        virtual quint8 getNbInputs() const override;
 
-    private slots:
-        void onEditingFinished();
+        virtual quint8 getNbOutputs() const override;
 
-        void onButtonPressed();
-
-    private:
-        Ui::ImageFileWidget *_ui;
+    protected:
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
 };
 
-#endif // IMAGEFILEWIDGET_H
+Q_DECLARE_METATYPE(DockableImageViewerProcessor)
+
+#endif // DOCKABLEIMAGEVIEWERPROCESSOR_H

@@ -15,19 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAUSSIANBLURNODE_H
-#define GAUSSIANBLURNODE_H
+#include "dockableimageviewerprocessor.h"
 
-#include "nodes/abstractnode.h"
 
-class GaussianBlurNode : public AbstractNode
+DockableImageViewerProcessor::DockableImageViewerProcessor() :
+    AbstractProcessor()
 {
-    Q_OBJECT
 
-    public:
-        explicit GaussianBlurNode(QObject *parent = NULL);
+}
 
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
-};
+quint8 DockableImageViewerProcessor::getNbInputs() const
+{
+    return 1;
+}
 
-#endif // GAUSSIANBLURNODE_H
+quint8 DockableImageViewerProcessor::getNbOutputs() const
+{
+    return 0;
+}
+
+QList<cv::Mat> DockableImageViewerProcessor::processImpl(const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
+    return QList<cv::Mat>();
+}
+

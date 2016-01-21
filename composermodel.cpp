@@ -21,38 +21,38 @@
 
 #include "composerscheduler.h"
 #include "connection.h"
-#include "nodes/abstractnode.h"
+#include "nodes/genericnode.h"
 
 
 ComposerModel::ComposerModel(QObject *parent) :
     QObject(parent),
     _nodes(),
     _connections(),
-    _scheduler(new ComposerScheduler(this))
+    _scheduler(NULL)
 {
 
 }
 
-void ComposerModel::addNode(AbstractNode *node)
+void ComposerModel::addNode(GenericNode *node)
 {
     _nodes << node;
     node->setParent(this);
-    connect(node, SIGNAL(changed()), SLOT(startExecution()));
+    connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(startExecution()));
 }
 
-AbstractNode *ComposerModel::findInputPlug(Plug *plug) const
+GenericNode *ComposerModel::findInputPlug(Plug *plug) const
 {
     return findPlug(plug, true, false);
 }
 
-AbstractNode *ComposerModel::findOutputPlug(Plug *plug) const
+GenericNode *ComposerModel::findOutputPlug(Plug *plug) const
 {
     return findPlug(plug, false, true);
 }
 
-AbstractNode *ComposerModel::findPlug(Plug *plug, bool fromInputs, bool fromOutputs) const
+GenericNode *ComposerModel::findPlug(Plug *plug, bool fromInputs, bool fromOutputs) const
 {
-    foreach(AbstractNode *node, _nodes)
+    foreach(GenericNode *node, _nodes)
     {
         if(fromInputs && node->hasInput(plug))
         {
@@ -108,5 +108,11 @@ void ComposerModel::removeConnection(Connection *connection)
 
 void ComposerModel::startExecution()
 {
+    if(not _scheduler.isNull())
+    {
+
+    }
+
+    _scheduler = new ComposerScheduler(this);
     _scheduler->execute(_nodes, _connections);
 }

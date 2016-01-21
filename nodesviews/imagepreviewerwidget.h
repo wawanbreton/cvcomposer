@@ -15,43 +15,41 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURWIDGET_H
-#define BLURWIDGET_H
+#ifndef IMAGEPREVIEWERWIDGET_H
+#define IMAGEPREVIEWERWIDGET_H
 
 #include "nodesviews/abstractnodewidget.h"
 
-#include <opencv2/core/core.hpp>
+namespace Ui { class ImagePreviewerWidget; }
 
-#include <QMetaType>
-
-namespace Ui { class BlurWidget; }
-
-class BlurWidget : public AbstractNodeWidget
+class ImagePreviewerWidget : public AbstractNodeWidget
 {
     Q_OBJECT
 
     public:
-        explicit BlurWidget(QWidget *parent = NULL);
-        BlurWidget(const BlurWidget &other);
-        ~BlurWidget();
+        explicit ImagePreviewerWidget(QWidget *parent = NULL);
+        ImagePreviewerWidget(const ImagePreviewerWidget &other);
+        ~ImagePreviewerWidget();
 
         virtual QVariant getProperty(const QString &name) const override;
 
+        virtual QSize sizeHint() const override;
+
     public slots:
-        virtual void setProperty(const QString &name, const QVariant &value) override;
+        virtual void setProperty(const QString &name, const QVariant &value);
 
     protected:
         virtual QStringList getPropertiesNames() const override;
 
-    private slots:
-        void onSizeChanged();
+    protected slots:
+        virtual void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs) override;
 
-        void onAnchorChanged();
+        virtual void onProcessUnavailable() override;
 
     private:
-        Ui::BlurWidget *_ui;
+        Ui::ImagePreviewerWidget *_ui;
 };
 
-Q_DECLARE_METATYPE(BlurWidget)
+Q_DECLARE_METATYPE(ImagePreviewerWidget)
 
-#endif // BLURWIDGET_H
+#endif // IMAGEPREVIEWERWIDGET_H

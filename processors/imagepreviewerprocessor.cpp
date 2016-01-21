@@ -15,10 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "genericitem.h"
+#include "imagepreviewerprocessor.h"
 
-GenericItem::GenericItem(QObject *parent) : QObject(parent)
+
+ImagePreviewerProcessor::ImagePreviewerProcessor()
 {
 
+}
+
+quint8 ImagePreviewerProcessor::getNbInputs() const
+{
+    return 1;
+}
+
+quint8 ImagePreviewerProcessor::getNbOutputs() const
+{
+    return 0;
+}
+
+QList<cv::Mat> ImagePreviewerProcessor::processImpl(const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
+    return QList<cv::Mat>();
 }
 

@@ -18,17 +18,14 @@
 #include "blurwidget.h"
 #include "ui_blurwidget.h"
 
+#include "cvutils.h"
 
-BlurWidget::BlurWidget(const cv::Size &size, const cv::Point &anchor, QWidget *parent) :
-    QWidget(parent),
+
+BlurWidget::BlurWidget(QWidget *parent) :
+    AbstractNodeWidget(parent),
     _ui(new Ui::BlurWidget)
 {
     _ui->setupUi(this);
-
-    _ui->spinBoxWidth->setValue(size.width);
-    _ui->spinBoxHeight->setValue(size.height);
-    _ui->spinBoxAnchorX->setValue(anchor.x);
-    _ui->spinBoxAnchorY->setValue(anchor.y);
 
     connect(_ui->spinBoxWidth,  SIGNAL(valueChanged(int)), SLOT(onSizeChanged()));
     connect(_ui->spinBoxHeight, SIGNAL(valueChanged(int)), SLOT(onSizeChanged()));
@@ -36,17 +33,60 @@ BlurWidget::BlurWidget(const cv::Size &size, const cv::Point &anchor, QWidget *p
     connect(_ui->spinBoxAnchorY, SIGNAL(valueChanged(int)), SLOT(onAnchorChanged()));
 }
 
+BlurWidget::BlurWidget(const BlurWidget &other) :
+    AbstractNodeWidget(other.parentWidget())
+{
+    qFatal("BlurWidget::BlurWidget");
+}
+
 BlurWidget::~BlurWidget()
 {
     delete _ui;
 }
 
+QVariant BlurWidget::getProperty(const QString &name) const
+{
+    if(name == "size")
+    {
+        return QVariant::fromValue(cv::Size(_ui->spinBoxWidth->value(),
+                                            _ui->spinBoxHeight->value()));
+    }
+    else if(name == "anchor")
+    {
+        return QVariant::fromValue(cv::Point(_ui->spinBoxAnchorX->value(),
+                                             _ui->spinBoxAnchorY->value()));
+    }
+
+    return QVariant();
+}
+
+void BlurWidget::setProperty(const QString &name, const QVariant &value)
+{
+    if(name == "size")
+    {
+        cv::Size size = value.value<cv::Size>();
+        _ui->spinBoxWidth->setValue(size.width);
+        _ui->spinBoxHeight->setValue(size.height);
+    }
+    else if(name == "anchor")
+    {
+        cv::Point anchor = value.value<cv::Point>();
+        _ui->spinBoxAnchorX->setValue(anchor.x);
+        _ui->spinBoxAnchorY->setValue(anchor.y);
+    }
+}
+
+QStringList BlurWidget::getPropertiesNames() const
+{
+    return QStringList() << "size" << "anchor";
+}
+
 void BlurWidget::onSizeChanged()
 {
-    emit sizeChanged(cv::Size(_ui->spinBoxWidth->value(), _ui->spinBoxHeight->value()));
+    onPropertyChanged("size");
 }
 
 void BlurWidget::onAnchorChanged()
 {
-    emit anchorChanged(cv::Point(_ui->spinBoxAnchorX->value(), _ui->spinBoxAnchorY->value()));
+    onPropertyChanged("anchor");
 }

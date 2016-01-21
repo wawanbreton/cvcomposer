@@ -15,43 +15,45 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURWIDGET_H
-#define BLURWIDGET_H
+#ifndef DOCKABLEIMAGEVIEWERWIDGET_H
+#define DOCKABLEIMAGEVIEWERWIDGET_H
 
 #include "nodesviews/abstractnodewidget.h"
 
-#include <opencv2/core/core.hpp>
+namespace Ui { class DockableImageViewerWidget; }
 
-#include <QMetaType>
+class ImageViewerDockWidget;
 
-namespace Ui { class BlurWidget; }
-
-class BlurWidget : public AbstractNodeWidget
+class DockableImageViewerWidget : public AbstractNodeWidget
 {
     Q_OBJECT
 
     public:
-        explicit BlurWidget(QWidget *parent = NULL);
-        BlurWidget(const BlurWidget &other);
-        ~BlurWidget();
+        explicit DockableImageViewerWidget(QWidget *parent = NULL);
+        DockableImageViewerWidget(const DockableImageViewerWidget &other);
+        ~DockableImageViewerWidget();
 
         virtual QVariant getProperty(const QString &name) const override;
 
     public slots:
         virtual void setProperty(const QString &name, const QVariant &value) override;
 
+    signals:
+        void nameChanged(const QString &name);
+
     protected:
         virtual QStringList getPropertiesNames() const override;
 
-    private slots:
-        void onSizeChanged();
+    protected slots:
+        virtual void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
 
-        void onAnchorChanged();
+        virtual void onProcessUnavailable();
 
     private:
-        Ui::BlurWidget *_ui;
+        Ui::DockableImageViewerWidget *_ui;
+        ImageViewerDockWidget *_dockWidget;
 };
 
-Q_DECLARE_METATYPE(BlurWidget)
+Q_DECLARE_METATYPE(DockableImageViewerWidget)
 
-#endif // BLURWIDGET_H
+#endif // DOCKABLEIMAGEVIEWERWIDGET_H

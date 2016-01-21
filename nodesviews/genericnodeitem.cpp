@@ -17,16 +17,17 @@
 
 #include "genericnodeitem.h"
 
+#include <QDebug>
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QTimer>
 
-#include "nodes/abstractnode.h"
+#include "nodes/genericnode.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/plugitem.h"
 
 
-GenericNodeItem::GenericNodeItem(AbstractNode *node, QGraphicsItem *parent) :
+GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
     _widget(NULL),
@@ -51,7 +52,7 @@ int GenericNodeItem::type() const
     return CustomItems::Node;
 }
 
-const AbstractNode *GenericNodeItem::getNode() const
+const GenericNode *GenericNodeItem::getNode() const
 {
     return _node;
 }
@@ -101,7 +102,7 @@ void GenericNodeItem::setWidget(QWidget *widget)
     proxy->setWidget(widget);
     proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
     _widget = widget;
-    _widget->resize(_widget->sizeHint());
+    _widget->setFixedSize(_widget->sizeHint());
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_NoBackground, true);
 

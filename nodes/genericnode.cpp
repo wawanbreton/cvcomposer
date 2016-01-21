@@ -17,14 +17,15 @@
 
 #include "genericnode.h"
 
+#include <QDebug>
 #include <QEvent>
 #include <QVariant>
+
+#include "processors/abstractprocessor.h"
 
 
 GenericNode::GenericNode(const QString &name,
                          const QString &userReadableName,
-                         quint8 nbInputs,
-                         quint8 nbOutputs,
                          QObject *parent) :
     QObject(parent),
     _name(name),
@@ -32,6 +33,22 @@ GenericNode::GenericNode(const QString &name,
     _inputs(),
     _outputs()
 {
+    quint8 nbInputs = 0;
+    quint8 nbOutputs = 0;
+
+    QMetaType processorType(QMetaType::type((name + "Processor").toUtf8()));
+    if(processorType.isValid())
+    {
+         AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
+         nbInputs = processor->getNbInputs();
+         nbOutputs = processor->getNbOutputs();
+         delete processor;
+    }
+    else
+    {
+        qCritical() << "GenericNode::GenericNode" << "Unable to find processor for" << name;
+    }
+
     _inputs.reserve(nbInputs);
     for(quint8 i = 0 ; i < nbInputs ; i++)
     {
@@ -84,19 +101,32 @@ bool GenericNode::hasOutput(Plug *output) const
     return _outputs.contains(output);
 }
 
-bool GenericNode::event(QEvent *event)
+void GenericNode::signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
 {
-    if(event->type() == QEvent::DynamicPropertyChange)
-    {
-        QDynamicPropertyChangeEvent *changeEvent =
-                static_cast<QDynamicPropertyChangeEvent *>(event);
-        if(not changeEvent->propertyName().startsWith("_q_"))
-        {
-            emit propertyChanged(changeEvent->propertyName(),
-                                 property(changeEvent->propertyName()));
-        }
-    }
-
-    return QObject::event(event);
+    emit processDone(outputs, inputs);
 }
 
+void GenericNode::signalProcessUnavailable()
+{
+    emit processUnavailable();
+}
+
+const Properties &GenericNode::getProperties() const
+{
+    return _properties;
+}
+
+void GenericNode::setProperties(const Properties &properties)
+{
+    _properties = properties;
+}
+
+void GenericNode::setProperty(const QString &name, const QVariant &value)
+{
+    if(value != _properties.value(name))
+    {
+        _properties[name] = value;
+
+        emit propertyChanged(name, value);
+    }
+}

@@ -20,13 +20,14 @@
 
 #include <QObject>
 
+#include <QPointer>
 #include <QMap>
 #include <QPair>
 
 #include "plug.h"
 
 class Connection;
-class AbstractNode;
+class GenericNode;
 class ComposerScheduler;
 
 class ComposerModel : public QObject
@@ -36,15 +37,15 @@ class ComposerModel : public QObject
     public:
         explicit ComposerModel(QObject *parent = NULL);
 
-        void addNode(AbstractNode *node);
+        void addNode(GenericNode *node);
 
-        AbstractNode *findInputPlug(Plug *plug) const;
+        GenericNode *findInputPlug(Plug *plug) const;
 
-        AbstractNode *findOutputPlug(Plug *plug) const;
+        GenericNode *findOutputPlug(Plug *plug) const;
 
-        AbstractNode *findPlug(Plug *plug,
-                               bool fromInputs = true,
-                               bool fromOutputs = true) const;
+        GenericNode *findPlug(Plug *plug,
+                              bool fromInputs = true,
+                              bool fromOutputs = true) const;
 
         void addConnection(Plug *output, Plug *input);
 
@@ -59,9 +60,9 @@ class ComposerModel : public QObject
         void startExecution();
 
     private:
-        QList<AbstractNode *> _nodes;
+        QList<GenericNode *> _nodes;
         QList<Connection *> _connections;
-        ComposerScheduler *_scheduler;
+        QPointer<ComposerScheduler> _scheduler;
 };
 
 #endif // COMPOSERMODEL_H

@@ -15,21 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imageviewerwidget.h"
-#include "ui_imageviewerwidget.h"
+#ifndef IMAGEPREVIEWERPROCESSOR_H
+#define IMAGEPREVIEWERPROCESSOR_H
 
+#include "processors/abstractprocessor.h"
 
-ImageViewerWidget::ImageViewerWidget(const QString &name, QWidget *parent) :
-    QWidget(parent),
-    _ui(new Ui::ImageViewerWidget)
+class ImagePreviewerProcessor : public AbstractProcessor
 {
-    _ui->setupUi(this);
+    public:
+        ImagePreviewerProcessor();
 
-    _ui->lineEdit->setText(name);
-    connect(_ui->lineEdit, SIGNAL(textChanged(QString)), SIGNAL(nameChanged(QString)));
-}
+        virtual quint8 getNbInputs() const override;
 
-ImageViewerWidget::~ImageViewerWidget()
-{
-    delete _ui;
-}
+        virtual quint8 getNbOutputs() const override;
+
+    protected:
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+};
+
+Q_DECLARE_METATYPE(ImagePreviewerProcessor)
+
+#endif // IMAGEPREVIEWERPROCESSOR_H

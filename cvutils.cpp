@@ -24,27 +24,30 @@ QImage CvUtils::toQImage(const cv::Mat &mat)
 {
     QImage image;
 
-    if(mat.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
+    if(mat.total() != 0)
     {
-        // Set the color table (used to translate colour indexes to qRgb values)
-        QVector<QRgb> colorTable;
-        for(int i = 0 ; i < 256; i++)
+        if(mat.type() == CV_8UC1) // 8-bits unsigned, NO. OF CHANNELS=1
         {
-            colorTable.push_back(qRgb(i,i,i));
-        }
+            // Set the color table (used to translate colour indexes to qRgb values)
+            QVector<QRgb> colorTable;
+            for(int i = 0 ; i < 256; i++)
+            {
+                colorTable.push_back(qRgb(i,i,i));
+            }
 
-        // Create QImage with same dimensions as input Mat
-        image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
-        image.setColorTable(colorTable);
-    }
-    if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
-    {
-        image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-        image = image.rgbSwapped();
-    }
-    else
-    {
-        qWarning() << "CvUtils::toQImage Unsupported mat type, you will have to work !";
+            // Create QImage with same dimensions as input Mat
+            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
+            image.setColorTable(colorTable);
+        }
+        if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
+        {
+            image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+            image = image.rgbSwapped();
+        }
+        else
+        {
+            qWarning() << "CvUtils::toQImage Unsupported mat type, you will have to work !";
+        }
     }
 
     return image;

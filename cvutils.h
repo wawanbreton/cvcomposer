@@ -26,4 +26,7 @@ namespace CvUtils
     QImage toQImage(const cv::Mat &mat);
 }
 
+Q_DECLARE_METATYPE(cv::Point)
+Q_DECLARE_METATYPE(cv::Size)
+
 #endif // CVUTILS_H

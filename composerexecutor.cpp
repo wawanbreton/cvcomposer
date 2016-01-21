@@ -19,7 +19,8 @@
 
 #include <QDebug>
 
-#include "nodes/abstractnode.h"
+#include "nodes/genericnode.h"
+#include "processors/abstractprocessor.h"
 
 
 ComposerExecutor::ComposerExecutor(QObject *parent) :
@@ -29,11 +30,12 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::processNode(AbstractNode *node, const QList<cv::Mat> &inputs)
+void ComposerExecutor::processNode(GenericNode *node, const QList<cv::Mat> &inputs)
 {
     if(not isRunning())
     {
         _job.node = node;
+        _job.processor = createProcessor(node);
         _job.inputs = inputs;
         _job.success = false;
 
@@ -50,7 +52,7 @@ void ComposerExecutor::run()
 {
     try
     {
-        _job.outputs = _job.node->process(_job.inputs);
+        _job.outputs = _job.processor->process(_job.inputs);
         _job.success = true;
     }
     catch(const std::exception &exception)
@@ -70,4 +72,21 @@ void ComposerExecutor::onFinished()
         _job.node->signalProcessUnavailable();
     }
     emit nodeProcessed(_job.success, _job.outputs);
+}
+
+AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)
+{
+    QMetaType processorType(QMetaType::type((node->getName() + "Processor").toUtf8()));
+    if(processorType.isValid())
+    {
+        AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
+        processor->setProperties(node->getProperties());
+        return processor;
+    }
+    else
+    {
+        qCritical() << "ComposerScheduler::createProcessor"
+                    << "Unable to find processor for node" << node->getName();
+        return NULL;
+    }
 }

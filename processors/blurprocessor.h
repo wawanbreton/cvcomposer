@@ -15,32 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEPREVIEWITEM_H
-#define IMAGEPREVIEWITEM_H
+#ifndef BLURPROCESSOR_H
+#define BLURPROCESSOR_H
 
-#include "nodesviews/genericnodeitem.h"
+#include "processors/abstractprocessor.h"
 
-#include <opencv2/core/core.hpp>
-
-class ImagePreviewItem : public GenericNodeItem
+class BlurProcessor : public AbstractProcessor
 {
-    Q_OBJECT
-
     public:
-        ImagePreviewItem(AbstractNode *node, QGraphicsItem *parent = NULL);
+        BlurProcessor();
 
-        virtual QRectF boundingRect() const;
+        quint8 getNbInputs() const override;
+
+        quint8 getNbOutputs() const override;
 
     protected:
-        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-    private slots:
-        void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
-
-        void onProcessUnavailable();
-
-    private:
-        QPixmap _image;
+        QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
 };
 
-#endif // IMAGEPREVIEWITEM_H
+Q_DECLARE_METATYPE(BlurProcessor)
+
+#endif // BLURPROCESSOR_H

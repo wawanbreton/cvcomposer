@@ -20,7 +20,7 @@
 #include <QDebug>
 
 #include "connection.h"
-#include "nodes/abstractnode.h"
+#include "nodes/genericnode.h"
 #include "composerexecutor.h"
 
 
@@ -32,22 +32,22 @@ ComposerScheduler::ComposerScheduler(QObject *parent) :
                        SLOT(onNodeProcessed(bool, QList<cv::Mat>)));
 }
 
-void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
+void ComposerScheduler::execute(const QList<GenericNode *> &nodes,
                                 const QList<Connection *> &connections)
 {
-    QList<AbstractNode *> pseudoProcessedNodes;
-    QList<AbstractNode *> nodesToProcess = nodes;
-    QList<AbstractNode *> unreachableNodes;
+    QList<GenericNode *> pseudoProcessedNodes;
+    QList<GenericNode *> nodesToProcess = nodes;
+    QList<GenericNode *> unreachableNodes;
     _executionList.clear();
 
     do
     {
-        QMutableListIterator<AbstractNode *> iterator(nodesToProcess);
+        QMutableListIterator<GenericNode *> iterator(nodesToProcess);
         while(iterator.hasNext())
         {
             iterator.next();
-            AbstractNode *nodeToProcess = iterator.value();
-            QList<AbstractNode *> dependancies;
+            GenericNode *nodeToProcess = iterator.value();
+            QList<GenericNode *> dependancies;
 
             // For each remaining node, check whether all its inputs are available, i.e. we can
             // process it now
@@ -67,10 +67,10 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
                 }
 
                 // We have found the connection, now find the previous node
-                AbstractNode *previousNode = NULL;
+                GenericNode *previousNode = NULL;
                 if(connection)
                 {
-                    foreach(AbstractNode *node, nodes)
+                    foreach(GenericNode *node, nodes)
                     {
                         if(node->hasOutput(connection->getOutput()))
                         {
@@ -118,7 +118,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
     }
 
     unreachableNodes << nodesToProcess;
-    foreach(AbstractNode *node, unreachableNodes)
+    foreach(GenericNode *node, unreachableNodes)
     {
         node->signalProcessUnavailable();
     }
@@ -126,7 +126,7 @@ void ComposerScheduler::execute(const QList<AbstractNode *> &nodes,
 
 void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outputs)
 {
-    QPair<AbstractNode *, QList<AbstractNode *> > processedNode = _executionList.dequeue();
+    QPair<GenericNode *, QList<GenericNode *> > processedNode = _executionList.dequeue();
     if(success)
     {
         _processedNodes[processedNode.first] = outputs;
@@ -135,17 +135,17 @@ void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outp
     {
         // One node execution has failed, now find all the nodes dependant of it
         bool nodeRemoved;
-        QList<AbstractNode *> removedNodes;
+        QList<GenericNode *> removedNodes;
         removedNodes << processedNode.first;
         do
         {
             nodeRemoved = false;
-            QMutableListIterator<QPair<AbstractNode *, QList<AbstractNode *> > > iterator(_executionList);
+            QMutableListIterator<QPair<GenericNode *, QList<GenericNode *> > > iterator(_executionList);
             while(iterator.hasNext())
             {
                 iterator.next();
 
-                foreach(AbstractNode *removedNode, removedNodes)
+                foreach(GenericNode *removedNode, removedNodes)
                 {
                     if(iterator.value().second.contains(removedNode))
                     {
@@ -165,9 +165,8 @@ void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outp
     if(not _executionList.isEmpty())
     {
         QList<cv::Mat> inputs;
-        foreach(AbstractNode *dependancy, _executionList.head().second)
+        foreach(GenericNode *dependancy, _executionList.head().second)
         {
-            #warning Dependancies should be sorted in inputs order (for nodes with multiple inputs)
             inputs << _processedNodes[dependancy];
         }
 

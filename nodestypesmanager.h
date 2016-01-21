@@ -36,8 +36,6 @@ class NodesTypesManager : public QObject
 
         static QList<QTreeWidgetItem *> getTreeItems();
 
-        static AbstractNode *createNode(const QString &type);
-
     private:
         static NodesTypesManager *_instance;
 };

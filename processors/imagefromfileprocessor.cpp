@@ -15,19 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gaussianblurnode.h"
+#include "imagefromfileprocessor.h"
 
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+#include <QDebug>
 
 
-GaussianBlurNode::GaussianBlurNode(QObject *parent) :
-    AbstractNode(1, 1, tr("Gaussian blur"), parent)
+ImageFromFileProcessor::ImageFromFileProcessor() :
+    AbstractProcessor()
 {
+
 }
 
-QList<cv::Mat> GaussianBlurNode::processImpl(const QList<cv::Mat> &inputs)
+quint8 ImageFromFileProcessor::getNbInputs() const
 {
-    cv::Mat blurred = inputs[0].clone();
-    cv::GaussianBlur(inputs[0], blurred, cv::Size(9, 9), 0, 0);
-    return QList<cv::Mat>() << blurred;
+    return 0;
+}
+
+quint8 ImageFromFileProcessor::getNbOutputs() const
+{
+    return 1;
+}
+
+QList<cv::Mat> ImageFromFileProcessor::processImpl(const QList<cv::Mat> &inputs)
+{
+    Q_UNUSED(inputs);
+    return QList<cv::Mat>() << cv::imread(getProperty("path").toString().toStdString(),
+                                          CV_LOAD_IMAGE_COLOR);
 }
