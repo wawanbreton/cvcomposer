@@ -21,9 +21,11 @@
 
 #include "nodesviews/blurwidget.h"
 #include "nodesviews/dockableimageviewerwidget.h"
+#include "nodesviews/gaussianblurwidget.h"
 #include "nodesviews/imagefromfilewidget.h"
 #include "nodesviews/imagepreviewerwidget.h"
 #include "processors/blurprocessor.h"
+#include "processors/gaussianblurprocessor.h"
 #include "processors/imagefromfileprocessor.h"
 #include "processors/imagepreviewerprocessor.h"
 #include "processors/dockableimageviewerprocessor.h"
@@ -56,6 +58,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<ImagePreviewerWidget>();
     qRegisterMetaType<DockableImageViewerProcessor>();
     qRegisterMetaType<DockableImageViewerWidget>();
+    qRegisterMetaType<GaussianBlurProcessor>();
+    qRegisterMetaType<GaussianBlurWidget>();
 
     QList<QTreeWidgetItem *> result;
 

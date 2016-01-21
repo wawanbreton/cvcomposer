@@ -49,7 +49,9 @@ SOURCES += main.cpp\
     nodesviews/imagepreviewerwidget.cpp \
     processors/imagepreviewerprocessor.cpp \
     nodesviews/dockableimageviewerwidget.cpp \
-    processors/dockableimageviewerprocessor.cpp
+    processors/dockableimageviewerprocessor.cpp \
+    nodesviews/gaussianblurwidget.cpp \
+    processors/gaussianblurprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -79,7 +81,9 @@ HEADERS  += mainwidget.h \
     nodesviews/imagepreviewerwidget.h \
     processors/imagepreviewerprocessor.h \
     nodesviews/dockableimageviewerwidget.h \
-    processors/dockableimageviewerprocessor.h
+    processors/dockableimageviewerprocessor.h \
+    nodesviews/gaussianblurwidget.h \
+    processors/gaussianblurprocessor.h
 
 FORMS    += \
     mainwidget.ui \
@@ -87,4 +91,5 @@ FORMS    += \
     nodesviews/blurwidget.ui \
     nodesviews/imagefromfilewidget.ui \
     nodesviews/imagepreviewerwidget.ui \
-    nodesviews/dockableimageviewerwidget.ui
+    nodesviews/dockableimageviewerwidget.ui \
+    nodesviews/gaussianblurwidget.ui
