@@ -20,8 +20,6 @@
 
 #include "nodesviews/abstractnodewidget.h"
 
-namespace Ui { class ImagePreviewerWidget; }
-
 class ImagePreviewerWidget : public AbstractNodeWidget
 {
     Q_OBJECT
@@ -29,7 +27,6 @@ class ImagePreviewerWidget : public AbstractNodeWidget
     public:
         explicit ImagePreviewerWidget(QWidget *parent = NULL);
         ImagePreviewerWidget(const ImagePreviewerWidget &other);
-        ~ImagePreviewerWidget();
 
         virtual QVariant getProperty(const QString &name) const override;
 
@@ -41,13 +38,15 @@ class ImagePreviewerWidget : public AbstractNodeWidget
     protected:
         virtual QStringList getPropertiesNames() const override;
 
+        virtual void paintEvent(QPaintEvent *event) override;
+
     protected slots:
         virtual void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs) override;
 
         virtual void onProcessUnavailable() override;
 
     private:
-        Ui::ImagePreviewerWidget *_ui;
+        QPixmap _image;
 };
 
 Q_DECLARE_METATYPE(ImagePreviewerWidget)

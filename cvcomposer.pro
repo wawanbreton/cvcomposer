@@ -90,6 +90,5 @@ FORMS    += \
     nodesviews/imagedockwidget.ui \
     nodesviews/blurwidget.ui \
     nodesviews/imagefromfilewidget.ui \
-    nodesviews/imagepreviewerwidget.ui \
     nodesviews/dockableimageviewerwidget.ui \
     nodesviews/gaussianblurwidget.ui

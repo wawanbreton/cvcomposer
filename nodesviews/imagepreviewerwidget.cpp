@@ -19,27 +19,21 @@
 #include "ui_imagepreviewerwidget.h"
 
 #include <QDebug>
+#include <QPainter>
 
 #include "cvutils.h"
 
 
 ImagePreviewerWidget::ImagePreviewerWidget(QWidget *parent) :
     AbstractNodeWidget(parent),
-    _ui(new Ui::ImagePreviewerWidget)
+    _image()
 {
-    #warning TODO : keep image ratio
-    _ui->setupUi(this);
 }
 
 ImagePreviewerWidget::ImagePreviewerWidget(const ImagePreviewerWidget &other) :
     AbstractNodeWidget(other.parentWidget())
 {
     qFatal("ImagePreviewerWidget::ImagePreviewerWidget");
-}
-
-ImagePreviewerWidget::~ImagePreviewerWidget()
-{
-    delete _ui;
 }
 
 QVariant ImagePreviewerWidget::getProperty(const QString &name) const
@@ -64,14 +58,45 @@ QStringList ImagePreviewerWidget::getPropertiesNames() const
     return QStringList();
 }
 
+void ImagePreviewerWidget::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event)
+
+    QPainter painter(this);
+
+    if(_image.isNull())
+    {
+        painter.fillRect(rect(), Qt::gray);
+    }
+    else
+    {
+        qreal imageRatio = qreal(_image.width()) / _image.height();
+        qreal widgetRatio = qreal(width()) / height();
+        QRect rect;
+        if(imageRatio > widgetRatio)
+        {
+            rect = QRect(0, 0, width(), width() / imageRatio);
+            rect.translate(0, (height() - rect.height()) / 2);
+        }
+        else
+        {
+            rect = QRect(0, 0, height() * imageRatio, height());
+            rect.translate((width() - rect.width()) / 2, 0);
+        }
+        painter.drawPixmap(rect, _image);
+    }
+}
+
 void ImagePreviewerWidget::onProcessDone(const QList<cv::Mat> &outputs,
                                          const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
-    _ui->label->setPixmap(QPixmap::fromImage(CvUtils::toQImage(inputs[0])));
+    _image = QPixmap::fromImage(CvUtils::toQImage(inputs[0]));
+    update();
 }
 
 void ImagePreviewerWidget::onProcessUnavailable()
 {
-    _ui->label->setPixmap(QPixmap());
+    _image = QPixmap();
+    update();
 }
