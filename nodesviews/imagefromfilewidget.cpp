@@ -53,14 +53,6 @@ QVariant ImageFromFileWidget::getProperty(const QString &name) const
     return QVariant();
 }
 
-void ImageFromFileWidget::setProperty(const QString &name, const QVariant &value)
-{
-    if(name == "path")
-    {
-        _ui->lineEdit->setText(value.toString());
-    }
-}
-
 QStringList ImageFromFileWidget::getPropertiesNames() const
 {
     return QStringList() << "path";

@@ -56,12 +56,6 @@ QStringList DockableImageViewerWidget::getPropertiesNames() const
     return QStringList();
 }
 
-void DockableImageViewerWidget::setProperty(const QString &name, const QVariant &value)
-{
-    Q_UNUSED(name);
-    Q_UNUSED(value);
-}
-
 QVariant DockableImageViewerWidget::getProperty(const QString &name) const
 {
     Q_UNUSED(name);

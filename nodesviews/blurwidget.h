@@ -37,9 +37,6 @@ class BlurWidget : public AbstractNodeWidget
 
         virtual QVariant getProperty(const QString &name) const override;
 
-    public slots:
-        virtual void setProperty(const QString &name, const QVariant &value) override;
-
     protected:
         virtual QStringList getPropertiesNames() const override;
 
@@ -47,6 +44,8 @@ class BlurWidget : public AbstractNodeWidget
         void onSizeChanged();
 
         void onAnchorChanged();
+
+        void onBorderChanged();
 
     private:
         Ui::BlurWidget *_ui;

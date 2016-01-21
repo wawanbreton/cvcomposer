@@ -21,7 +21,7 @@
 
 #include "composerscheduler.h"
 #include "connection.h"
-#include "nodes/genericnode.h"
+#include "genericnode.h"
 
 
 ComposerModel::ComposerModel(QObject *parent) :

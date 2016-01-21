@@ -19,7 +19,7 @@
 
 #include <QDebug>
 
-#include "nodes/genericnode.h"
+#include "genericnode.h"
 #include "processors/abstractprocessor.h"
 
 

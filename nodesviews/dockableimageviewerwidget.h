@@ -35,9 +35,6 @@ class DockableImageViewerWidget : public AbstractNodeWidget
 
         virtual QVariant getProperty(const QString &name) const override;
 
-    public slots:
-        virtual void setProperty(const QString &name, const QVariant &value) override;
-
     signals:
         void nameChanged(const QString &name);
 

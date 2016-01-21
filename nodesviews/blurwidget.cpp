@@ -20,6 +20,8 @@
 
 #include "cvutils.h"
 
+#include <opencv2/imgproc/imgproc.hpp>
+
 
 BlurWidget::BlurWidget(QWidget *parent) :
     AbstractNodeWidget(parent),
@@ -31,6 +33,7 @@ BlurWidget::BlurWidget(QWidget *parent) :
     connect(_ui->spinBoxHeight, SIGNAL(valueChanged(int)), SLOT(onSizeChanged()));
     connect(_ui->spinBoxAnchorX, SIGNAL(valueChanged(int)), SLOT(onAnchorChanged()));
     connect(_ui->spinBoxAnchorY, SIGNAL(valueChanged(int)), SLOT(onAnchorChanged()));
+    connect(_ui->comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onBorderChanged()));
 }
 
 BlurWidget::BlurWidget(const BlurWidget &other) :
@@ -56,29 +59,27 @@ QVariant BlurWidget::getProperty(const QString &name) const
         return QVariant::fromValue(cv::Point(_ui->spinBoxAnchorX->value(),
                                              _ui->spinBoxAnchorY->value()));
     }
+    else if(name == "border")
+    {
+        switch(_ui->comboBox->currentIndex())
+        {
+            case 0:
+                return cv::BORDER_REFLECT101;
+            case 1:
+                return cv::BORDER_REFLECT;
+            case 2:
+                return cv::BORDER_REPLICATE;
+            case 3:
+                return cv::BORDER_CONSTANT;
+        }
+    }
 
     return QVariant();
 }
 
-void BlurWidget::setProperty(const QString &name, const QVariant &value)
-{
-    if(name == "size")
-    {
-        cv::Size size = value.value<cv::Size>();
-        _ui->spinBoxWidth->setValue(size.width);
-        _ui->spinBoxHeight->setValue(size.height);
-    }
-    else if(name == "anchor")
-    {
-        cv::Point anchor = value.value<cv::Point>();
-        _ui->spinBoxAnchorX->setValue(anchor.x);
-        _ui->spinBoxAnchorY->setValue(anchor.y);
-    }
-}
-
 QStringList BlurWidget::getPropertiesNames() const
 {
-    return QStringList() << "size" << "anchor";
+    return QStringList() << "size" << "anchor" << "border";
 }
 
 void BlurWidget::onSizeChanged()
@@ -89,4 +90,9 @@ void BlurWidget::onSizeChanged()
 void BlurWidget::onAnchorChanged()
 {
     onPropertyChanged("anchor");
+}
+
+void BlurWidget::onBorderChanged()
+{
+    onPropertyChanged("border");
 }

@@ -20,7 +20,7 @@
 #include <QDebug>
 
 #include "connection.h"
-#include "nodes/genericnode.h"
+#include "genericnode.h"
 #include "composerexecutor.h"
 
 

@@ -44,9 +44,10 @@ QList<cv::Mat> BlurProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat blurred = inputs[0].clone();
     cv::blur(inputs[0],
-            blurred,
-            getProperty("size").value<cv::Size>(),
-            getProperty("anchor").value<cv::Point>());
+             blurred,
+             getProperty("size").value<cv::Size>(),
+             getProperty("anchor").value<cv::Point>(),
+             getProperty("border").toInt());
     return QList<cv::Mat>() << blurred;
 }
 

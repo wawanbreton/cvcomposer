@@ -26,7 +26,7 @@
 #include "composermodel.h"
 #include "connection.h"
 #include "nodestypesmanager.h"
-#include "nodes/genericnode.h"
+#include "genericnode.h"
 #include "nodesviews/genericnodeitem.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"

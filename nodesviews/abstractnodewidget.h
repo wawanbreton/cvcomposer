@@ -35,9 +35,6 @@ class AbstractNodeWidget : public QWidget
 
         Properties getProperties() const;
 
-    public slots:
-        virtual void setProperty(const QString &name, const QVariant &value) = 0;
-
     protected:
         void onPropertyChanged(const QString &name);
 

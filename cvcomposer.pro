@@ -40,7 +40,7 @@ SOURCES += main.cpp\
     cvutils.cpp \
     nodesviews/blurwidget.cpp \
     nodesviews/imageviewerdockwidget.cpp \
-    nodes/genericnode.cpp \
+    genericnode.cpp \
     processors/abstractprocessor.cpp \
     processors/blurprocessor.cpp \
     processors/imagefromfileprocessor.cpp \
@@ -69,7 +69,7 @@ HEADERS  += mainwidget.h \
     cvutils.h \
     nodesviews/blurwidget.h \
     nodesviews/imageviewerdockwidget.h \
-    nodes/genericnode.h \
+    genericnode.h \
     processors/abstractprocessor.h \
     processors/blurprocessor.h \
     processors/imagefromfileprocessor.h \

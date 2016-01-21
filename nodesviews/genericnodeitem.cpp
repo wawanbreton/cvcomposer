@@ -22,7 +22,7 @@
 #include <QPainter>
 #include <QTimer>
 
-#include "nodes/genericnode.h"
+#include "genericnode.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/plugitem.h"
 
