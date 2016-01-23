@@ -35,7 +35,7 @@ class ComposerExecutor : public QThread
     public:
         explicit ComposerExecutor(QObject *parent = NULL);
 
-        void processNode(GenericNode *node, const QList<cv::Mat> &inputs);
+        void setNodeToProcess(GenericNode *node, const QList<cv::Mat> &inputs);
 
     signals:
         void nodeProcessed(bool success, const QList<cv::Mat> &outputs);
@@ -50,17 +50,11 @@ class ComposerExecutor : public QThread
         AbstractProcessor *createProcessor(GenericNode *node);
 
     private:
-        typedef struct
-        {
-            GenericNode *node;
-            AbstractProcessor *processor;
-            QList<cv::Mat> inputs;
-            QList<cv::Mat> outputs;
-            bool success;
-        } Job;
-
-    private:
-        Job _job;
+        GenericNode *_node;
+        AbstractProcessor *_processor;
+        QList<cv::Mat> _inputs;
+        QList<cv::Mat> _outputs;
+        bool _success;
 };
 
 #endif // COMPOSEREXECUTOR_H

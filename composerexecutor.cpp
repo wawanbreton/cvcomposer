@@ -25,53 +25,47 @@
 
 ComposerExecutor::ComposerExecutor(QObject *parent) :
     QThread(parent),
-    _job()
+    _node(NULL),
+    _processor(NULL),
+    _inputs(),
+    _outputs(),
+    _success(false)
 {
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::processNode(GenericNode *node, const QList<cv::Mat> &inputs)
+void ComposerExecutor::setNodeToProcess(GenericNode *node, const QList<cv::Mat> &inputs)
 {
-    if(not isRunning())
-    {
-        _job.node = node;
-        _job.processor = createProcessor(node);
-        _job.inputs = inputs;
-        _job.success = false;
-
-        start();
-    }
-    else
-    {
-        qCritical() << "ComposerExecutor::processNode"
-                    << "Unable to process node while already running";
-    }
+    _node = node;
+    _processor = createProcessor(node);
+    _inputs = inputs;
 }
 
 void ComposerExecutor::run()
 {
     try
     {
-        _job.outputs = _job.processor->process(_job.inputs);
-        _job.success = true;
+        _outputs = _processor->process(_inputs);
+        _success = true;
     }
     catch(const std::exception &exception)
     {
-        qDebug() << "Exception when executing node" << _job.node->getUserReadableName() << " : " << exception.what();
+        qDebug() << "Exception when executing node" << _node->getUserReadableName() << " : " << exception.what();
     }
 }
 
 void ComposerExecutor::onFinished()
 {
-    if(_job.success)
+    delete _processor;
+    if(_success)
     {
-        _job.node->signalProcessDone(_job.outputs, _job.inputs);
+        _node->signalProcessDone(_outputs, _inputs);
     }
     else
     {
-        _job.node->signalProcessUnavailable();
+        _node->signalProcessUnavailable();
     }
-    emit nodeProcessed(_job.success, _job.outputs);
+    emit nodeProcessed(_success, _outputs);
 }
 
 AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)

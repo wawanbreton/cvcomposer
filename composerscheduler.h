@@ -44,7 +44,10 @@ class ComposerScheduler : public QObject
         void onNodeProcessed(bool success, const QList<cv::Mat> &outputs);
 
     private:
-        ComposerExecutor *_executor;
+        void executeAsSoonAsPossible(GenericNode *node, const QList<cv::Mat> &inputs);
+
+    private:
+        QList<ComposerExecutor *> _executors;
         QQueue<QPair<GenericNode *, QList<GenericNode *> > > _executionList;
         QMap<GenericNode *, QList<cv::Mat> > _processedNodes;
 };
