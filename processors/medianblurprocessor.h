@@ -15,14 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NODESTYPESMANAGER_H
-#define NODESTYPESMANAGER_H
+#ifndef MEDIANBLURPROCESSOR_H
+#define MEDIANBLURPROCESSOR_H
 
-#include <QTreeWidgetItem>
+#include "processors/abstractprocessor.h"
 
-namespace NodesTypesManager
+class MedianBlurProcessor : public AbstractProcessor
 {
-    QList<QTreeWidgetItem *> getTreeItems();
-}
+    public:
+        MedianBlurProcessor();
 
-#endif // NODESTYPESMANAGER_H
+        virtual quint8 getNbInputs() const override;
+
+        virtual quint8 getNbOutputs() const override;
+
+    protected:
+        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+};
+
+Q_DECLARE_METATYPE(MedianBlurProcessor);
+
+#endif // MEDIANBLURPROCESSOR_H

@@ -24,28 +24,14 @@
 #include "nodesviews/gaussianblurwidget.h"
 #include "nodesviews/imagefromfilewidget.h"
 #include "nodesviews/imagepreviewerwidget.h"
+#include "nodesviews/medianblurwidget.h"
 #include "processors/blurprocessor.h"
 #include "processors/gaussianblurprocessor.h"
 #include "processors/imagefromfileprocessor.h"
 #include "processors/imagepreviewerprocessor.h"
 #include "processors/dockableimageviewerprocessor.h"
+#include "processors/medianblurprocessor.h"
 
-
-NodesTypesManager *NodesTypesManager::_instance = NULL;
-
-NodesTypesManager::NodesTypesManager()
-{
-}
-
-NodesTypesManager *NodesTypesManager::get()
-{
-    if(_instance == NULL)
-    {
-        _instance = new NodesTypesManager();
-    }
-
-    return _instance;
-}
 
 QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
 {
@@ -60,29 +46,33 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<DockableImageViewerWidget>();
     qRegisterMetaType<GaussianBlurProcessor>();
     qRegisterMetaType<GaussianBlurWidget>();
+    qRegisterMetaType<MedianBlurProcessor>();
+    qRegisterMetaType<MedianBlurWidget>();
 
     QList<QTreeWidgetItem *> result;
 
-    QTreeWidgetItem *inputs = new QTreeWidgetItem(QStringList() << tr("Inputs"));
+    QTreeWidgetItem *inputs = new QTreeWidgetItem(QStringList() << "Inputs");
     inputs->setFlags(inputs->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << tr("Image from file"));
+    QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << "Image from file");
     itemFile->setData(0, Qt::UserRole, "ImageFromFile");
     result << inputs;
 
-    QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << tr("Viewers"));
+    QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << "Viewers");
     viewers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemDockableViewer = new QTreeWidgetItem(viewers, QStringList() << tr("Dockable image viewer"));
+    QTreeWidgetItem *itemDockableViewer = new QTreeWidgetItem(viewers, QStringList() << "Dockable image viewer");
     itemDockableViewer->setData(0, Qt::UserRole, "DockableImageViewer");
-    QTreeWidgetItem *itemPreviewer = new QTreeWidgetItem(viewers, QStringList() << tr("Image previewer"));
+    QTreeWidgetItem *itemPreviewer = new QTreeWidgetItem(viewers, QStringList() << "Image previewer");
     itemPreviewer->setData(0, Qt::UserRole, "ImagePreviewer");
     result << viewers;
 
-    QTreeWidgetItem *filters = new QTreeWidgetItem(QStringList() << tr("Filters"));
+    QTreeWidgetItem *filters = new QTreeWidgetItem(QStringList() << "Filters");
     filters->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemBlur = new QTreeWidgetItem(filters, QStringList() << tr("Blur"));
+    QTreeWidgetItem *itemBlur = new QTreeWidgetItem(filters, QStringList() << "Blur");
     itemBlur->setData(0, Qt::UserRole, "Blur");
-    QTreeWidgetItem *itemGaussianBlur = new QTreeWidgetItem(filters, QStringList() << tr("Gaussian blur"));
+    QTreeWidgetItem *itemGaussianBlur = new QTreeWidgetItem(filters, QStringList() << "Gaussian blur");
     itemGaussianBlur->setData(0, Qt::UserRole, "GaussianBlur");
+    QTreeWidgetItem *itemMedianBlur = new QTreeWidgetItem(filters, QStringList() << "Median blur");
+    itemMedianBlur->setData(0, Qt::UserRole, "MedianBlur");
     result << filters;
 
     return result;

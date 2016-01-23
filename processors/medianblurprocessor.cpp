@@ -15,14 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NODESTYPESMANAGER_H
-#define NODESTYPESMANAGER_H
+#include "medianblurprocessor.h"
 
-#include <QTreeWidgetItem>
+#include <opencv2/imgproc/imgproc.hpp>
 
-namespace NodesTypesManager
+
+MedianBlurProcessor::MedianBlurProcessor() :
+    AbstractProcessor()
 {
-    QList<QTreeWidgetItem *> getTreeItems();
 }
 
-#endif // NODESTYPESMANAGER_H
+quint8 MedianBlurProcessor::getNbInputs() const
+{
+    return 1;
+}
+
+quint8 MedianBlurProcessor::getNbOutputs() const
+{
+    return 1;
+}
+
+QList<cv::Mat> MedianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
+{
+    cv::Mat blurred = inputs[0].clone();
+    cv::medianBlur(inputs[0], blurred, getProperty("size").toInt());
+    return QList<cv::Mat>() << blurred;
+}

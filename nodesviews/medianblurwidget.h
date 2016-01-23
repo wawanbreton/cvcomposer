@@ -15,14 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NODESTYPESMANAGER_H
-#define NODESTYPESMANAGER_H
+#ifndef MEDIANBLURWIDGET_H
+#define MEDIANBLURWIDGET_H
 
-#include <QTreeWidgetItem>
+#include "nodesviews/abstractnodewidget.h"
 
-namespace NodesTypesManager
+namespace Ui { class MedianBlurWidget; }
+
+class MedianBlurWidget : public AbstractNodeWidget
 {
-    QList<QTreeWidgetItem *> getTreeItems();
-}
+    Q_OBJECT
 
-#endif // NODESTYPESMANAGER_H
+    public:
+        explicit MedianBlurWidget(QWidget *parent = NULL);
+        MedianBlurWidget(const MedianBlurWidget &other);
+        ~MedianBlurWidget();
+
+        virtual QVariant getProperty(const QString &name) const override;
+
+    protected:
+        virtual QStringList getPropertiesNames() const override;
+
+    private slots:
+        void onSizeChanged();
+
+    private:
+        Ui::MedianBlurWidget *_ui;
+};
+
+Q_DECLARE_METATYPE(MedianBlurWidget)
+
+#endif // MEDIANBLURWIDGET_H
