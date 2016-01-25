@@ -35,7 +35,7 @@ class ComposerExecutor : public QThread
     public:
         explicit ComposerExecutor(QObject *parent = NULL);
 
-        void setNodeToProcess(GenericNode *node, const QList<cv::Mat> &inputs);
+        void process(GenericNode *node, const QList<cv::Mat> &inputs);
 
     signals:
         void nodeProcessed(bool success, const QList<cv::Mat> &outputs);

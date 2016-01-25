@@ -108,11 +108,18 @@ void ComposerModel::removeConnection(Connection *connection)
 
 void ComposerModel::startExecution()
 {
+    ComposerScheduler *newScheduler = new ComposerScheduler(this);
+    newScheduler->prepareExecution(_nodes, _connections);
+
     if(not _scheduler.isNull())
     {
-
+        _scheduler->cancel();
+        connect(_scheduler.data(), SIGNAL(destroyed()), newScheduler, SLOT(execute()));
+    }
+    else
+    {
+        newScheduler->execute();
     }
 
-    _scheduler = new ComposerScheduler(this);
-    _scheduler->execute(_nodes, _connections);
+    _scheduler = newScheduler;
 }

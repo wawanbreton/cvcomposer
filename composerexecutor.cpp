@@ -34,11 +34,13 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::setNodeToProcess(GenericNode *node, const QList<cv::Mat> &inputs)
+void ComposerExecutor::process(GenericNode *node, const QList<cv::Mat> &inputs)
 {
+    _success = false;
     _node = node;
     _processor = createProcessor(node);
     _inputs = inputs;
+    start();
 }
 
 void ComposerExecutor::run()
@@ -56,16 +58,22 @@ void ComposerExecutor::run()
 
 void ComposerExecutor::onFinished()
 {
+    // Make local copies in case local values are modified during the signal emission
+    QList<cv::Mat> inputs = _inputs;
+    QList<cv::Mat> outputs = _outputs;
+    bool success = _success;
+
     delete _processor;
-    if(_success)
+
+    if(success)
     {
-        _node->signalProcessDone(_outputs, _inputs);
+        _node->signalProcessDone(outputs, inputs);
     }
     else
     {
         _node->signalProcessUnavailable();
     }
-    emit nodeProcessed(_success, _outputs);
+    emit nodeProcessed(success, outputs);
 }
 
 AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)

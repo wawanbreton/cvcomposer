@@ -26,21 +26,24 @@
 
 ComposerScheduler::ComposerScheduler(QObject *parent) :
     QObject(parent),
-    _executors(),
+    _executor(new ComposerExecutor(this)),
     _executionList(),
-    _processedNodes()
+    _unreachableNodes(),
+    _processedNodes(),
+    _cancelled(false)
 {
+    connect(_executor, SIGNAL(nodeProcessed(bool, QList<cv::Mat>)),
+                       SLOT(onNodeProcessed(bool, QList<cv::Mat>)));
 }
 
-void ComposerScheduler::execute(const QList<GenericNode *> &nodes,
-                                const QList<Connection *> &connections)
+void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
+                                         const QList<Connection *> &connections)
 {
     _processedNodes.clear();
     _executionList.clear();
 
     QList<GenericNode *> pseudoProcessedNodes;
     QList<GenericNode *> nodesToProcess = nodes;
-    QList<GenericNode *> unreachableNodes;
 
     do
     {
@@ -82,11 +85,11 @@ void ComposerScheduler::execute(const QList<GenericNode *> &nodes,
                     }
                 }
 
-                if(previousNode == NULL || unreachableNodes.contains(previousNode))
+                if(previousNode == NULL || _unreachableNodes.contains(previousNode))
                 {
                     // Input is not connected or previous node is unreachable, there is no way
                     // we can process the node
-                    unreachableNodes << iterator.value();
+                    _unreachableNodes << iterator.value();
                     iterator.remove();
                     allInputsProcessed = false;
                     break; // Don't bother checking other plugs
@@ -114,29 +117,45 @@ void ComposerScheduler::execute(const QList<GenericNode *> &nodes,
         }
     } while(not nodesToProcess.isEmpty());
 
-    if(not _executionList.isEmpty())
+    _unreachableNodes << nodesToProcess;
+}
+
+void ComposerScheduler::cancel()
+{
+    // Just tag the scheduler as cancelled, and wait for an execute() or onNodeProcessed() slot call
+    _cancelled = true;
+}
+
+void ComposerScheduler::execute()
+{
+    if(_cancelled)
     {
-        executeAsSoonAsPossible(_executionList.head().first, QList<cv::Mat>());
+        // Scheduler was cancelled even before it started :(
+        deleteLater();
+        return;
     }
 
-    unreachableNodes << nodesToProcess;
-    foreach(GenericNode *node, unreachableNodes)
+    foreach(GenericNode *node, _unreachableNodes)
     {
         node->signalProcessUnavailable();
+    }
+
+    if(_executionList.isEmpty())
+    {
+        deleteLater();
+    }
+    else
+    {
+        _executor->process(_executionList.head().first, QList<cv::Mat>());
     }
 }
 
 void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outputs)
 {
-    ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
-    if(executor)
+    if(_cancelled)
     {
-        _executors.removeAll(executor);
-        executor->deleteLater();
-    }
-    else
-    {
-        qCritical() << "ComposerScheduler::onNodeProcessed Sender is not a ComposerExecutor";
+        deleteLater();
+        return;
     }
 
     QPair<GenericNode *, QList<GenericNode *> > processedNode = _executionList.dequeue();
@@ -175,7 +194,11 @@ void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outp
         } while(nodeRemoved);
     }
 
-    if(not _executionList.isEmpty())
+    if(_executionList.isEmpty())
+    {
+        deleteLater();
+    }
+    else
     {
         QList<cv::Mat> inputs;
         foreach(GenericNode *dependancy, _executionList.head().second)
@@ -183,49 +206,6 @@ void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outp
             inputs << _processedNodes[dependancy];
         }
 
-        executeAsSoonAsPossible(_executionList.head().first, inputs);
+        _executor->process(_executionList.head().first, inputs);
     }
-    else
-    {
-        _processedNodes.clear();
-    }
-}
-
-void ComposerScheduler::executeAsSoonAsPossible(GenericNode *node, const QList<cv::Mat> &inputs)
-{
-    ComposerExecutor *executor = new ComposerExecutor(this);
-    executor->setNodeToProcess(node, inputs);
-    connect(executor, SIGNAL(nodeProcessed(bool, QList<cv::Mat>)),
-                      SLOT(onNodeProcessed(bool, QList<cv::Mat>)));
-
-    #warning Test this more intensively, memory still grows a lot when changing parameters very fast with big images
-    if(_executors.isEmpty())
-    {
-        // No other executor is running, go !
-        executor->start();
-    }
-    else
-    {
-        // Find the running executor, wait for its end, and remove the waiting ones
-        QMutableListIterator<ComposerExecutor *> iterator(_executors);
-        while(iterator.hasNext())
-        {
-            iterator.next();
-            if(iterator.value()->isRunning())
-            {
-                // We have found the running executor
-                disconnect(iterator.value(), 0, this, 0);
-                connect(iterator.value(), SIGNAL(finished()), iterator.value(), SLOT(deleteLater()));
-                connect(iterator.value(), SIGNAL(finished()), executor, SLOT(start()));
-            }
-            else
-            {
-                // We have found a waiting executor
-                delete iterator.value();
-                iterator.remove();
-            }
-        }
-    }
-
-    _executors << executor;
 }

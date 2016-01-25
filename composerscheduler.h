@@ -37,19 +37,23 @@ class ComposerScheduler : public QObject
     public:
         explicit ComposerScheduler(QObject *parent = NULL);
 
-        void execute(const QList<GenericNode *> &nodes,
-                     const QList<Connection *> &connections);
+        void prepareExecution(const QList<GenericNode *> &nodes,
+                              const QList<Connection *> &connections);
+
+        void cancel();
+
+    public slots:
+        void execute();
 
     private slots:
         void onNodeProcessed(bool success, const QList<cv::Mat> &outputs);
 
     private:
-        void executeAsSoonAsPossible(GenericNode *node, const QList<cv::Mat> &inputs);
-
-    private:
-        QList<ComposerExecutor *> _executors;
+        ComposerExecutor * _executor;
         QQueue<QPair<GenericNode *, QList<GenericNode *> > > _executionList;
+        QList<GenericNode *> _unreachableNodes;
         QMap<GenericNode *, QList<cv::Mat> > _processedNodes;
+        bool _cancelled;
 };
 
 #endif // COMPOSERSCHEDULER_H
