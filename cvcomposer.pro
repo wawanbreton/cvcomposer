@@ -53,7 +53,9 @@ SOURCES += main.cpp\
     nodesviews/gaussianblurwidget.cpp \
     processors/gaussianblurprocessor.cpp \
     nodesviews/medianblurwidget.cpp \
-    processors/medianblurprocessor.cpp
+    processors/medianblurprocessor.cpp \
+    nodesviews/bilateralfilterwidget.cpp \
+    processors/bilateralfilterprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -87,7 +89,9 @@ HEADERS  += mainwidget.h \
     nodesviews/gaussianblurwidget.h \
     processors/gaussianblurprocessor.h \
     nodesviews/medianblurwidget.h \
-    processors/medianblurprocessor.h
+    processors/medianblurprocessor.h \
+    nodesviews/bilateralfilterwidget.h \
+    processors/bilateralfilterprocessor.h
 
 FORMS    += \
     mainwidget.ui \
@@ -96,4 +100,5 @@ FORMS    += \
     nodesviews/imagefromfilewidget.ui \
     nodesviews/dockableimageviewerwidget.ui \
     nodesviews/gaussianblurwidget.ui \
-    nodesviews/medianblurwidget.ui
+    nodesviews/medianblurwidget.ui \
+    nodesviews/bilateralfilterwidget.ui

@@ -20,12 +20,14 @@
 #include <QDebug>
 
 #include "nodesviews/blurwidget.h"
+#include "nodesviews/bilateralfilterwidget.h"
 #include "nodesviews/dockableimageviewerwidget.h"
 #include "nodesviews/gaussianblurwidget.h"
 #include "nodesviews/imagefromfilewidget.h"
 #include "nodesviews/imagepreviewerwidget.h"
 #include "nodesviews/medianblurwidget.h"
 #include "processors/blurprocessor.h"
+#include "processors/bilateralfilterprocessor.h"
 #include "processors/gaussianblurprocessor.h"
 #include "processors/imagefromfileprocessor.h"
 #include "processors/imagepreviewerprocessor.h"
@@ -48,6 +50,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<GaussianBlurWidget>();
     qRegisterMetaType<MedianBlurProcessor>();
     qRegisterMetaType<MedianBlurWidget>();
+    qRegisterMetaType<BilateralFilterProcessor>();
+    qRegisterMetaType<BilateralFilterWidget>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -73,6 +77,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     itemGaussianBlur->setData(0, Qt::UserRole, "GaussianBlur");
     QTreeWidgetItem *itemMedianBlur = new QTreeWidgetItem(filters, QStringList() << "Median blur");
     itemMedianBlur->setData(0, Qt::UserRole, "MedianBlur");
+    QTreeWidgetItem *itemBilateralFilter = new QTreeWidgetItem(filters, QStringList() << "Bilateral filter");
+    itemBilateralFilter->setData(0, Qt::UserRole, "BilateralFilter");
     result << filters;
 
     return result;
