@@ -27,17 +27,12 @@
 BlurProcessor::BlurProcessor() :
     AbstractProcessor()
 {
+    addInput("input image", PlugType::Image);
+    addInput("size",        PlugType::Size);
+    addInput("anchor",      PlugType::Point);
+    addInput("border",      PlugType::Enumeration);
 
-}
-
-quint8 BlurProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 BlurProcessor::getNbOutputs() const
-{
-    return 1;
+    addOutput("output image", PlugType::Image);
 }
 
 QList<cv::Mat> BlurProcessor::processImpl(const QList<cv::Mat> &inputs)

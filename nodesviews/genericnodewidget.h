@@ -15,20 +15,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAUSSIANBLURPROCESSOR_H
-#define GAUSSIANBLURPROCESSOR_H
+#ifndef GENERICNODEWIDGET_H
+#define GENERICNODEWIDGET_H
 
-#include "processors/abstractprocessor.h"
+#include <QWidget>
 
-class GaussianBlurProcessor : public AbstractProcessor
+#include <QLabel>
+
+#include "plugdefinition.h"
+
+class GenericNodeWidget : public QWidget
 {
-    public:
-        GaussianBlurProcessor();
+    Q_OBJECT
 
-    protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+    public:
+        explicit GenericNodeWidget(QWidget *parent = NULL);
+
+        void setPlugs(const QList<PlugDefinition> &inputs, const QList<PlugDefinition> &outputs);
+
+        int getPlugPosY(const QString &plugName);
+
+        void setInputPlugged(const QString &inputName, bool plugged);
+
+    private:
+        QWidget *makePlugWidget(const PlugDefinition &plug);
+
+    private:
+        QMap<QString, QPair<QLabel *, QWidget *> > _widgets;
 };
 
-Q_DECLARE_METATYPE(GaussianBlurProcessor)
-
-#endif // GAUSSIANBLURPROCESSOR_H
+#endif // GENERICNODEWIDGET_H

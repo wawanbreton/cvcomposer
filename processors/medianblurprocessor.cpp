@@ -25,16 +25,6 @@ MedianBlurProcessor::MedianBlurProcessor() :
 {
 }
 
-quint8 MedianBlurProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 MedianBlurProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
 QList<cv::Mat> MedianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat blurred = inputs[0].clone();

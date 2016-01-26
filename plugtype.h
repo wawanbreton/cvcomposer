@@ -24,8 +24,18 @@ namespace PlugType
     {
         Image,
         Size,
-        Point
+        Point,
+        Enumeration
     } Enum;
+
+    typedef enum
+    {
+        Mandatory, // Plug has to be connected, it can't be configured manually
+        Free,      // Plug may be configured manually, or connected
+        ManualOnly // Plug can only be manually configured
+    } Pluggable;
+
+    Pluggable isInputPluggable(Enum value);
 }
 
 #endif // PLUGTYPE_H

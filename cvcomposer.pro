@@ -55,7 +55,9 @@ SOURCES += main.cpp\
     nodesviews/medianblurwidget.cpp \
     processors/medianblurprocessor.cpp \
     nodesviews/bilateralfilterwidget.cpp \
-    processors/bilateralfilterprocessor.cpp
+    processors/bilateralfilterprocessor.cpp \
+    nodesviews/genericnodewidget.cpp \
+    plugtype.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -93,7 +95,8 @@ HEADERS  += mainwidget.h \
     nodesviews/bilateralfilterwidget.h \
     processors/bilateralfilterprocessor.h \
     plugdefinition.h \
-    plugtype.h
+    plugtype.h \
+    nodesviews/genericnodewidget.h
 
 FORMS    += \
     mainwidget.ui \

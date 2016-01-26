@@ -29,16 +29,6 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 {
 }
 
-quint8 GaussianBlurProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 GaussianBlurProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
 QList<cv::Mat> GaussianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat blurred = inputs[0].clone();

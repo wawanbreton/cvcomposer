@@ -15,20 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAUSSIANBLURPROCESSOR_H
-#define GAUSSIANBLURPROCESSOR_H
+#include "plugtype.h"
 
-#include "processors/abstractprocessor.h"
 
-class GaussianBlurProcessor : public AbstractProcessor
+
+PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
 {
-    public:
-        GaussianBlurProcessor();
+    switch(value)
+    {
+        case PlugType::Image:
+            return Mandatory;
+        case PlugType::Size:
+        case PlugType::Point:
+        case PlugType::Enumeration:
+            return ManualOnly;
+    }
 
-    protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
-};
-
-Q_DECLARE_METATYPE(GaussianBlurProcessor)
-
-#endif // GAUSSIANBLURPROCESSOR_H
+    return Mandatory;
+}

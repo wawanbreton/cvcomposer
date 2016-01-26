@@ -25,10 +25,6 @@ class DockableImageViewerProcessor : public AbstractProcessor
     public:
         DockableImageViewerProcessor();
 
-        virtual quint8 getNbInputs() const override;
-
-        virtual quint8 getNbOutputs() const override;
-
     protected:
         virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
 };

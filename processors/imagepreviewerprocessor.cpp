@@ -23,16 +23,6 @@ ImagePreviewerProcessor::ImagePreviewerProcessor()
 
 }
 
-quint8 ImagePreviewerProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 ImagePreviewerProcessor::getNbOutputs() const
-{
-    return 0;
-}
-
 QList<cv::Mat> ImagePreviewerProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is

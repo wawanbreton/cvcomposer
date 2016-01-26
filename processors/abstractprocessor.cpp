@@ -36,6 +36,26 @@ void AbstractProcessor::setProperties(const Properties &properties)
     _properties = properties;
 }
 
+quint8 AbstractProcessor::getNbInputs() const
+{
+    return _inputs.count();
+}
+
+const QList<PlugDefinition> &AbstractProcessor::getInputs()
+{
+    return _inputs;
+}
+
+quint8 AbstractProcessor::getNbOutputs() const
+{
+    return _outputs.count();
+}
+
+const QList<PlugDefinition> &AbstractProcessor::getOutputs()
+{
+    return _outputs;
+}
+
 QList<cv::Mat> AbstractProcessor::process(const QList<cv::Mat> &inputs)
 {
     Q_ASSERT(inputs.count() == getNbInputs());
@@ -43,6 +63,26 @@ QList<cv::Mat> AbstractProcessor::process(const QList<cv::Mat> &inputs)
     Q_ASSERT(outputs.count() == getNbOutputs());
 
     return outputs;
+}
+
+void AbstractProcessor::addInput(const PlugDefinition &definition)
+{
+    _inputs << definition;
+}
+
+void AbstractProcessor::addInput(const QString &userReadableName, PlugType::Enum type)
+{
+    addInput(makePlug(userReadableName, type));
+}
+
+void AbstractProcessor::addOutput(const PlugDefinition &definition)
+{
+    _outputs << definition;
+}
+
+void AbstractProcessor::addOutput(const QString &userReadableName, PlugType::Enum type)
+{
+    addOutput(makePlug(userReadableName, type));
 }
 
 QVariant AbstractProcessor::getProperty(const QString &name) const
@@ -57,4 +97,14 @@ QVariant AbstractProcessor::getProperty(const QString &name) const
         qCritical() << "AbstractProcessor::getProperty" << "No property named" << name;
         return QVariant();
     }
+}
+
+PlugDefinition AbstractProcessor::makePlug(const QString &userReadableName, PlugType::Enum type)
+{
+    PlugDefinition plug;
+    plug.name = QString(userReadableName).remove(' ');
+    plug.userReadableName = userReadableName;
+    plug.type = type;
+
+    return plug;
 }

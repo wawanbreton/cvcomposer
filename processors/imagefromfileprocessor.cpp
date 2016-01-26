@@ -28,16 +28,6 @@ ImageFromFileProcessor::ImageFromFileProcessor() :
 
 }
 
-quint8 ImageFromFileProcessor::getNbInputs() const
-{
-    return 0;
-}
-
-quint8 ImageFromFileProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
 QList<cv::Mat> ImageFromFileProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     Q_UNUSED(inputs);

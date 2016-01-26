@@ -26,16 +26,6 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 {
 }
 
-quint8 BilateralFilterProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 BilateralFilterProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
 QList<cv::Mat> BilateralFilterProcessor::processImpl(const QList<cv::Mat> &inputs)
 {
     cv::Mat filtered = inputs[0].clone();

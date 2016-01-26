@@ -21,6 +21,7 @@
 #include <opencv2/core/core.hpp>
 
 #include "properties.h"
+#include "plugdefinition.h"
 
 class AbstractProcessor
 {
@@ -30,19 +31,36 @@ class AbstractProcessor
 
         void setProperties(const Properties &properties);
 
-        virtual quint8 getNbInputs() const = 0;
+        quint8 getNbInputs() const;
 
-        virtual quint8 getNbOutputs() const = 0;
+        const QList<PlugDefinition> &getInputs();
+
+        quint8 getNbOutputs() const;
+
+        const QList<PlugDefinition> &getOutputs();
 
         QList<cv::Mat> process(const QList<cv::Mat> &inputs);
 
     protected:
+        void addInput(const PlugDefinition &definition);
+
+        void addInput(const QString &userReadableName, PlugType::Enum type);
+
+        void addOutput(const PlugDefinition &definition);
+
+        void addOutput(const QString &userReadableName, PlugType::Enum type);
+
         virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
 
         QVariant getProperty(const QString &name) const;
 
     private:
+        PlugDefinition makePlug(const QString &userReadableName, PlugType::Enum type);
+
+    private:
         Properties _properties;
+        QList<PlugDefinition> _inputs;
+        QList<PlugDefinition> _outputs;
 };
 
 #endif // ABSTRACTPROCESSOR_H
