@@ -91,7 +91,9 @@ HEADERS  += mainwidget.h \
     nodesviews/medianblurwidget.h \
     processors/medianblurprocessor.h \
     nodesviews/bilateralfilterwidget.h \
-    processors/bilateralfilterprocessor.h
+    processors/bilateralfilterprocessor.h \
+    plugdefinition.h \
+    plugtype.h
 
 FORMS    += \
     mainwidget.ui \
