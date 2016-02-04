@@ -57,7 +57,11 @@ SOURCES += main.cpp\
     nodesviews/bilateralfilterwidget.cpp \
     processors/bilateralfilterprocessor.cpp \
     nodesviews/genericnodewidget.cpp \
-    plugtype.cpp
+    plugtype.cpp \
+    plug.cpp \
+    plugwidgets/imagepathwidget.cpp \
+    plugwidgets/abstractplugwidget.cpp \
+    plugwidgets/imagepreviewwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -96,7 +100,10 @@ HEADERS  += mainwidget.h \
     processors/bilateralfilterprocessor.h \
     plugdefinition.h \
     plugtype.h \
-    nodesviews/genericnodewidget.h
+    nodesviews/genericnodewidget.h \
+    plugwidgets/imagepathwidget.h \
+    plugwidgets/abstractplugwidget.h \
+    plugwidgets/imagepreviewwidget.h
 
 FORMS    += \
     mainwidget.ui \

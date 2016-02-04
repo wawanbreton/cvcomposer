@@ -18,7 +18,6 @@
 #include "plugtype.h"
 
 
-
 PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
 {
     switch(value)
@@ -28,8 +27,17 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
+        case PlugType::ImagePath:
             return ManualOnly;
+        case PlugType::ImagePreview:
+            return Mandatory;
     }
 
     return Mandatory;
+}
+
+
+bool PlugType::isWidgetAlwaysVisible(PlugType::Enum value)
+{
+    return value == PlugType::ImagePreview;
 }

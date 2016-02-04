@@ -26,7 +26,7 @@ class BilateralFilterProcessor : public AbstractProcessor
         BilateralFilterProcessor();
 
     protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+        virtual Properties processImpl(const Properties &inputs) override;
 };
 
 Q_DECLARE_METATYPE(BilateralFilterProcessor)

@@ -25,10 +25,13 @@
 #include <QMap>
 #include <QQueue>
 
+#include "properties.h"
+
 class Connection;
 class GenericNode;
 class ComposerExecutor;
 class AbstractProcessor;
+class Plug;
 
 class ComposerScheduler : public QObject
 {
@@ -46,13 +49,21 @@ class ComposerScheduler : public QObject
         void execute();
 
     private slots:
-        void onNodeProcessed(bool success, const QList<cv::Mat> &outputs);
+        void onNodeProcessed(bool success, const Properties &outputs);
+
+    private:
+        bool makeInputs(GenericNode *node, Properties &inputs);
+
+        void processNextIfPossible();
+
+        const Connection *findConnectionToInput(const Plug *input);
 
     private:
         ComposerExecutor * _executor;
-        QQueue<QPair<GenericNode *, QList<GenericNode *> > > _executionList;
+        QQueue<GenericNode *> _executionList;
+        QList<Connection *> _connections;
         QList<GenericNode *> _unreachableNodes;
-        QMap<GenericNode *, QList<cv::Mat> > _processedNodes;
+        QMap<GenericNode *, Properties> _processedNodes;
         bool _cancelled;
 };
 

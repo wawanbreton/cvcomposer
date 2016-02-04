@@ -15,29 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfileprocessor.h"
+#ifndef IMAGEPATHWIDGET_H
+#define IMAGEPATHWIDGET_H
 
-#include <opencv2/highgui/highgui.hpp>
+#include "plugwidgets/abstractplugwidget.h"
 
-#include <QDebug>
+#include <QLineEdit>
 
-#include "cvutils.h"
-
-
-ImageFromFileProcessor::ImageFromFileProcessor() :
-    AbstractProcessor()
+class ImagePathWidget : public AbstractPlugWidget
 {
-    addInput("path",   PlugType::ImagePath);
-    addOutput("image", PlugType::Image);
-}
+    Q_OBJECT
 
-Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
-{
-    Q_UNUSED(inputs);
+    public:
+        explicit ImagePathWidget(QWidget *parent = NULL);
 
-    Properties outputs;
-    outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           CV_LOAD_IMAGE_COLOR)));
+        virtual QVariant getValue() const override;
 
-    return outputs;
-}
+    private slots:
+        void onButtonPressed();
+
+    private:
+        QLineEdit *_lineEdit;
+};
+
+#endif // IMAGEPATHWIDGET_H

@@ -20,7 +20,32 @@
 
 #include <QObject>
 
-typedef QObject Plug;
+#include "plugdefinition.h"
+
+class Plug : public QObject
+{
+    Q_OBJECT
+
+    public:
+        explicit Plug(const PlugDefinition &definition, QObject *parent = NULL);
+
+        const PlugDefinition &getDefinition() const;
+
+        void setValue(const QVariant &value);
+
+        const QVariant &getValue() const;
+
+        void signalConnectedTo(const Plug *connectedTo);
+
+    signals:
+        void valueChanged(const QVariant &value);
+
+        void connectionChanged(const Plug *connectedTo);
+
+    private:
+        const PlugDefinition _definition;
+        QVariant _value;
+};
 
 
 #endif // PLUG_H

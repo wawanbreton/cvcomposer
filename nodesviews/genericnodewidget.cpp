@@ -19,33 +19,50 @@
 
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QFileDialog>
 #include <QFormLayout>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QPushButton>
+
+#include "plug.h"
+#include "plugwidgets/imagepathwidget.h"
+#include "plugwidgets/imagepreviewwidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
     QWidget(parent),
-    _widgets()
+    _widgets(),
+    _widgetsMapper(new QSignalMapper(this))
 {
+    connect(_widgetsMapper, SIGNAL(mapped(QString)), SLOT(onWidgetValueChanged(QString)));
 }
 
-void GenericNodeWidget::setPlugs(const QList<PlugDefinition> &inputs,
-                                 const QList<PlugDefinition> &outputs)
+void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
+                                 const QList<Plug*> &outputs)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     if(outputs.count())
     {
-        QVBoxLayout *outputsLayout = new QVBoxLayout(this);
+        QVBoxLayout *outputsLayout = new QVBoxLayout();
 
-        foreach(const PlugDefinition &output, outputs)
+        foreach(const Plug *output, outputs)
         {
-            QLabel *label = new QLabel(this);
-            label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            label->setText(output.userReadableName[0].toUpper() + output.userReadableName.mid(1));
+            PlugWidget widget;
+            widget.input = false;
+            widget.definition = output->getDefinition();
 
-            _widgets[output.name] = QPair<QLabel *, QWidget *>(label, NULL);
+            widget.label = new QLabel(this);
+            widget.label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            makeLabelText(widget, true);
 
-            outputsLayout->addWidget(label);
+            widget.widget = NULL;
+
+            _widgets[widget.definition.name] = widget;
+
+            outputsLayout->addWidget(widget.label);
         }
 
         mainLayout->addLayout(outputsLayout);
@@ -53,19 +70,27 @@ void GenericNodeWidget::setPlugs(const QList<PlugDefinition> &inputs,
 
     if(inputs.count())
     {
-        QFormLayout *inputsLayout = new QFormLayout(this);
+        QFormLayout *inputsLayout = new QFormLayout();
 
-        foreach(const PlugDefinition &input, inputs)
+        foreach(const Plug *input, inputs)
         {
-            QLabel *label = new QLabel(this);
-            label->setText(input.userReadableName[0].toUpper() + input.userReadableName.mid(1) + " :");
-            label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            PlugWidget widget;
+            widget.input = true;
+            widget.definition = input->getDefinition();
 
-            QWidget *editWidget = makePlugWidget(input);
+            widget.label = new QLabel(this);
+            widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            makeLabelText(widget, false);
 
-            _widgets[input.name] = qMakePair(label, editWidget);
+            widget.widget = NULL;
+            if(PlugType::isInputPluggable(widget.definition.type) != PlugType::Mandatory ||
+               PlugType::isWidgetAlwaysVisible(widget.definition.type))
+            {
+                widget.widget = makePlugWidget(widget.definition);
+            }
 
-            inputsLayout->addRow(label, editWidget);
+            _widgets[widget.definition.name] = widget;
+            inputsLayout->addRow(widget.label, widget.widget);
         }
 
         mainLayout->addLayout(inputsLayout);
@@ -79,10 +104,10 @@ int GenericNodeWidget::getPlugPosY(const QString &plugName)
     auto iterator = _widgets.find(plugName);
     if(iterator != _widgets.end())
     {
-        QRect rect = iterator.value().first->geometry();
-        if(iterator.value().second)
+        QRect rect = iterator.value().label->geometry();
+        if(iterator.value().widget)
         {
-            rect = rect.united(iterator.value().second->geometry());
+            rect = rect.united(iterator.value().widget->geometry());
         }
 
         return rect.center().y();
@@ -96,11 +121,92 @@ int GenericNodeWidget::getPlugPosY(const QString &plugName)
 
 void GenericNodeWidget::setInputPlugged(const QString &inputName, bool plugged)
 {
-
+    const PlugWidget &widget = _widgets[inputName];
+    if(widget.widget)
+    {
+        widget.widget->setVisible(PlugType::isWidgetAlwaysVisible(widget.definition.type) ||
+                                  not plugged);
+    }
+    makeLabelText(widget, plugged);
 }
 
-QWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug)
+void GenericNodeWidget::onProcessDone(const Properties &outputs, const Properties &inputs)
 {
-    return NULL;
+    foreach(const PlugWidget &widget, _widgets)
+    {
+        if(widget.input)
+        {
+            widget.widget->onConnectedInputProcessed(inputs[widget.definition.name]);
+        }
+    }
 }
 
+AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug)
+{
+    AbstractPlugWidget *widget = NULL;
+
+    switch(plug.type)
+    {
+        /*case PlugType::Size:
+        {
+            widget = new QWidget(this);
+
+            QSpinBox *spinBoxWidth = new QSpinBox(widget);
+            QSpinBox *spinBoxHeight = new QSpinBox(widget);
+            QLabel *label = new QLabel(widget);
+            label->setText("x");
+
+            QHBoxLayout *layout = new QHBoxLayout(widget);
+            layout->setContentsMargins(0, 0, 0, 0);
+            layout->addWidget(spinBoxWidth);
+            layout->addWidget(label);
+            layout->addWidget(spinBoxHeight);
+
+            break;
+        }*/
+        case PlugType::ImagePath:
+            widget = new ImagePathWidget(this);
+            break;
+        case PlugType::ImagePreview:
+            widget = new ImagePreviewWidget(this);
+            break;
+    }
+
+    if(widget)
+    {
+        _widgetsMapper->setMapping(widget, plug.name);
+        connect(widget, SIGNAL(valueChanged()), _widgetsMapper, SLOT(map()));
+    }
+
+    return widget;
+}
+
+void GenericNodeWidget::makeLabelText(const PlugWidget &widget, bool plugged)
+{
+    QString text = widget.definition.userReadableName;
+    text = text[0].toUpper() + text.mid(1);
+
+    if(plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory)
+    {
+        widget.label->setText(text);
+    }
+    else
+    {
+        widget.label->setText(text + " :");
+    }
+}
+
+void GenericNodeWidget::onWidgetValueChanged(const QString &propertyName)
+{
+    QObject *widget = _widgetsMapper->mapping(propertyName);
+    AbstractPlugWidget *plugWidget = qobject_cast<AbstractPlugWidget *>(widget);
+    if(plugWidget)
+    {
+        emit propertyChanged(propertyName, plugWidget->getValue());
+    }
+    else
+    {
+        qCritical() << "GenericNodeWidget::onWidgetValueChanged"
+                    << "Unable to find the AbstractPlugWidget for property" << propertyName;
+    }
+}

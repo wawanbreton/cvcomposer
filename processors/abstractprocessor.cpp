@@ -56,12 +56,38 @@ const QList<PlugDefinition> &AbstractProcessor::getOutputs()
     return _outputs;
 }
 
-QList<cv::Mat> AbstractProcessor::process(const QList<cv::Mat> &inputs)
+Properties AbstractProcessor::process(const Properties &inputs)
 {
-    Q_ASSERT(inputs.count() == getNbInputs());
-    QList<cv::Mat> outputs = processImpl(inputs);
+    // Check that given inputs match the expected inputs
+    QList<QString> inputNames = inputs.keys();
+    qSort(inputNames);
+
+    QList<QString> expectedInputNames;
+    foreach(const PlugDefinition &plug, _inputs)
+    {
+        expectedInputNames << plug.name;
+    }
+    qSort(expectedInputNames);
+
+    Q_ASSERT(inputNames == expectedInputNames);
+
+    // Do the actual computing
+    Properties outputs = processImpl(inputs);
+
+    // Check that computed outputs match the expected ouputs
+    QList<QString> outputNames = outputs.keys();
+    qSort(outputNames);
+
+    QList<QString> expectedOutputNames;
+    foreach(const PlugDefinition &plug, _outputs)
+    {
+        expectedOutputNames << plug.name;
+    }
+    qSort(expectedOutputNames);
+
     Q_ASSERT(outputs.count() == getNbOutputs());
 
+    // Everything is fine, give the outputs
     return outputs;
 }
 

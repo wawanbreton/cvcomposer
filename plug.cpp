@@ -15,29 +15,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfileprocessor.h"
-
-#include <opencv2/highgui/highgui.hpp>
-
-#include <QDebug>
-
-#include "cvutils.h"
+#include "plug.h"
 
 
-ImageFromFileProcessor::ImageFromFileProcessor() :
-    AbstractProcessor()
+Plug::Plug(const PlugDefinition &definition, QObject *parent) :
+    QObject(parent),
+    _definition(definition),
+    _value()
 {
-    addInput("path",   PlugType::ImagePath);
-    addOutput("image", PlugType::Image);
 }
 
-Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
+const PlugDefinition &Plug::getDefinition() const
 {
-    Q_UNUSED(inputs);
+    return _definition;
+}
 
-    Properties outputs;
-    outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           CV_LOAD_IMAGE_COLOR)));
+void Plug::setValue(const QVariant &value)
+{
+    if(value != _value)
+    {
+        _value = value;
+        emit valueChanged(_value);
+    }
+}
 
-    return outputs;
+const QVariant &Plug::getValue() const
+{
+    return _value;
+}
+
+void Plug::signalConnectedTo(const Plug *connectedTo)
+{
+    emit connectionChanged(connectedTo);
 }

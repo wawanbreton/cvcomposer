@@ -26,7 +26,7 @@ class DockableImageViewerProcessor : public AbstractProcessor
         DockableImageViewerProcessor();
 
     protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs);
+        virtual Properties processImpl(const Properties &inputs);
 };
 
 Q_DECLARE_METATYPE(DockableImageViewerProcessor)

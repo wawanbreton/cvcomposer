@@ -22,6 +22,7 @@
 #include <QVariant>
 
 #include "processors/abstractprocessor.h"
+#include "plug.h"
 
 
 GenericNode::GenericNode(const QString &name,
@@ -33,31 +34,25 @@ GenericNode::GenericNode(const QString &name,
     _inputs(),
     _outputs()
 {
-    quint8 nbInputs = 0;
-    quint8 nbOutputs = 0;
-
     QMetaType processorType(QMetaType::type((name + "Processor").toUtf8()));
     if(processorType.isValid())
     {
          AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
-         nbInputs = processor->getNbInputs();
-         nbOutputs = processor->getNbOutputs();
+
+         foreach(const PlugDefinition input, processor->getInputs())
+         {
+             _inputs << new Plug(input, this);
+         }
+         foreach(const PlugDefinition output, processor->getOutputs())
+         {
+             _outputs << new Plug(output, this);
+         }
+
          delete processor;
     }
     else
     {
         qCritical() << "GenericNode::GenericNode" << "Unable to find processor for" << name;
-    }
-
-    _inputs.reserve(nbInputs);
-    for(quint8 i = 0 ; i < nbInputs ; i++)
-    {
-        _inputs << new Plug(this);
-    }
-
-    for(quint8 i = 0 ; i < nbOutputs ; i++)
-    {
-        _outputs << new Plug(this);
     }
 }
 
@@ -101,7 +96,7 @@ bool GenericNode::hasOutput(Plug *output) const
     return _outputs.contains(output);
 }
 
-void GenericNode::signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
+void GenericNode::signalProcessDone(const Properties &outputs, const Properties &inputs)
 {
     emit processDone(outputs, inputs);
 }
@@ -123,10 +118,10 @@ void GenericNode::setProperties(const Properties &properties)
 
 void GenericNode::setProperty(const QString &name, const QVariant &value)
 {
+    qDebug() << "GenericNode::setProperty" << name << value;
     if(value != _properties.value(name))
     {
         _properties[name] = value;
-
         emit propertyChanged(name, value);
     }
 }

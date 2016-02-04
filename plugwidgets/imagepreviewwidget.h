@@ -15,29 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfileprocessor.h"
+#ifndef IMAGEPREVIEWWIDGET_H
+#define IMAGEPREVIEWWIDGET_H
 
-#include <opencv2/highgui/highgui.hpp>
+#include "plugwidgets/abstractplugwidget.h"
 
-#include <QDebug>
-
-#include "cvutils.h"
-
-
-ImageFromFileProcessor::ImageFromFileProcessor() :
-    AbstractProcessor()
+class ImagePreviewWidget : public AbstractPlugWidget
 {
-    addInput("path",   PlugType::ImagePath);
-    addOutput("image", PlugType::Image);
-}
+    Q_OBJECT
 
-Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
-{
-    Q_UNUSED(inputs);
+    public:
+        explicit ImagePreviewWidget(QWidget *parent = NULL);
 
-    Properties outputs;
-    outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           CV_LOAD_IMAGE_COLOR)));
+    public slots:
+        void onConnectedInputProcessed(const QVariant &value);
 
-    return outputs;
-}
+    protected:
+        virtual void paintEvent(QPaintEvent *event);
+
+    private:
+        QPixmap _image;
+};
+
+#endif // IMAGEPREVIEWWIDGET_H

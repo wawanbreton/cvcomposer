@@ -25,9 +25,10 @@ MedianBlurProcessor::MedianBlurProcessor() :
 {
 }
 
-QList<cv::Mat> MedianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
+Properties MedianBlurProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat blurred = inputs[0].clone();
-    cv::medianBlur(inputs[0], blurred, getProperty("size").toInt());
-    return QList<cv::Mat>() << blurred;
+    #warning implement this
+    /*cv::Mat blurred = inputs[0].clone();
+    cv::medianBlur(inputs[0], blurred, getProperty("size").toInt());*/
+    return Properties();
 }

@@ -26,7 +26,7 @@ class ImageFromFileProcessor : public AbstractProcessor
         ImageFromFileProcessor();
 
     protected:
-        QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+        Properties processImpl(const Properties &inputs) override;
 };
 
 Q_DECLARE_METATYPE(ImageFromFileProcessor)

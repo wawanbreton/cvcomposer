@@ -31,7 +31,6 @@
 #include "nodesviews/customitems.h"
 #include "nodesviews/connectionitem.h"
 #include "nodesviews/plugitem.h"
-#include "nodesviews/abstractnodewidget.h"
 
 
 ComposerScene::ComposerScene(QObject *parent) :
@@ -79,24 +78,6 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         _model->addNode(node);
 
         GenericNodeItem *item = new GenericNodeItem(node);
-        QMetaType widgetType(QMetaType::type((nodeType + "Widget").toUtf8()));
-        if(widgetType.isValid())
-        {
-            AbstractNodeWidget *widget = static_cast<AbstractNodeWidget *>(widgetType.create());
-            item->setWidget(widget);
-            connect(widget, SIGNAL(propertyChanged(QString,QVariant)),
-                    node,   SLOT(setProperty(QString,QVariant)));
-            connect(node,   SIGNAL(processDone(QList<cv::Mat>,QList<cv::Mat>)),
-                    widget, SLOT(onProcessDone(QList<cv::Mat>,QList<cv::Mat>)));
-            connect(node,   SIGNAL(processUnavailable()),
-                    widget, SLOT(onProcessUnavailable()));
-            node->setProperties(widget->getProperties());
-        }
-        else
-        {
-            qCritical() << "ComposerScene::dropEvent" << "Unable to find widget for" << nodeType;
-        }
-
         item->setPos(event->scenePos());
         addItem(item);
         _nodes << item;

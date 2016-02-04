@@ -26,14 +26,15 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 {
 }
 
-QList<cv::Mat> BilateralFilterProcessor::processImpl(const QList<cv::Mat> &inputs)
+Properties BilateralFilterProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat filtered = inputs[0].clone();
+    #warning implement this
+    /*cv::Mat filtered = inputs[0].clone();
     cv::bilateralFilter(inputs[0],
                         filtered,
                         getProperty("diameter").toInt(),
                         getProperty("sigmaColor").toDouble(),
                         getProperty("sigmaSpace").toDouble(),
-                        getProperty("border").toInt());
-    return QList<cv::Mat>() << filtered;
+                        getProperty("border").toInt());*/
+    return Properties();
 }

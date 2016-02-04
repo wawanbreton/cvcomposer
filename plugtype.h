@@ -25,7 +25,9 @@ namespace PlugType
         Image,
         Size,
         Point,
-        Enumeration
+        Enumeration,
+        ImagePath,
+        ImagePreview
     } Enum;
 
     typedef enum
@@ -36,6 +38,8 @@ namespace PlugType
     } Pluggable;
 
     Pluggable isInputPluggable(Enum value);
+
+    bool isWidgetAlwaysVisible(Enum value);
 }
 
 #endif // PLUGTYPE_H

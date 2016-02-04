@@ -29,15 +29,16 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 {
 }
 
-QList<cv::Mat> GaussianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
+Properties GaussianBlurProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat blurred = inputs[0].clone();
+    #warning implement this
+    /*cv::Mat blurred = inputs[0].clone();
     cv::GaussianBlur(inputs[0],
                      blurred,
                      getProperty("size").value<cv::Size>(),
                      getProperty("sigmaX").toDouble(),
                      getProperty("sigmaY").toDouble(),
-                     getProperty("border").toInt());
-    return QList<cv::Mat>() << blurred;
+                     getProperty("border").toInt());*/
+    return Properties();
 }
 

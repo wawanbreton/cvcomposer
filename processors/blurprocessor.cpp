@@ -35,14 +35,18 @@ BlurProcessor::BlurProcessor() :
     addOutput("output image", PlugType::Image);
 }
 
-QList<cv::Mat> BlurProcessor::processImpl(const QList<cv::Mat> &inputs)
+Properties BlurProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat blurred = inputs[0].clone();
-    cv::blur(inputs[0],
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat blurred = inputImage.clone();
+    cv::blur(inputImage,
              blurred,
              getProperty("size").value<cv::Size>(),
              getProperty("anchor").value<cv::Point>(),
              getProperty("border").toInt());
-    return QList<cv::Mat>() << blurred;
+
+    Properties properties;
+    properties.insert("output image", QVariant::fromValue(blurred));
+    return properties;
 }
 

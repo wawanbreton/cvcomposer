@@ -39,7 +39,7 @@ class AbstractProcessor
 
         const QList<PlugDefinition> &getOutputs();
 
-        QList<cv::Mat> process(const QList<cv::Mat> &inputs);
+        Properties process(const Properties &inputs);
 
     protected:
         void addInput(const PlugDefinition &definition);
@@ -50,7 +50,7 @@ class AbstractProcessor
 
         void addOutput(const QString &userReadableName, PlugType::Enum type);
 
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
+        virtual Properties processImpl(const Properties &inputs) = 0;
 
         QVariant getProperty(const QString &name) const;
 

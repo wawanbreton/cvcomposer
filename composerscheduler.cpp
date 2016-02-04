@@ -28,21 +28,25 @@ ComposerScheduler::ComposerScheduler(QObject *parent) :
     QObject(parent),
     _executor(new ComposerExecutor(this)),
     _executionList(),
+    _connections(),
     _unreachableNodes(),
     _processedNodes(),
     _cancelled(false)
 {
-    connect(_executor, SIGNAL(nodeProcessed(bool, QList<cv::Mat>)),
-                       SLOT(onNodeProcessed(bool, QList<cv::Mat>)));
+    connect(_executor, SIGNAL(nodeProcessed(bool, Properties)),
+                       SLOT(onNodeProcessed(bool, Properties)));
 }
 
 void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                                          const QList<Connection *> &connections)
 {
+    _connections = connections;
+
     _processedNodes.clear();
     _executionList.clear();
 
-    QList<GenericNode *> pseudoProcessedNodes;
+    #warning Check that it does not break the algorithm
+    //QList<GenericNode *> pseudoProcessedNodes;
     QList<GenericNode *> nodesToProcess = nodes;
 
     do
@@ -52,7 +56,6 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
         {
             iterator.next();
             GenericNode *nodeToProcess = iterator.value();
-            QList<GenericNode *> dependancies;
 
             // For each remaining node, check whether all its inputs are available, i.e. we can
             // process it now
@@ -60,16 +63,14 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
             bool allInputsProcessed = true;
             foreach(Plug *input, nodeToProcess->getInputs())
             {
-                // Find the connection to this input
-                const Connection *connection = NULL;
-                foreach(const Connection *aConnection, connections)
+                if(PlugType::isInputPluggable(input->getDefinition().type) != PlugType::Mandatory)
                 {
-                    if(aConnection->getInput() == input)
-                    {
-                        connection = aConnection;
-                        break;
-                    }
+                    // Plug may not be connected, so we don't care whether it is actually connected
+                    continue;
                 }
+
+                // Find the connection to this input
+                const Connection *connection = findConnectionToInput(input);
 
                 // We have found the connection, now find the previous node
                 GenericNode *previousNode = NULL;
@@ -84,6 +85,11 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                         }
                     }
                 }
+                else
+                {
+                    // Input is not connected, so we will use the user-defined value
+                    continue;
+                }
 
                 if(previousNode == NULL || _unreachableNodes.contains(previousNode))
                 {
@@ -95,10 +101,10 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                     break; // Don't bother checking other plugs
 
                 }
-                else if(pseudoProcessedNodes.contains(previousNode))
+                //else if(pseudoProcessedNodes.contains(previousNode))
+                else if(_executionList.contains(previousNode))
                 {
                     // Output of previous node has been processed
-                    dependancies << previousNode;
                 }
                 else
                 {
@@ -110,8 +116,8 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
             if(allInputsProcessed)
             {
                 // All inputs of node have been processed, we can process it now !
-                _executionList.enqueue(qMakePair(nodeToProcess, dependancies));
-                pseudoProcessedNodes << nodeToProcess;
+                _executionList.enqueue(nodeToProcess);
+                //pseudoProcessedNodes << nodeToProcess;
                 iterator.remove();
             }
         }
@@ -140,17 +146,10 @@ void ComposerScheduler::execute()
         node->signalProcessUnavailable();
     }
 
-    if(_executionList.isEmpty())
-    {
-        deleteLater();
-    }
-    else
-    {
-        _executor->process(_executionList.head().first, QList<cv::Mat>());
-    }
+    processNextIfPossible();
 }
 
-void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outputs)
+void ComposerScheduler::onNodeProcessed(bool success, const Properties &outputs)
 {
     if(_cancelled)
     {
@@ -158,54 +157,86 @@ void ComposerScheduler::onNodeProcessed(bool success, const QList<cv::Mat> &outp
         return;
     }
 
-    QPair<GenericNode *, QList<GenericNode *> > processedNode = _executionList.dequeue();
+    GenericNode *processedNode = _executionList.dequeue();
     if(success)
     {
-        _processedNodes[processedNode.first] = outputs;
+        _processedNodes[processedNode] = outputs;
     }
-    else
+
+    processNextIfPossible();
+}
+
+bool ComposerScheduler::makeInputs(GenericNode *node, Properties &inputs)
+{
+    foreach(Plug *plug, node->getInputs())
     {
-        // One node execution has failed, now find all the nodes dependant of it
-        bool nodeRemoved;
-        QList<GenericNode *> removedNodes;
-        removedNodes << processedNode.first;
-        do
+        QString plugName = plug->getDefinition().name;
+
+        // Find whether this plug is connected
+        const Connection *connection = findConnectionToInput(plug);
+        if(connection)
         {
-            nodeRemoved = false;
-            QMutableListIterator<QPair<GenericNode *, QList<GenericNode *> > > iterator(_executionList);
+            // This plug is connected, get the output value of the previous node, if available
+            bool nodeProcessed = false;
+            QMapIterator<GenericNode *, Properties> iterator(_processedNodes);
             while(iterator.hasNext())
             {
                 iterator.next();
 
-                foreach(GenericNode *removedNode, removedNodes)
+                if(iterator.key()->hasOutput(connection->getOutput()))
                 {
-                    if(iterator.value().second.contains(removedNode))
-                    {
-                        // This node has a removed dependancy, tag is as unavailable and add it to
-                        // the list so that the nodes dependant of it become unavailable too
-                        iterator.value().first->signalProcessUnavailable();
-                        nodeRemoved = true;
-                        removedNodes << iterator.value().first;
-                        iterator.remove();
-                        break;
-                    }
+                    // The node providing the output has been processed, great !
+                    nodeProcessed = true;
+                    QString outputName = connection->getOutput()->getDefinition().name;
+                    inputs.insert(plugName, iterator.value()[outputName]);
                 }
             }
-        } while(nodeRemoved);
+
+            if(not nodeProcessed)
+            {
+                // The input node couldn't be processed :(
+                return false;
+            }
+        }
+        else
+        {
+            // This plus is not connected, use the user-defined value
+            inputs.insert(plugName, node->getProperties()[plugName]);
+        }
     }
 
+    return true;
+}
+
+void ComposerScheduler::processNextIfPossible()
+{
     if(_executionList.isEmpty())
     {
         deleteLater();
     }
     else
     {
-        QList<cv::Mat> inputs;
-        foreach(GenericNode *dependancy, _executionList.head().second)
+        Properties inputs;
+        if(makeInputs(_executionList.head(), inputs))
         {
-            inputs << _processedNodes[dependancy];
+            _executor->process(_executionList.head(), inputs);
         }
-
-        _executor->process(_executionList.head().first, inputs);
+        else
+        {
+            onNodeProcessed(false, Properties());
+        }
     }
+}
+
+const Connection *ComposerScheduler::findConnectionToInput(const Plug *input)
+{
+    foreach(const Connection *connection, _connections)
+    {
+        if(connection->getInput() == input)
+        {
+            return connection;
+        }
+    }
+
+    return NULL;
 }

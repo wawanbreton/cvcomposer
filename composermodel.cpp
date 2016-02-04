@@ -78,6 +78,8 @@ void ComposerModel::addConnection(Plug *output, Plug *input)
         if(iterator.value()->getInput() == input)
         {
             Connection *connection = iterator.value();
+            connection->getInput()->signalConnectedTo(NULL);
+            connection->getOutput()->signalConnectedTo(NULL);
             iterator.remove();
             delete connection;
             emit connectionRemoved(connection);
@@ -86,6 +88,8 @@ void ComposerModel::addConnection(Plug *output, Plug *input)
 
     Connection *connection = new Connection(output, input, this);
     _connections << connection;
+    input->signalConnectedTo(output);
+    output->signalConnectedTo(input);
     emit connectionAdded(connection);
 
     startExecution();
@@ -95,6 +99,8 @@ void ComposerModel::removeConnection(Connection *connection)
 {
     if(_connections.removeAll(connection))
     {
+        connection->getInput()->signalConnectedTo(NULL);
+        connection->getOutput()->signalConnectedTo(NULL);
         emit connectionRemoved(connection);
         delete connection;
 
