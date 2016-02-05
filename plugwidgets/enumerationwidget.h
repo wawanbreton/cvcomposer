@@ -15,28 +15,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTPLUGWIDGET_H
-#define ABSTRACTPLUGWIDGET_H
+#ifndef ENUMERATIONWIDGET_H
+#define ENUMERATIONWIDGET_H
 
-#include <QWidget>
+#include "plugwidgets/abstractplugwidget.h"
 
-class AbstractPlugWidget : public QWidget
+#include <QComboBox>
+
+#include "properties.h"
+
+/*! @brief This widget is useful to select a single element amongst a fixed list.
+ *
+ *  The following properties may be given :
+ *    - values : QList<QPair<QString, QVariant> > containing the list of displayed elements
+ *    - *      : all the properties that a QComboBox may accept */
+class EnumerationWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        virtual QVariant getValue() const;
+        explicit EnumerationWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual void setValue(const QVariant &value);
+        virtual QVariant getValue() const override;
 
-    public slots:
-        virtual void onConnectedInputProcessed(const QVariant &value);
+        virtual void setValue(const QVariant &value) override;
 
-    signals:
-        void valueChanged();
-
-    protected:
-        explicit AbstractPlugWidget(QWidget *parent = NULL);
+    private:
+        QComboBox *_comboBox;
 };
 
-#endif // ABSTRACTPLUGWIDGET_H
+#endif // ENUMERATIONWIDGET_H

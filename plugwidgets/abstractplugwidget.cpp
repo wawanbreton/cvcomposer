@@ -32,6 +32,12 @@ QVariant AbstractPlugWidget::getValue() const
     return QVariant();
 }
 
+void AbstractPlugWidget::setValue(const QVariant &value)
+{
+    Q_UNUSED(value)
+    qCritical() << "AbstractPlugWidget::setValue" << "This method should not be called";
+}
+
 void AbstractPlugWidget::onConnectedInputProcessed(const QVariant &value)
 {
     Q_UNUSED(value);

@@ -26,7 +26,8 @@ typedef struct
     QString name;
     QString userReadableName;
     PlugType::Enum type;
-    QMap<QString, Properties> widgetsProperties;
+    Properties widgetProperties;
+    QVariant defaultValue;
 } PlugDefinition;
 
 #endif // PLUGDEFINITION_H

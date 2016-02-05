@@ -85,7 +85,7 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                         }
                     }
                 }
-                else
+                else if(PlugType::isInputPluggable(input->getDefinition().type) != PlugType::Mandatory)
                 {
                     // Input is not connected, so we will use the user-defined value
                     continue;

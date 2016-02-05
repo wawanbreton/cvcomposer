@@ -28,6 +28,10 @@
 #include "plug.h"
 #include "plugwidgets/imagepathwidget.h"
 #include "plugwidgets/imagepreviewwidget.h"
+#include "plugwidgets/sizewidget.h"
+#include "plugwidgets/pointwidget.h"
+#include "plugwidgets/enumerationwidget.h"
+#include "plugwidgets/doublewidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
@@ -134,7 +138,7 @@ void GenericNodeWidget::onProcessDone(const Properties &outputs, const Propertie
 {
     foreach(const PlugWidget &widget, _widgets)
     {
-        if(widget.input)
+        if(widget.input && widget.widget)
         {
             widget.widget->onConnectedInputProcessed(inputs[widget.definition.name]);
         }
@@ -147,28 +151,28 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
 
     switch(plug.type)
     {
-        /*case PlugType::Size:
-        {
-            widget = new QWidget(this);
-
-            QSpinBox *spinBoxWidth = new QSpinBox(widget);
-            QSpinBox *spinBoxHeight = new QSpinBox(widget);
-            QLabel *label = new QLabel(widget);
-            label->setText("x");
-
-            QHBoxLayout *layout = new QHBoxLayout(widget);
-            layout->setContentsMargins(0, 0, 0, 0);
-            layout->addWidget(spinBoxWidth);
-            layout->addWidget(label);
-            layout->addWidget(spinBoxHeight);
-
+        case PlugType::Size:
+            widget = new SizeWidget(plug.widgetProperties, this);
             break;
-        }*/
+        case PlugType::Point:
+            widget = new PointWidget(plug.widgetProperties, this);
+            break;
+        case PlugType::Enumeration:
+            widget = new EnumerationWidget(plug.widgetProperties, this);
+            break;
+        case PlugType::Double:
+            widget = new DoubleWidget(plug.widgetProperties, this);
+            break;
         case PlugType::ImagePath:
             widget = new ImagePathWidget(this);
             break;
         case PlugType::ImagePreview:
             widget = new ImagePreviewWidget(this);
+            break;
+        case PlugType::Image:
+            qCritical() << "GenericNodeWidget::makePlugWidget"
+                        << "plug type" << plug.type
+                        << "is not supposed to be associated to a widget";
             break;
     }
 
@@ -176,6 +180,10 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
     {
         _widgetsMapper->setMapping(widget, plug.name);
         connect(widget, SIGNAL(valueChanged()), _widgetsMapper, SLOT(map()));
+        if(not plug.defaultValue.isNull())
+        {
+            widget->setValue(plug.defaultValue);
+        }
     }
 
     return widget;

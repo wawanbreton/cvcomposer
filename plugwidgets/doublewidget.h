@@ -15,33 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGTYPE_H
-#define PLUGTYPE_H
+#ifndef DOUBLEWIDGET_H
+#define DOUBLEWIDGET_H
 
-namespace PlugType
+#include "plugwidgets/abstractplugwidget.h"
+
+#include <QDoubleSpinBox>
+
+#include "properties.h"
+
+/*! @brief This widget is useful to edit a decimal value
+ *
+ *  The following properties may be given :
+ *    - *  : all the properties that a QDoubleSpinBox may accept */
+class DoubleWidget : public AbstractPlugWidget
 {
-    typedef enum
-    {
-        Image,
-        Size,
-        Point,
-        Enumeration,
-        Double,
-        ImagePath,
-        ImagePreview
-    } Enum;
+    Q_OBJECT
 
-    typedef enum
-    {
-        Mandatory, // Plug has to be connected, it can't be configured manually
-        Free,      // Plug may be configured manually, or connected
-        ManualOnly // Plug can only be manually configured
-    } Pluggable;
+    public:
+        explicit DoubleWidget(const Properties &properties, QWidget *parent = NULL);
 
-    Pluggable isInputPluggable(Enum value);
+        virtual QVariant getValue() const override;
 
-    bool isWidgetAlwaysVisible(Enum value);
-}
+        virtual void setValue(const QVariant &value) override;
 
-#endif // PLUGTYPE_H
+    private:
+        QDoubleSpinBox *_spinBox;
+};
 
+#endif // DOUBLEWIDGET_H

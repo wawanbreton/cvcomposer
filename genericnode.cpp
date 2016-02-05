@@ -42,10 +42,12 @@ GenericNode::GenericNode(const QString &name,
          foreach(const PlugDefinition input, processor->getInputs())
          {
              _inputs << new Plug(input, this);
+             _properties.insert(input.name, input.defaultValue);
          }
          foreach(const PlugDefinition output, processor->getOutputs())
          {
              _outputs << new Plug(output, this);
+             _properties.insert(output.name, output.defaultValue);
          }
 
          delete processor;
@@ -118,7 +120,6 @@ void GenericNode::setProperties(const Properties &properties)
 
 void GenericNode::setProperty(const QString &name, const QVariant &value)
 {
-    qDebug() << "GenericNode::setProperty" << name << value;
     if(value != _properties.value(name))
     {
         _properties[name] = value;

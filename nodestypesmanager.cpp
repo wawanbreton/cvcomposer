@@ -19,10 +19,8 @@
 
 #include <QDebug>
 
-#include "nodesviews/blurwidget.h"
 #include "nodesviews/bilateralfilterwidget.h"
 #include "nodesviews/dockableimageviewerwidget.h"
-#include "nodesviews/gaussianblurwidget.h"
 #include "nodesviews/imagefromfilewidget.h"
 #include "nodesviews/imagepreviewerwidget.h"
 #include "nodesviews/medianblurwidget.h"
@@ -39,7 +37,6 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
 {
     #warning Do this somewhere else
     qRegisterMetaType<BlurProcessor>();
-    qRegisterMetaType<BlurWidget>();
     qRegisterMetaType<ImageFromFileProcessor>();
     qRegisterMetaType<ImageFromFileWidget>();
     qRegisterMetaType<ImagePreviewerProcessor>();
@@ -47,7 +44,6 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<DockableImageViewerProcessor>();
     qRegisterMetaType<DockableImageViewerWidget>();
     qRegisterMetaType<GaussianBlurProcessor>();
-    qRegisterMetaType<GaussianBlurWidget>();
     qRegisterMetaType<MedianBlurProcessor>();
     qRegisterMetaType<MedianBlurWidget>();
     qRegisterMetaType<BilateralFilterProcessor>();

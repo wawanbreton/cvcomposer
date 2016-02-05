@@ -28,6 +28,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Point:
         case PlugType::Enumeration:
         case PlugType::ImagePath:
+        case PlugType::Double:
             return ManualOnly;
         case PlugType::ImagePreview:
             return Mandatory;

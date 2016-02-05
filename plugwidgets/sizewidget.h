@@ -15,42 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURWIDGET_H
-#define BLURWIDGET_H
+#ifndef SIZEWIDGET_H
+#define SIZEWIDGET_H
 
-#include "nodesviews/abstractnodewidget.h"
+#include "plugwidgets/abstractplugwidget.h"
 
-#include <opencv2/core/core.hpp>
+#include <QSpinBox>
 
-#include <QMetaType>
+#include "properties.h"
 
-namespace Ui { class BlurWidget; }
-
-class BlurWidget : public AbstractNodeWidget
+/*! @brief This widget is useful to edit a 2D size
+ *
+ *  The following properties may be given :
+ *    - width-*  : all the properties that a QSpinBox may accept
+ *    - height-* : all the properties that a QSpinBox may accept */
+class SizeWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit BlurWidget(QWidget *parent = NULL);
-        BlurWidget(const BlurWidget &other);
-        ~BlurWidget();
+        explicit SizeWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const override;
+        virtual QVariant getValue() const override;
 
-    protected:
-        virtual QStringList getPropertiesNames() const override;
-
-    private slots:
-        void onSizeChanged();
-
-        void onAnchorChanged();
-
-        void onBorderChanged();
+        virtual void setValue(const QVariant &value) override;
 
     private:
-        Ui::BlurWidget *_ui;
+        QSpinBox *_spinBoxWidth;
+        QSpinBox *_spinBoxHeight;
 };
 
-Q_DECLARE_METATYPE(BlurWidget)
-
-#endif // BLURWIDGET_H
+#endif // SIZEWIDGET_H

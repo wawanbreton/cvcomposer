@@ -38,7 +38,6 @@ SOURCES += main.cpp\
     nodeslistwidget.cpp \
     connection.cpp \
     cvutils.cpp \
-    nodesviews/blurwidget.cpp \
     nodesviews/imageviewerdockwidget.cpp \
     genericnode.cpp \
     processors/abstractprocessor.cpp \
@@ -50,7 +49,6 @@ SOURCES += main.cpp\
     processors/imagepreviewerprocessor.cpp \
     nodesviews/dockableimageviewerwidget.cpp \
     processors/dockableimageviewerprocessor.cpp \
-    nodesviews/gaussianblurwidget.cpp \
     processors/gaussianblurprocessor.cpp \
     nodesviews/medianblurwidget.cpp \
     processors/medianblurprocessor.cpp \
@@ -61,7 +59,11 @@ SOURCES += main.cpp\
     plug.cpp \
     plugwidgets/imagepathwidget.cpp \
     plugwidgets/abstractplugwidget.cpp \
-    plugwidgets/imagepreviewwidget.cpp
+    plugwidgets/imagepreviewwidget.cpp \
+    plugwidgets/sizewidget.cpp \
+    plugwidgets/pointwidget.cpp \
+    plugwidgets/enumerationwidget.cpp \
+    plugwidgets/doublewidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -79,7 +81,6 @@ HEADERS  += mainwidget.h \
     nodeslistwidget.h \
     plug.h \
     cvutils.h \
-    nodesviews/blurwidget.h \
     nodesviews/imageviewerdockwidget.h \
     genericnode.h \
     processors/abstractprocessor.h \
@@ -92,7 +93,6 @@ HEADERS  += mainwidget.h \
     processors/imagepreviewerprocessor.h \
     nodesviews/dockableimageviewerwidget.h \
     processors/dockableimageviewerprocessor.h \
-    nodesviews/gaussianblurwidget.h \
     processors/gaussianblurprocessor.h \
     nodesviews/medianblurwidget.h \
     processors/medianblurprocessor.h \
@@ -103,14 +103,16 @@ HEADERS  += mainwidget.h \
     nodesviews/genericnodewidget.h \
     plugwidgets/imagepathwidget.h \
     plugwidgets/abstractplugwidget.h \
-    plugwidgets/imagepreviewwidget.h
+    plugwidgets/imagepreviewwidget.h \
+    plugwidgets/sizewidget.h \
+    plugwidgets/pointwidget.h \
+    plugwidgets/enumerationwidget.h \
+    plugwidgets/doublewidget.h
 
 FORMS    += \
     mainwidget.ui \
     nodesviews/imagedockwidget.ui \
-    nodesviews/blurwidget.ui \
     nodesviews/imagefromfilewidget.ui \
     nodesviews/dockableimageviewerwidget.ui \
-    nodesviews/gaussianblurwidget.ui \
     nodesviews/medianblurwidget.ui \
     nodesviews/bilateralfilterwidget.ui

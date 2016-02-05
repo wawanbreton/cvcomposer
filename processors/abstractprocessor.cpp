@@ -96,9 +96,27 @@ void AbstractProcessor::addInput(const PlugDefinition &definition)
     _inputs << definition;
 }
 
-void AbstractProcessor::addInput(const QString &userReadableName, PlugType::Enum type)
+void AbstractProcessor::addInput(const QString &userReadableName,
+                                 PlugType::Enum type,
+                                 const QVariant &defaultValue,
+                                 const Properties &widgetProperties)
 {
-    addInput(makePlug(userReadableName, type));
+    addInput(makePlug(userReadableName, type, defaultValue, widgetProperties));
+}
+
+void AbstractProcessor::addEnumerationInput(const QString &userReadableName,
+                                            const QList<QPair<QString, QVariant> > &values,
+                                            const QVariant &defaultValue)
+{
+    PlugDefinition plug;
+    #warning de-duplicate this
+    plug.name = userReadableName;
+    plug.userReadableName = userReadableName;
+    plug.type = PlugType::Enumeration;
+    plug.widgetProperties.insert("values", QVariant::fromValue(values));
+    plug.defaultValue = defaultValue;
+
+    addInput(plug);
 }
 
 void AbstractProcessor::addOutput(const PlugDefinition &definition)
@@ -125,12 +143,18 @@ QVariant AbstractProcessor::getProperty(const QString &name) const
     }
 }
 
-PlugDefinition AbstractProcessor::makePlug(const QString &userReadableName, PlugType::Enum type)
+PlugDefinition AbstractProcessor::makePlug(const QString &userReadableName,
+                                           PlugType::Enum type,
+                                           const QVariant &defaultValue,
+                                           const Properties &widgetProperties)
 {
     PlugDefinition plug;
-    plug.name = QString(userReadableName).remove(' ');
+    #warning de-duplicate this
+    plug.name = userReadableName;
     plug.userReadableName = userReadableName;
     plug.type = type;
+    plug.defaultValue = defaultValue;
+    plug.widgetProperties = widgetProperties;
 
     return plug;
 }

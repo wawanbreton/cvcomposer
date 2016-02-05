@@ -27,18 +27,40 @@
 GaussianBlurProcessor::GaussianBlurProcessor() :
     AbstractProcessor()
 {
+    addInput("input image", PlugType::Image);
+
+    Properties sizeProperties;
+    sizeProperties.insert("width-minimum", 1);
+    sizeProperties.insert("width-maximum", 9999);
+    sizeProperties.insert("width-singleStep", 2);
+    sizeProperties.insert("height-minimum", 1);
+    sizeProperties.insert("height-maximum", 9999);
+    sizeProperties.insert("height-singleStep", 2);
+    addInput("size", PlugType::Size,  QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
+
+    Properties sigmaProperties;
+    sigmaProperties.insert("maximum", 9999.0);
+    addInput("sigma X", PlugType::Double, 0.0, sigmaProperties);
+    addInput("sigma Y", PlugType::Double, 0.0, sigmaProperties);
+
+    addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
+
+    addOutput("output image", PlugType::Image);
 }
 
 Properties GaussianBlurProcessor::processImpl(const Properties &inputs)
 {
-    #warning implement this
-    /*cv::Mat blurred = inputs[0].clone();
-    cv::GaussianBlur(inputs[0],
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat blurred = inputImage.clone();
+    cv::GaussianBlur(inputImage,
                      blurred,
-                     getProperty("size").value<cv::Size>(),
-                     getProperty("sigmaX").toDouble(),
-                     getProperty("sigmaY").toDouble(),
-                     getProperty("border").toInt());*/
-    return Properties();
+                     inputs["size"].value<cv::Size>(),
+                     inputs["sigma X"].toDouble(),
+                     inputs["sigma Y"].toDouble(),
+                     inputs["border"].toInt());
+
+    Properties properties;
+    properties.insert("output image", QVariant::fromValue(blurred));
+    return properties;
 }
 
