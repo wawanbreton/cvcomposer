@@ -32,6 +32,8 @@
 #include "plugwidgets/pointwidget.h"
 #include "plugwidgets/enumerationwidget.h"
 #include "plugwidgets/doublewidget.h"
+#include "plugwidgets/stringwidget.h"
+#include "plugwidgets/dockableimageviewerwidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
@@ -140,7 +142,18 @@ void GenericNodeWidget::onProcessDone(const Properties &outputs, const Propertie
     {
         if(widget.input && widget.widget)
         {
-            widget.widget->onConnectedInputProcessed(inputs[widget.definition.name]);
+            widget.widget->onNodeProcessed(inputs, outputs);
+        }
+    }
+}
+
+void GenericNodeWidget::onProcessUnavailable()
+{
+    foreach(const PlugWidget &widget, _widgets)
+    {
+        if(widget.input && widget.widget)
+        {
+            widget.widget->onNodeProcessed(Properties(), Properties());
         }
     }
 }
@@ -163,11 +176,17 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
         case PlugType::Double:
             widget = new DoubleWidget(plug.widgetProperties, this);
             break;
+        case PlugType::String:
+            widget = new StringWidget(plug.widgetProperties, this);
+            break;
         case PlugType::ImagePath:
             widget = new ImagePathWidget(this);
             break;
         case PlugType::ImagePreview:
             widget = new ImagePreviewWidget(this);
+            break;
+        case PlugType::DockableImageViewer:
+            widget = new DockableImageViewerWidget(this);
             break;
         case PlugType::Image:
             qCritical() << "GenericNodeWidget::makePlugWidget"
@@ -191,10 +210,11 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
 
 void GenericNodeWidget::makeLabelText(const PlugWidget &widget, bool plugged)
 {
-    QString text = widget.definition.userReadableName;
+    QString text = widget.definition.name;
     text = text[0].toUpper() + text.mid(1);
 
-    if(plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory)
+    if((plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory) &&
+       not PlugType::isWidgetAlwaysVisible(widget.definition.type))
     {
         widget.label->setText(text);
     }

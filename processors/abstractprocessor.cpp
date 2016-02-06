@@ -20,20 +20,12 @@
 #include <QDebug>
 
 
-AbstractProcessor::AbstractProcessor() :
-    _properties()
+AbstractProcessor::AbstractProcessor()
 {
-
 }
 
 AbstractProcessor::~AbstractProcessor()
 {
-
-}
-
-void AbstractProcessor::setProperties(const Properties &properties)
-{
-    _properties = properties;
 }
 
 quint8 AbstractProcessor::getNbInputs() const
@@ -96,22 +88,20 @@ void AbstractProcessor::addInput(const PlugDefinition &definition)
     _inputs << definition;
 }
 
-void AbstractProcessor::addInput(const QString &userReadableName,
+void AbstractProcessor::addInput(const QString &name,
                                  PlugType::Enum type,
                                  const QVariant &defaultValue,
                                  const Properties &widgetProperties)
 {
-    addInput(makePlug(userReadableName, type, defaultValue, widgetProperties));
+    addInput(makePlug(name, type, defaultValue, widgetProperties));
 }
 
-void AbstractProcessor::addEnumerationInput(const QString &userReadableName,
+void AbstractProcessor::addEnumerationInput(const QString &name,
                                             const QList<QPair<QString, QVariant> > &values,
                                             const QVariant &defaultValue)
 {
     PlugDefinition plug;
-    #warning de-duplicate this
-    plug.name = userReadableName;
-    plug.userReadableName = userReadableName;
+    plug.name = name;
     plug.type = PlugType::Enumeration;
     plug.widgetProperties.insert("values", QVariant::fromValue(values));
     plug.defaultValue = defaultValue;
@@ -129,29 +119,13 @@ void AbstractProcessor::addOutput(const QString &userReadableName, PlugType::Enu
     addOutput(makePlug(userReadableName, type));
 }
 
-QVariant AbstractProcessor::getProperty(const QString &name) const
-{
-    Properties::const_iterator iterator = _properties.find(name);
-    if(iterator != _properties.end())
-    {
-        return iterator.value();
-    }
-    else
-    {
-        qCritical() << "AbstractProcessor::getProperty" << "No property named" << name;
-        return QVariant();
-    }
-}
-
-PlugDefinition AbstractProcessor::makePlug(const QString &userReadableName,
+PlugDefinition AbstractProcessor::makePlug(const QString &name,
                                            PlugType::Enum type,
                                            const QVariant &defaultValue,
                                            const Properties &widgetProperties)
 {
     PlugDefinition plug;
-    #warning de-duplicate this
-    plug.name = userReadableName;
-    plug.userReadableName = userReadableName;
+    plug.name = name;
     plug.type = type;
     plug.defaultValue = defaultValue;
     plug.widgetProperties = widgetProperties;

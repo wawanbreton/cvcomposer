@@ -38,8 +38,9 @@ void AbstractPlugWidget::setValue(const QVariant &value)
     qCritical() << "AbstractPlugWidget::setValue" << "This method should not be called";
 }
 
-void AbstractPlugWidget::onConnectedInputProcessed(const QVariant &value)
+void AbstractPlugWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
-    Q_UNUSED(value);
+    Q_UNUSED(inputs)
+    Q_UNUSED(outputs)
     // Default is nothing to do
 }

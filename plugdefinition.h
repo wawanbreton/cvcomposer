@@ -24,7 +24,6 @@
 typedef struct
 {
     QString name;
-    QString userReadableName;
     PlugType::Enum type;
     Properties widgetProperties;
     QVariant defaultValue;

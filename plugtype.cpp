@@ -29,6 +29,8 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Enumeration:
         case PlugType::ImagePath:
         case PlugType::Double:
+        case PlugType::String:
+        case PlugType::DockableImageViewer:
             return ManualOnly;
         case PlugType::ImagePreview:
             return Mandatory;
@@ -40,5 +42,5 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
 
 bool PlugType::isWidgetAlwaysVisible(PlugType::Enum value)
 {
-    return value == PlugType::ImagePreview;
+    return value == PlugType::ImagePreview || value == PlugType::DockableImageViewer;
 }

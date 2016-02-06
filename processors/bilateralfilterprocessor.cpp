@@ -21,20 +21,38 @@
 
 #include <QDebug>
 
+#include "cvutils.h"
+
 
 BilateralFilterProcessor::BilateralFilterProcessor()
 {
+    addInput("input image", PlugType::Image);
+
+    Properties diameterProperties;
+    diameterProperties.insert("singleStep", 2);
+    diameterProperties.insert("decimals", 0);
+    addInput("diameter", PlugType::Double, 1.0, diameterProperties);
+
+    addInput("sigma color", PlugType::Double, 2.0);
+    addInput("sigma space", PlugType::Double, 0.5);
+
+    addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
+
+    addOutput("output image", PlugType::Image);
 }
 
 Properties BilateralFilterProcessor::processImpl(const Properties &inputs)
 {
-    #warning implement this
-    /*cv::Mat filtered = inputs[0].clone();
-    cv::bilateralFilter(inputs[0],
-                        filtered,
-                        getProperty("diameter").toInt(),
-                        getProperty("sigmaColor").toDouble(),
-                        getProperty("sigmaSpace").toDouble(),
-                        getProperty("border").toInt());*/
-    return Properties();
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat blurred = inputImage.clone();
+    cv::bilateralFilter(inputImage,
+                        blurred,
+                        inputs["diameter"].toInt(),
+                        inputs["sigma color"].toDouble(),
+                        inputs["sigma space"].toDouble(),
+                        inputs["border"].toInt());
+
+    Properties properties;
+    properties.insert("output image", QVariant::fromValue(blurred));
+    return properties;
 }

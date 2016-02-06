@@ -15,36 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "doublewidget.h"
+#include "stringwidget.h"
 
 #include <QHBoxLayout>
 
 
-DoubleWidget::DoubleWidget(const Properties &properties, QWidget *parent) :
+StringWidget::StringWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
-    _spinBox(new QDoubleSpinBox(this))
+    _lineEdit(new QLineEdit(this))
 {
     // Use a layout so that it manages the size hint and resize event
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(_spinBox);
+    layout->addWidget(_lineEdit);
 
-    _spinBox->setMaximum(9999);
-
-    connect(_spinBox,  SIGNAL(valueChanged(double)), SIGNAL(valueChanged()));
+    connect(_lineEdit,  SIGNAL(textChanged(QString)), SIGNAL(valueChanged()));
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {
-        _spinBox->setProperty(iterator.key().toUtf8(), iterator.value());
+        _lineEdit->setProperty(iterator.key().toUtf8(), iterator.value());
     }
 }
 
-QVariant DoubleWidget::getValue() const
+QVariant StringWidget::getValue() const
 {
-    return _spinBox->value();
+    return _lineEdit->text();
 }
 
-void DoubleWidget::setValue(const QVariant &value)
+void StringWidget::setValue(const QVariant &value)
 {
-    _spinBox->setValue(value.toDouble());
+    _lineEdit->setText(value.toString());
 }

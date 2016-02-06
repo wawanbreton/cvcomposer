@@ -28,7 +28,7 @@ class ImagePreviewWidget : public AbstractPlugWidget
         explicit ImagePreviewWidget(QWidget *parent = NULL);
 
     public slots:
-        void onConnectedInputProcessed(const QVariant &value);
+        void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     protected:
         virtual void paintEvent(QPaintEvent *event);

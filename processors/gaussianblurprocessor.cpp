@@ -31,17 +31,13 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 
     Properties sizeProperties;
     sizeProperties.insert("width-minimum", 1);
-    sizeProperties.insert("width-maximum", 9999);
     sizeProperties.insert("width-singleStep", 2);
     sizeProperties.insert("height-minimum", 1);
-    sizeProperties.insert("height-maximum", 9999);
     sizeProperties.insert("height-singleStep", 2);
     addInput("size", PlugType::Size,  QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
 
-    Properties sigmaProperties;
-    sigmaProperties.insert("maximum", 9999.0);
-    addInput("sigma X", PlugType::Double, 0.0, sigmaProperties);
-    addInput("sigma Y", PlugType::Double, 0.0, sigmaProperties);
+    addInput("sigma X", PlugType::Double, 0.0);
+    addInput("sigma Y", PlugType::Double, 0.0);
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 

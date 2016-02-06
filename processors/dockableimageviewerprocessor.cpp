@@ -21,7 +21,8 @@
 DockableImageViewerProcessor::DockableImageViewerProcessor() :
     AbstractProcessor()
 {
-
+    addInput("image", PlugType::Image);
+    addInput("title", PlugType::DockableImageViewer);
 }
 
 Properties DockableImageViewerProcessor::processImpl(const Properties &inputs)

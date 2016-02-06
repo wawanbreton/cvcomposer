@@ -45,8 +45,6 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
     _processedNodes.clear();
     _executionList.clear();
 
-    #warning Check that it does not break the algorithm
-    //QList<GenericNode *> pseudoProcessedNodes;
     QList<GenericNode *> nodesToProcess = nodes;
 
     do
@@ -63,9 +61,9 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
             bool allInputsProcessed = true;
             foreach(Plug *input, nodeToProcess->getInputs())
             {
-                if(PlugType::isInputPluggable(input->getDefinition().type) != PlugType::Mandatory)
+                if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::ManualOnly)
                 {
-                    // Plug may not be connected, so we don't care whether it is actually connected
+                    // Plug can't be connected, so it is always valid
                     continue;
                 }
 
@@ -85,29 +83,20 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                         }
                     }
                 }
-                else if(PlugType::isInputPluggable(input->getDefinition().type) != PlugType::Mandatory)
-                {
-                    // Input is not connected, so we will use the user-defined value
-                    continue;
-                }
 
-                if(previousNode == NULL || _unreachableNodes.contains(previousNode))
+                if(_unreachableNodes.contains(previousNode) ||
+                   (previousNode == NULL && PlugType::isInputPluggable(input->getDefinition().type) == PlugType::Mandatory))
                 {
-                    // Input is not connected or previous node is unreachable, there is no way
-                    // we can process the node
+                    // Previous node is unreachable or mandatory input is not connected,
+                    // there is no way we can process the node
                     _unreachableNodes << iterator.value();
                     iterator.remove();
                     allInputsProcessed = false;
                     break; // Don't bother checking other plugs
-
                 }
-                //else if(pseudoProcessedNodes.contains(previousNode))
-                else if(_executionList.contains(previousNode))
+                else if(previousNode != NULL && not _executionList.contains(previousNode))
                 {
-                    // Output of previous node has been processed
-                }
-                else
-                {
+                    // Output of previous node has not been processed yet
                     allInputsProcessed = false;
                     break; // Don't bother checking other plugs
                 }
@@ -117,13 +106,10 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
             {
                 // All inputs of node have been processed, we can process it now !
                 _executionList.enqueue(nodeToProcess);
-                //pseudoProcessedNodes << nodeToProcess;
                 iterator.remove();
             }
         }
     } while(not nodesToProcess.isEmpty());
-
-    _unreachableNodes << nodesToProcess;
 }
 
 void ComposerScheduler::cancel()

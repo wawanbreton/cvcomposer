@@ -31,18 +31,14 @@ BlurProcessor::BlurProcessor() :
 
     Properties sizeProperties;
     sizeProperties.insert("width-minimum", 1);
-    sizeProperties.insert("width-maximum", 9999);
     sizeProperties.insert("width-singleStep", 2);
     sizeProperties.insert("height-minimum", 1);
-    sizeProperties.insert("height-maximum", 9999);
     sizeProperties.insert("height-singleStep", 2);
     addInput("size", PlugType::Size,  QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
 
     Properties anchorProperties;
     anchorProperties.insert("x-minimum", -1);
-    anchorProperties.insert("x-maximum", 9999);
     anchorProperties.insert("y-minimum", -1);
-    anchorProperties.insert("y-maximum", 9999);
     addInput("anchor", PlugType::Point, QVariant::fromValue(cv::Point(-1, -1)), anchorProperties);
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);

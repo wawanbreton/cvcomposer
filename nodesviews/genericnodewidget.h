@@ -44,6 +44,8 @@ class GenericNodeWidget : public QWidget
     public slots:
         void onProcessDone(const Properties &outputs, const Properties &inputs);
 
+        void onProcessUnavailable();
+
     signals:
         void propertyChanged(const QString &name, const QVariant &value);
 

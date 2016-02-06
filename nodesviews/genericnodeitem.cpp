@@ -32,26 +32,25 @@
 GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
-    _widget(NULL),
+    _widget(new GenericNodeWidget()),
     _inputPlugs(),
     _outputPlugs()
 {
-    GenericNodeWidget *widget = new GenericNodeWidget();
-    widget->setPlugs(node->getInputs(), node->getOutputs());
-    _widget = widget;
-
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
-    proxy->setWidget(widget);
-    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
-    _widget = widget;
+    _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setFixedSize(_widget->sizeHint());
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_NoBackground, true);
 
     connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
             node,    SLOT(setProperty(QString,QVariant)));
-    connect(node,   SIGNAL(processDone(Properties,Properties)),
+    connect(node,    SIGNAL(processDone(Properties,Properties)),
             _widget, SLOT(onProcessDone(Properties,Properties)));
+    connect(node,    SIGNAL(processUnavailable()),
+            _widget, SLOT(onProcessUnavailable()));
+
+    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
+    proxy->setWidget(_widget);
+    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
 
     foreach(Plug *plug, _node->getInputs())
     {

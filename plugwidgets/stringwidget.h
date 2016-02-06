@@ -15,34 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MEDIANBLURWIDGET_H
-#define MEDIANBLURWIDGET_H
+#ifndef STRINGWIDGET_H
+#define STRINGWIDGET_H
 
-#include "nodesviews/abstractnodewidget.h"
+#include "plugwidgets/abstractplugwidget.h"
 
-namespace Ui { class MedianBlurWidget; }
+#include <QLineEdit>
 
-class MedianBlurWidget : public AbstractNodeWidget
+#include "properties.h"
+
+/*! @brief This widget is useful to edit a string value
+ *
+ *  The following properties may be given :
+ *    - *  : all the properties that a QLineEdit may accept */
+class StringWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit MedianBlurWidget(QWidget *parent = NULL);
-        MedianBlurWidget(const MedianBlurWidget &other);
-        ~MedianBlurWidget();
+        explicit StringWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const override;
+        virtual QVariant getValue() const override;
 
-    protected:
-        virtual QStringList getPropertiesNames() const override;
-
-    private slots:
-        void onSizeChanged();
+        virtual void setValue(const QVariant &value) override;
 
     private:
-        Ui::MedianBlurWidget *_ui;
+        QLineEdit *_lineEdit;
 };
 
-Q_DECLARE_METATYPE(MedianBlurWidget)
-
-#endif // MEDIANBLURWIDGET_H
+#endif // STRINGWIDGET_H

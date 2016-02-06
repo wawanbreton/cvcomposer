@@ -81,9 +81,7 @@ AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)
     QMetaType processorType(QMetaType::type((node->getName() + "Processor").toUtf8()));
     if(processorType.isValid())
     {
-        AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
-        processor->setProperties(node->getProperties());
-        return processor;
+        return static_cast<AbstractProcessor *>(processorType.create());
     }
     else
     {

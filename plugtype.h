@@ -27,8 +27,10 @@ namespace PlugType
         Point,
         Enumeration,
         Double,
+        String,
         ImagePath,
-        ImagePreview
+        ImagePreview,
+        DockableImageViewer
     } Enum;
 
     typedef enum

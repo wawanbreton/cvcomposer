@@ -20,6 +20,8 @@
 
 #include <QWidget>
 
+#include "properties.h"
+
 class AbstractPlugWidget : public QWidget
 {
     Q_OBJECT
@@ -30,7 +32,7 @@ class AbstractPlugWidget : public QWidget
         virtual void setValue(const QVariant &value);
 
     public slots:
-        virtual void onConnectedInputProcessed(const QVariant &value);
+        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     signals:
         void valueChanged();

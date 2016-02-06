@@ -15,36 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "doublewidget.h"
+#include "dockableimageviewerwidget.h"
 
+#include <QApplication>
 #include <QHBoxLayout>
 
+#include "cvutils.h"
+#include "plugwidgets/imageviewerdockwidget.h"
 
-DoubleWidget::DoubleWidget(const Properties &properties, QWidget *parent) :
+
+DockableImageViewerWidget::DockableImageViewerWidget(QWidget *parent) :
     AbstractPlugWidget(parent),
-    _spinBox(new QDoubleSpinBox(this))
+    _lineEdit(new QLineEdit(this)),
+    _dockWidget(new ImageViewerDockWidget(QApplication::activeWindow()))
 {
     // Use a layout so that it manages the size hint and resize event
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(_spinBox);
+    layout->addWidget(_lineEdit);
 
-    _spinBox->setMaximum(9999);
+    QString title = "Image viewer";
 
-    connect(_spinBox,  SIGNAL(valueChanged(double)), SIGNAL(valueChanged()));
+    _lineEdit->setText(title);
+    connect(_lineEdit, SIGNAL(textChanged(QString)),
+            _dockWidget,   SLOT(setWindowTitle(QString)));
 
-    for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
-    {
-        _spinBox->setProperty(iterator.key().toUtf8(), iterator.value());
-    }
+    _dockWidget->show();
+    _dockWidget->setWindowTitle(title);
 }
 
-QVariant DoubleWidget::getValue() const
+void DockableImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
-    return _spinBox->value();
-}
+    AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
-void DoubleWidget::setValue(const QVariant &value)
-{
-    _spinBox->setValue(value.toDouble());
+    _dockWidget->setImage(inputs["image"].value<cv::Mat>());
 }

@@ -33,6 +33,9 @@ SizeWidget::SizeWidget(const Properties &properties, QWidget *parent) :
     QLabel *label = new QLabel(this);
     label->setText("x");
 
+    _spinBoxWidth->setMaximum(9999);
+    _spinBoxHeight->setMaximum(9999);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_spinBoxWidth);

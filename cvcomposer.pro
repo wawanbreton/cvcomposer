@@ -38,21 +38,15 @@ SOURCES += main.cpp\
     nodeslistwidget.cpp \
     connection.cpp \
     cvutils.cpp \
-    nodesviews/imageviewerdockwidget.cpp \
+    plugwidgets/imageviewerdockwidget.cpp \
     genericnode.cpp \
     processors/abstractprocessor.cpp \
     processors/blurprocessor.cpp \
     processors/imagefromfileprocessor.cpp \
-    nodesviews/imagefromfilewidget.cpp \
-    nodesviews/abstractnodewidget.cpp \
-    nodesviews/imagepreviewerwidget.cpp \
     processors/imagepreviewerprocessor.cpp \
-    nodesviews/dockableimageviewerwidget.cpp \
     processors/dockableimageviewerprocessor.cpp \
     processors/gaussianblurprocessor.cpp \
-    nodesviews/medianblurwidget.cpp \
     processors/medianblurprocessor.cpp \
-    nodesviews/bilateralfilterwidget.cpp \
     processors/bilateralfilterprocessor.cpp \
     nodesviews/genericnodewidget.cpp \
     plugtype.cpp \
@@ -63,7 +57,9 @@ SOURCES += main.cpp\
     plugwidgets/sizewidget.cpp \
     plugwidgets/pointwidget.cpp \
     plugwidgets/enumerationwidget.cpp \
-    plugwidgets/doublewidget.cpp
+    plugwidgets/doublewidget.cpp \
+    plugwidgets/stringwidget.cpp \
+    plugwidgets/dockableimageviewerwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -81,22 +77,16 @@ HEADERS  += mainwidget.h \
     nodeslistwidget.h \
     plug.h \
     cvutils.h \
-    nodesviews/imageviewerdockwidget.h \
+    plugwidgets/imageviewerdockwidget.h \
     genericnode.h \
     processors/abstractprocessor.h \
     processors/blurprocessor.h \
     processors/imagefromfileprocessor.h \
-    nodesviews/imagefromfilewidget.h \
-    nodesviews/abstractnodewidget.h \
     properties.h \
-    nodesviews/imagepreviewerwidget.h \
     processors/imagepreviewerprocessor.h \
-    nodesviews/dockableimageviewerwidget.h \
     processors/dockableimageviewerprocessor.h \
     processors/gaussianblurprocessor.h \
-    nodesviews/medianblurwidget.h \
     processors/medianblurprocessor.h \
-    nodesviews/bilateralfilterwidget.h \
     processors/bilateralfilterprocessor.h \
     plugdefinition.h \
     plugtype.h \
@@ -107,12 +97,10 @@ HEADERS  += mainwidget.h \
     plugwidgets/sizewidget.h \
     plugwidgets/pointwidget.h \
     plugwidgets/enumerationwidget.h \
-    plugwidgets/doublewidget.h
+    plugwidgets/doublewidget.h \
+    plugwidgets/stringwidget.h \
+    plugwidgets/dockableimageviewerwidget.h
 
 FORMS    += \
     mainwidget.ui \
-    nodesviews/imagedockwidget.ui \
-    nodesviews/imagefromfilewidget.ui \
-    nodesviews/dockableimageviewerwidget.ui \
-    nodesviews/medianblurwidget.ui \
-    nodesviews/bilateralfilterwidget.ui
+    plugwidgets/imagedockwidget.ui

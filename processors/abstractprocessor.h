@@ -29,8 +29,6 @@ class AbstractProcessor
         AbstractProcessor();
         virtual ~AbstractProcessor();
 
-        void setProperties(const Properties &properties);
-
         quint8 getNbInputs() const;
 
         const QList<PlugDefinition> &getInputs();
@@ -44,12 +42,12 @@ class AbstractProcessor
     protected:
         void addInput(const PlugDefinition &definition);
 
-        void addInput(const QString &userReadableName,
+        void addInput(const QString &name,
                       PlugType::Enum type,
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties());
 
-        void addEnumerationInput(const QString &userReadableName,
+        void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,
                                  const QVariant &defaultValue);
 
@@ -59,17 +57,13 @@ class AbstractProcessor
 
         virtual Properties processImpl(const Properties &inputs) = 0;
 
-        #warning remove this method (and the inner properties storage)
-        QVariant getProperty(const QString &name) const;
-
     private:
-        PlugDefinition makePlug(const QString &userReadableName,
+        PlugDefinition makePlug(const QString &name,
                                 PlugType::Enum type,
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties());
 
     private:
-        Properties _properties;
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
 };

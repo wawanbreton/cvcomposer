@@ -29,11 +29,11 @@ ImagePreviewWidget::ImagePreviewWidget(QWidget *parent) :
     setMinimumSize(128, 128);
 }
 
-void ImagePreviewWidget::onConnectedInputProcessed(const QVariant &value)
+void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
-    AbstractPlugWidget::onConnectedInputProcessed(value);
+    AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
-    _image = QPixmap::fromImage(CvUtils::toQImage(value.value<cv::Mat>()));
+    _image = QPixmap::fromImage(CvUtils::toQImage(inputs["image"].value<cv::Mat>()));
     update();
 }
 
