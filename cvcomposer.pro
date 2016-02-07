@@ -59,7 +59,9 @@ SOURCES += main.cpp\
     plugwidgets/enumerationwidget.cpp \
     plugwidgets/doublewidget.cpp \
     plugwidgets/stringwidget.cpp \
-    plugwidgets/dockableimageviewerwidget.cpp
+    plugwidgets/dockableimageviewerwidget.cpp \
+    processors/erodeprocessor.cpp \
+    processors/dilateprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -99,7 +101,9 @@ HEADERS  += mainwidget.h \
     plugwidgets/enumerationwidget.h \
     plugwidgets/doublewidget.h \
     plugwidgets/stringwidget.h \
-    plugwidgets/dockableimageviewerwidget.h
+    plugwidgets/dockableimageviewerwidget.h \
+    processors/erodeprocessor.h \
+    processors/dilateprocessor.h
 
 FORMS    += \
     mainwidget.ui \
