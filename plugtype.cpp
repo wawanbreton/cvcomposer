@@ -44,3 +44,9 @@ bool PlugType::isWidgetAlwaysVisible(PlugType::Enum value)
 {
     return value == PlugType::ImagePreview || value == PlugType::DockableImageViewer;
 }
+
+
+bool PlugType::isLabelVisible(PlugType::Enum value)
+{
+    return value != PlugType::ImagePreview;
+}

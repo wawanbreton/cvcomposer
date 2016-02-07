@@ -43,6 +43,8 @@ namespace PlugType
     Pluggable isInputPluggable(Enum value);
 
     bool isWidgetAlwaysVisible(Enum value);
+
+    bool isLabelVisible(Enum value);
 }
 
 #endif // PLUGTYPE_H

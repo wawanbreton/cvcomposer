@@ -84,9 +84,13 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             widget.input = true;
             widget.definition = input->getDefinition();
 
-            widget.label = new QLabel(this);
-            widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            makeLabelText(widget, false);
+            widget.label = NULL;
+            if(PlugType::isLabelVisible(widget.definition.type))
+            {
+                widget.label = new QLabel(this);
+                widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+                makeLabelText(widget, false);
+            }
 
             widget.widget = NULL;
             if(PlugType::isInputPluggable(widget.definition.type) != PlugType::Mandatory ||
@@ -110,7 +114,11 @@ int GenericNodeWidget::getPlugPosY(const QString &plugName)
     auto iterator = _widgets.find(plugName);
     if(iterator != _widgets.end())
     {
-        QRect rect = iterator.value().label->geometry();
+        QRect rect;
+        if(iterator.value().label)
+        {
+            rect = rect.united(iterator.value().label->geometry());
+        }
         if(iterator.value().widget)
         {
             rect = rect.united(iterator.value().widget->geometry());
@@ -210,17 +218,20 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
 
 void GenericNodeWidget::makeLabelText(const PlugWidget &widget, bool plugged)
 {
-    QString text = widget.definition.name;
-    text = text[0].toUpper() + text.mid(1);
+    if(widget.label)
+    {
+        QString text = widget.definition.name;
+        text = text[0].toUpper() + text.mid(1);
 
-    if((plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory) &&
-       not PlugType::isWidgetAlwaysVisible(widget.definition.type))
-    {
-        widget.label->setText(text);
-    }
-    else
-    {
-        widget.label->setText(text + " :");
+        if((plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory) &&
+           not PlugType::isWidgetAlwaysVisible(widget.definition.type))
+        {
+            widget.label->setText(text);
+        }
+        else
+        {
+            widget.label->setText(text + " :");
+        }
     }
 }
 
