@@ -20,28 +20,13 @@
 
 Plug::Plug(const PlugDefinition &definition, QObject *parent) :
     QObject(parent),
-    _definition(definition),
-    _value()
+    _definition(definition)
 {
 }
 
 const PlugDefinition &Plug::getDefinition() const
 {
     return _definition;
-}
-
-void Plug::setValue(const QVariant &value)
-{
-    if(value != _value)
-    {
-        _value = value;
-        emit valueChanged(_value);
-    }
-}
-
-const QVariant &Plug::getValue() const
-{
-    return _value;
 }
 
 void Plug::signalConnectedTo(const Plug *connectedTo)

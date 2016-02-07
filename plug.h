@@ -31,20 +31,13 @@ class Plug : public QObject
 
         const PlugDefinition &getDefinition() const;
 
-        void setValue(const QVariant &value);
-
-        const QVariant &getValue() const;
-
         void signalConnectedTo(const Plug *connectedTo);
 
     signals:
-        void valueChanged(const QVariant &value);
-
         void connectionChanged(const Plug *connectedTo);
 
     private:
         const PlugDefinition _definition;
-        QVariant _value;
 };
 
 

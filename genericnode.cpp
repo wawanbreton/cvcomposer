@@ -68,11 +68,6 @@ const QString &GenericNode::getUserReadableName() const
     return _userReadableName;
 }
 
-quint8 GenericNode::getNbInputs() const
-{
-    return _inputs.count();
-}
-
 const QList<Plug *> &GenericNode::getInputs() const
 {
     return _inputs;
@@ -81,11 +76,6 @@ const QList<Plug *> &GenericNode::getInputs() const
 bool GenericNode::hasInput(Plug *input) const
 {
     return _inputs.contains(input);
-}
-
-quint8 GenericNode::getNbOutputs() const
-{
-    return _outputs.count();
 }
 
 const QList<Plug *> &GenericNode::getOutputs() const
@@ -111,11 +101,6 @@ void GenericNode::signalProcessUnavailable()
 const Properties &GenericNode::getProperties() const
 {
     return _properties;
-}
-
-void GenericNode::setProperties(const Properties &properties)
-{
-    _properties = properties;
 }
 
 void GenericNode::setProperty(const QString &name, const QVariant &value)

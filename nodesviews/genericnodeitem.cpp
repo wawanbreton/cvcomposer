@@ -56,17 +56,21 @@ GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     {
         if(PlugType::isInputPluggable(plug->getDefinition().type) != PlugType::ManualOnly)
         {
-            _inputPlugs << new PlugItem(plug, this);
+            PlugItem *plugItem = new PlugItem(plug, this);
+            _inputPlugs << plugItem;
+            plugItem->setPos(QPointF(boundingRect().left(),
+                                     _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
             connect(plug, SIGNAL(connectionChanged(const Plug*)),
                           SLOT(onPlugConnectionChanged(const Plug*)));
         }
     }
     foreach(Plug *plug, _node->getOutputs())
     {
-        _outputPlugs << new PlugItem(plug, this);
+        PlugItem *plugItem = new PlugItem(plug, this);
+        _outputPlugs << plugItem;
+        plugItem->setPos(QPointF(boundingRect().right(),
+                                 _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
     }
-
-    QTimer::singleShot(0, this, SLOT(updatePlugs()));
 }
 
 int GenericNodeItem::type() const
@@ -116,20 +120,6 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->drawText(boundingRect().adjusted(0, 5, 0, 0),
                       Qt::AlignHCenter | Qt::AlignTop,
                       _node->getUserReadableName());
-}
-
-void GenericNodeItem::updatePlugs()
-{
-    foreach(PlugItem *plug, _inputPlugs)
-    {
-        plug->setPos(QPointF(boundingRect().left(),
-                              _widget->y() + _widget->getPlugPosY(plug->getPlug()->getDefinition().name)));
-    }
-    foreach(PlugItem *plug, _outputPlugs)
-    {
-        plug->setPos(QPointF(boundingRect().right(),
-                              _widget->y() + _widget->getPlugPosY(plug->getPlug()->getDefinition().name)));
-    }
 }
 
 void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)

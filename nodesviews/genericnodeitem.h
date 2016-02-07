@@ -53,8 +53,6 @@ class GenericNodeItem : public QObject, public QGraphicsItem
                            QWidget *widget);
 
     private slots:
-        void updatePlugs();
-
         void onPlugConnectionChanged(const Plug *connectedTo);
 
     private:

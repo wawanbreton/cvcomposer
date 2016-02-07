@@ -29,11 +29,7 @@ class AbstractProcessor
         AbstractProcessor();
         virtual ~AbstractProcessor();
 
-        quint8 getNbInputs() const;
-
         const QList<PlugDefinition> &getInputs();
-
-        quint8 getNbOutputs() const;
 
         const QList<PlugDefinition> &getOutputs();
 

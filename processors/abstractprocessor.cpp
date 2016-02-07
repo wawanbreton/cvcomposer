@@ -28,19 +28,9 @@ AbstractProcessor::~AbstractProcessor()
 {
 }
 
-quint8 AbstractProcessor::getNbInputs() const
-{
-    return _inputs.count();
-}
-
 const QList<PlugDefinition> &AbstractProcessor::getInputs()
 {
     return _inputs;
-}
-
-quint8 AbstractProcessor::getNbOutputs() const
-{
-    return _outputs.count();
 }
 
 const QList<PlugDefinition> &AbstractProcessor::getOutputs()
@@ -77,7 +67,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
     }
     qSort(expectedOutputNames);
 
-    Q_ASSERT(outputs.count() == getNbOutputs());
+    Q_ASSERT(outputNames == expectedOutputNames);
 
     // Everything is fine, give the outputs
     return outputs;
