@@ -20,10 +20,12 @@
 
 #include <QObject>
 
-#include "plug.h"
 #include "properties.h"
+#include "plugdefinition.h"
 
 #include <opencv2/core/core.hpp>
+
+class Plug;
 
 class GenericNode : public QObject
 {
@@ -38,25 +40,19 @@ class GenericNode : public QObject
 
         const QString &getUserReadableName() const;
 
-        quint8 getNbInputs() const;
-
         const QList<Plug *> &getInputs() const;
 
         bool hasInput(Plug *input) const;
-
-        quint8 getNbOutputs() const;
 
         const QList<Plug *> &getOutputs() const;
 
         bool hasOutput(Plug *output) const;
 
-        void signalProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+        void signalProcessDone(const Properties &outputs, const Properties &inputs);
 
         void signalProcessUnavailable();
 
         const Properties &getProperties() const;
-
-        void setProperties(const Properties &properties);
 
     public slots:
         void setProperty(const QString &name, const QVariant &value);
@@ -64,7 +60,7 @@ class GenericNode : public QObject
     signals:
         void propertyChanged(const QString &name, const QVariant &value);
 
-        void processDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
+        void processDone(const Properties &outputs, const Properties &inputs);
 
         void processUnavailable();
 

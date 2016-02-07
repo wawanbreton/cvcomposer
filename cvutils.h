@@ -24,9 +24,12 @@
 namespace CvUtils
 {
     QImage toQImage(const cv::Mat &mat);
+
+    QList<QPair<QString, QVariant> > makeBlurBorderValues();
 }
 
 Q_DECLARE_METATYPE(cv::Point)
 Q_DECLARE_METATYPE(cv::Size)
+Q_DECLARE_METATYPE(cv::Mat)
 
 #endif // CVUTILS_H

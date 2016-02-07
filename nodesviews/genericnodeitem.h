@@ -24,8 +24,10 @@
 #include <QGraphicsEllipseItem>
 #include <QWidget>
 
+class GenericNodeWidget;
 class GenericNode;
 class PlugItem;
+class Plug;
 
 class GenericNodeItem : public QObject, public QGraphicsItem
 {
@@ -43,8 +45,6 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         const QList<PlugItem *> &getOutputs() const;
 
-        void setWidget(QWidget *widget);
-
     protected:
         virtual QRectF boundingRect() const;
 
@@ -53,11 +53,11 @@ class GenericNodeItem : public QObject, public QGraphicsItem
                            QWidget *widget);
 
     private slots:
-        void updatePlugs();
+        void onPlugConnectionChanged(const Plug *connectedTo);
 
     private:
         GenericNode *_node;
-        QWidget *_widget;
+        GenericNodeWidget *_widget;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
 };

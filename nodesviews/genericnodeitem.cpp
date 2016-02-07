@@ -25,26 +25,52 @@
 #include "genericnode.h"
 #include "nodesviews/customitems.h"
 #include "nodesviews/plugitem.h"
+#include "nodesviews/genericnodewidget.h"
+#include "plug.h"
 
 
 GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
-    _widget(NULL),
+    _widget(new GenericNodeWidget()),
     _inputPlugs(),
     _outputPlugs()
 {
-    foreach(Plug *input, _node->getInputs())
-    {
-        _inputPlugs << new PlugItem(input, this);
-    }
+    _widget->setPlugs(node->getInputs(), node->getOutputs());
+    _widget->setFixedSize(_widget->sizeHint());
+    _widget->setAutoFillBackground(false);
+    _widget->setAttribute(Qt::WA_NoBackground, true);
 
-    foreach(Plug *output, _node->getOutputs())
-    {
-        _outputPlugs << new PlugItem(output, this);
-    }
+    connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
+            node,    SLOT(setProperty(QString,QVariant)));
+    connect(node,    SIGNAL(processDone(Properties,Properties)),
+            _widget, SLOT(onProcessDone(Properties,Properties)));
+    connect(node,    SIGNAL(processUnavailable()),
+            _widget, SLOT(onProcessUnavailable()));
 
-    QTimer::singleShot(0, this, SLOT(updatePlugs()));
+    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
+    proxy->setWidget(_widget);
+    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+
+    foreach(Plug *plug, _node->getInputs())
+    {
+        if(PlugType::isInputPluggable(plug->getDefinition().type) != PlugType::ManualOnly)
+        {
+            PlugItem *plugItem = new PlugItem(plug, this);
+            _inputPlugs << plugItem;
+            plugItem->setPos(QPointF(boundingRect().left(),
+                                     _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
+            connect(plug, SIGNAL(connectionChanged(const Plug*)),
+                          SLOT(onPlugConnectionChanged(const Plug*)));
+        }
+    }
+    foreach(Plug *plug, _node->getOutputs())
+    {
+        PlugItem *plugItem = new PlugItem(plug, this);
+        _outputPlugs << plugItem;
+        plugItem->setPos(QPointF(boundingRect().right(),
+                                 _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
+    }
 }
 
 int GenericNodeItem::type() const
@@ -96,28 +122,15 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
                       _node->getUserReadableName());
 }
 
-void GenericNodeItem::setWidget(QWidget *widget)
+void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
 {
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
-    proxy->setWidget(widget);
-    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
-    _widget = widget;
-    _widget->setFixedSize(_widget->sizeHint());
-    _widget->setAutoFillBackground(false);
-    _widget->setAttribute(Qt::WA_NoBackground, true);
-
-    prepareGeometryChange();
-}
-
-void GenericNodeItem::updatePlugs()
-{
-    for(quint8 i = 0 ; i < _node->getNbInputs() ; i++)
+    Plug *plug = qobject_cast<Plug *>(sender());
+    if(plug)
     {
-        _inputPlugs[i]->setPos(QPointF(boundingRect().left(), ((i + 1.0) / (_node->getNbInputs() + 1)) * boundingRect().height()));
+        _widget->setInputPlugged(plug->getDefinition().name, connectedTo != NULL);
     }
-
-    for(quint8 i = 0 ; i < _node->getNbOutputs() ; i++)
+    else
     {
-        _outputPlugs[i]->setPos(QPointF(boundingRect().right(), ((i + 1.0) / (_node->getNbOutputs() + 1)) * boundingRect().height()));
+        qCritical() << "GenericNodeItem::onPlugConnectionChanged" << "Sender is not a Plug";
     }
 }

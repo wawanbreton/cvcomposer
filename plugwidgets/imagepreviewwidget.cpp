@@ -15,50 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagepreviewerwidget.h"
-#include "ui_imagepreviewerwidget.h"
+#include "imagepreviewwidget.h"
 
-#include <QDebug>
 #include <QPainter>
+#include <QVariant>
 
 #include "cvutils.h"
 
 
-ImagePreviewerWidget::ImagePreviewerWidget(QWidget *parent) :
-    AbstractNodeWidget(parent),
-    _image()
+ImagePreviewWidget::ImagePreviewWidget(QWidget *parent) :
+    AbstractPlugWidget(parent)
 {
+    setMinimumSize(128, 128);
 }
 
-ImagePreviewerWidget::ImagePreviewerWidget(const ImagePreviewerWidget &other) :
-    AbstractNodeWidget(other.parentWidget())
+void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
-    qFatal("ImagePreviewerWidget::ImagePreviewerWidget");
+    AbstractPlugWidget::onNodeProcessed(inputs, outputs);
+
+    _image = QPixmap::fromImage(CvUtils::toQImage(inputs["image"].value<cv::Mat>()));
+    update();
 }
 
-QVariant ImagePreviewerWidget::getProperty(const QString &name) const
-{
-    Q_UNUSED(name);
-    return QVariant();
-}
-
-QSize ImagePreviewerWidget::sizeHint() const
-{
-    return QSize(128, 128);
-}
-
-void ImagePreviewerWidget::setProperty(const QString &name, const QVariant &value)
-{
-    Q_UNUSED(name);
-    Q_UNUSED(value);
-}
-
-QStringList ImagePreviewerWidget::getPropertiesNames() const
-{
-    return QStringList();
-}
-
-void ImagePreviewerWidget::paintEvent(QPaintEvent *event)
+void ImagePreviewWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
@@ -85,18 +64,4 @@ void ImagePreviewerWidget::paintEvent(QPaintEvent *event)
         }
         painter.drawPixmap(rect, _image);
     }
-}
-
-void ImagePreviewerWidget::onProcessDone(const QList<cv::Mat> &outputs,
-                                         const QList<cv::Mat> &inputs)
-{
-    Q_UNUSED(outputs); // Previewer has no ouput, it only displays the input image
-    _image = QPixmap::fromImage(CvUtils::toQImage(inputs[0]));
-    update();
-}
-
-void ImagePreviewerWidget::onProcessUnavailable()
-{
-    _image = QPixmap();
-    update();
 }

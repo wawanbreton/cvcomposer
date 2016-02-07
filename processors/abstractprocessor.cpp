@@ -20,41 +20,105 @@
 #include <QDebug>
 
 
-AbstractProcessor::AbstractProcessor() :
-    _properties()
+AbstractProcessor::AbstractProcessor()
 {
-
 }
 
 AbstractProcessor::~AbstractProcessor()
 {
-
 }
 
-void AbstractProcessor::setProperties(const Properties &properties)
+const QList<PlugDefinition> &AbstractProcessor::getInputs()
 {
-    _properties = properties;
+    return _inputs;
 }
 
-QList<cv::Mat> AbstractProcessor::process(const QList<cv::Mat> &inputs)
+const QList<PlugDefinition> &AbstractProcessor::getOutputs()
 {
-    Q_ASSERT(inputs.count() == getNbInputs());
-    QList<cv::Mat> outputs = processImpl(inputs);
-    Q_ASSERT(outputs.count() == getNbOutputs());
+    return _outputs;
+}
 
+Properties AbstractProcessor::process(const Properties &inputs)
+{
+    // Check that given inputs match the expected inputs
+    QList<QString> inputNames = inputs.keys();
+    qSort(inputNames);
+
+    QList<QString> expectedInputNames;
+    foreach(const PlugDefinition &plug, _inputs)
+    {
+        expectedInputNames << plug.name;
+    }
+    qSort(expectedInputNames);
+
+    Q_ASSERT(inputNames == expectedInputNames);
+
+    // Do the actual computing
+    Properties outputs = processImpl(inputs);
+
+    // Check that computed outputs match the expected ouputs
+    QList<QString> outputNames = outputs.keys();
+    qSort(outputNames);
+
+    QList<QString> expectedOutputNames;
+    foreach(const PlugDefinition &plug, _outputs)
+    {
+        expectedOutputNames << plug.name;
+    }
+    qSort(expectedOutputNames);
+
+    Q_ASSERT(outputNames == expectedOutputNames);
+
+    // Everything is fine, give the outputs
     return outputs;
 }
 
-QVariant AbstractProcessor::getProperty(const QString &name) const
+void AbstractProcessor::addInput(const PlugDefinition &definition)
 {
-    Properties::const_iterator iterator = _properties.find(name);
-    if(iterator != _properties.end())
-    {
-        return iterator.value();
-    }
-    else
-    {
-        qCritical() << "AbstractProcessor::getProperty" << "No property named" << name;
-        return QVariant();
-    }
+    _inputs << definition;
+}
+
+void AbstractProcessor::addInput(const QString &name,
+                                 PlugType::Enum type,
+                                 const QVariant &defaultValue,
+                                 const Properties &widgetProperties)
+{
+    addInput(makePlug(name, type, defaultValue, widgetProperties));
+}
+
+void AbstractProcessor::addEnumerationInput(const QString &name,
+                                            const QList<QPair<QString, QVariant> > &values,
+                                            const QVariant &defaultValue)
+{
+    PlugDefinition plug;
+    plug.name = name;
+    plug.type = PlugType::Enumeration;
+    plug.widgetProperties.insert("values", QVariant::fromValue(values));
+    plug.defaultValue = defaultValue;
+
+    addInput(plug);
+}
+
+void AbstractProcessor::addOutput(const PlugDefinition &definition)
+{
+    _outputs << definition;
+}
+
+void AbstractProcessor::addOutput(const QString &userReadableName, PlugType::Enum type)
+{
+    addOutput(makePlug(userReadableName, type));
+}
+
+PlugDefinition AbstractProcessor::makePlug(const QString &name,
+                                           PlugType::Enum type,
+                                           const QVariant &defaultValue,
+                                           const Properties &widgetProperties)
+{
+    PlugDefinition plug;
+    plug.name = name;
+    plug.type = type;
+    plug.defaultValue = defaultValue;
+    plug.widgetProperties = widgetProperties;
+
+    return plug;
 }

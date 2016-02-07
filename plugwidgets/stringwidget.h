@@ -15,29 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfileprocessor.h"
+#ifndef STRINGWIDGET_H
+#define STRINGWIDGET_H
 
-#include <opencv2/highgui/highgui.hpp>
+#include "plugwidgets/abstractplugwidget.h"
 
-#include <QDebug>
+#include <QLineEdit>
 
-#include "cvutils.h"
+#include "properties.h"
 
-
-ImageFromFileProcessor::ImageFromFileProcessor() :
-    AbstractProcessor()
+/*! @brief This widget is useful to edit a string value
+ *
+ *  The following properties may be given :
+ *    - *  : all the properties that a QLineEdit may accept */
+class StringWidget : public AbstractPlugWidget
 {
-    addInput("path",   PlugType::ImagePath);
-    addOutput("image", PlugType::Image);
-}
+    Q_OBJECT
 
-Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
-{
-    Q_UNUSED(inputs);
+    public:
+        explicit StringWidget(const Properties &properties, QWidget *parent = NULL);
 
-    Properties outputs;
-    outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           CV_LOAD_IMAGE_COLOR)));
+        virtual QVariant getValue() const override;
 
-    return outputs;
-}
+        virtual void setValue(const QVariant &value) override;
+
+    private:
+        QLineEdit *_lineEdit;
+};
+
+#endif // STRINGWIDGET_H

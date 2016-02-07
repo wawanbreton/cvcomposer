@@ -25,12 +25,8 @@ class ImageFromFileProcessor : public AbstractProcessor
     public:
         ImageFromFileProcessor();
 
-        quint8 getNbInputs() const override;
-
-        quint8 getNbOutputs() const override;
-
     protected:
-        QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+        Properties processImpl(const Properties &inputs) override;
 };
 
 Q_DECLARE_METATYPE(ImageFromFileProcessor)

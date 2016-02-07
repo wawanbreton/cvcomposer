@@ -27,27 +27,37 @@
 BlurProcessor::BlurProcessor() :
     AbstractProcessor()
 {
+    addInput("input image", PlugType::Image);
 
+    Properties sizeProperties;
+    sizeProperties.insert("width-minimum", 1);
+    sizeProperties.insert("width-singleStep", 2);
+    sizeProperties.insert("height-minimum", 1);
+    sizeProperties.insert("height-singleStep", 2);
+    addInput("size", PlugType::Size,  QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
+
+    Properties anchorProperties;
+    anchorProperties.insert("x-minimum", -1);
+    anchorProperties.insert("y-minimum", -1);
+    addInput("anchor", PlugType::Point, QVariant::fromValue(cv::Point(-1, -1)), anchorProperties);
+
+    addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
+
+    addOutput("output image", PlugType::Image);
 }
 
-quint8 BlurProcessor::getNbInputs() const
+Properties BlurProcessor::processImpl(const Properties &inputs)
 {
-    return 1;
-}
-
-quint8 BlurProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
-QList<cv::Mat> BlurProcessor::processImpl(const QList<cv::Mat> &inputs)
-{
-    cv::Mat blurred = inputs[0].clone();
-    cv::blur(inputs[0],
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat blurred = inputImage.clone();
+    cv::blur(inputImage,
              blurred,
-             getProperty("size").value<cv::Size>(),
-             getProperty("anchor").value<cv::Point>(),
-             getProperty("border").toInt());
-    return QList<cv::Mat>() << blurred;
+             inputs["size"].value<cv::Size>(),
+             inputs["anchor"].value<cv::Point>(),
+             inputs["border"].toInt());
+
+    Properties properties;
+    properties.insert("output image", QVariant::fromValue(blurred));
+    return properties;
 }
 

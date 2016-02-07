@@ -15,40 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAUSSIANBLURWIDGET_H
-#define GAUSSIANBLURWIDGET_H
+#ifndef SIZEWIDGET_H
+#define SIZEWIDGET_H
 
-#include "nodesviews/abstractnodewidget.h"
+#include "plugwidgets/abstractplugwidget.h"
 
-namespace Ui { class GaussianBlurWidget; }
+#include <QSpinBox>
 
-class GaussianBlurWidget : public AbstractNodeWidget
+#include "properties.h"
+
+/*! @brief This widget is useful to edit a 2D size
+ *
+ *  The following properties may be given :
+ *    - width-*  : all the properties that a QSpinBox may accept
+ *    - height-* : all the properties that a QSpinBox may accept */
+class SizeWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit GaussianBlurWidget(QWidget *parent = NULL);
-        GaussianBlurWidget(const GaussianBlurWidget &other);
-        ~GaussianBlurWidget();
+        explicit SizeWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const override;
+        virtual QVariant getValue() const override;
 
-    protected:
-        virtual QStringList getPropertiesNames() const override;
-
-    private slots:
-        void onSizeChanged();
-
-        void onSigmaXChanged();
-
-        void onSigmaYChanged();
-
-        void onBorderChanged();
+        virtual void setValue(const QVariant &value) override;
 
     private:
-        Ui::GaussianBlurWidget *_ui;
+        QSpinBox *_spinBoxWidth;
+        QSpinBox *_spinBoxHeight;
 };
 
-Q_DECLARE_METATYPE(GaussianBlurWidget)
-
-#endif // GAUSSIANBLURWIDGET_H
+#endif // SIZEWIDGET_H

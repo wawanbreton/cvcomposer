@@ -19,25 +19,29 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "cvutils.h"
+
 
 MedianBlurProcessor::MedianBlurProcessor() :
     AbstractProcessor()
 {
+    addInput("input image", PlugType::Image);
+
+    Properties sizeProperties;
+    sizeProperties.insert("singleStep", 2);
+    sizeProperties.insert("decimals", 0);
+    addInput("size", PlugType::Double,  1.0, sizeProperties);
+
+    addOutput("output image", PlugType::Image);
 }
 
-quint8 MedianBlurProcessor::getNbInputs() const
+Properties MedianBlurProcessor::processImpl(const Properties &inputs)
 {
-    return 1;
-}
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat blurred = inputImage.clone();
+    cv::medianBlur(inputImage, blurred, inputs["size"].toInt());
 
-quint8 MedianBlurProcessor::getNbOutputs() const
-{
-    return 1;
-}
-
-QList<cv::Mat> MedianBlurProcessor::processImpl(const QList<cv::Mat> &inputs)
-{
-    cv::Mat blurred = inputs[0].clone();
-    cv::medianBlur(inputs[0], blurred, getProperty("size").toInt());
-    return QList<cv::Mat>() << blurred;
+    Properties properties;
+    properties.insert("output image", QVariant::fromValue(blurred));
+    return properties;
 }

@@ -25,12 +25,8 @@ class MedianBlurProcessor : public AbstractProcessor
     public:
         MedianBlurProcessor();
 
-        virtual quint8 getNbInputs() const override;
-
-        virtual quint8 getNbOutputs() const override;
-
     protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) override;
+        virtual Properties processImpl(const Properties &inputs) override;
 };
 
 Q_DECLARE_METATYPE(MedianBlurProcessor);

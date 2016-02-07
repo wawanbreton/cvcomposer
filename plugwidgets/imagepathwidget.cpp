@@ -15,55 +15,42 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfilewidget.h"
-#include "ui_imagefromfilewidget.h"
+#include "imagepathwidget.h"
 
 #include <QApplication>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 
-ImageFromFileWidget::ImageFromFileWidget(QWidget *parent) :
-    AbstractNodeWidget(parent),
-    _ui(new Ui::ImageFromFileWidget)
+ImagePathWidget::ImagePathWidget(QWidget *parent) :
+    AbstractPlugWidget(parent)
 {
-    _ui->setupUi(this);
+    setMinimumWidth(350);
 
-    connect(_ui->lineEdit, SIGNAL(editingFinished()), SLOT(onEditingFinished()));
-    connect(_ui->buttonBrowse, SIGNAL(clicked(bool)), SLOT(onButtonPressed()));
+    _lineEdit = new QLineEdit(this);
+    _lineEdit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QPushButton *buttonBrowse = new QPushButton(this);
+    buttonBrowse->setMaximumWidth(40);
+    buttonBrowse->setText("...");
+
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(_lineEdit);
+    layout->addWidget(buttonBrowse);
+    layout->setStretch(0, 1);
+
+    connect(_lineEdit,    SIGNAL(editingFinished()), SIGNAL(valueChanged()));
+    connect(buttonBrowse, SIGNAL(clicked(bool)),     SLOT(onButtonPressed()));
 }
 
-ImageFromFileWidget::ImageFromFileWidget(const ImageFromFileWidget &other) :
-    AbstractNodeWidget(other.parentWidget())
+QVariant ImagePathWidget::getValue() const
 {
-    qFatal("ImageFromFileWidget::ImageFromFileWidget");
+    return _lineEdit->text();
 }
 
-ImageFromFileWidget::~ImageFromFileWidget()
-{
-    delete _ui;
-}
-
-QVariant ImageFromFileWidget::getProperty(const QString &name) const
-{
-    if(name == "path")
-    {
-        return _ui->lineEdit->text();
-    }
-
-    return QVariant();
-}
-
-QStringList ImageFromFileWidget::getPropertiesNames() const
-{
-    return QStringList() << "path";
-}
-
-void ImageFromFileWidget::onEditingFinished()
-{
-    onPropertyChanged("path");
-}
-
-void ImageFromFileWidget::onButtonPressed()
+void ImagePathWidget::onButtonPressed()
 {
     QList<QPair<QString, QStringList> > formats;
     formats << qMakePair(QString("JPEG"), QStringList() << "jpeg" << "jpg" << "jpe");
@@ -100,11 +87,11 @@ void ImageFromFileWidget::onButtonPressed()
 
     QString fileName = QFileDialog::getOpenFileName(QApplication::activeWindow(),
                                                     "Open image file",
-                                                    _ui->lineEdit->text(),
+                                                    _lineEdit->text(),
                                                     filters.join(";;"));
     if(not fileName.isEmpty())
     {
-        _ui->lineEdit->setText(fileName);
-        onEditingFinished();
+        _lineEdit->setText(fileName);
+        emit valueChanged();
     }
 }

@@ -21,22 +21,13 @@
 DockableImageViewerProcessor::DockableImageViewerProcessor() :
     AbstractProcessor()
 {
-
+    addInput("image", PlugType::Image);
+    addInput("title", PlugType::DockableImageViewer);
 }
 
-quint8 DockableImageViewerProcessor::getNbInputs() const
-{
-    return 1;
-}
-
-quint8 DockableImageViewerProcessor::getNbOutputs() const
-{
-    return 0;
-}
-
-QList<cv::Mat> DockableImageViewerProcessor::processImpl(const QList<cv::Mat> &inputs)
+Properties DockableImageViewerProcessor::processImpl(const Properties &inputs)
 {
     Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
-    return QList<cv::Mat>();
+    return Properties();
 }
 

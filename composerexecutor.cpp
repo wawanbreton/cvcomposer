@@ -34,7 +34,7 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::process(GenericNode *node, const QList<cv::Mat> &inputs)
+void ComposerExecutor::process(GenericNode *node, const Properties &inputs)
 {
     _success = false;
     _node = node;
@@ -59,8 +59,8 @@ void ComposerExecutor::run()
 void ComposerExecutor::onFinished()
 {
     // Make local copies in case local values are modified during the signal emission
-    QList<cv::Mat> inputs = _inputs;
-    QList<cv::Mat> outputs = _outputs;
+    Properties inputs = _inputs;
+    Properties outputs = _outputs;
     bool success = _success;
 
     delete _processor;
@@ -81,9 +81,7 @@ AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)
     QMetaType processorType(QMetaType::type((node->getName() + "Processor").toUtf8()));
     if(processorType.isValid())
     {
-        AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
-        processor->setProperties(node->getProperties());
-        return processor;
+        return static_cast<AbstractProcessor *>(processorType.create());
     }
     else
     {

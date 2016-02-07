@@ -19,6 +19,8 @@
 
 #include <QDebug>
 
+#include <opencv2/imgproc/imgproc.hpp>
+
 
 QImage CvUtils::toQImage(const cv::Mat &mat)
 {
@@ -51,4 +53,16 @@ QImage CvUtils::toQImage(const cv::Mat &mat)
     }
 
     return image;
+}
+
+
+QList<QPair<QString, QVariant> > CvUtils::makeBlurBorderValues()
+{
+    QList<QPair<QString, QVariant> > borderValues;
+    borderValues << QPair<QString, QVariant>("Reflect 101", cv::BORDER_REFLECT101);
+    borderValues << QPair<QString, QVariant>("Reflect",     cv::BORDER_REFLECT);
+    borderValues << QPair<QString, QVariant>("Replicate",   cv::BORDER_REPLICATE);
+    borderValues << QPair<QString, QVariant>("Constant",    cv::BORDER_CONSTANT);
+
+    return borderValues;
 }

@@ -15,36 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEFROMFILEWIDGET_H
-#define IMAGEFROMFILEWIDGET_H
+#ifndef DOCKABLEIMAGEVIEWERWIDGET_H
+#define DOCKABLEIMAGEVIEWERWIDGET_H
 
-#include "nodesviews/abstractnodewidget.h"
+#include "plugwidgets/abstractplugwidget.h"
 
-namespace Ui { class ImageFromFileWidget; }
+#include <QLineEdit>
 
-class ImageFromFileWidget : public AbstractNodeWidget
+class ImageViewerDockWidget;
+
+class DockableImageViewerWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit ImageFromFileWidget(QWidget *parent = NULL);
-        ImageFromFileWidget(const ImageFromFileWidget &other);
-        ~ImageFromFileWidget();
+        explicit DockableImageViewerWidget(QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const override;
-
-    protected:
-        virtual QStringList getPropertiesNames() const override;
-
-    private slots:
-        void onEditingFinished();
-
-        void onButtonPressed();
+    public slots:
+        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     private:
-        Ui::ImageFromFileWidget *_ui;
+        QLineEdit *_lineEdit;
+        ImageViewerDockWidget *_dockWidget;
 };
 
-Q_DECLARE_METATYPE(ImageFromFileWidget)
-
-#endif // IMAGEFROMFILEWIDGET_H
+#endif // DOCKABLEIMAGEVIEWERWIDGET_H

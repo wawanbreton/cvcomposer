@@ -15,38 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTNODEWIDGET_H
-#define ABSTRACTNODEWIDGET_H
+#ifndef IMAGEPATHWIDGET_H
+#define IMAGEPATHWIDGET_H
 
-#include <QWidget>
+#include "plugwidgets/abstractplugwidget.h"
 
-#include "properties.h"
+#include <QLineEdit>
 
-#include <opencv2/core/core.hpp>
-
-class AbstractNodeWidget : public QWidget
+class ImagePathWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit AbstractNodeWidget(QWidget *parent = NULL);
+        explicit ImagePathWidget(QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const = 0;
+        virtual QVariant getValue() const override;
 
-        Properties getProperties() const;
+    private slots:
+        void onButtonPressed();
 
-    protected:
-        void onPropertyChanged(const QString &name);
-
-        virtual QStringList getPropertiesNames() const = 0;
-
-    protected slots:
-        virtual void onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs);
-
-        virtual void onProcessUnavailable();
-
-    signals:
-        void propertyChanged(const QString &name, const QVariant &value);
+    private:
+        QLineEdit *_lineEdit;
 };
 
-#endif // ABSTRACTNODEWIDGET_H
+#endif // IMAGEPATHWIDGET_H

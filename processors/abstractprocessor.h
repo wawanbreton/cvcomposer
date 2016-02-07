@@ -21,6 +21,7 @@
 #include <opencv2/core/core.hpp>
 
 #include "properties.h"
+#include "plugdefinition.h"
 
 class AbstractProcessor
 {
@@ -28,21 +29,39 @@ class AbstractProcessor
         AbstractProcessor();
         virtual ~AbstractProcessor();
 
-        void setProperties(const Properties &properties);
+        const QList<PlugDefinition> &getInputs();
 
-        virtual quint8 getNbInputs() const = 0;
+        const QList<PlugDefinition> &getOutputs();
 
-        virtual quint8 getNbOutputs() const = 0;
-
-        QList<cv::Mat> process(const QList<cv::Mat> &inputs);
+        Properties process(const Properties &inputs);
 
     protected:
-        virtual QList<cv::Mat> processImpl(const QList<cv::Mat> &inputs) = 0;
+        void addInput(const PlugDefinition &definition);
 
-        QVariant getProperty(const QString &name) const;
+        void addInput(const QString &name,
+                      PlugType::Enum type,
+                      const QVariant &defaultValue = QVariant(),
+                      const Properties &widgetProperties = Properties());
+
+        void addEnumerationInput(const QString &name,
+                                 const QList<QPair<QString, QVariant> > &values,
+                                 const QVariant &defaultValue);
+
+        void addOutput(const PlugDefinition &definition);
+
+        void addOutput(const QString &userReadableName, PlugType::Enum type);
+
+        virtual Properties processImpl(const Properties &inputs) = 0;
 
     private:
-        Properties _properties;
+        PlugDefinition makePlug(const QString &name,
+                                PlugType::Enum type,
+                                const QVariant &defaultValue = QVariant(),
+                                const Properties &widgetProperties = Properties());
+
+    private:
+        QList<PlugDefinition> _inputs;
+        QList<PlugDefinition> _outputs;
 };
 
 #endif // ABSTRACTPROCESSOR_H

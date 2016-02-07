@@ -15,36 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "abstractnodewidget.h"
+#include "abstractplugwidget.h"
 
-AbstractNodeWidget::AbstractNodeWidget(QWidget *parent) : QWidget(parent)
-{
+#include <QDebug>
+#include <QVariant>
 
-}
 
-Properties AbstractNodeWidget::getProperties() const
-{
-    Properties properties;
-    foreach(const QString &propertyName, getPropertiesNames())
-    {
-        properties.insert(propertyName, getProperty((propertyName)));
-    }
-
-    return properties;
-}
-
-void AbstractNodeWidget::onPropertyChanged(const QString &name)
-{
-    emit propertyChanged(name, getProperty(name));
-}
-
-void AbstractNodeWidget::onProcessDone(const QList<cv::Mat> &outputs, const QList<cv::Mat> &inputs)
-{
-    Q_UNUSED(outputs);
-    Q_UNUSED(inputs);
-}
-
-void AbstractNodeWidget::onProcessUnavailable()
+AbstractPlugWidget::AbstractPlugWidget(QWidget *parent) :
+    QWidget(parent)
 {
 }
 
+QVariant AbstractPlugWidget::getValue() const
+{
+    qCritical() << "AbstractPlugWidget::getValue" << "This method should not be called";
+    return QVariant();
+}
+
+void AbstractPlugWidget::setValue(const QVariant &value)
+{
+    Q_UNUSED(value)
+    qCritical() << "AbstractPlugWidget::setValue" << "This method should not be called";
+}
+
+void AbstractPlugWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
+{
+    Q_UNUSED(inputs)
+    Q_UNUSED(outputs)
+    // Default is nothing to do
+}

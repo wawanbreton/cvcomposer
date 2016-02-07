@@ -15,42 +15,37 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURWIDGET_H
-#define BLURWIDGET_H
+#ifndef PLUGTYPE_H
+#define PLUGTYPE_H
 
-#include "nodesviews/abstractnodewidget.h"
-
-#include <opencv2/core/core.hpp>
-
-#include <QMetaType>
-
-namespace Ui { class BlurWidget; }
-
-class BlurWidget : public AbstractNodeWidget
+namespace PlugType
 {
-    Q_OBJECT
+    typedef enum
+    {
+        Image,
+        Size,
+        Point,
+        Enumeration,
+        Double,
+        String,
+        ImagePath,
+        ImagePreview,
+        DockableImageViewer
+    } Enum;
 
-    public:
-        explicit BlurWidget(QWidget *parent = NULL);
-        BlurWidget(const BlurWidget &other);
-        ~BlurWidget();
+    typedef enum
+    {
+        Mandatory, // Plug has to be connected, it can't be configured manually
+        Free,      // Plug may be configured manually, or connected
+        ManualOnly // Plug can only be manually configured
+    } Pluggable;
 
-        virtual QVariant getProperty(const QString &name) const override;
+    Pluggable isInputPluggable(Enum value);
 
-    protected:
-        virtual QStringList getPropertiesNames() const override;
+    bool isWidgetAlwaysVisible(Enum value);
 
-    private slots:
-        void onSizeChanged();
+    bool isLabelVisible(Enum value);
+}
 
-        void onAnchorChanged();
+#endif // PLUGTYPE_H
 
-        void onBorderChanged();
-
-    private:
-        Ui::BlurWidget *_ui;
-};
-
-Q_DECLARE_METATYPE(BlurWidget)
-
-#endif // BLURWIDGET_H

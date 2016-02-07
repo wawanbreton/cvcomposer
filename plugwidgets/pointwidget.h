@@ -15,34 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MEDIANBLURWIDGET_H
-#define MEDIANBLURWIDGET_H
+#ifndef POINTWIDGET_H
+#define POINTWIDGET_H
 
-#include "nodesviews/abstractnodewidget.h"
+#include "plugwidgets/abstractplugwidget.h"
 
-namespace Ui { class MedianBlurWidget; }
+#include <QSpinBox>
 
-class MedianBlurWidget : public AbstractNodeWidget
+#include "properties.h"
+
+/*! @brief This widget is useful to edit a 2D point
+ *
+ *  The following properties may be given :
+ *    - x-* : all the properties that a QSpinBox may accept
+ *    - y-* : all the properties that a QSpinBox may accept */
+class PointWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit MedianBlurWidget(QWidget *parent = NULL);
-        MedianBlurWidget(const MedianBlurWidget &other);
-        ~MedianBlurWidget();
+        explicit PointWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual QVariant getProperty(const QString &name) const override;
+        virtual QVariant getValue() const override;
 
-    protected:
-        virtual QStringList getPropertiesNames() const override;
-
-    private slots:
-        void onSizeChanged();
+        virtual void setValue(const QVariant &value) override;
 
     private:
-        Ui::MedianBlurWidget *_ui;
+        QSpinBox *_spinBoxX;
+        QSpinBox *_spinBoxY;
 };
 
-Q_DECLARE_METATYPE(MedianBlurWidget)
-
-#endif // MEDIANBLURWIDGET_H
+#endif // POINTWIDGET_H
