@@ -28,6 +28,15 @@ ImageFromFileProcessor::ImageFromFileProcessor() :
     AbstractProcessor()
 {
     addInput("path",   PlugType::ImagePath);
+
+    QList<QPair<QString, QVariant> > valuesTypes;
+    valuesTypes << QPair<QString, int>("Unchanged", CV_LOAD_IMAGE_UNCHANGED);
+    valuesTypes << QPair<QString, int>("Grayscale", CV_LOAD_IMAGE_GRAYSCALE);
+    valuesTypes << QPair<QString, int>("Color",     CV_LOAD_IMAGE_COLOR);
+    valuesTypes << QPair<QString, int>("Any depth", CV_LOAD_IMAGE_ANYDEPTH);
+    valuesTypes << QPair<QString, int>("Any color", CV_LOAD_IMAGE_ANYCOLOR);
+    addEnumerationInput("mode", valuesTypes, CV_LOAD_IMAGE_COLOR);
+
     addOutput("image", PlugType::Image);
 }
 
@@ -37,7 +46,7 @@ Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
 
     Properties outputs;
     outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           CV_LOAD_IMAGE_COLOR)));
+                                                           inputs["mode"].toInt())));
 
     return outputs;
 }

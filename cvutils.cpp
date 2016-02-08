@@ -41,14 +41,15 @@ QImage CvUtils::toQImage(const cv::Mat &mat)
             image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
             image.setColorTable(colorTable);
         }
-        if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
+        else if(mat.type() == CV_8UC3) // 8-bits unsigned, NO. OF CHANNELS=3
         {
             image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
             image = image.rgbSwapped();
         }
         else
         {
-            qWarning() << "CvUtils::toQImage Unsupported mat type, you will have to work !";
+            qWarning() << "CvUtils::toQImage Unsupported mat type"
+                       << mat.type() <<", you will have to work !";
         }
     }
 
