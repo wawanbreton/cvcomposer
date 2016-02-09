@@ -15,38 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGTYPE_H
-#define PLUGTYPE_H
+#ifndef COLORWIDGET_H
+#define COLORWIDGET_H
 
-namespace PlugType
+#include "plugwidgets/abstractplugwidget.h"
+
+#include <QLineEdit>
+
+class ColorWidget : public AbstractPlugWidget
 {
-    typedef enum
-    {
-        Image,
-        Size,
-        Point,
-        Enumeration,
-        Double,
-        String,
-        Color,
-        ImagePath,
-        ImagePreview,
-        DockableImageViewer
-    } Enum;
+    Q_OBJECT
 
-    typedef enum
-    {
-        Mandatory, // Plug has to be connected, it can't be configured manually
-        Free,      // Plug may be configured manually, or connected
-        ManualOnly // Plug can only be manually configured
-    } Pluggable;
+    public:
+        explicit ColorWidget(QWidget *parent = NULL);
 
-    Pluggable isInputPluggable(Enum value);
+        virtual QVariant getValue() const override;
 
-    bool isWidgetAlwaysVisible(Enum value);
+        virtual void setValue(const QVariant &value) override;
 
-    bool isLabelVisible(Enum value);
-}
+    protected:
+        virtual void mousePressEvent(QMouseEvent *event) override;
 
-#endif // PLUGTYPE_H
+    private:
+        QColor getColor() const;
 
+        void setColor(const QColor &color);
+
+    private:
+        QLineEdit *_lineEdit;
+};
+
+#endif // COLORWIDGET_H

@@ -33,6 +33,7 @@
 #include "plugwidgets/enumerationwidget.h"
 #include "plugwidgets/doublewidget.h"
 #include "plugwidgets/stringwidget.h"
+#include "plugwidgets/colorwidget.h"
 #include "plugwidgets/dockableimageviewerwidget.h"
 
 
@@ -186,6 +187,9 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             break;
         case PlugType::String:
             widget = new StringWidget(plug.widgetProperties, this);
+            break;
+        case PlugType::Color:
+            widget = new ColorWidget(this);
             break;
         case PlugType::ImagePath:
             widget = new ImagePathWidget(this);

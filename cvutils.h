@@ -31,5 +31,6 @@ namespace CvUtils
 Q_DECLARE_METATYPE(cv::Point)
 Q_DECLARE_METATYPE(cv::Size)
 Q_DECLARE_METATYPE(cv::Mat)
+Q_DECLARE_METATYPE(cv::Scalar)
 
 #endif // CVUTILS_H

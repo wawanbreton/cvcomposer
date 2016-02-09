@@ -49,6 +49,10 @@ DilateProcessor::DilateProcessor()
 
     addEnumerationInput("border type", CvUtils::makeBlurBorderValues(), cv::BORDER_CONSTANT);
 
+    addInput("border color",
+             PlugType::Color,
+             QVariant::fromValue(cv::morphologyDefaultBorderValue()));
+
     addOutput("output image", PlugType::Image);
 }
 
@@ -66,7 +70,8 @@ Properties DilateProcessor::processImpl(const Properties &inputs)
                element,
                inputs["anchor"].value<cv::Point>(),
                inputs["iterations"].toInt(),
-               inputs["border type"].toInt());
+               inputs["border type"].toInt(),
+               inputs["border color"].value<cv::Scalar>());
 
     Properties properties;
     properties.insert("output image", QVariant::fromValue(dilated));

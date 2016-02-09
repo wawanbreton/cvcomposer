@@ -61,7 +61,8 @@ SOURCES += main.cpp\
     plugwidgets/stringwidget.cpp \
     plugwidgets/dockableimageviewerwidget.cpp \
     processors/erodeprocessor.cpp \
-    processors/dilateprocessor.cpp
+    processors/dilateprocessor.cpp \
+    plugwidgets/colorwidget.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -103,7 +104,8 @@ HEADERS  += mainwidget.h \
     plugwidgets/stringwidget.h \
     plugwidgets/dockableimageviewerwidget.h \
     processors/erodeprocessor.h \
-    processors/dilateprocessor.h
+    processors/dilateprocessor.h \
+    plugwidgets/colorwidget.h
 
 FORMS    += \
     mainwidget.ui \

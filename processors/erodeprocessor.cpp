@@ -17,6 +17,8 @@
 
 #include "erodeprocessor.h"
 
+#include <QDebug>
+
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "cvutils.h"
@@ -49,6 +51,10 @@ ErodeProcessor::ErodeProcessor()
 
     addEnumerationInput("border type", CvUtils::makeBlurBorderValues(), cv::BORDER_CONSTANT);
 
+    addInput("border color",
+             PlugType::Color,
+             QVariant::fromValue(cv::morphologyDefaultBorderValue()));
+
     addOutput("output image", PlugType::Image);
 }
 
@@ -66,7 +72,8 @@ Properties ErodeProcessor::processImpl(const Properties &inputs)
               element,
               inputs["anchor"].value<cv::Point>(),
               inputs["iterations"].toInt(),
-              inputs["border type"].toInt());
+              inputs["border type"].toInt(),
+              inputs["border color"].value<cv::Scalar>());
 
     Properties properties;
     properties.insert("output image", QVariant::fromValue(eroded));
