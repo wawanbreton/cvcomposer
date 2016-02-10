@@ -15,20 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ERODEPROCESSOR_H
-#define ERODEPROCESSOR_H
+#ifndef MORPHOLOGYTRANSFORMATIONPROCESSOR_H
+#define MORPHOLOGYTRANSFORMATIONPROCESSOR_H
 
 #include "processors/abstractprocessor.h"
 
-class ErodeProcessor : public AbstractProcessor
+class MorphologyTransformationProcessor : public AbstractProcessor
 {
     public:
-        ErodeProcessor();
+        MorphologyTransformationProcessor();
 
     protected:
-        Properties processImpl(const Properties &inputs) override;
+        virtual Properties processImpl(const Properties &inputs);
 };
 
-Q_DECLARE_METATYPE(ErodeProcessor)
+Q_DECLARE_METATYPE(MorphologyTransformationProcessor)
 
-#endif // ERODEPROCESSOR_H
+#endif // MORPHOLOGYTRANSFORMATIONPROCESSOR_H

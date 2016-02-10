@@ -15,22 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "dilateprocessor.h"
+#include "morphologytransformationprocessor.h"
 
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "cvutils.h"
 
 
-DilateProcessor::DilateProcessor()
+MorphologyTransformationProcessor::MorphologyTransformationProcessor()
 {
     addInput("input image", PlugType::Image);
+
+    QList<QPair<QString, QVariant> > operators;
+    operators << QPair<QString, QVariant>("Erode",     cv::MORPH_ERODE);
+    operators << QPair<QString, QVariant>("Dilate",    cv::MORPH_DILATE);
+    operators << QPair<QString, QVariant>("Open",      cv::MORPH_OPEN);
+    operators << QPair<QString, QVariant>("Close",     cv::MORPH_CLOSE);
+    operators << QPair<QString, QVariant>("Gradient",  cv::MORPH_GRADIENT);
+    operators << QPair<QString, QVariant>("Top hat",   cv::MORPH_TOPHAT);
+    operators << QPair<QString, QVariant>("Black hat", cv::MORPH_BLACKHAT);
+    addEnumerationInput("operator", operators, cv::MORPH_ERODE);
 
     QList<QPair<QString, QVariant> > types;
     types << QPair<QString, QVariant>("Rectangle", cv::MORPH_RECT);
     types << QPair<QString, QVariant>("Cross",     cv::MORPH_CROSS);
     types << QPair<QString, QVariant>("Ellipse",   cv::MORPH_ELLIPSE);
-    addEnumerationInput("type", types, cv::MORPH_RECT);
+    addEnumerationInput("shape", types, cv::MORPH_RECT);
 
     Properties sizeProperties;
     sizeProperties.insert("minimum", 1);
@@ -56,24 +66,25 @@ DilateProcessor::DilateProcessor()
     addOutput("output image", PlugType::Image);
 }
 
-Properties DilateProcessor::processImpl(const Properties &inputs)
+Properties MorphologyTransformationProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
     int size = inputs["size"].toInt();
-    cv::Mat dilated;
+    cv::Mat outputImage;
 
-    cv::Mat element = cv::getStructuringElement(inputs["type"].toInt(),
+    cv::Mat element = cv::getStructuringElement(inputs["shape"].toInt(),
                                                 cv::Size(2 * size + 1, 2 * size+1),
                                                 cv::Point(size, size));
-    cv::dilate(inputImage,
-               dilated,
-               element,
-               inputs["anchor"].value<cv::Point>(),
-               inputs["iterations"].toInt(),
-               inputs["border type"].toInt(),
-               inputs["border color"].value<cv::Scalar>());
+    cv::morphologyEx(inputImage,
+                     outputImage,
+                     inputs["operator"].toInt(),
+                     element,
+                     inputs["anchor"].value<cv::Point>(),
+                     inputs["iterations"].toInt(),
+                     inputs["border type"].toInt(),
+                     inputs["border color"].value<cv::Scalar>());
 
     Properties properties;
-    properties.insert("output image", QVariant::fromValue(dilated));
+    properties.insert("output image", QVariant::fromValue(outputImage));
     return properties;
 }

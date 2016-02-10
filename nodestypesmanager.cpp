@@ -26,8 +26,7 @@
 #include "processors/imagepreviewerprocessor.h"
 #include "processors/dockableimageviewerprocessor.h"
 #include "processors/medianblurprocessor.h"
-#include "processors/erodeprocessor.h"
-#include "processors/dilateprocessor.h"
+#include "processors/morphologytransformationprocessor.h"
 
 
 QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
@@ -40,8 +39,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<GaussianBlurProcessor>();
     qRegisterMetaType<MedianBlurProcessor>();
     qRegisterMetaType<BilateralFilterProcessor>();
-    qRegisterMetaType<ErodeProcessor>();
-    qRegisterMetaType<DilateProcessor>();
+    qRegisterMetaType<MorphologyTransformationProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -69,10 +67,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     itemMedianBlur->setData(0, Qt::UserRole, "MedianBlur");
     QTreeWidgetItem *itemBilateralFilter = new QTreeWidgetItem(filters, QStringList() << "Bilateral filter");
     itemBilateralFilter->setData(0, Qt::UserRole, "BilateralFilter");
-    QTreeWidgetItem *itemErode = new QTreeWidgetItem(filters, QStringList() << "Erode");
-    itemErode->setData(0, Qt::UserRole, "Erode");
-    QTreeWidgetItem *itemDilate = new QTreeWidgetItem(filters, QStringList() << "Dilate");
-    itemDilate->setData(0, Qt::UserRole, "Dilate");
+    QTreeWidgetItem *itemMorph = new QTreeWidgetItem(filters, QStringList() << "Morphology transformation");
+    itemMorph->setData(0, Qt::UserRole, "MorphologyTransformation");
     result << filters;
 
     return result;

@@ -60,9 +60,8 @@ SOURCES += main.cpp\
     plugwidgets/doublewidget.cpp \
     plugwidgets/stringwidget.cpp \
     plugwidgets/dockableimageviewerwidget.cpp \
-    processors/erodeprocessor.cpp \
-    processors/dilateprocessor.cpp \
-    plugwidgets/colorwidget.cpp
+    plugwidgets/colorwidget.cpp \
+    processors/morphologytransformationprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -103,9 +102,8 @@ HEADERS  += mainwidget.h \
     plugwidgets/doublewidget.h \
     plugwidgets/stringwidget.h \
     plugwidgets/dockableimageviewerwidget.h \
-    processors/erodeprocessor.h \
-    processors/dilateprocessor.h \
-    plugwidgets/colorwidget.h
+    plugwidgets/colorwidget.h \
+    processors/morphologytransformationprocessor.h
 
 FORMS    += \
     mainwidget.ui \
