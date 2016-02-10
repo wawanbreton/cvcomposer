@@ -44,7 +44,7 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 Properties BilateralFilterProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat blurred = inputImage.clone();
+    cv::Mat blurred;
     cv::bilateralFilter(inputImage,
                         blurred,
                         inputs["diameter"].toInt(),

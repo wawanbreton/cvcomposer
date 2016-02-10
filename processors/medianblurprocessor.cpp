@@ -38,7 +38,7 @@ MedianBlurProcessor::MedianBlurProcessor() :
 Properties MedianBlurProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat blurred = inputImage.clone();
+    cv::Mat blurred;
     cv::medianBlur(inputImage, blurred, inputs["size"].toInt());
 
     Properties properties;

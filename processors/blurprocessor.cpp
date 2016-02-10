@@ -49,7 +49,7 @@ BlurProcessor::BlurProcessor() :
 Properties BlurProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat blurred = inputImage.clone();
+    cv::Mat blurred;
     cv::blur(inputImage,
              blurred,
              inputs["size"].value<cv::Size>(),

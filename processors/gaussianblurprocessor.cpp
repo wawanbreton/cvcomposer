@@ -47,7 +47,7 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 Properties GaussianBlurProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat blurred = inputImage.clone();
+    cv::Mat blurred;
     cv::GaussianBlur(inputImage,
                      blurred,
                      inputs["size"].value<cv::Size>(),
