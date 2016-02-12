@@ -49,7 +49,7 @@ class ComposerScheduler : public QObject
         void execute();
 
     private slots:
-        void onNodeProcessed(bool success, const Properties &outputs);
+        void onNodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
 
     private:
         bool makeInputs(GenericNode *node, Properties &inputs);
@@ -61,10 +61,12 @@ class ComposerScheduler : public QObject
     private:
         ComposerExecutor * _executor;
         QQueue<GenericNode *> _executionList;
+        QQueue<GenericNode *> _initialExecutionList;
         QList<Connection *> _connections;
         QList<GenericNode *> _unreachableNodes;
         QMap<GenericNode *, Properties> _processedNodes;
         bool _cancelled;
+        bool _keepProcessing;
 };
 
 #endif // COMPOSERSCHEDULER_H

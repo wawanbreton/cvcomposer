@@ -73,6 +73,11 @@ Properties AbstractProcessor::process(const Properties &inputs)
     return outputs;
 }
 
+bool AbstractProcessor::getRealTimeProcessing() const
+{
+    return false;
+}
+
 void AbstractProcessor::addInput(const PlugDefinition &definition)
 {
     _inputs << definition;

@@ -31,19 +31,17 @@ ComposerScheduler::ComposerScheduler(QObject *parent) :
     _connections(),
     _unreachableNodes(),
     _processedNodes(),
-    _cancelled(false)
+    _cancelled(false),
+    _keepProcessing(false)
 {
-    connect(_executor, SIGNAL(nodeProcessed(bool, Properties)),
-                       SLOT(onNodeProcessed(bool, Properties)));
+    connect(_executor, SIGNAL(nodeProcessed(bool, Properties, bool)),
+                       SLOT(onNodeProcessed(bool, Properties, bool)));
 }
 
 void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
                                          const QList<Connection *> &connections)
 {
     _connections = connections;
-
-    _processedNodes.clear();
-    _executionList.clear();
 
     QList<GenericNode *> nodesToProcess = nodes;
 
@@ -110,6 +108,8 @@ void ComposerScheduler::prepareExecution(const QList<GenericNode *> &nodes,
             }
         }
     } while(not nodesToProcess.isEmpty());
+
+    _initialExecutionList = _executionList;
 }
 
 void ComposerScheduler::cancel()
@@ -135,13 +135,17 @@ void ComposerScheduler::execute()
     processNextIfPossible();
 }
 
-void ComposerScheduler::onNodeProcessed(bool success, const Properties &outputs)
+void ComposerScheduler::onNodeProcessed(bool success,
+                                        const Properties &outputs,
+                                        bool keepProcessing)
 {
     if(_cancelled)
     {
         deleteLater();
         return;
     }
+
+    _keepProcessing |= keepProcessing;
 
     GenericNode *processedNode = _executionList.dequeue();
     if(success)
@@ -198,7 +202,15 @@ void ComposerScheduler::processNextIfPossible()
 {
     if(_executionList.isEmpty())
     {
-        deleteLater();
+        if(_keepProcessing && not _initialExecutionList.isEmpty())
+        {
+            _executionList = _initialExecutionList;
+            processNextIfPossible();
+        }
+        else
+        {
+            deleteLater();
+        }
     }
     else
     {
@@ -209,7 +221,7 @@ void ComposerScheduler::processNextIfPossible()
         }
         else
         {
-            onNodeProcessed(false, Properties());
+            onNodeProcessed(false, Properties(), false);
         }
     }
 }

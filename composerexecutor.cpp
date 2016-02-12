@@ -62,6 +62,7 @@ void ComposerExecutor::onFinished()
     Properties inputs = _inputs;
     Properties outputs = _outputs;
     bool success = _success;
+    bool keepProcessing = _processor->getRealTimeProcessing();
 
     delete _processor;
 
@@ -73,7 +74,7 @@ void ComposerExecutor::onFinished()
     {
         _node->signalProcessUnavailable();
     }
-    emit nodeProcessed(success, outputs);
+    emit nodeProcessed(success, outputs, keepProcessing);
 }
 
 AbstractProcessor *ComposerExecutor::createProcessor(GenericNode *node)

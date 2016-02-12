@@ -40,7 +40,7 @@ class ComposerExecutor : public QThread
         void process(GenericNode *node, const Properties &inputs);
 
     signals:
-        void nodeProcessed(bool success, const Properties &outputs);
+        void nodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
 
     protected:
         virtual void run();

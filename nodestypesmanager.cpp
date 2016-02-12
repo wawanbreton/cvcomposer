@@ -28,6 +28,7 @@
 #include "processors/medianblurprocessor.h"
 #include "processors/morphologytransformationprocessor.h"
 #include "processors/thresholdprocessor.h"
+#include "processors/cameraprocessor.h"
 
 
 QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
@@ -42,6 +43,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<BilateralFilterProcessor>();
     qRegisterMetaType<MorphologyTransformationProcessor>();
     qRegisterMetaType<ThresholdProcessor>();
+    qRegisterMetaType<CameraProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -49,6 +51,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     inputs->setFlags(inputs->flags() & ~Qt::ItemIsDragEnabled);
     QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << "Image from file");
     itemFile->setData(0, Qt::UserRole, "ImageFromFile");
+    QTreeWidgetItem *itemCamera = new QTreeWidgetItem(inputs, QStringList() << "Camera");
+    itemCamera->setData(0, Qt::UserRole, "Camera");
     result << inputs;
 
     QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << "Viewers");

@@ -35,6 +35,8 @@ class AbstractProcessor
 
         Properties process(const Properties &inputs);
 
+        virtual bool getRealTimeProcessing() const;
+
     protected:
         void addInput(const PlugDefinition &definition);
 
