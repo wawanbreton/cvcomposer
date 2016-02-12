@@ -27,6 +27,7 @@
 #include "processors/dockableimageviewerprocessor.h"
 #include "processors/medianblurprocessor.h"
 #include "processors/morphologytransformationprocessor.h"
+#include "processors/thresholdprocessor.h"
 
 
 QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
@@ -40,6 +41,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<MedianBlurProcessor>();
     qRegisterMetaType<BilateralFilterProcessor>();
     qRegisterMetaType<MorphologyTransformationProcessor>();
+    qRegisterMetaType<ThresholdProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -69,6 +71,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     itemBilateralFilter->setData(0, Qt::UserRole, "BilateralFilter");
     QTreeWidgetItem *itemMorph = new QTreeWidgetItem(filters, QStringList() << "Morphology transformation");
     itemMorph->setData(0, Qt::UserRole, "MorphologyTransformation");
+    QTreeWidgetItem *itemThres = new QTreeWidgetItem(filters, QStringList() << "Threshold");
+    itemThres->setData(0, Qt::UserRole, "Threshold");
     result << filters;
 
     return result;

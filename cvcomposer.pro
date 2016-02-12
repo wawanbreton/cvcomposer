@@ -61,7 +61,8 @@ SOURCES += main.cpp\
     plugwidgets/stringwidget.cpp \
     plugwidgets/dockableimageviewerwidget.cpp \
     plugwidgets/colorwidget.cpp \
-    processors/morphologytransformationprocessor.cpp
+    processors/morphologytransformationprocessor.cpp \
+    processors/thresholdprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -103,7 +104,8 @@ HEADERS  += mainwidget.h \
     plugwidgets/stringwidget.h \
     plugwidgets/dockableimageviewerwidget.h \
     plugwidgets/colorwidget.h \
-    processors/morphologytransformationprocessor.h
+    processors/morphologytransformationprocessor.h \
+    processors/thresholdprocessor.h
 
 FORMS    += \
     mainwidget.ui \
