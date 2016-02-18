@@ -56,7 +56,6 @@ QImage CvUtils::toQImage(const cv::Mat &mat)
     return image;
 }
 
-
 QList<QPair<QString, QVariant> > CvUtils::makeBlurBorderValues()
 {
     QList<QPair<QString, QVariant> > borderValues;

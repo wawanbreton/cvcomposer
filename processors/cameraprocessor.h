@@ -20,6 +20,10 @@
 
 #include "processors/abstractprocessor.h"
 
+#include <opencv2/highgui/highgui.hpp>
+
+class CameraGrabber;
+
 class CameraProcessor : public AbstractProcessor
 {
     public:
@@ -29,6 +33,9 @@ class CameraProcessor : public AbstractProcessor
 
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
+
+    private:
+        static cv::VideoCapture *_camera;
 };
 
 Q_DECLARE_METATYPE(CameraProcessor)

@@ -17,9 +17,9 @@
 
 #include "cameraprocessor.h"
 
-#include <opencv2/highgui/highgui.hpp>
-
 #include "cvutils.h"
+
+cv::VideoCapture *CameraProcessor::_camera = NULL;
 
 
 CameraProcessor::CameraProcessor()
@@ -36,11 +36,16 @@ Properties CameraProcessor::processImpl(const Properties &inputs)
 {
     Q_UNUSED(inputs);
 
-    cv::VideoCapture camera(0);
     cv::Mat outputImage;
-    if(camera.isOpened() && camera.grab())
+
+    if(_camera == NULL)
     {
-        camera.retrieve(outputImage);
+        _camera = new cv::VideoCapture(0);
+    }
+
+    if(_camera->isOpened() && _camera->grab())
+    {
+        _camera->retrieve(outputImage);
     }
 
     Properties properties;
