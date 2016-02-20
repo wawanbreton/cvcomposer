@@ -19,6 +19,8 @@
 
 #include <QHBoxLayout>
 
+#include "cvconstants.h"
+
 
 DoubleWidget::DoubleWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
@@ -29,14 +31,11 @@ DoubleWidget::DoubleWidget(const Properties &properties, QWidget *parent) :
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_spinBox);
 
-    _spinBox->setMaximum(9999);
+    _spinBox->setMaximum(CvConstants::defaultDoubleMax);
 
     connect(_spinBox,  SIGNAL(valueChanged(double)), SIGNAL(valueChanged()));
 
-    for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
-    {
-        _spinBox->setProperty(iterator.key().toUtf8(), iterator.value());
-    }
+    properties.applyTo(_spinBox);
 }
 
 QVariant DoubleWidget::getValue() const

@@ -63,7 +63,11 @@ SOURCES += main.cpp\
     plugwidgets/colorwidget.cpp \
     processors/morphologytransformationprocessor.cpp \
     processors/thresholdprocessor.cpp \
-    processors/cameraprocessor.cpp
+    processors/cameraprocessor.cpp \
+    processors/kernelprocessor.cpp \
+    plugwidgets/kerneldefinitionwidget.cpp \
+    properties.cpp \
+    plugwidgets/doubleitemdelegate.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -107,7 +111,11 @@ HEADERS  += mainwidget.h \
     plugwidgets/colorwidget.h \
     processors/morphologytransformationprocessor.h \
     processors/thresholdprocessor.h \
-    processors/cameraprocessor.h
+    processors/cameraprocessor.h \
+    processors/kernelprocessor.h \
+    plugwidgets/kerneldefinitionwidget.h \
+    cvconstants.h \
+    plugwidgets/doubleitemdelegate.h
 
 FORMS    += \
     mainwidget.ui \

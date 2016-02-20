@@ -15,40 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGTYPE_H
-#define PLUGTYPE_H
+#include "properties.h"
 
-namespace PlugType
+
+void Properties::applyTo(QObject *object) const
 {
-    typedef enum
+    for(auto iterator = begin() ; iterator != end() ; iterator++)
     {
-        Image,
-        Size,
-        Point,
-        Enumeration,
-        Double,
-        String,
-        Color,
-        Kernel,
-        KernelDefinition,
-        ImagePath,
-        ImagePreview,
-        DockableImageViewer
-    } Enum;
-
-    typedef enum
-    {
-        Mandatory, // Plug has to be connected, it can't be configured manually
-        Free,      // Plug may be configured manually, or connected
-        ManualOnly // Plug can only be manually configured
-    } Pluggable;
-
-    Pluggable isInputPluggable(Enum value);
-
-    bool isWidgetAlwaysVisible(Enum value);
-
-    bool isLabelVisible(Enum value);
+        object->setProperty(iterator.key().toUtf8(), iterator.value());
+    }
 }
-
-#endif // PLUGTYPE_H
-

@@ -22,6 +22,7 @@
 
 #include <opencv2/core/core.hpp>
 
+#include "cvconstants.h"
 #include "cvutils.h"
 
 
@@ -33,8 +34,8 @@ PointWidget::PointWidget(const Properties &properties, QWidget *parent) :
     QLabel *label = new QLabel(this);
     label->setText("x");
 
-    _spinBoxX->setMaximum(9999);
-    _spinBoxY->setMaximum(9999);
+    _spinBoxX->setMaximum(CvConstants::defaultDoubleMax);
+    _spinBoxY->setMaximum(CvConstants::defaultDoubleMax);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

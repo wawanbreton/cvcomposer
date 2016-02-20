@@ -22,6 +22,7 @@
 
 #include <opencv2/core/core.hpp>
 
+#include "cvconstants.h"
 #include "cvutils.h"
 
 
@@ -33,8 +34,8 @@ SizeWidget::SizeWidget(const Properties &properties, QWidget *parent) :
     QLabel *label = new QLabel(this);
     label->setText("x");
 
-    _spinBoxWidth->setMaximum(9999);
-    _spinBoxHeight->setMaximum(9999);
+    _spinBoxWidth->setMaximum(CvConstants::defaultDoubleMax);
+    _spinBoxHeight->setMaximum(CvConstants::defaultDoubleMax);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

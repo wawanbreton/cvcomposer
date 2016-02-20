@@ -21,7 +21,11 @@
 #include <QMap>
 #include <QVariant>
 
-typedef QMap<QString, QVariant> Properties;
+class Properties : public QMap<QString, QVariant>
+{
+    public:
+        void applyTo(QObject *object) const;
+};
 
 #endif // PROPERTIES_H
 

@@ -23,11 +23,13 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
     switch(value)
     {
         case PlugType::Image:
+        case PlugType::Kernel:
             return Mandatory;
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
         case PlugType::ImagePath:
+        case PlugType::KernelDefinition:
         case PlugType::Double:
         case PlugType::String:
         case PlugType::Color:

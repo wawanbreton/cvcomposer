@@ -27,6 +27,7 @@
 #include "processors/dockableimageviewerprocessor.h"
 #include "processors/medianblurprocessor.h"
 #include "processors/morphologytransformationprocessor.h"
+#include "processors/kernelprocessor.h"
 #include "processors/thresholdprocessor.h"
 #include "processors/cameraprocessor.h"
 
@@ -44,6 +45,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<MorphologyTransformationProcessor>();
     qRegisterMetaType<ThresholdProcessor>();
     qRegisterMetaType<CameraProcessor>();
+    qRegisterMetaType<KernelProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -78,6 +80,12 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     QTreeWidgetItem *itemThres = new QTreeWidgetItem(filters, QStringList() << "Threshold");
     itemThres->setData(0, Qt::UserRole, "Threshold");
     result << filters;
+
+    QTreeWidgetItem *data = new QTreeWidgetItem(QStringList() << "Data");
+    data->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
+    QTreeWidgetItem *itemKernel = new QTreeWidgetItem(data, QStringList() << "Kernel");
+    itemKernel->setData(0, Qt::UserRole, "Kernel");
+    result << data;
 
     return result;
 }

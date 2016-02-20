@@ -31,6 +31,7 @@
 #include "plugwidgets/sizewidget.h"
 #include "plugwidgets/pointwidget.h"
 #include "plugwidgets/enumerationwidget.h"
+#include "plugwidgets/kerneldefinitionwidget.h"
 #include "plugwidgets/doublewidget.h"
 #include "plugwidgets/stringwidget.h"
 #include "plugwidgets/colorwidget.h"
@@ -191,6 +192,9 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
         case PlugType::Color:
             widget = new ColorWidget(this);
             break;
+        case PlugType::KernelDefinition:
+            widget = new KernelDefinitionWidget(plug.widgetProperties, this);
+            break;
         case PlugType::ImagePath:
             widget = new ImagePathWidget(this);
             break;
@@ -200,6 +204,7 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
         case PlugType::DockableImageViewer:
             widget = new DockableImageViewerWidget(this);
             break;
+        case PlugType::Kernel:
         case PlugType::Image:
             qCritical() << "GenericNodeWidget::makePlugWidget"
                         << "plug type" << plug.type
