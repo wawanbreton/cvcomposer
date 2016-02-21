@@ -19,16 +19,19 @@
 
 #include <QBrush>
 #include <QCursor>
+#include <QDebug>
 
 #include "nodesviews/customitems.h"
 
 
 PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
+    QObject(),
     QGraphicsEllipseItem(parent),
     _plug(plug)
 {
     setRect(-radius, -radius, radius * 2, radius * 2);
     setBrush(Qt::white);
+    setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 }
 
 int PlugItem::type() const
@@ -39,4 +42,14 @@ int PlugItem::type() const
 Plug *PlugItem::getPlug() const
 {
     return _plug;
+}
+
+QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if(change == QGraphicsItem::ItemScenePositionHasChanged)
+    {
+        emit positionChanged();
+    }
+
+    return QGraphicsEllipseItem::itemChange(change, value);
 }

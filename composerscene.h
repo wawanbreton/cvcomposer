@@ -53,6 +53,8 @@ class ComposerScene : public QGraphicsScene
 
         void onConnectionRemoved(Connection *connection);
 
+        void onPlugItemPositionChanged();
+
     private:
         typedef struct
         {

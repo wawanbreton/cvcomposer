@@ -18,18 +18,27 @@
 #ifndef PLUGITEM_H
 #define PLUGITEM_H
 
+#include <QObject>
 #include <QGraphicsEllipseItem>
 
 #include "plug.h"
 
-class PlugItem : public QGraphicsEllipseItem
+class PlugItem : public QObject, public QGraphicsEllipseItem
 {
+    Q_OBJECT
+
     public:
         PlugItem(Plug *plug, QGraphicsItem *parent = NULL);
 
         virtual int type() const;
 
         Plug *getPlug() const;
+
+    signals:
+        void positionChanged();
+
+    protected:
+        virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     public:
         static const int radius = 5;

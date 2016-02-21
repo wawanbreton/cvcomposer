@@ -81,6 +81,11 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         item->setPos(event->scenePos());
         addItem(item);
         _nodes << item;
+
+        foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
+        {
+            connect(plugItem, SIGNAL(positionChanged()), SLOT(onPlugItemPositionChanged()));
+        }
     }
 }
 
@@ -213,38 +218,7 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         cursor = Qt::ClosedHandCursor;
 
-        // Move node, easy part
         _editedNode.item->setPos(_editedNode.initNodePose + (event->scenePos() - _editedNode.initClickPos));
-
-        // Move connections, hard part
-        foreach(ConnectionItem *connectionItem, _connections)
-        {
-            Connection *connection = connectionItem->getConnection();
-
-            if(_editedNode.item->getNode()->hasInput(connection->getInput()))
-            {
-                foreach(PlugItem *plugItem, _editedNode.item->getInputs())
-                {
-                    if(plugItem->getPlug() == connection->getInput())
-                    {
-                        connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
-                        break;
-                    }
-                }
-            }
-
-            if(_editedNode.item->getNode()->hasOutput(connection->getOutput()))
-            {
-                foreach(PlugItem *plugItem, _editedNode.item->getOutputs())
-                {
-                    if(plugItem->getPlug() == connection->getOutput())
-                    {
-                        connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
-                        break;
-                    }
-                }
-            }
-        }
     }
     else
     {
@@ -341,5 +315,32 @@ void ComposerScene::onConnectionRemoved(Connection *connection)
             _connections.removeAll(connectionItem);
             break;
         }
+    }
+}
+
+void ComposerScene::onPlugItemPositionChanged()
+{
+    // A plug item has moved, move the associated connections
+    PlugItem *plugItem = qobject_cast<PlugItem *>(sender());
+    if(plugItem)
+    {
+        const Plug *plug = plugItem->getPlug();
+        foreach(ConnectionItem *connectionItem, _connections)
+        {
+            Connection *connection = connectionItem->getConnection();
+
+            if(connection->getInput() == plug)
+            {
+                connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
+            }
+            else if(connection->getOutput() == plug)
+            {
+                connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
+            }
+        }
+    }
+    else
+    {
+        qCritical() << "ComposerScene::onPlugItemPositionChanged" << "Sender is not a PlugItem";
     }
 }
