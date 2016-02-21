@@ -55,9 +55,12 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     private slots:
         void onPlugConnectionChanged(const Plug *connectedTo);
 
+        void recomputeSizes();
+
     private:
         GenericNode *_node;
         GenericNodeWidget *_widget;
+        QGraphicsProxyWidget *_proxy;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
 };

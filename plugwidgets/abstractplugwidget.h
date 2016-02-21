@@ -37,6 +37,8 @@ class AbstractPlugWidget : public QWidget
     signals:
         void valueChanged();
 
+        void sizeHintChanged();
+
     protected:
         explicit AbstractPlugWidget(QWidget *parent = NULL);
 };

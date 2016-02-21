@@ -49,6 +49,8 @@ class GenericNodeWidget : public QWidget
     signals:
         void propertyChanged(const QString &name, const QVariant &value);
 
+        void sizeHintChanged();
+
     private:
         typedef struct
         {
@@ -65,6 +67,8 @@ class GenericNodeWidget : public QWidget
 
     private slots:
         void onWidgetValueChanged(const QString &propertyName);
+
+        void onPlugSizeHintChanged();
 
     private:
         QMap<QString, PlugWidget> _widgets;

@@ -55,6 +55,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
     if(outputs.count())
     {
         QVBoxLayout *outputsLayout = new QVBoxLayout();
+        outputsLayout->setContentsMargins(0, 0, 0, 0);
 
         foreach(const Plug *output, outputs)
         {
@@ -79,6 +80,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
     if(inputs.count())
     {
         QFormLayout *inputsLayout = new QFormLayout();
+        inputsLayout->setContentsMargins(0, 0, 0, 0);
 
         foreach(const Plug *input, inputs)
         {
@@ -216,6 +218,7 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
     {
         _widgetsMapper->setMapping(widget, plug.name);
         connect(widget, SIGNAL(valueChanged()), _widgetsMapper, SLOT(map()));
+        connect(widget, SIGNAL(sizeHintChanged()), SLOT(onPlugSizeHintChanged()));
         if(not plug.defaultValue.isNull())
         {
             widget->setValue(plug.defaultValue);
@@ -257,4 +260,12 @@ void GenericNodeWidget::onWidgetValueChanged(const QString &propertyName)
         qCritical() << "GenericNodeWidget::onWidgetValueChanged"
                     << "Unable to find the AbstractPlugWidget for property" << propertyName;
     }
+}
+
+void GenericNodeWidget::onPlugSizeHintChanged()
+{
+    layout()->activate();
+    resize(sizeHint());
+
+    emit sizeHintChanged();
 }

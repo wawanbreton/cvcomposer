@@ -49,5 +49,5 @@ bool PlugType::isWidgetAlwaysVisible(PlugType::Enum value)
 
 bool PlugType::isLabelVisible(PlugType::Enum value)
 {
-    return value != PlugType::ImagePreview;
+    return value != PlugType::ImagePreview && value != PlugType::KernelDefinition;
 }

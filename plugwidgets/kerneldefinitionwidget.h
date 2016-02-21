@@ -19,7 +19,10 @@
 
 #include "plugwidgets/abstractplugwidget.h"
 
+#include <QFormLayout>
 #include <QTableWidget>
+
+class SizeWidget;
 
 /*! @brief This widget is useful to manually edit the values of a kernel
  *
@@ -39,5 +42,13 @@ class KernelDefinitionWidget : public AbstractPlugWidget
         virtual void setValue(const QVariant &value) override;
 
     private:
+        QSize tableSizeHint() const;
+
+    private slots:
+        void onSizeChanged();
+
+    private:
         QTableWidget *_table;
+        SizeWidget *_sizeWidget;
+        QFormLayout *_layout;
 };

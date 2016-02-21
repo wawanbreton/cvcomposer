@@ -21,6 +21,7 @@
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QTimer>
+#include <QLayout>
 
 #include "genericnode.h"
 #include "nodesviews/customitems.h"
@@ -33,14 +34,16 @@ GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
     _widget(new GenericNodeWidget()),
+    _proxy(new QGraphicsProxyWidget(this)),
     _inputPlugs(),
     _outputPlugs()
 {
     _widget->setPlugs(node->getInputs(), node->getOutputs());
-    _widget->setFixedSize(_widget->sizeHint());
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_NoBackground, true);
 
+    connect(_widget, SIGNAL(sizeHintChanged()),
+                     SLOT(recomputeSizes()));
     connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
             node,    SLOT(setProperty(QString,QVariant)));
     connect(node,    SIGNAL(processDone(Properties,Properties)),
@@ -48,9 +51,8 @@ GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     connect(node,    SIGNAL(processUnavailable()),
             _widget, SLOT(onProcessUnavailable()));
 
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
-    proxy->setWidget(_widget);
-    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+    _proxy->setWidget(_widget);
+    _proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
 
     foreach(Plug *plug, _node->getInputs())
     {
@@ -58,8 +60,6 @@ GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
         {
             PlugItem *plugItem = new PlugItem(plug, this);
             _inputPlugs << plugItem;
-            plugItem->setPos(QPointF(boundingRect().left(),
-                                     _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
             connect(plug, SIGNAL(connectionChanged(const Plug*)),
                           SLOT(onPlugConnectionChanged(const Plug*)));
         }
@@ -68,9 +68,9 @@ GenericNodeItem::GenericNodeItem(GenericNode *node, QGraphicsItem *parent) :
     {
         PlugItem *plugItem = new PlugItem(plug, this);
         _outputPlugs << plugItem;
-        plugItem->setPos(QPointF(boundingRect().right(),
-                                 _widget->y() + _widget->getPlugPosY(plug->getDefinition().name)));
     }
+
+    recomputeSizes();
 }
 
 int GenericNodeItem::type() const
@@ -95,17 +95,10 @@ const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 
 QRectF GenericNodeItem::boundingRect() const
 {
-    if(_widget)
-    {
-        return QRectF(0,
-                      0,
-                      _widget->sizeHint().width() + 4 * PlugItem::radius,
-                      30 + _widget->sizeHint().height() + 2 * PlugItem::radius);
-    }
-    else
-    {
-        return QRectF(0, 0, 100, 30);
-    }
+    return QRectF(0,
+                  0,
+                  _widget->sizeHint().width() + 4 * PlugItem::radius,
+                  30 + _widget->sizeHint().height() + 2 * PlugItem::radius);
 }
 
 void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -133,4 +126,20 @@ void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
     {
         qCritical() << "GenericNodeItem::onPlugConnectionChanged" << "Sender is not a Plug";
     }
+}
+
+void GenericNodeItem::recomputeSizes()
+{
+    foreach(PlugItem *plugItem, _inputPlugs)
+    {
+        plugItem->setPos(QPointF(boundingRect().left(),
+                                 _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));
+    }
+    foreach(PlugItem *plugItem, _outputPlugs)
+    {
+        plugItem->setPos(QPointF(boundingRect().right(),
+                                 _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));
+    }
+
+    prepareGeometryChange();
 }

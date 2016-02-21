@@ -22,13 +22,13 @@
 
 KernelProcessor::KernelProcessor()
 {
-    Properties sizeProperties;
+    /*Properties sizeProperties;
     sizeProperties.insert("decimals", 0);
     sizeProperties.insert("minimum", 1.0);
     sizeProperties.insert("maximum", 10.0);
 
     addInput("width", PlugType::Double, 3.0, sizeProperties);
-    addInput("height", PlugType::Double, 3.0, sizeProperties);
+    addInput("height", PlugType::Double, 3.0, sizeProperties);*/
 
     double initData[] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
     cv::Mat initMat = cv::Mat(3, 3, CV_64FC1, initData).clone();
