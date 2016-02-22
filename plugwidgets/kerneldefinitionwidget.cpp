@@ -134,8 +134,22 @@ QSize KernelDefinitionWidget::tableSizeHint() const
 void KernelDefinitionWidget::onSizeChanged()
 {
     cv::Size size = _sizeWidget->getValue().value<cv::Size>();
-    _table->setRowCount(size.width);
-    _table->setColumnCount(size.height);
+    _table->setRowCount(size.height);
+    _table->setColumnCount(size.width);
+
+    for(int row = 0 ; row < size.height ; row++)
+    {
+        for(int col = 0 ; col < size.width ; col++)
+        {
+            if(_table->item(row, col) == NULL)
+            {
+                QTableWidgetItem *item = new QTableWidgetItem();
+                item->setData(Qt::DisplayRole, 1.0);
+                _table->setItem(row, col, item);
+            }
+        }
+    }
+
     _table->setFixedSize(tableSizeHint());
     _layout->activate();
 
