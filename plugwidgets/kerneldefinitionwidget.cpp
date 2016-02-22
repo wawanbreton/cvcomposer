@@ -124,11 +124,41 @@ void KernelDefinitionWidget::setValue(const QVariant &value)
             _table->setItem(row, col, item);
         }
     }
+
+    updateCellColors();
 }
 
 QSize KernelDefinitionWidget::tableSizeHint() const
 {
     return QSize(_table->horizontalHeader()->length() + 4, _table->verticalHeader()->length() + 4);
+}
+
+void KernelDefinitionWidget::updateCellColors()
+{
+    QColor base = palette().color(QPalette::Base);
+    QColor alternate = palette().color(QPalette::AlternateBase);
+
+    for(int row = 0 ; row < _table->rowCount() ; row++)
+    {
+        for(int col = 0 ; col < _table->columnCount() ; col++)
+        {
+            QTableWidgetItem *item = _table->item(row, col);
+
+            bool alternateRow = false;
+            bool alternateCol = false;
+
+            if(_table->rowCount() >= 3)
+            {
+                alternateRow = qAbs(row - ((_table->rowCount() - 1) / 2.0)) < 0.6;
+            }
+            if(_table->columnCount() >= 3)
+            {
+                alternateCol = qAbs(col - ((_table->columnCount() - 1) / 2.0)) < 0.6;
+            }
+
+            item->setData(Qt::BackgroundRole, alternateRow || alternateCol ? alternate : base);
+        }
+    }
 }
 
 void KernelDefinitionWidget::onSizeChanged()
@@ -153,5 +183,8 @@ void KernelDefinitionWidget::onSizeChanged()
     _table->setFixedSize(tableSizeHint());
     _layout->activate();
 
+    updateCellColors();
+
     emit sizeHintChanged();
+    emit valueChanged();
 }

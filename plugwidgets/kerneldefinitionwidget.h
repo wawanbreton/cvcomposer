@@ -44,6 +44,8 @@ class KernelDefinitionWidget : public AbstractPlugWidget
     private:
         QSize tableSizeHint() const;
 
+        void updateCellColors();
+
     private slots:
         void onSizeChanged();
 
