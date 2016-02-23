@@ -30,19 +30,19 @@ DoubleItemDelegate::DoubleItemDelegate(const Properties &properties, QObject *pa
 }
 
 QWidget *DoubleItemDelegate::createEditor(QWidget *parent,
-    const QStyleOptionViewItem &option,
-    const QModelIndex &index) const
+                                          const QStyleOptionViewItem &option,
+                                          const QModelIndex &index) const
 {
     Q_UNUSED(option)
-    Q_UNUSED(index)
 
     QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
     editor->setFrame(false);
     editor->setProperty("decimals", CvConstants::defaultDoubleDecimals);
     editor->setProperty("maximum", CvConstants::defaultDoubleMax);
+    editor->setProperty("index", QVariant::fromValue(index));
     _properties.applyTo(editor);
 
-    connect(editor, SIGNAL(valueChanged(double)), SLOT(onValueChanged()));
+    connect(editor, SIGNAL(valueChanged(double)), SLOT(onValueChanged(double)));
 
     return editor;
 }
@@ -83,9 +83,9 @@ QString DoubleItemDelegate::displayText(const QVariant &value, const QLocale &lo
                                              CvConstants::defaultDoubleDecimals).toInt());
 }
 
-void DoubleItemDelegate::onValueChanged()
+void DoubleItemDelegate::onValueChanged(double value)
 {
     // We want to update the model as soon as the value has changed, not when editing is finished
     emit commitData(qobject_cast<QWidget *>(sender()));
-    emit valueChanged();
+    emit valueChanged(sender()->property("index").value<QModelIndex>(), value);
 }

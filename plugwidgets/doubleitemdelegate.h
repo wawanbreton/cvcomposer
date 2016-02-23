@@ -45,10 +45,10 @@ class DoubleItemDelegate : public QStyledItemDelegate
         virtual QString displayText(const QVariant & value, const QLocale &locale) const override;
 
     signals:
-        void valueChanged();
+        void valueChanged(const QModelIndex &editedItem, double value);
 
     private slots:
-        void onValueChanged();
+        void onValueChanged(double value);
 
     private:
         const Properties _properties;

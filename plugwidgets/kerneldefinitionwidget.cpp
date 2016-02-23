@@ -28,12 +28,14 @@
 #include "cvutils.h"
 #include "plugwidgets/doubleitemdelegate.h"
 #include "plugwidgets/sizewidget.h"
+#include "plugwidgets/enumerationwidget.h"
 
 
 KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
     _table(new QTableWidget(this)),
     _sizeWidget(NULL),
+    _symmetryWidget(NULL),
     _layout(new QFormLayout(this))
 {
     _layout->setContentsMargins(0, 0, 0, 0);
@@ -46,6 +48,18 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
     _sizeWidget = new SizeWidget(sizeProperties, this);
     connect(_sizeWidget, SIGNAL(valueChanged()), SLOT(onSizeChanged()));
     _layout->addRow("Size :", _sizeWidget);
+
+    Properties symmetryProperties;
+    QList<QPair<QString, QVariant> > symmetryValues;
+    symmetryValues << QPair<QString, QVariant>("Both", Both);
+    symmetryValues << QPair<QString, QVariant>("Horizontal", Horizontal);
+    symmetryValues << QPair<QString, QVariant>("Vertical", Vertical);
+    symmetryValues << QPair<QString, QVariant>("Center", Center);
+    symmetryValues << QPair<QString, QVariant>("None", None);
+    symmetryProperties.insert("values", QVariant::fromValue(symmetryValues));
+    _symmetryWidget = new EnumerationWidget(symmetryProperties, this);
+    _symmetryWidget->setValue(Both);
+    _layout->addRow("Symmetry :", _symmetryWidget);
 
     _table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
@@ -63,7 +77,8 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
 
     DoubleItemDelegate *delegate = new DoubleItemDelegate(properties, this);
     _table->setItemDelegate(delegate);
-    connect(delegate, SIGNAL(valueChanged()), SIGNAL(valueChanged()));
+    connect(delegate, SIGNAL(valueChanged(QModelIndex, double)),
+                      SLOT(onCellEdited(QModelIndex, double)));
 
     _layout->addRow("Definition :", _table);
 }
@@ -76,9 +91,13 @@ QSize KernelDefinitionWidget::sizeHint() const
                      _layout->itemAt(1, QFormLayout::LabelRole)->widget()->sizeHint().width());
     // FIXME: QFormLayout takes us 6px more that it should, don't know why ?!
     width += 2 * _layout->horizontalSpacing();
-    width += qMax(_sizeWidget->sizeHint().width(), tableSize.width());
+    width += qMax(qMax(_sizeWidget->sizeHint().width(),
+                       tableSize.width()),
+                  _symmetryWidget->sizeHint().width());
 
     int height = _sizeWidget->sizeHint().height() +
+                 _layout->verticalSpacing() +
+                 _symmetryWidget->sizeHint().height() +
                  _layout->verticalSpacing() +
                  tableSize.height();
 
@@ -186,5 +205,37 @@ void KernelDefinitionWidget::onSizeChanged()
     updateCellColors();
 
     emit sizeHintChanged();
+    emit valueChanged();
+}
+
+void KernelDefinitionWidget::onCellEdited(const QModelIndex &index, double value)
+{
+    Symmetry symmetry = Symmetry(_symmetryWidget->getValue().toInt());
+
+    QSet<QTableWidgetItem *> symmetricItems;
+
+    if(symmetry == Horizontal || symmetry == Both)
+    {
+        symmetricItems << _table->item(index.row(), _table->columnCount() - 1 - index.column());
+    }
+    if(symmetry == Vertical || symmetry == Both)
+    {
+        symmetricItems << _table->item(_table->rowCount() - 1 - index.row(), index.column());
+    }
+    if(symmetry == Center || symmetry == Both)
+    {
+        symmetricItems << _table->item(_table->rowCount() - 1 - index.row(),
+                                       _table->columnCount() - 1 - index.column());
+    }
+
+    QTableWidgetItem *editedItem = _table->item(index.row(), index.column());
+    foreach(QTableWidgetItem *item, symmetricItems)
+    {
+        if(item && item != editedItem)
+        {
+            item->setData(Qt::DisplayRole, value);
+        }
+    }
+
     emit valueChanged();
 }

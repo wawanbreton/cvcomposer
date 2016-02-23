@@ -23,6 +23,7 @@
 #include <QTableWidget>
 
 class SizeWidget;
+class EnumerationWidget;
 
 /*! @brief This widget is useful to manually edit the values of a kernel
  *
@@ -42,6 +43,16 @@ class KernelDefinitionWidget : public AbstractPlugWidget
         virtual void setValue(const QVariant &value) override;
 
     private:
+        typedef enum
+        {
+            None,
+            Horizontal,
+            Vertical,
+            Both,
+            Center
+        } Symmetry;
+
+    private:
         QSize tableSizeHint() const;
 
         void updateCellColors();
@@ -49,8 +60,11 @@ class KernelDefinitionWidget : public AbstractPlugWidget
     private slots:
         void onSizeChanged();
 
+        void onCellEdited(const QModelIndex &index, double value);
+
     private:
         QTableWidget *_table;
         SizeWidget *_sizeWidget;
+        EnumerationWidget *_symmetryWidget;
         QFormLayout *_layout;
 };
