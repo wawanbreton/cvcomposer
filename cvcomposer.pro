@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     processors/kernelprocessor.cpp \
     plugwidgets/kerneldefinitionwidget.cpp \
     properties.cpp \
-    plugwidgets/doubleitemdelegate.cpp
+    plugwidgets/doubleitemdelegate.cpp \
+    processors/customfilterprocessor.cpp
 
 HEADERS  += mainwidget.h \
     composerwidget.h \
@@ -115,7 +116,8 @@ HEADERS  += mainwidget.h \
     processors/kernelprocessor.h \
     plugwidgets/kerneldefinitionwidget.h \
     cvconstants.h \
-    plugwidgets/doubleitemdelegate.h
+    plugwidgets/doubleitemdelegate.h \
+    processors/customfilterprocessor.h
 
 FORMS    += \
     mainwidget.ui \

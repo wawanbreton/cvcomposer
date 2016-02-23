@@ -29,6 +29,7 @@
 #include "processors/morphologytransformationprocessor.h"
 #include "processors/kernelprocessor.h"
 #include "processors/thresholdprocessor.h"
+#include "processors/customfilterprocessor.h"
 #include "processors/cameraprocessor.h"
 
 
@@ -46,6 +47,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<ThresholdProcessor>();
     qRegisterMetaType<CameraProcessor>();
     qRegisterMetaType<KernelProcessor>();
+    qRegisterMetaType<CustomFilterProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -79,6 +81,8 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     itemMorph->setData(0, Qt::UserRole, "MorphologyTransformation");
     QTreeWidgetItem *itemThres = new QTreeWidgetItem(filters, QStringList() << "Threshold");
     itemThres->setData(0, Qt::UserRole, "Threshold");
+    QTreeWidgetItem *itemCustom = new QTreeWidgetItem(filters, QStringList() << "Custom filter");
+    itemCustom->setData(0, Qt::UserRole, "CustomFilter");
     result << filters;
 
     QTreeWidgetItem *data = new QTreeWidgetItem(QStringList() << "Data");
