@@ -59,6 +59,7 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
     symmetryProperties.insert("values", QVariant::fromValue(symmetryValues));
     _symmetryWidget = new EnumerationWidget(symmetryProperties, this);
     _symmetryWidget->setValue(Both);
+    connect(_symmetryWidget, SIGNAL(valueChanged()), SLOT(onSymmetryChanged()));
     _layout->addRow("Symmetry :", _symmetryWidget);
 
     _table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -203,9 +204,49 @@ void KernelDefinitionWidget::onSizeChanged()
     _layout->activate();
 
     updateCellColors();
+    onSymmetryChanged();
 
     emit sizeHintChanged();
     emit valueChanged();
+}
+
+void KernelDefinitionWidget::onSymmetryChanged()
+{
+    Symmetry symmetry = Symmetry(_symmetryWidget->getValue().toInt());
+
+    int maxRow = 0;
+    int maxCol = 0;
+
+    switch(symmetry)
+    {
+        case Horizontal:
+            maxRow = _table->rowCount();
+            maxCol = _table->columnCount() / 2;
+            break;
+
+        case Vertical:
+        case Center:
+            maxRow = _table->rowCount() / 2;
+            maxCol = _table->columnCount();
+            break;
+
+        case Both:
+            maxRow = _table->rowCount() / 2;
+            maxCol = _table->columnCount() / 2;
+            break;
+
+        case None:
+            break;
+    }
+
+    for(int row = 0 ; row < maxRow ; row++)
+    {
+        for(int col = 0 ; col < maxCol ; col++)
+        {
+            QModelIndex index = _table->model()->index(row, col);
+            onCellEdited(index, index.data().toDouble());
+        }
+    }
 }
 
 void KernelDefinitionWidget::onCellEdited(const QModelIndex &index, double value)

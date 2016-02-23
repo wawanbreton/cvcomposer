@@ -60,6 +60,8 @@ class KernelDefinitionWidget : public AbstractPlugWidget
     private slots:
         void onSizeChanged();
 
+        void onSymmetryChanged();
+
         void onCellEdited(const QModelIndex &index, double value);
 
     private:
