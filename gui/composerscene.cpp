@@ -168,35 +168,29 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         bool plugFound = false;
 
-        foreach(QGraphicsItem *itemUnderMouse, items(event->scenePos()))
+        foreach(GenericNodeItem *nodeItem, _nodes)
         {
-            if(itemUnderMouse != _editedConnection.item &&
-               itemUnderMouse->type() == CustomItems::Plug)
+            const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
+            foreach(PlugItem *plugItem, plugItems)
             {
-                PlugItem *plugUnderMouse = static_cast<PlugItem *>(itemUnderMouse);
-
-                if(_editedConnection.fromOutput)
+                QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
+                qreal distance = (event->scenePos() - itemPos).manhattanLength();
+                if(distance < PlugItem::magnetRadius)
                 {
-                    if(_model->findInputPlug(plugUnderMouse->getPlug()))
+                    if(_editedConnection.fromOutput)
                     {
-                        _editedConnection.item->setInput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugInput = plugUnderMouse->getPlug();
-                        cursor = Qt::PointingHandCursor;
-                        plugFound = true;
+                        _editedConnection.item->setInput(plugItem->mapToScene(QPointF(0, 0)));
+                        _editedConnection.plugInput = plugItem->getPlug();
                     }
-                }
-                else
-                {
-                    if(_model->findOutputPlug(plugUnderMouse->getPlug()))
+                    else
                     {
-                        _editedConnection.item->setOutput(plugUnderMouse->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugOutput = plugUnderMouse->getPlug();
-                        cursor = Qt::PointingHandCursor;
-                        plugFound = true;
+                        _editedConnection.item->setOutput(plugItem->mapToScene(QPointF(0, 0)));
+                        _editedConnection.plugOutput = plugItem->getPlug();
                     }
-                }
 
-                break;
+                    cursor = Qt::PointingHandCursor;
+                    plugFound = true;
+                }
             }
         }
 

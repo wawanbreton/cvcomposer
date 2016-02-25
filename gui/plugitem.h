@@ -42,6 +42,7 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
 
     public:
         static const int radius = 5;
+        static const int magnetRadius = 20;
         Plug *_plug;
 };
 
