@@ -15,14 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#include "global/properties.h"
 
-int main(int argc, char *argv[])
+
+void Properties::applyTo(QObject *object) const
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
-
-    return a.exec();
+    for(auto iterator = begin() ; iterator != end() ; iterator++)
+    {
+        object->setProperty(iterator.key().toUtf8(), iterator.value());
+    }
 }

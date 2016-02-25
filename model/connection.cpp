@@ -15,14 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#include "model/connection.h"
 
-int main(int argc, char *argv[])
+
+Connection::Connection(Plug *output, Plug *input, QObject *parent) :
+    QObject(parent),
+    _output(output),
+    _input(input)
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+}
 
-    return a.exec();
+Plug *Connection::getOutput() const
+{
+    return _output;
+}
+
+Plug *Connection::getInput() const
+{
+    return _input;
 }

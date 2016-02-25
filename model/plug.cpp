@@ -15,14 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#include "model/plug.h"
 
-int main(int argc, char *argv[])
+
+Plug::Plug(const PlugDefinition &definition, QObject *parent) :
+    QObject(parent),
+    _definition(definition)
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+}
 
-    return a.exec();
+const PlugDefinition &Plug::getDefinition() const
+{
+    return _definition;
+}
+
+void Plug::signalConnectedTo(const Plug *connectedTo)
+{
+    emit connectionChanged(connectedTo);
 }

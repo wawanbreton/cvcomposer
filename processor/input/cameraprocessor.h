@@ -15,14 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef CAMERAPROCESSOR_H
+#define CAMERAPROCESSOR_H
 
-int main(int argc, char *argv[])
+#include "processor/abstractprocessor.h"
+
+#include <opencv2/highgui/highgui.hpp>
+
+class CameraGrabber;
+
+class CameraProcessor : public AbstractProcessor
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    public:
+        CameraProcessor();
 
-    return a.exec();
-}
+        virtual bool getRealTimeProcessing() const override;
+
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+
+    private:
+        static cv::VideoCapture *_camera;
+};
+
+Q_DECLARE_METATYPE(CameraProcessor)
+
+#endif // CAMERAPROCESSOR_H

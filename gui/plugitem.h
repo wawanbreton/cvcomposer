@@ -15,14 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef PLUGITEM_H
+#define PLUGITEM_H
 
-int main(int argc, char *argv[])
+#include <QObject>
+#include <QGraphicsEllipseItem>
+
+#include "model/plug.h"
+
+class PlugItem : public QObject, public QGraphicsEllipseItem
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        PlugItem(Plug *plug, QGraphicsItem *parent = NULL);
+
+        virtual int type() const;
+
+        Plug *getPlug() const;
+
+    signals:
+        void positionChanged();
+
+    protected:
+        virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
+    public:
+        static const int radius = 5;
+        Plug *_plug;
+};
+
+#endif // PLUGITEM_H

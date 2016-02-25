@@ -15,14 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef ABSTRACTPLUGWIDGET_H
+#define ABSTRACTPLUGWIDGET_H
 
-int main(int argc, char *argv[])
+#include <QWidget>
+
+#include "global/properties.h"
+
+class AbstractPlugWidget : public QWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        virtual QVariant getValue() const;
+
+        virtual void setValue(const QVariant &value);
+
+    public slots:
+        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+
+    signals:
+        void valueChanged();
+
+        void sizeHintChanged();
+
+    protected:
+        explicit AbstractPlugWidget(QWidget *parent = NULL);
+};
+
+#endif // ABSTRACTPLUGWIDGET_H

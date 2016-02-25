@@ -15,14 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef PLUGDEFINITION_H
+#define PLUGDEFINITION_H
 
-int main(int argc, char *argv[])
+#include "model/plugtype.h"
+#include "global/properties.h"
+
+typedef struct
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    QString name;
+    PlugType::Enum type;
+    Properties widgetProperties;
+    QVariant defaultValue;
+} PlugDefinition;
 
-    return a.exec();
-}
+#endif // PLUGDEFINITION_H
+

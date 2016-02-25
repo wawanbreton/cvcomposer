@@ -15,14 +15,40 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#include "cameraprocessor.h"
 
-int main(int argc, char *argv[])
+#include "global/cvutils.h"
+
+cv::VideoCapture *CameraProcessor::_camera = NULL;
+
+
+CameraProcessor::CameraProcessor()
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    addOutput("image", PlugType::Image);
+}
 
-    return a.exec();
+bool CameraProcessor::getRealTimeProcessing() const
+{
+    return true;
+}
+
+Properties CameraProcessor::processImpl(const Properties &inputs)
+{
+    Q_UNUSED(inputs);
+
+    cv::Mat outputImage;
+
+    if(_camera == NULL)
+    {
+        _camera = new cv::VideoCapture(0);
+    }
+
+    if(_camera->isOpened() && _camera->grab())
+    {
+        _camera->retrieve(outputImage);
+    }
+
+    Properties properties;
+    properties.insert("image", QVariant::fromValue(outputImage));
+    return properties;
 }

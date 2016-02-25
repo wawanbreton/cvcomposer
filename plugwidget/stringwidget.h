@@ -15,14 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef STRINGWIDGET_H
+#define STRINGWIDGET_H
 
-int main(int argc, char *argv[])
+#include "plugwidget/abstractplugwidget.h"
+
+#include <QLineEdit>
+
+#include "global/properties.h"
+
+/*! @brief This widget is useful to edit a string value
+ *
+ *  The following properties may be given :
+ *    - *  : all the properties that a QLineEdit may accept */
+class StringWidget : public AbstractPlugWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        explicit StringWidget(const Properties &properties, QWidget *parent = NULL);
+
+        virtual QVariant getValue() const override;
+
+        virtual void setValue(const QVariant &value) override;
+
+    private:
+        QLineEdit *_lineEdit;
+};
+
+#endif // STRINGWIDGET_H

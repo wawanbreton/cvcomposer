@@ -15,14 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef IMAGEPREVIEWERPROCESSOR_H
+#define IMAGEPREVIEWERPROCESSOR_H
 
-int main(int argc, char *argv[])
+#include "processor/abstractprocessor.h"
+
+class ImagePreviewerProcessor : public AbstractProcessor
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    public:
+        ImagePreviewerProcessor();
 
-    return a.exec();
-}
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};
+
+Q_DECLARE_METATYPE(ImagePreviewerProcessor)
+
+#endif // IMAGEPREVIEWERPROCESSOR_H

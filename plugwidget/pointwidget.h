@@ -15,14 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef POINTWIDGET_H
+#define POINTWIDGET_H
 
-int main(int argc, char *argv[])
+#include "plugwidget/abstractplugwidget.h"
+
+#include <QSpinBox>
+
+#include "global/properties.h"
+
+/*! @brief This widget is useful to edit a 2D point
+ *
+ *  The following properties may be given :
+ *    - x-* : all the properties that a QSpinBox may accept
+ *    - y-* : all the properties that a QSpinBox may accept */
+class PointWidget : public AbstractPlugWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        explicit PointWidget(const Properties &properties, QWidget *parent = NULL);
+
+        virtual QVariant getValue() const override;
+
+        virtual void setValue(const QVariant &value) override;
+
+    private:
+        QSpinBox *_spinBoxX;
+        QSpinBox *_spinBoxY;
+};
+
+#endif // POINTWIDGET_H

@@ -15,14 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef IMAGEPREVIEWWIDGET_H
+#define IMAGEPREVIEWWIDGET_H
 
-int main(int argc, char *argv[])
+#include "plugwidget/abstractplugwidget.h"
+
+class ImagePreviewWidget : public AbstractPlugWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        explicit ImagePreviewWidget(QWidget *parent = NULL);
+
+    public slots:
+        void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+
+    protected:
+        virtual void paintEvent(QPaintEvent *event);
+
+    private:
+        QPixmap _image;
+};
+
+#endif // IMAGEPREVIEWWIDGET_H

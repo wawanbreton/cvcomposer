@@ -15,14 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef DOUBLEWIDGET_H
+#define DOUBLEWIDGET_H
 
-int main(int argc, char *argv[])
+#include "plugwidget/abstractplugwidget.h"
+
+#include <QDoubleSpinBox>
+
+#include "global/properties.h"
+
+/*! @brief This widget is useful to edit a decimal value
+ *
+ *  The following properties may be given :
+ *    - *  : all the properties that a QDoubleSpinBox may accept */
+class DoubleWidget : public AbstractPlugWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        explicit DoubleWidget(const Properties &properties, QWidget *parent = NULL);
+
+        virtual QVariant getValue() const override;
+
+        virtual void setValue(const QVariant &value) override;
+
+    private:
+        QDoubleSpinBox *_spinBox;
+};
+
+#endif // DOUBLEWIDGET_H

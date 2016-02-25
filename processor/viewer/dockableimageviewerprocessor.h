@@ -15,14 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef DOCKABLEIMAGEVIEWERPROCESSOR_H
+#define DOCKABLEIMAGEVIEWERPROCESSOR_H
 
-int main(int argc, char *argv[])
+#include "processor/abstractprocessor.h"
+
+class DockableImageViewerProcessor : public AbstractProcessor
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    public:
+        DockableImageViewerProcessor();
 
-    return a.exec();
-}
+    protected:
+        virtual Properties processImpl(const Properties &inputs);
+};
+
+Q_DECLARE_METATYPE(DockableImageViewerProcessor)
+
+#endif // DOCKABLEIMAGEVIEWERPROCESSOR_H

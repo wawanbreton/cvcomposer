@@ -15,14 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef BLURPROCESSOR_H
+#define BLURPROCESSOR_H
 
-int main(int argc, char *argv[])
+#include "processor/abstractprocessor.h"
+
+class BlurProcessor : public AbstractProcessor
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    public:
+        BlurProcessor();
 
-    return a.exec();
-}
+    protected:
+        Properties processImpl(const Properties &inputs) override;
+};
+
+Q_DECLARE_METATYPE(BlurProcessor)
+
+#endif // BLURPROCESSOR_H

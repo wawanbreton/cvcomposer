@@ -15,14 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
-#include <QApplication>
+#ifndef COLORWIDGET_H
+#define COLORWIDGET_H
 
-int main(int argc, char *argv[])
+#include "plugwidget/abstractplugwidget.h"
+
+#include <QLineEdit>
+
+class ColorWidget : public AbstractPlugWidget
 {
-    QApplication a(argc, argv);
-    MainWidget w;
-    w.show();
+    Q_OBJECT
 
-    return a.exec();
-}
+    public:
+        explicit ColorWidget(QWidget *parent = NULL);
+
+        virtual QVariant getValue() const override;
+
+        virtual void setValue(const QVariant &value) override;
+
+    protected:
+        virtual void mousePressEvent(QMouseEvent *event) override;
+
+    private:
+        QColor getColor() const;
+
+        void setColor(const QColor &color);
+
+    private:
+        QLineEdit *_lineEdit;
+};
+
+#endif // COLORWIDGET_H
