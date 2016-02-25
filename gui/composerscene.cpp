@@ -164,32 +164,48 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     QCursor cursor = Qt::ArrowCursor;
 
+    #warning It is possible to connect an output to an input of the same node
+
     if(_editedConnection.item)
     {
         bool plugFound = false;
+        PlugType::Enum baseType;
+        if(_editedConnection.fromOutput)
+        {
+            baseType = _editedConnection.plugOutput->getDefinition().type;
+        }
+        else
+        {
+            baseType = _editedConnection.plugInput->getDefinition().type;
+        }
 
         foreach(GenericNodeItem *nodeItem, _nodes)
         {
             const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
             foreach(PlugItem *plugItem, plugItems)
             {
-                QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
-                qreal distance = (event->scenePos() - itemPos).manhattanLength();
-                if(distance < PlugItem::magnetRadius)
+                PlugType::Enum plugType = plugItem->getPlug()->getDefinition().type;
+                PlugType::Enum compatible = PlugType::getCompatibility(plugType);
+                if(compatible == baseType)
                 {
-                    if(_editedConnection.fromOutput)
+                    QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
+                    qreal distance = (event->scenePos() - itemPos).manhattanLength();
+                    if(distance < PlugItem::magnetRadius)
                     {
-                        _editedConnection.item->setInput(plugItem->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugInput = plugItem->getPlug();
-                    }
-                    else
-                    {
-                        _editedConnection.item->setOutput(plugItem->mapToScene(QPointF(0, 0)));
-                        _editedConnection.plugOutput = plugItem->getPlug();
-                    }
+                        if(_editedConnection.fromOutput)
+                        {
+                            _editedConnection.item->setInput(plugItem->mapToScene(QPointF(0, 0)));
+                            _editedConnection.plugInput = plugItem->getPlug();
+                        }
+                        else
+                        {
+                            _editedConnection.item->setOutput(plugItem->mapToScene(QPointF(0, 0)));
+                            _editedConnection.plugOutput = plugItem->getPlug();
+                        }
 
-                    cursor = Qt::PointingHandCursor;
-                    plugFound = true;
+                        cursor = Qt::PointingHandCursor;
+                        plugFound = true;
+                    }
                 }
             }
         }

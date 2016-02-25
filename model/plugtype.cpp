@@ -51,3 +51,17 @@ bool PlugType::isLabelVisible(PlugType::Enum value)
 {
     return value != PlugType::ImagePreview && value != PlugType::KernelDefinition;
 }
+
+PlugType::Enum PlugType::getCompatibility(Enum value)
+{
+    switch(value)
+    {
+        case PlugType::ImagePreview:
+            return Image;
+
+        default:
+            return value;
+    }
+
+    return Image;
+}

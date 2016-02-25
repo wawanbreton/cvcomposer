@@ -48,6 +48,8 @@ namespace PlugType
     bool isWidgetAlwaysVisible(Enum value);
 
     bool isLabelVisible(Enum value);
+
+    Enum getCompatibility(Enum value);
 }
 
 #endif // PLUGTYPE_H
