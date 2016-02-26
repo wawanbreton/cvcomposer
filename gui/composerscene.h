@@ -24,6 +24,7 @@
 
 #include "model/plug.h"
 
+class Node;
 class Connection;
 class ComposerModel;
 class ConnectionItem;
@@ -62,6 +63,7 @@ class ComposerScene : public QGraphicsScene
             bool fromOutput;
             Plug *plugInput;
             Plug *plugOutput;
+            Node *baseNode;
         } EditedConnection;
 
         typedef struct

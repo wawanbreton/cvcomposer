@@ -104,8 +104,10 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if(item->type() == CustomItems::Plug)
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
-                bool isInput = _model->findInputPlug(plug->getPlug()) != NULL;
-                bool isOutput = _model->findOutputPlug(plug->getPlug()) != NULL;
+                Node *nodeInput = _model->findInputPlug(plug->getPlug());
+                Node *nodeOutput = _model->findOutputPlug(plug->getPlug());
+                bool isInput = nodeInput != NULL;
+                bool isOutput = nodeOutput != NULL;
 
                 _editedConnection.item = new ConnectionItem();
                 addItem(_editedConnection.item);
@@ -136,6 +138,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedConnection.item->setInput(plug->mapToScene(QPointF(0, 0)));
                     _editedConnection.plugInput = plug->getPlug();
                     _editedConnection.fromOutput = false;
+                    _editedConnection.baseNode = nodeInput;
                 }
                 else if(isOutput)
                 {
@@ -143,6 +146,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedConnection.item->setInput(event->scenePos());
                     _editedConnection.plugOutput = plug->getPlug();
                     _editedConnection.fromOutput = true;
+                    _editedConnection.baseNode = nodeOutput;
                 }
                 else
                 {
@@ -164,8 +168,6 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     QCursor cursor = Qt::ArrowCursor;
 
-    #warning It is possible to connect an output to an input of the same node
-
     if(_editedConnection.item)
     {
         bool plugFound = false;
@@ -181,6 +183,11 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
         foreach(GenericNodeItem *nodeItem, _nodes)
         {
+            if(nodeItem->getNode() == _editedConnection.baseNode)
+            {
+                continue;
+            }
+
             const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
             foreach(PlugItem *plugItem, plugItems)
             {
