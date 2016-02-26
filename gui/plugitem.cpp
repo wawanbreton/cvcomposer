@@ -30,8 +30,23 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     _plug(plug)
 {
     setRect(-radius, -radius, radius * 2, radius * 2);
-    setBrush(Qt::white);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
+
+    QBrush brush;
+    switch(PlugType::getCompatibility(plug->getDefinition().type))
+    {
+        case PlugType::Image:
+            brush = QColor(46, 204, 113);
+            break;
+        case PlugType::Kernel:
+            brush = QColor(52, 152, 219);
+            break;
+        default:
+            brush = Qt::white;
+            break;
+    }
+
+    setBrush(brush);
 }
 
 int PlugItem::type() const
