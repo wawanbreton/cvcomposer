@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     global/properties.cpp \
     plugwidget/doubleitemdelegate.cpp \
     processor/filter/customfilterprocessor.cpp \
-    model/node.cpp
+    model/node.cpp \
+    processor/analyzer/discretefouriertransformprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -117,7 +118,8 @@ HEADERS  += gui/mainwidget.h \
     global/cvconstants.h \
     plugwidget/doubleitemdelegate.h \
     processor/filter/customfilterprocessor.h \
-    model/node.h
+    model/node.h \
+    processor/analyzer/discretefouriertransformprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

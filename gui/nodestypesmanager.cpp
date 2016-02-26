@@ -19,6 +19,7 @@
 
 #include <QDebug>
 
+#include "processor/analyzer/discretefouriertransformprocessor.h"
 #include "processor/data/kernelprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
@@ -48,6 +49,7 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<CameraProcessor>();
     qRegisterMetaType<KernelProcessor>();
     qRegisterMetaType<CustomFilterProcessor>();
+    qRegisterMetaType<DiscreteFourierTransformProcessor>();
 
     QList<QTreeWidgetItem *> result;
 
@@ -90,6 +92,12 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     QTreeWidgetItem *itemKernel = new QTreeWidgetItem(data, QStringList() << "Kernel");
     itemKernel->setData(0, Qt::UserRole, "Kernel");
     result << data;
+
+    QTreeWidgetItem *analyzers = new QTreeWidgetItem(QStringList() << "Analyzers");
+    analyzers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
+    QTreeWidgetItem *itemDft = new QTreeWidgetItem(analyzers, QStringList() << "Discrete Fourier Transform");
+    itemDft->setData(0, Qt::UserRole, "DiscreteFourierTransform");
+    result << analyzers;
 
     return result;
 }
