@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QLayout>
+#include <QFontMetrics>
 
 #include "model/node.h"
 #include "gui/customitems.h"
@@ -95,10 +96,15 @@ const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 
 QRectF GenericNodeItem::boundingRect() const
 {
+    int widgetWidth = _widget->sizeHint().width() + 4 * PlugItem::radius;
+    QFont defaultFont;
+    QFontMetrics metrics(defaultFont);
+    int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width() + 2 * PlugItem::radius;
+
     return QRectF(0,
                   0,
-                  _widget->sizeHint().width() + 4 * PlugItem::radius,
-                  30 + _widget->sizeHint().height() + 2 * PlugItem::radius);
+                  qMax(widgetWidth, titleWidth),
+                  titleHeight + _widget->sizeHint().height() + 2 * PlugItem::radius);
 }
 
 void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -130,6 +136,10 @@ void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
 
 void GenericNodeItem::recomputeSizes()
 {
+    QRectF actualBoundingRect = boundingRect();
+    _widget->resize(actualBoundingRect.width() - 4 * PlugItem::radius,
+                    actualBoundingRect.height() - titleHeight - 2 * PlugItem::radius);
+
     foreach(PlugItem *plugItem, _inputPlugs)
     {
         plugItem->setPos(QPointF(boundingRect().left(),

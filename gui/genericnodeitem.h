@@ -58,6 +58,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         void recomputeSizes();
 
     private:
+        static const int titleHeight = 30;
+
+    private:
         Node *_node;
         GenericNodeWidget *_widget;
         QGraphicsProxyWidget *_proxy;

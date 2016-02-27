@@ -265,7 +265,5 @@ void GenericNodeWidget::onWidgetValueChanged(const QString &propertyName)
 void GenericNodeWidget::onPlugSizeHintChanged()
 {
     layout()->activate();
-    resize(sizeHint());
-
     emit sizeHintChanged();
 }
