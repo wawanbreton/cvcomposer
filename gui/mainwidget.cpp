@@ -18,12 +18,15 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 
+#include <QFileDialog>
+
 #include "nodestypesmanager.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
     QMainWindow(parent),
-    _ui(new Ui::MainWidget)
+    _ui(new Ui::MainWidget),
+    _currentFilePath()
 {
     _ui->setupUi(this);
 
@@ -31,9 +34,39 @@ MainWidget::MainWidget(QWidget *parent) :
     {
         _ui->treeWidget->addTopLevelItem(topLevelItem);
     }
+
+    updateTitle();
+
+    connect(_ui->actionSave,   SIGNAL(triggered()), SLOT(onSave()));
+    connect(_ui->actionSaveAs, SIGNAL(triggered()), SLOT(onSave()));
 }
 
 MainWidget::~MainWidget()
 {
     delete _ui;
+}
+
+void MainWidget::onSave()
+{
+    if(_currentFilePath.isEmpty() || sender() == _ui->actionSaveAs)
+    {
+        QString filePath = QFileDialog::getSaveFileName(this, "Save", "", "CvComposer projects (*.cvc)");
+        if(filePath.isEmpty())
+        {
+            return;
+        }
+        else
+        {
+            _currentFilePath = filePath;
+        }
+    }
+}
+
+void MainWidget::updateTitle()
+{
+    setWindowFilePath(_currentFilePath.isEmpty() ? "New project" : _currentFilePath);
+
+    QString title("%1 - %2[*]");
+    title = title.arg(QCoreApplication::applicationName());
+    setWindowTitle(title.arg(_currentFilePath.isEmpty() ? "New project" : _currentFilePath));
 }

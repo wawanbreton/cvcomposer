@@ -30,8 +30,15 @@ class MainWidget : public QMainWindow
         explicit MainWidget(QWidget *parent = 0);
         ~MainWidget();
 
+    private slots:
+        void onSave();
+
+    private:
+        void updateTitle();
+
     private:
         Ui::MainWidget *_ui;
+        QString _currentFilePath;
 };
 
 #endif // MAINWIDGET_H
