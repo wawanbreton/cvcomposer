@@ -92,6 +92,15 @@ void MainWidget::onSave()
             }
         }
 
+        QString itemPos("%1:%2");
+        itemPos = itemPos.arg(QString::number(nodeItem->pos().x(), 'f', 2));
+        itemPos = itemPos.arg(QString::number(nodeItem->pos().y(), 'f', 2));
+
+        QDomElement itemPropertyElement = doc.createElement("item-property");
+        itemPropertyElement.setAttribute("name", "pos");
+        itemPropertyElement.setAttribute("value", itemPos);
+        nodeElement.appendChild(itemPropertyElement);
+
         rootNode.appendChild(nodeElement);
     }
 
