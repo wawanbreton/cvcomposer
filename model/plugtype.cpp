@@ -17,14 +17,15 @@
 
 #include "plugtype.h"
 
+#include <QDebug>
+
+#include "global/cvutils.h"
+
 
 PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
 {
     switch(value)
     {
-        case PlugType::Image:
-        case PlugType::Kernel:
-            return Mandatory;
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
@@ -35,6 +36,8 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Color:
         case PlugType::DockableImageViewer:
             return ManualOnly;
+        case PlugType::Image:
+        case PlugType::Kernel:
         case PlugType::ImagePreview:
             return Mandatory;
     }

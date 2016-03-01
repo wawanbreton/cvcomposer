@@ -33,8 +33,13 @@ class Plug : public QObject
 
         void signalConnectedTo(const Plug *connectedTo);
 
+        QString save(const QVariant &value) const;
+
     signals:
         void connectionChanged(const Plug *connectedTo);
+
+    private:
+        static QString saveDouble(double value);
 
     private:
         const PlugDefinition _definition;

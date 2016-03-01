@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGTYPE_H
-#define PLUGTYPE_H
+#pragma once
 
 namespace PlugType
 {
@@ -51,6 +50,3 @@ namespace PlugType
 
     Enum getCompatibility(Enum value);
 }
-
-#endif // PLUGTYPE_H
-

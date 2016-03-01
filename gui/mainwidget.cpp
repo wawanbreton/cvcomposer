@@ -18,9 +18,14 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 
+#include <QDomDocument>
 #include <QFileDialog>
+#include <QMessageBox>
 
-#include "nodestypesmanager.h"
+#include "model/node.h"
+#include "gui/genericnodeitem.h"
+#include "gui/composerscene.h"
+#include "gui/nodestypesmanager.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -60,13 +65,55 @@ void MainWidget::onSave()
             _currentFilePath = filePath;
         }
     }
+
+    QDomDocument doc;
+    QDomProcessingInstruction header = doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\" ");
+    doc.appendChild(header);
+
+    QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
+
+    ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
+    foreach(GenericNodeItem *nodeItem ,scene->getNodes())
+    {
+        const Node *node = nodeItem->getNode();
+
+        QDomElement nodeElement = doc.createElement("node");
+        nodeElement.setAttribute("name", node->getName());
+        nodeElement.setAttribute("id", QString::number(quint64(node)));
+
+        foreach(const Plug *inputPlug, node->getInputs())
+        {
+            if(PlugType::isInputPluggable(inputPlug->getDefinition().type) != PlugType::Mandatory)
+            {
+                QDomElement propertyElement = doc.createElement("property");
+                propertyElement.setAttribute("name", inputPlug->getDefinition().name);
+                propertyElement.setAttribute("value", inputPlug->save(node->getProperties()[inputPlug->getDefinition().name]));
+                nodeElement.appendChild(propertyElement);
+            }
+        }
+
+        rootNode.appendChild(nodeElement);
+    }
+
+    doc.appendChild(rootNode);
+
+    QFile file(_currentFilePath);
+    if(file.open(QIODevice::WriteOnly))
+    {
+        file.write(doc.toByteArray(2));
+    }
+    else
+    {
+        QMessageBox::critical(this, "Error", "Unable to open file for writing");
+    }
+
+    updateTitle();
 }
 
 void MainWidget::updateTitle()
 {
-    setWindowFilePath(_currentFilePath.isEmpty() ? "New project" : _currentFilePath);
-
     QString title("%1 - %2[*]");
     title = title.arg(QCoreApplication::applicationName());
-    setWindowTitle(title.arg(_currentFilePath.isEmpty() ? "New project" : _currentFilePath));
+    title = title.arg(_currentFilePath.isEmpty() ? "New project" : QFileInfo(_currentFilePath).fileName());
+    setWindowTitle(title);
 }

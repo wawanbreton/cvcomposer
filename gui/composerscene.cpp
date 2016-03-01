@@ -49,7 +49,17 @@ ComposerScene::ComposerScene(QObject *parent) :
     connect(_model, SIGNAL(connectionAdded(Connection *)),
                     SLOT(onConnectionAdded(Connection *)));
     connect(_model, SIGNAL(connectionRemoved(Connection *)),
-                    SLOT(onConnectionRemoved(Connection *)));
+            SLOT(onConnectionRemoved(Connection *)));
+}
+
+const QList<GenericNodeItem *> &ComposerScene::getNodes() const
+{
+    return _nodes;
+}
+
+const QList<ConnectionItem *> &ComposerScene::getConnections() const
+{
+    return _connections;
 }
 
 void ComposerScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)

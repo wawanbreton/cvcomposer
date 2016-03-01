@@ -32,8 +32,8 @@ class Node : public QObject
 
     public:
         explicit Node(const QString &name,
-                             const QString &userReadableName,
-                             QObject *parent = NULL);
+                      const QString &userReadableName,
+                      QObject *parent = NULL);
 
         const QString &getName() const;
 
