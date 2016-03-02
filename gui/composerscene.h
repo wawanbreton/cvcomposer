@@ -40,6 +40,8 @@ class ComposerScene : public QGraphicsScene
 
         const QList<ConnectionItem *> &getConnections() const;
 
+        const ComposerModel *getModel() const;
+
     protected:
         virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 

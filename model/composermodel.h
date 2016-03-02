@@ -39,13 +39,13 @@ class ComposerModel : public QObject
 
         void addNode(Node *node);
 
-        Node *findInputPlug(Plug *plug) const;
+        Node *findInputPlug(const Plug *plug) const;
 
-        Node *findOutputPlug(Plug *plug) const;
+        Node *findOutputPlug(const Plug *plug) const;
 
-        Node *findPlug(Plug *plug,
-                              bool fromInputs = true,
-                              bool fromOutputs = true) const;
+        Node *findPlug(const Plug *plug,
+                       bool fromInputs = true,
+                       bool fromOutputs = true) const;
 
         void addConnection(Plug *output, Plug *input);
 

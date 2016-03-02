@@ -40,17 +40,17 @@ void ComposerModel::addNode(Node *node)
     connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(startExecution()));
 }
 
-Node *ComposerModel::findInputPlug(Plug *plug) const
+Node *ComposerModel::findInputPlug(const Plug *plug) const
 {
     return findPlug(plug, true, false);
 }
 
-Node *ComposerModel::findOutputPlug(Plug *plug) const
+Node *ComposerModel::findOutputPlug(const Plug *plug) const
 {
     return findPlug(plug, false, true);
 }
 
-Node *ComposerModel::findPlug(Plug *plug, bool fromInputs, bool fromOutputs) const
+Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutputs) const
 {
     foreach(Node *node, _nodes)
     {

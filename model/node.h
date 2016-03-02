@@ -41,11 +41,11 @@ class Node : public QObject
 
         const QList<Plug *> &getInputs() const;
 
-        bool hasInput(Plug *input) const;
+        bool hasInput(const Plug *input) const;
 
         const QList<Plug *> &getOutputs() const;
 
-        bool hasOutput(Plug *output) const;
+        bool hasOutput(const Plug *output) const;
 
         void signalProcessDone(const Properties &outputs, const Properties &inputs);
 

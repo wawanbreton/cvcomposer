@@ -62,6 +62,11 @@ const QList<ConnectionItem *> &ComposerScene::getConnections() const
     return _connections;
 }
 
+const ComposerModel *ComposerScene::getModel() const
+{
+    return _model;
+}
+
 void ComposerScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     dragMoveEvent(event);

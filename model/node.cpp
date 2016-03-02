@@ -73,9 +73,9 @@ const QList<Plug *> &Node::getInputs() const
     return _inputs;
 }
 
-bool Node::hasInput(Plug *input) const
+bool Node::hasInput(const Plug *input) const
 {
-    return _inputs.contains(input);
+    return _inputs.contains((Plug *)input);
 }
 
 const QList<Plug *> &Node::getOutputs() const
@@ -83,9 +83,9 @@ const QList<Plug *> &Node::getOutputs() const
     return _outputs;
 }
 
-bool Node::hasOutput(Plug *output) const
+bool Node::hasOutput(const Plug *output) const
 {
-    return _outputs.contains(output);
+    return _outputs.contains((Plug *)output);
 }
 
 void Node::signalProcessDone(const Properties &outputs, const Properties &inputs)

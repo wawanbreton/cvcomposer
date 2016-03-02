@@ -22,8 +22,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "model/composermodel.h"
+#include "model/connection.h"
 #include "model/node.h"
 #include "gui/genericnodeitem.h"
+#include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/nodestypesmanager.h"
 
@@ -35,7 +38,7 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    foreach(QTreeWidgetItem *topLevelItem, NodesTypesManager::getTreeItems())
+    for(QTreeWidgetItem *topLevelItem : NodesTypesManager::getTreeItems())
     {
         _ui->treeWidget->addTopLevelItem(topLevelItem);
     }
@@ -73,7 +76,7 @@ void MainWidget::onSave()
     QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
 
     ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
-    foreach(GenericNodeItem *nodeItem ,scene->getNodes())
+    for(GenericNodeItem *nodeItem : scene->getNodes())
     {
         const Node *node = nodeItem->getNode();
 
@@ -81,7 +84,7 @@ void MainWidget::onSave()
         nodeElement.setAttribute("name", node->getName());
         nodeElement.setAttribute("id", QString::number(quint64(node)));
 
-        foreach(const Plug *inputPlug, node->getInputs())
+        for(const Plug *inputPlug : node->getInputs())
         {
             if(PlugType::isInputPluggable(inputPlug->getDefinition().type) != PlugType::Mandatory)
             {
@@ -102,6 +105,26 @@ void MainWidget::onSave()
         nodeElement.appendChild(itemPropertyElement);
 
         rootNode.appendChild(nodeElement);
+    }
+
+    for(ConnectionItem *connectionItem : scene->getConnections())
+    {
+        const Connection *connection = connectionItem->getConnection();
+        const Plug *outputPlug = connection->getOutput();
+        const Plug *inputPlug = connection->getInput();
+
+        Node *outputNode = scene->getModel()->findOutputPlug(outputPlug);
+        Node *inputNode = scene->getModel()->findInputPlug(inputPlug);
+
+        if(outputNode && inputNode)
+        {
+            QDomElement connectionElement = doc.createElement("connection");
+            connectionElement.setAttribute("output_id", QString::number(quint64(outputNode)));
+            connectionElement.setAttribute("output_plug", outputPlug->getDefinition().name);
+            connectionElement.setAttribute("input_id", QString::number(quint64(inputNode)));
+            connectionElement.setAttribute("input_plug", inputPlug->getDefinition().name);
+            rootNode.appendChild(connectionElement);
+        }
     }
 
     doc.appendChild(rootNode);
