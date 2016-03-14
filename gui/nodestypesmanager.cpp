@@ -34,7 +34,7 @@
 #include "processor/viewer/imagepreviewerprocessor.h"
 
 
-QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
+QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
 {
     #warning Do this somewhere else
     qRegisterMetaType<BlurProcessor>();
@@ -51,53 +51,83 @@ QList<QTreeWidgetItem *> NodesTypesManager::getTreeItems()
     qRegisterMetaType<CustomFilterProcessor>();
     qRegisterMetaType<DiscreteFourierTransformProcessor>();
 
-    QList<QTreeWidgetItem *> result;
+    QList<QPair<QString, QStringList> > nodes;
 
-    QTreeWidgetItem *inputs = new QTreeWidgetItem(QStringList() << "Inputs");
-    inputs->setFlags(inputs->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemFile = new QTreeWidgetItem(inputs, QStringList() << "Image from file");
-    itemFile->setData(0, Qt::UserRole, "ImageFromFile");
-    QTreeWidgetItem *itemCamera = new QTreeWidgetItem(inputs, QStringList() << "Camera");
-    itemCamera->setData(0, Qt::UserRole, "Camera");
-    result << inputs;
+    QStringList inputs;
+    inputs << "ImageFromFile" << "Camera";
+    nodes << QPair<QString, QStringList>("Inputs", inputs);
 
-    QTreeWidgetItem *viewers = new QTreeWidgetItem(QStringList() << "Viewers");
-    viewers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemDockableViewer = new QTreeWidgetItem(viewers, QStringList() << "Dockable image viewer");
-    itemDockableViewer->setData(0, Qt::UserRole, "DockableImageViewer");
-    QTreeWidgetItem *itemPreviewer = new QTreeWidgetItem(viewers, QStringList() << "Image previewer");
-    itemPreviewer->setData(0, Qt::UserRole, "ImagePreviewer");
-    result << viewers;
+    QStringList filters;
+    filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
+            << "MorphologyTransformation" << "Threshold" << "CustomFilter";
+    nodes << QPair<QString, QStringList>("Filters", filters);
 
-    QTreeWidgetItem *filters = new QTreeWidgetItem(QStringList() << "Filters");
-    filters->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemBlur = new QTreeWidgetItem(filters, QStringList() << "Blur");
-    itemBlur->setData(0, Qt::UserRole, "Blur");
-    QTreeWidgetItem *itemGaussianBlur = new QTreeWidgetItem(filters, QStringList() << "Gaussian blur");
-    itemGaussianBlur->setData(0, Qt::UserRole, "GaussianBlur");
-    QTreeWidgetItem *itemMedianBlur = new QTreeWidgetItem(filters, QStringList() << "Median blur");
-    itemMedianBlur->setData(0, Qt::UserRole, "MedianBlur");
-    QTreeWidgetItem *itemBilateralFilter = new QTreeWidgetItem(filters, QStringList() << "Bilateral filter");
-    itemBilateralFilter->setData(0, Qt::UserRole, "BilateralFilter");
-    QTreeWidgetItem *itemMorph = new QTreeWidgetItem(filters, QStringList() << "Morphology transformation");
-    itemMorph->setData(0, Qt::UserRole, "MorphologyTransformation");
-    QTreeWidgetItem *itemThres = new QTreeWidgetItem(filters, QStringList() << "Threshold");
-    itemThres->setData(0, Qt::UserRole, "Threshold");
-    QTreeWidgetItem *itemCustom = new QTreeWidgetItem(filters, QStringList() << "Custom filter");
-    itemCustom->setData(0, Qt::UserRole, "CustomFilter");
-    result << filters;
+    QStringList data;
+    data << "Kernel";
+    nodes << QPair<QString, QStringList>("Data", data);
 
-    QTreeWidgetItem *data = new QTreeWidgetItem(QStringList() << "Data");
-    data->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemKernel = new QTreeWidgetItem(data, QStringList() << "Kernel");
-    itemKernel->setData(0, Qt::UserRole, "Kernel");
-    result << data;
+    QStringList analyzers;
+    analyzers << "DiscreteFourierTransform";
+    nodes << QPair<QString, QStringList>("Analyzers", analyzers);
 
-    QTreeWidgetItem *analyzers = new QTreeWidgetItem(QStringList() << "Analyzers");
-    analyzers->setFlags(viewers->flags() & ~Qt::ItemIsDragEnabled);
-    QTreeWidgetItem *itemDft = new QTreeWidgetItem(analyzers, QStringList() << "Discrete Fourier Transform");
-    itemDft->setData(0, Qt::UserRole, "DiscreteFourierTransform");
-    result << analyzers;
+    return nodes;
+}
 
-    return result;
+QString NodesTypesManager::toUserReadableName(const QString &name)
+{
+    if(name == "ImageFromFile")
+    {
+        return "Image from file";
+    }
+    else if(name == "Camera")
+    {
+        return "Camera";
+    }
+    else if(name == "DockableImageViewer")
+    {
+        return "Advanced image viewer";
+    }
+    else if(name == "ImagePreviewer")
+    {
+        return "Image previewer";
+    }
+    else if(name == "Blur")
+    {
+        return "Blur";
+    }
+    else if(name == "GaussianBlur")
+    {
+        return "Gaussian blur";
+    }
+    else if(name == "MedianBlur")
+    {
+        return "Median blur";
+    }
+    else if(name == "BilateralFilter")
+    {
+        return "Bilateral filter";
+    }
+    else if(name == "MorphologyTransformation")
+    {
+        return "Morphology transformation";
+    }
+    else if(name == "Threshold")
+    {
+        return "Threshold";
+    }
+    else if(name == "CustomFilter")
+    {
+        return "Custom filter";
+    }
+    else if(name == "Kernel")
+    {
+        return "Kernel";
+    }
+    else if(name == "DiscreteFourierTransform")
+    {
+        return "Discrete Fourier Transform";
+    }
+
+    qCritical() << "No user-readable name defined for" << name;
+    return "";
 }

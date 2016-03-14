@@ -84,6 +84,11 @@ const Node *GenericNodeItem::getNode() const
     return _node;
 }
 
+Node *GenericNodeItem::accessNode()
+{
+    return _node;
+}
+
 const QList<PlugItem *> &GenericNodeItem::getInputs() const
 {
     return _inputPlugs;
@@ -92,6 +97,11 @@ const QList<PlugItem *> &GenericNodeItem::getInputs() const
 const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 {
     return _outputPlugs;
+}
+
+void GenericNodeItem::setPlugProperty(const QString &name, const QVariant &value)
+{
+    _widget->setPlugProperty(name, value);
 }
 
 QRectF GenericNodeItem::boundingRect() const

@@ -20,6 +20,7 @@
 
 #include <QGraphicsScene>
 
+#include <QDomDocument>
 #include <QGraphicsSceneDragDropEvent>
 
 #include "model/plug.h"
@@ -41,6 +42,12 @@ class ComposerScene : public QGraphicsScene
         const QList<ConnectionItem *> &getConnections() const;
 
         const ComposerModel *getModel() const;
+
+        GenericNodeItem *addNode(const QString &nodeName);
+
+        void save(QDomDocument &doc) const;
+
+        void load(const QDomDocument &doc);
 
     protected:
         virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);

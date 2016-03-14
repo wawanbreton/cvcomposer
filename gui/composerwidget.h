@@ -29,8 +29,7 @@ class ComposerWidget : public InteractiveGraphicsView
     public:
         explicit ComposerWidget(QWidget *parent = NULL);
 
-    private:
-        QGraphicsScene *_scene;
+        void replaceScene(QGraphicsScene *scene);
 };
 
 #endif // COMPOSERWIDGET_H

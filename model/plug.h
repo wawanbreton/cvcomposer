@@ -35,11 +35,15 @@ class Plug : public QObject
 
         QString save(const QVariant &value) const;
 
+        QVariant load(const QString &value) const;
+
     signals:
         void connectionChanged(const Plug *connectedTo);
 
     private:
         static QString saveDouble(double value);
+
+        static double loadDouble(const QString &valueStr, bool *ok);
 
     private:
         const PlugDefinition _definition;

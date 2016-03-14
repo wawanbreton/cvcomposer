@@ -50,6 +50,11 @@ QVariant ImagePathWidget::getValue() const
     return _lineEdit->text();
 }
 
+void ImagePathWidget::setValue(const QVariant &value)
+{
+    _lineEdit->setText(value.toString());
+}
+
 void ImagePathWidget::onButtonPressed()
 {
     QList<QPair<QString, QStringList> > formats;

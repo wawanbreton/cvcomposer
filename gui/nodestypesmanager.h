@@ -22,7 +22,9 @@
 
 namespace NodesTypesManager
 {
-    QList<QTreeWidgetItem *> getTreeItems();
+    QList<QPair<QString, QStringList> > getNodes();
+
+    QString toUserReadableName(const QString &name);
 }
 
 #endif // NODESTYPESMANAGER_H

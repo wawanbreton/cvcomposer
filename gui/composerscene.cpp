@@ -17,6 +17,7 @@
 
 #include "composerscene.h"
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QMimeData>
 #include <QGraphicsRectItem>
@@ -67,6 +68,146 @@ const ComposerModel *ComposerScene::getModel() const
     return _model;
 }
 
+GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
+{
+    Node *node = new Node(nodeName, NodesTypesManager::toUserReadableName(nodeName));
+    _model->addNode(node);
+
+    GenericNodeItem *item = new GenericNodeItem(node);
+    addItem(item);
+    _nodes << item;
+
+    foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
+    {
+        connect(plugItem, SIGNAL(positionChanged()), SLOT(onPlugItemPositionChanged()));
+    }
+
+    return item;
+}
+
+void ComposerScene::save(QDomDocument &doc) const
+{
+    QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
+
+    for(GenericNodeItem *nodeItem : getNodes())
+    {
+        const Node *node = nodeItem->getNode();
+
+        QDomElement nodeElement = doc.createElement("node");
+        nodeElement.setAttribute("name", node->getName());
+        nodeElement.setAttribute("id", QString::number(quint64(node)));
+
+        for(const Plug *inputPlug : node->getInputs())
+        {
+            if(PlugType::isInputPluggable(inputPlug->getDefinition().type) != PlugType::Mandatory)
+            {
+                QDomElement propertyElement = doc.createElement("property");
+                propertyElement.setAttribute("name", inputPlug->getDefinition().name);
+                propertyElement.setAttribute("value", inputPlug->save(node->getProperties()[inputPlug->getDefinition().name]));
+                nodeElement.appendChild(propertyElement);
+            }
+        }
+
+        QString itemPos("%1:%2");
+        itemPos = itemPos.arg(QString::number(nodeItem->pos().x(), 'f', 2));
+        itemPos = itemPos.arg(QString::number(nodeItem->pos().y(), 'f', 2));
+
+        QDomElement itemPropertyElement = doc.createElement("item-property");
+        itemPropertyElement.setAttribute("name", "pos");
+        itemPropertyElement.setAttribute("value", itemPos);
+        nodeElement.appendChild(itemPropertyElement);
+
+        rootNode.appendChild(nodeElement);
+    }
+
+    for(ConnectionItem *connectionItem : getConnections())
+    {
+        const Connection *connection = connectionItem->getConnection();
+        const Plug *outputPlug = connection->getOutput();
+        const Plug *inputPlug = connection->getInput();
+
+        Node *outputNode = getModel()->findOutputPlug(outputPlug);
+        Node *inputNode = getModel()->findInputPlug(inputPlug);
+
+        if(outputNode && inputNode)
+        {
+            QDomElement connectionElement = doc.createElement("connection");
+            connectionElement.setAttribute("output_id", QString::number(quint64(outputNode)));
+            connectionElement.setAttribute("output_plug", outputPlug->getDefinition().name);
+            connectionElement.setAttribute("input_id", QString::number(quint64(inputNode)));
+            connectionElement.setAttribute("input_plug", inputPlug->getDefinition().name);
+            rootNode.appendChild(connectionElement);
+        }
+    }
+
+    doc.appendChild(rootNode);
+}
+
+void ComposerScene::load(const QDomDocument &doc)
+{
+    QDomNode mainNode = doc.namedItem(QCoreApplication::applicationName().toLower());
+    QDomNodeList childrenNodes = mainNode.childNodes();
+    for(int i = 0 ; i < childrenNodes.count() ; i++)
+    {
+        QDomNode childNode = childrenNodes.at(i);
+        if(childNode.nodeName() == "node")
+        {
+            QDomElement nodeElement = childNode.toElement();
+            QString nodeName = nodeElement.attribute("name");
+            GenericNodeItem *item = addNode(nodeName);
+
+            QDomNodeList nodeProperties = childNode.childNodes();
+            for(int j = 0 ; j < nodeProperties.count() ; j++)
+            {
+                QDomNode nodeProperty = nodeProperties.at(j);
+                if(nodeProperty.nodeName() == "item-property")
+                {
+                    QDomElement propertyElement = nodeProperty.toElement();
+                    if(propertyElement.attribute("name") == "pos")
+                    {
+                        QString pos = propertyElement.attribute("value");
+                        QStringList posParts = pos.split(':', QString::SkipEmptyParts);
+                        if(posParts.count() == 2)
+                        {
+                            item->setPos(posParts[0].toDouble(), posParts[1].toDouble());
+                        }
+                        else
+                        {
+                            qWarning() << "Badly formatted item position :" << pos;
+                        }
+                    }
+                }
+                else if(nodeProperty.nodeName() == "property")
+                {
+                    QDomElement propertyElement = nodeProperty.toElement();
+                    QString plugName = propertyElement.attribute("name");
+                    Plug *plug = item->getNode()->findInput(plugName);
+                    if(plug)
+                    {
+                        QVariant value = plug->load(propertyElement.attribute("value"));
+                        if(not value.isNull())
+                        {
+                            // Node and items are updated manually, they are not connected to each
+                            // other for performance reasons
+                            item->setPlugProperty(plugName, value);
+                            item->accessNode()->setProperty(plugName, value);
+                        }
+                    }
+                    else
+                    {
+                        qWarning() << "No input plug named" << plugName << "on node" << nodeName;
+                    }
+                }
+            }
+        }
+        else if(childNode.nodeName() == "connection")
+        {
+
+        }
+
+    }
+}
+
 void ComposerScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     dragMoveEvent(event);
@@ -86,21 +227,9 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
     {
         event->acceptProposedAction();
 
-        QString nodeType = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter"));
-        QString nodeName = QString::fromUtf8(event->mimeData()->data("application/x-cvcomposername"));
-
-        Node *node = new Node(nodeType, nodeName);
-        _model->addNode(node);
-
-        GenericNodeItem *item = new GenericNodeItem(node);
+        GenericNodeItem *item =
+                addNode(QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter")));
         item->setPos(event->scenePos());
-        addItem(item);
-        _nodes << item;
-
-        foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
-        {
-            connect(plugItem, SIGNAL(positionChanged()), SLOT(onPlugItemPositionChanged()));
-        }
     }
 }
 

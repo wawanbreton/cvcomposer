@@ -33,6 +33,8 @@ class MainWidget : public QMainWindow
     private slots:
         void onSave();
 
+        void onLoad();
+
     private:
         void updateTitle();
 

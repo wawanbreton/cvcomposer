@@ -72,7 +72,6 @@ QString Plug::save(const QVariant &value) const
         case PlugType::Double:
             return saveDouble(value.toDouble());
         case PlugType::String:
-            return value.toString();
         case PlugType::ImagePath:
             return value.toString();
         case PlugType::Color:
@@ -120,6 +119,132 @@ QString Plug::save(const QVariant &value) const
     return QString();
 }
 
+QVariant Plug::load(const QString &value) const
+{
+    switch(_definition.type)
+    {
+        case PlugType::Size:
+        {
+            QStringList sizeParts = value.split('x', QString::SkipEmptyParts);
+            if(sizeParts.count() == 2)
+            {
+                bool ok1;
+                bool ok2;
+                cv::Size result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
+                if(ok1 && ok2)
+                {
+                    return QVariant::fromValue(result);
+                }
+            }
+            break;
+        }
+        case PlugType::Point:
+        {
+            QStringList sizeParts = value.split(':', QString::SkipEmptyParts);
+            if(sizeParts.count() == 2)
+            {
+                bool ok1;
+                bool ok2;
+                cv::Point result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
+                if(ok1 && ok2)
+                {
+                    return QVariant::fromValue(result);
+                }
+            }
+            break;
+        }
+        case PlugType::Enumeration:
+        {
+            bool ok;
+            int index = value.toInt(&ok);
+            if(ok)
+            {
+                QList<QPair<QString, QVariant> > values =
+                        getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
+                if(index > 0 && index < values.count())
+                {
+                    return values[index].second;
+                }
+                return QString::number(index);
+            }
+            break;
+        }
+        case PlugType::Double:
+        {
+            bool ok;
+            double result = loadDouble(value, &ok);
+            if(ok)
+            {
+                return result;
+            }
+
+            break;
+        }
+        case PlugType::String:
+        case PlugType::ImagePath:
+            return value;
+        case PlugType::Color:
+        {
+            QStringList colorParts = value.split(';', QString::SkipEmptyParts);
+            if(colorParts.count() == 4)
+            {
+                cv::Scalar scalar;
+                bool ok = true;
+                for(int i = 0 ; i < 4 && ok ; i++)
+                {
+                    scalar[i] = loadDouble(colorParts[i], &ok);
+                }
+
+                if(ok)
+                {
+                    return QVariant::fromValue(scalar);
+                }
+            }
+            break;
+        }
+        case PlugType::KernelDefinition:
+        {
+            QStringList rowsStr = value.split('|', QString::SkipEmptyParts);
+            int rows = rowsStr.count();
+            int cols = (value.count(';') / rows) + 1;
+            bool ok = true;
+
+            cv::Mat mat(rows, cols, CV_64FC1);
+            for(int row = 0 ; row < rows && ok ; row++)
+            {
+                QString rowStr = rowsStr[row];
+                QStringList rowParts = rowStr.split(';');
+                if(rowParts.count() == cols)
+                {
+                    for(int col = 0 ; col < cols && ok ; col++)
+                    {
+                        mat.at<double>(row, col) = loadDouble(rowParts[col], &ok);
+                    }
+                }
+                else
+                {
+                    ok = false;
+                }
+            }
+
+            if(ok)
+            {
+                return QVariant::fromValue(mat);
+            }
+            break;
+        }
+        case PlugType::Image:
+        case PlugType::Kernel:
+        case PlugType::ImagePreview:
+        case PlugType::DockableImageViewer:
+            break;
+    }
+
+    qWarning() << "Unable to parse" << value << "for type" << getDefinition().type;
+
+    return QVariant();
+}
+
 QString Plug::saveDouble(double value)
 {
     if(value == DBL_MAX)
@@ -129,5 +254,18 @@ QString Plug::saveDouble(double value)
     else
     {
         return QString::number(value, 'f');
+    }
+}
+
+double Plug::loadDouble(const QString &valueStr, bool *ok)
+{
+    if(valueStr == "inf")
+    {
+        *ok = true;
+        return DBL_MAX;
+    }
+    else
+    {
+        return valueStr.toDouble(ok);
     }
 }

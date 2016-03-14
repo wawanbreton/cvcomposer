@@ -42,6 +42,7 @@
     <property name="title">
      <string>Fi&amp;le</string>
     </property>
+    <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
    </widget>
@@ -49,12 +50,17 @@
   </widget>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionSaveAs">
    <property name="text">
-    <string>Save as ...</string>
+    <string>Sa&amp;ve as ...</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load ...</string>
    </property>
   </action>
  </widget>

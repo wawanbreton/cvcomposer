@@ -43,6 +43,8 @@ class Node : public QObject
 
         bool hasInput(const Plug *input) const;
 
+        Plug *findInput(const QString &name) const;
+
         const QList<Plug *> &getOutputs() const;
 
         bool hasOutput(const Plug *output) const;

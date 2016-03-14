@@ -148,6 +148,15 @@ void GenericNodeWidget::setInputPlugged(const QString &inputName, bool plugged)
     makeLabelText(widget, plugged);
 }
 
+void GenericNodeWidget::setPlugProperty(const QString &name, const QVariant &value)
+{
+    const PlugWidget &widget = _widgets[name];
+    if(widget.widget)
+    {
+        widget.widget->setValue(value);
+    }
+}
+
 void GenericNodeWidget::onProcessDone(const Properties &outputs, const Properties &inputs)
 {
     foreach(const PlugWidget &widget, _widgets)

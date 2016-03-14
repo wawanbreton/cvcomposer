@@ -21,13 +21,20 @@
 
 
 ComposerWidget::ComposerWidget(QWidget *parent) :
-    InteractiveGraphicsView(parent),
-    _scene(new ComposerScene(this))
+    InteractiveGraphicsView(parent)
 {
-    setScene(_scene);
+    setScene(new ComposerScene(this));
     setSceneRect(-2000, -2000, 4000, 4000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
     setRenderHint(QPainter::Antialiasing, true);
+}
+
+void ComposerWidget::replaceScene(QGraphicsScene *newScene)
+{
+    scene()->deleteLater();
+
+    newScene->setParent(this);
+    setScene(newScene);
 }

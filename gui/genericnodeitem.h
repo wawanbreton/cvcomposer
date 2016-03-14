@@ -41,9 +41,13 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         const Node *getNode() const;
 
+        Node *accessNode();
+
         const QList<PlugItem *> &getInputs() const;
 
         const QList<PlugItem *> &getOutputs() const;
+
+        void setPlugProperty(const QString &name, const QVariant &value);
 
     protected:
         virtual QRectF boundingRect() const;

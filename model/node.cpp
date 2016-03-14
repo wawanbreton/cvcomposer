@@ -78,6 +78,19 @@ bool Node::hasInput(const Plug *input) const
     return _inputs.contains((Plug *)input);
 }
 
+Plug *Node::findInput(const QString &name) const
+{
+    for(Plug *plug : _inputs)
+    {
+        if(plug->getDefinition().name == name)
+        {
+            return plug;
+        }
+    }
+
+    return NULL;
+}
+
 const QList<Plug *> &Node::getOutputs() const
 {
     return _outputs;

@@ -31,6 +31,8 @@ class ImagePathWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
+        virtual void setValue(const QVariant &value) override;
+
     private slots:
         void onButtonPressed();
 

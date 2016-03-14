@@ -31,7 +31,7 @@ NodesListWidget::NodesListWidget(QWidget *parent) :
 QMimeData *NodesListWidget::mimeData(const QList<QTreeWidgetItem *> items) const
 {
     QMimeData *data = new QMimeData();
-    data->setData("application/x-cvcomposerfilter", items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
-    data->setData("application/x-cvcomposername",   items.at(0)->data(0, Qt::DisplayRole).toString().toUtf8());
+    data->setData("application/x-cvcomposerfilter",
+                  items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
     return data;
 }

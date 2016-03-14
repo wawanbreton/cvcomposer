@@ -38,15 +38,27 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    for(QTreeWidgetItem *topLevelItem : NodesTypesManager::getTreeItems())
+    QList<QPair<QString, QStringList> > nodes = NodesTypesManager::getNodes();
+    for(const QPair<QString, QStringList> &group : nodes)
     {
-        _ui->treeWidget->addTopLevelItem(topLevelItem);
+        QTreeWidgetItem *groupItem = new QTreeWidgetItem(QStringList() << group.first);
+        groupItem->setFlags(groupItem->flags() & ~Qt::ItemIsDragEnabled);
+
+        for(const QString &node : group.second)
+        {
+            QString nodeName = NodesTypesManager::toUserReadableName(node);
+            QTreeWidgetItem *itemNode = new QTreeWidgetItem(groupItem, QStringList() << nodeName);
+            itemNode->setData(0, Qt::UserRole, node);
+        }
+
+        _ui->treeWidget->addTopLevelItem(groupItem);
     }
 
     updateTitle();
 
     connect(_ui->actionSave,   SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionSaveAs, SIGNAL(triggered()), SLOT(onSave()));
+    connect(_ui->actionLoad,   SIGNAL(triggered()), SLOT(onLoad()));
 }
 
 MainWidget::~MainWidget()
@@ -73,61 +85,8 @@ void MainWidget::onSave()
     QDomProcessingInstruction header = doc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\" ");
     doc.appendChild(header);
 
-    QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
-
     ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
-    for(GenericNodeItem *nodeItem : scene->getNodes())
-    {
-        const Node *node = nodeItem->getNode();
-
-        QDomElement nodeElement = doc.createElement("node");
-        nodeElement.setAttribute("name", node->getName());
-        nodeElement.setAttribute("id", QString::number(quint64(node)));
-
-        for(const Plug *inputPlug : node->getInputs())
-        {
-            if(PlugType::isInputPluggable(inputPlug->getDefinition().type) != PlugType::Mandatory)
-            {
-                QDomElement propertyElement = doc.createElement("property");
-                propertyElement.setAttribute("name", inputPlug->getDefinition().name);
-                propertyElement.setAttribute("value", inputPlug->save(node->getProperties()[inputPlug->getDefinition().name]));
-                nodeElement.appendChild(propertyElement);
-            }
-        }
-
-        QString itemPos("%1:%2");
-        itemPos = itemPos.arg(QString::number(nodeItem->pos().x(), 'f', 2));
-        itemPos = itemPos.arg(QString::number(nodeItem->pos().y(), 'f', 2));
-
-        QDomElement itemPropertyElement = doc.createElement("item-property");
-        itemPropertyElement.setAttribute("name", "pos");
-        itemPropertyElement.setAttribute("value", itemPos);
-        nodeElement.appendChild(itemPropertyElement);
-
-        rootNode.appendChild(nodeElement);
-    }
-
-    for(ConnectionItem *connectionItem : scene->getConnections())
-    {
-        const Connection *connection = connectionItem->getConnection();
-        const Plug *outputPlug = connection->getOutput();
-        const Plug *inputPlug = connection->getInput();
-
-        Node *outputNode = scene->getModel()->findOutputPlug(outputPlug);
-        Node *inputNode = scene->getModel()->findInputPlug(inputPlug);
-
-        if(outputNode && inputNode)
-        {
-            QDomElement connectionElement = doc.createElement("connection");
-            connectionElement.setAttribute("output_id", QString::number(quint64(outputNode)));
-            connectionElement.setAttribute("output_plug", outputPlug->getDefinition().name);
-            connectionElement.setAttribute("input_id", QString::number(quint64(inputNode)));
-            connectionElement.setAttribute("input_plug", inputPlug->getDefinition().name);
-            rootNode.appendChild(connectionElement);
-        }
-    }
-
-    doc.appendChild(rootNode);
+    scene->save(doc);
 
     QFile file(_currentFilePath);
     if(file.open(QIODevice::WriteOnly))
@@ -140,6 +99,37 @@ void MainWidget::onSave()
     }
 
     updateTitle();
+}
+
+void MainWidget::onLoad()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, "Open", "", "CvComposer projects (*.cvc)");
+    if(not filePath.isEmpty())
+    {
+        QFile file(filePath);
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QDomDocument doc;
+            QString errorMsg;
+            int errorLine, errorColumn;
+            if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
+            {
+                ComposerScene *scene = new ComposerScene();
+                scene->load(doc);
+                _ui->graphicsView->replaceScene(scene);
+            }
+            else
+            {
+                QString error = "Invalid XML file at line %1 column %2 : %3";
+                error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
+                QMessageBox::critical(this, "Error", error);
+            }
+        }
+        else
+        {
+            QMessageBox::critical(this, "Error", "Unable to open file");
+        }
+    }
 }
 
 void MainWidget::updateTitle()

@@ -41,6 +41,8 @@ class GenericNodeWidget : public QWidget
 
         void setInputPlugged(const QString &inputName, bool plugged);
 
+        void setPlugProperty(const QString &name, const QVariant &value);
+
     public slots:
         void onProcessDone(const Properties &outputs, const Properties &inputs);
 
