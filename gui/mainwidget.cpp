@@ -117,6 +117,9 @@ void MainWidget::onLoad()
                 ComposerScene *scene = new ComposerScene();
                 scene->load(doc);
                 _ui->graphicsView->replaceScene(scene);
+
+                _currentFilePath = filePath;
+                updateTitle();
             }
             else
             {

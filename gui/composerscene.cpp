@@ -147,6 +147,7 @@ void ComposerScene::load(const QDomDocument &doc)
 {
     QDomNode mainNode = doc.namedItem(QCoreApplication::applicationName().toLower());
     QDomNodeList childrenNodes = mainNode.childNodes();
+    QMap<quint64, Node *> loadedNodes;
     for(int i = 0 ; i < childrenNodes.count() ; i++)
     {
         QDomNode childNode = childrenNodes.at(i);
@@ -155,6 +156,7 @@ void ComposerScene::load(const QDomDocument &doc)
             QDomElement nodeElement = childNode.toElement();
             QString nodeName = nodeElement.attribute("name");
             GenericNodeItem *item = addNode(nodeName);
+            loadedNodes.insert(nodeElement.attribute("id").toULongLong(), item->accessNode());
 
             QDomNodeList nodeProperties = childNode.childNodes();
             for(int j = 0 ; j < nodeProperties.count() ; j++)
@@ -202,9 +204,37 @@ void ComposerScene::load(const QDomDocument &doc)
         }
         else if(childNode.nodeName() == "connection")
         {
+            QDomElement nodeElement = childNode.toElement();
 
+            quint64 outputId = nodeElement.attribute("output_id").toULongLong();
+            quint64 inputId = nodeElement.attribute("input_id").toULongLong();
+
+            auto iteratorOutput = loadedNodes.find(outputId);
+            auto iteratorInput = loadedNodes.find(inputId);
+
+            if(iteratorOutput != loadedNodes.end() && iteratorInput != loadedNodes.end())
+            {
+                QString outputName = nodeElement.attribute("output_plug");
+                QString inputName = nodeElement.attribute("input_plug");
+
+                Plug *plugOutput = iteratorOutput.value()->findOutput(outputName);
+                Plug *plugInput = iteratorInput.value()->findInput(inputName);
+
+                if(plugOutput == NULL)
+                {
+                    qWarning() << "Unable to find output named" << outputName << "on node" << outputId;
+                }
+                else if(plugInput == NULL)
+                {
+                    qWarning() << "Unable to find input named" << inputName << "on node" << inputId;
+                }
+                else
+                {
+                    _model->addConnection(plugOutput, plugInput);
+                    // Item is added by model signal
+                }
+            }
         }
-
     }
 }
 

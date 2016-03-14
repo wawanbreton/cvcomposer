@@ -101,6 +101,19 @@ bool Node::hasOutput(const Plug *output) const
     return _outputs.contains((Plug *)output);
 }
 
+Plug *Node::findOutput(const QString &name) const
+{
+    for(Plug *plug : _outputs)
+    {
+        if(plug->getDefinition().name == name)
+        {
+            return plug;
+        }
+    }
+
+    return NULL;
+}
+
 void Node::signalProcessDone(const Properties &outputs, const Properties &inputs)
 {
     emit processDone(outputs, inputs);

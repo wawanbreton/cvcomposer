@@ -49,6 +49,8 @@ class Node : public QObject
 
         bool hasOutput(const Plug *output) const;
 
+        Plug *findOutput(const QString &name) const;
+
         void signalProcessDone(const Properties &outputs, const Properties &inputs);
 
         void signalProcessUnavailable();
