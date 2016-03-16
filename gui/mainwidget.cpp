@@ -56,6 +56,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     updateTitle();
 
+    updateRecents();
+
     connect(_ui->actionSave,   SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionSaveAs, SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionLoad,   SIGNAL(triggered()), SLOT(onLoad()));
@@ -92,13 +94,13 @@ void MainWidget::onSave()
     if(file.open(QIODevice::WriteOnly))
     {
         file.write(doc.toByteArray(2));
+        updateTitle();
+        addRecent(_currentFilePath);
     }
     else
     {
         QMessageBox::critical(this, "Error", "Unable to open file for writing");
     }
-
-    updateTitle();
 }
 
 void MainWidget::onLoad()
@@ -106,33 +108,45 @@ void MainWidget::onLoad()
     QString filePath = QFileDialog::getOpenFileName(this, "Open", "", "CvComposer projects (*.cvc)");
     if(not filePath.isEmpty())
     {
-        QFile file(filePath);
-        if(file.open(QIODevice::ReadOnly))
-        {
-            QDomDocument doc;
-            QString errorMsg;
-            int errorLine, errorColumn;
-            if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
-            {
-                ComposerScene *scene = new ComposerScene();
-                scene->load(doc);
-                _ui->graphicsView->replaceScene(scene);
+        loadFile(filePath);
+    }
+}
 
-                _currentFilePath = filePath;
-                updateTitle();
-            }
-            else
-            {
-                QString error = "Invalid XML file at line %1 column %2 : %3";
-                error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
-                QMessageBox::critical(this, "Error", error);
-            }
+void MainWidget::loadFile(const QString &filePath)
+{
+    QFile file(filePath);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QDomDocument doc;
+        QString errorMsg;
+        int errorLine, errorColumn;
+        if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
+        {
+            ComposerScene *scene = new ComposerScene();
+            scene->load(doc);
+            _ui->graphicsView->replaceScene(scene);
+
+            _currentFilePath = filePath;
+            updateTitle();
+            addRecent(_currentFilePath);
         }
         else
         {
-            QMessageBox::critical(this, "Error", "Unable to open file");
+            QString error = "Invalid XML file at line %1 column %2 : %3";
+            error = error.arg(errorLine).arg(errorColumn).arg(errorMsg);
+            QMessageBox::critical(this, "Error", error);
         }
     }
+    else
+    {
+        QMessageBox::critical(this, "Error", "Unable to open file");
+    }
+}
+
+void MainWidget::onLoadRecent()
+{
+    // Use iconText property instead of text because it contains shortcuts we don't want
+    loadFile(sender()->property("iconText").toString());
 }
 
 void MainWidget::updateTitle()
@@ -141,4 +155,32 @@ void MainWidget::updateTitle()
     title = title.arg(QCoreApplication::applicationName());
     title = title.arg(_currentFilePath.isEmpty() ? "New project" : QFileInfo(_currentFilePath).fileName());
     setWindowTitle(title);
+}
+
+void MainWidget::addRecent(const QString &file)
+{
+    QSettings settings;
+    QStringList recents = settings.value("recent_files").toStringList();
+
+    recents.removeAll(file);
+    recents.push_front(file);
+    recents = recents.mid(0, 8);
+
+    settings.setValue("recent_files", recents);
+
+    updateRecents(settings);
+}
+
+void MainWidget::updateRecents(const QSettings &settings)
+{
+    _ui->menuRecents->clear();
+
+    bool hasRecents = false;
+    foreach(const QString &recent, settings.value("recent_files").toStringList())
+    {
+        _ui->menuRecents->addAction(recent, this, SLOT(onLoadRecent()));
+        hasRecents = true;
+    }
+
+    _ui->menuRecents->setEnabled(hasRecents);
 }

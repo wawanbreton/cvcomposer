@@ -42,9 +42,15 @@
     <property name="title">
      <string>Fi&amp;le</string>
     </property>
+    <widget class="QMenu" name="menuRecents">
+     <property name="title">
+      <string>Recents</string>
+     </property>
+    </widget>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
+    <addaction name="menuRecents"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -60,7 +66,17 @@
   </action>
   <action name="actionLoad">
    <property name="text">
-    <string>Load ...</string>
+    <string>&amp;Load ...</string>
+   </property>
+  </action>
+  <action name="actionToto">
+   <property name="text">
+    <string>toto</string>
+   </property>
+  </action>
+  <action name="actionTata">
+   <property name="text">
+    <string>tata</string>
    </property>
   </action>
  </widget>

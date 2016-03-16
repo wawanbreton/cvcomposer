@@ -15,10 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+#pragma once
 
 #include <QMainWindow>
+
+#include <QSettings>
 
 namespace Ui { class MainWidget; }
 
@@ -35,12 +36,18 @@ class MainWidget : public QMainWindow
 
         void onLoad();
 
+        void onLoadRecent();
+
     private:
         void updateTitle();
+
+        void addRecent(const QString &file);
+
+        void updateRecents(const QSettings &settings = QSettings());
+
+        void loadFile(const QString &filePath);
 
     private:
         Ui::MainWidget *_ui;
         QString _currentFilePath;
 };
-
-#endif // MAINWIDGET_H
