@@ -10,6 +10,12 @@
     <height>562</height>
    </rect>
   </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="features">
+   <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+  </property>
   <property name="windowTitle">
    <string>D&amp;ockWidget</string>
   </property>
