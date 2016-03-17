@@ -57,6 +57,10 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     inputs << "ImageFromFile" << "Camera";
     nodes << QPair<QString, QStringList>("Inputs", inputs);
 
+    QStringList viewers;
+    viewers << "ImagePreviewer" << "DockableImageViewer";
+    nodes << QPair<QString, QStringList>("Viewers", viewers);
+
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
             << "MorphologyTransformation" << "Threshold" << "CustomFilter";
