@@ -42,6 +42,10 @@ class KernelDefinitionWidget : public AbstractPlugWidget
 
         virtual void setValue(const QVariant &value) override;
 
+        virtual QMap<QString, QString> save() const override;
+
+        virtual void load(const QMap<QString, QString> &properties) override;
+
     private:
         typedef enum
         {

@@ -22,6 +22,8 @@
 
 #include <QLabel>
 #include <QSignalMapper>
+#include <QDomDocument>
+#include <QDomNode>
 
 #include "model/plugdefinition.h"
 
@@ -42,6 +44,10 @@ class GenericNodeWidget : public QWidget
         void setInputPlugged(const QString &inputName, bool plugged);
 
         void setPlugProperty(const QString &name, const QVariant &value);
+
+        const AbstractPlugWidget *getInputWidget(const QString &name) const;
+
+        AbstractPlugWidget *accessInputWidget(const QString &name);
 
     public slots:
         void onProcessDone(const Properties &outputs, const Properties &inputs);

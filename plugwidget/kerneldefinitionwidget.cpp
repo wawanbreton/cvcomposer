@@ -148,6 +148,31 @@ void KernelDefinitionWidget::setValue(const QVariant &value)
     updateCellColors();
 }
 
+QMap<QString, QString> KernelDefinitionWidget::save() const
+{
+    QMap<QString, QString> properties;
+
+    properties.insert("symmetry", QString::number(_symmetryWidget->getValue().toInt()));
+
+    return properties;
+}
+
+void KernelDefinitionWidget::load(const QMap<QString, QString> &properties)
+{
+    bool parseOk;
+    int value = properties["symmetry"].toInt(&parseOk);
+    if(parseOk)
+    {
+        _symmetryWidget->blockSignals(true);
+        _symmetryWidget->setValue(value);
+        _symmetryWidget->blockSignals(false);
+    }
+    else
+    {
+        qWarning() << "Could not convert" << properties["symmetry"] << "to integer value";
+    }
+}
+
 QSize KernelDefinitionWidget::tableSizeHint() const
 {
     return QSize(_table->horizontalHeader()->length() + 4, _table->verticalHeader()->length() + 4);

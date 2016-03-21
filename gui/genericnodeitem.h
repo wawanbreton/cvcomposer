@@ -24,6 +24,7 @@
 #include <QGraphicsEllipseItem>
 #include <QWidget>
 
+class AbstractPlugWidget;
 class GenericNodeWidget;
 class Node;
 class PlugItem;
@@ -45,9 +46,17 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         const QList<PlugItem *> &getInputs() const;
 
+        const AbstractPlugWidget *getInputWidget(const QString &name) const;
+
+        AbstractPlugWidget *accessInputWidget(const QString &name);
+
         const QList<PlugItem *> &getOutputs() const;
 
         void setPlugProperty(const QString &name, const QVariant &value);
+
+        QMap<QString, QString> save() const;
+
+        void load(const QMap<QString, QString> &properties);
 
     protected:
         virtual QRectF boundingRect() const;

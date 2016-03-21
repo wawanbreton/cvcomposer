@@ -20,6 +20,9 @@
 
 #include <QWidget>
 
+#include <QDomDocument>
+#include <QDomNode>
+
 #include "global/properties.h"
 
 class AbstractPlugWidget : public QWidget
@@ -30,6 +33,10 @@ class AbstractPlugWidget : public QWidget
         virtual QVariant getValue() const;
 
         virtual void setValue(const QVariant &value);
+
+        virtual QMap<QString, QString> save() const;
+
+        virtual void load(const QMap<QString, QString> &properties);
 
     public slots:
         virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);

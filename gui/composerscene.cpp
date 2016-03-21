@@ -32,6 +32,7 @@
 #include "gui/customitems.h"
 #include "gui/connectionitem.h"
 #include "gui/plugitem.h"
+#include "plugwidget/abstractplugwidget.h"
 
 
 ComposerScene::ComposerScene(QObject *parent) :
@@ -97,25 +98,56 @@ void ComposerScene::save(QDomDocument &doc) const
         nodeElement.setAttribute("name", node->getName());
         nodeElement.setAttribute("id", QString::number(quint64(node)));
 
-        for(const Plug *inputPlug : node->getInputs())
+        QMap<QString, QString> nodeItemProperties = nodeItem->save();
+        auto iterator = nodeItemProperties.constBegin();
+        while(iterator != nodeItemProperties.constEnd())
         {
-            if(PlugType::isInputPluggable(inputPlug->getDefinition().type) != PlugType::Mandatory)
-            {
-                QDomElement propertyElement = doc.createElement("property");
-                propertyElement.setAttribute("name", inputPlug->getDefinition().name);
-                propertyElement.setAttribute("value", inputPlug->save(node->getProperties()[inputPlug->getDefinition().name]));
-                nodeElement.appendChild(propertyElement);
-            }
+            QDomElement nodeItemPropertyElement = doc.createElement("item-property");
+            nodeItemPropertyElement.setAttribute("name", iterator.key());
+            nodeItemPropertyElement.setAttribute("value", iterator.value());
+            nodeElement.appendChild(nodeItemPropertyElement);
+
+            iterator++;
         }
 
-        QString itemPos("%1:%2");
-        itemPos = itemPos.arg(QString::number(nodeItem->pos().x(), 'f', 2));
-        itemPos = itemPos.arg(QString::number(nodeItem->pos().y(), 'f', 2));
+        for(const Plug *plug : node->getInputs())
+        {
+            bool hasValue = false;
+            const QString plugName = plug->getDefinition().name;
 
-        QDomElement itemPropertyElement = doc.createElement("item-property");
-        itemPropertyElement.setAttribute("name", "pos");
-        itemPropertyElement.setAttribute("value", itemPos);
-        nodeElement.appendChild(itemPropertyElement);
+            QDomElement plugNode = doc.createElement("plug");
+            plugNode.setAttribute("name", plugName);
+
+            if(PlugType::isInputPluggable(plug->getDefinition().type) != PlugType::Mandatory)
+            {
+                plugNode.setAttribute("value",
+                                      plug->save(node->getProperties()[plugName]));
+                hasValue = true;
+            }
+
+            QMap<QString, QString> plugWidgetProperties;
+            const AbstractPlugWidget *plugWidget = nodeItem->getInputWidget(plugName);
+            if(plugWidget)
+            {
+                plugWidgetProperties = plugWidget->save();
+
+                auto iteratorWidget = plugWidgetProperties.constBegin();
+                while(iteratorWidget != plugWidgetProperties.constEnd())
+                {
+                    QDomElement plugWidgetPropertyElement = doc.createElement("item-property");
+                    plugWidgetPropertyElement.setAttribute("name", iteratorWidget.key());
+                    plugWidgetPropertyElement.setAttribute("value", iteratorWidget.value());
+                    plugNode.appendChild(plugWidgetPropertyElement);
+
+                    iteratorWidget++;
+                }
+            }
+
+            if(hasValue || not plugWidgetProperties.isEmpty())
+            {
+                nodeElement.appendChild(plugNode);
+            }
+        }
 
         rootNode.appendChild(nodeElement);
     }
@@ -159,41 +191,50 @@ void ComposerScene::load(const QDomDocument &doc)
             loadedNodes.insert(nodeElement.attribute("id").toULongLong(), item->accessNode());
 
             QDomNodeList nodeProperties = childNode.childNodes();
+            QMap<QString, QString> nodeItemProperties;
+
             for(int j = 0 ; j < nodeProperties.count() ; j++)
             {
-                QDomNode nodeProperty = nodeProperties.at(j);
+                QDomElement nodeProperty = nodeProperties.at(j).toElement();
+
                 if(nodeProperty.nodeName() == "item-property")
                 {
-                    QDomElement propertyElement = nodeProperty.toElement();
-                    if(propertyElement.attribute("name") == "pos")
-                    {
-                        QString pos = propertyElement.attribute("value");
-                        QStringList posParts = pos.split(':', QString::SkipEmptyParts);
-                        if(posParts.count() == 2)
-                        {
-                            item->setPos(posParts[0].toDouble(), posParts[1].toDouble());
-                        }
-                        else
-                        {
-                            qWarning() << "Badly formatted item position :" << pos;
-                        }
-                    }
+                    nodeItemProperties.insert(nodeProperty.attribute("name"),
+                                              nodeProperty.attribute("value"));
                 }
-                else if(nodeProperty.nodeName() == "property")
+                else if(nodeProperty.nodeName() == "plug")
                 {
                     QDomElement propertyElement = nodeProperty.toElement();
                     QString plugName = propertyElement.attribute("name");
                     Plug *plug = item->getNode()->findInput(plugName);
                     if(plug)
                     {
-                        QVariant value = plug->load(propertyElement.attribute("value"));
-                        if(not value.isNull())
+                        if(propertyElement.hasAttribute("value"))
                         {
-                            // Node and items are updated manually, they are not connected to each
-                            // other for performance reasons
-                            item->setPlugProperty(plugName, value);
-                            item->accessNode()->setProperty(plugName, value);
+                            QVariant value = plug->load(propertyElement.attribute("value"));
+                            if(not value.isNull())
+                            {
+                                // Node and items are updated manually, they are not connected to each
+                                // other for performance reasons
+                                item->setPlugProperty(plugName, value);
+                                item->accessNode()->setProperty(plugName, value);
+                            }
                         }
+
+                        QDomNodeList plugNodeChildren = nodeProperty.childNodes();
+                        QMap<QString, QString> plugWidgetProperties;
+
+                        for(int k = 0 ; k < plugNodeChildren.count() ; k++)
+                        {
+                            QDomElement plugPropertyNode = plugNodeChildren.at(k).toElement();
+                            if(plugPropertyNode.nodeName() == "item-property")
+                            {
+                                plugWidgetProperties.insert(plugPropertyNode.attribute("name"),
+                                                            plugPropertyNode.attribute("value"));
+                            }
+                        }
+
+                        item->accessInputWidget(plugName)->load(plugWidgetProperties);
                     }
                     else
                     {
@@ -201,6 +242,8 @@ void ComposerScene::load(const QDomDocument &doc)
                     }
                 }
             }
+
+            item->load(nodeItemProperties);
         }
         else if(childNode.nodeName() == "connection")
         {

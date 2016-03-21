@@ -157,6 +157,22 @@ void GenericNodeWidget::setPlugProperty(const QString &name, const QVariant &val
     }
 }
 
+const AbstractPlugWidget *GenericNodeWidget::getInputWidget(const QString &name) const
+{
+    auto iterator = _widgets.constFind(name);
+    if(iterator != _widgets.constEnd())
+    {
+        return iterator.value().widget;
+    }
+
+    return NULL;
+}
+
+AbstractPlugWidget *GenericNodeWidget::accessInputWidget(const QString &name)
+{
+    return (AbstractPlugWidget *)getInputWidget(name);
+}
+
 void GenericNodeWidget::onProcessDone(const Properties &outputs, const Properties &inputs)
 {
     foreach(const PlugWidget &widget, _widgets)

@@ -38,6 +38,18 @@ void AbstractPlugWidget::setValue(const QVariant &value)
     qCritical() << "AbstractPlugWidget::setValue" << "This method should not be called";
 }
 
+QMap<QString, QString> AbstractPlugWidget::save() const
+{
+    // Default is nothing to do
+    return QMap<QString, QString>();
+}
+
+void AbstractPlugWidget::load(const QMap<QString, QString> &properties)
+{
+    // Default is nothing to do
+    Q_UNUSED(properties)
+}
+
 void AbstractPlugWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
     Q_UNUSED(inputs)

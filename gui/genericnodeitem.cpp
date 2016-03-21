@@ -94,6 +94,16 @@ const QList<PlugItem *> &GenericNodeItem::getInputs() const
     return _inputPlugs;
 }
 
+const AbstractPlugWidget *GenericNodeItem::getInputWidget(const QString &name) const
+{
+    return _widget->getInputWidget(name);
+}
+
+AbstractPlugWidget *GenericNodeItem::accessInputWidget(const QString &name)
+{
+    return _widget->accessInputWidget(name);
+}
+
 const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 {
     return _outputPlugs;
@@ -102,6 +112,33 @@ const QList<PlugItem *> &GenericNodeItem::getOutputs() const
 void GenericNodeItem::setPlugProperty(const QString &name, const QVariant &value)
 {
     _widget->setPlugProperty(name, value);
+}
+
+QMap<QString, QString> GenericNodeItem::save() const
+{
+    QMap<QString, QString> result;
+
+    QString itemPos("%1:%2");
+    itemPos = itemPos.arg(QString::number(pos().x(), 'f', 2));
+    itemPos = itemPos.arg(QString::number(pos().y(), 'f', 2));
+
+    result.insert("pos", itemPos);
+
+    return result;
+}
+
+void GenericNodeItem::load(const QMap<QString, QString> &properties)
+{
+    QString pos = properties["pos"];
+    QStringList posParts = pos.split(':', QString::SkipEmptyParts);
+    if(posParts.count() == 2)
+    {
+        setPos(posParts[0].toDouble(), posParts[1].toDouble());
+    }
+    else
+    {
+        qWarning() << "Badly formatted item position :" << pos;
+    }
 }
 
 QRectF GenericNodeItem::boundingRect() const
