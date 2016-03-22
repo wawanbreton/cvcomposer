@@ -31,6 +31,10 @@ class DockableImageViewerWidget : public AbstractPlugWidget
     public:
         explicit DockableImageViewerWidget(QWidget *parent = NULL);
 
+        virtual QMap<QString, QString> save() const;
+
+        virtual void load(const QMap<QString, QString> &properties);
+
     public slots:
         virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 

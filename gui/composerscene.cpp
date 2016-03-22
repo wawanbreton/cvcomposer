@@ -86,7 +86,7 @@ GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
     return item;
 }
 
-void ComposerScene::save(QDomDocument &doc) const
+void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
 {
     QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
 
@@ -118,10 +118,9 @@ void ComposerScene::save(QDomDocument &doc) const
             QDomElement plugNode = doc.createElement("plug");
             plugNode.setAttribute("name", plugName);
 
-            if(PlugType::isInputPluggable(plug->getDefinition().type) != PlugType::Mandatory)
+            if(PlugType::isInputSavable(plug->getDefinition().type))
             {
-                plugNode.setAttribute("value",
-                                      plug->save(node->getProperties()[plugName]));
+                plugNode.setAttribute("value", plug->save(node->getProperties()[plugName]));
                 hasValue = true;
             }
 
@@ -172,23 +171,27 @@ void ComposerScene::save(QDomDocument &doc) const
         }
     }
 
+    QDomElement mainWindowNode = doc.createElement("mainwindow");
+    mainWindowNode.setAttribute("state", QString::fromUtf8(mainWindow->saveState().toHex()));
+    mainWindowNode.setAttribute("geometry", QString::fromUtf8(mainWindow->saveGeometry().toHex()));
+    rootNode.appendChild(mainWindowNode);
+
     doc.appendChild(rootNode);
 }
 
-void ComposerScene::load(const QDomDocument &doc)
+void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
 {
     QDomNode mainNode = doc.namedItem(QCoreApplication::applicationName().toLower());
     QDomNodeList childrenNodes = mainNode.childNodes();
     QMap<quint64, Node *> loadedNodes;
     for(int i = 0 ; i < childrenNodes.count() ; i++)
     {
-        QDomNode childNode = childrenNodes.at(i);
+        QDomElement childNode = childrenNodes.at(i).toElement();
         if(childNode.nodeName() == "node")
         {
-            QDomElement nodeElement = childNode.toElement();
-            QString nodeName = nodeElement.attribute("name");
+            QString nodeName = childNode.attribute("name");
             GenericNodeItem *item = addNode(nodeName);
-            loadedNodes.insert(nodeElement.attribute("id").toULongLong(), item->accessNode());
+            loadedNodes.insert(childNode.attribute("id").toULongLong(), item->accessNode());
 
             QDomNodeList nodeProperties = childNode.childNodes();
             QMap<QString, QString> nodeItemProperties;
@@ -247,18 +250,16 @@ void ComposerScene::load(const QDomDocument &doc)
         }
         else if(childNode.nodeName() == "connection")
         {
-            QDomElement nodeElement = childNode.toElement();
-
-            quint64 outputId = nodeElement.attribute("output_id").toULongLong();
-            quint64 inputId = nodeElement.attribute("input_id").toULongLong();
+            quint64 outputId = childNode.attribute("output_id").toULongLong();
+            quint64 inputId = childNode.attribute("input_id").toULongLong();
 
             auto iteratorOutput = loadedNodes.find(outputId);
             auto iteratorInput = loadedNodes.find(inputId);
 
             if(iteratorOutput != loadedNodes.end() && iteratorInput != loadedNodes.end())
             {
-                QString outputName = nodeElement.attribute("output_plug");
-                QString inputName = nodeElement.attribute("input_plug");
+                QString outputName = childNode.attribute("output_plug");
+                QString inputName = childNode.attribute("input_plug");
 
                 Plug *plugOutput = iteratorOutput.value()->findOutput(outputName);
                 Plug *plugInput = iteratorInput.value()->findInput(inputName);
@@ -277,6 +278,11 @@ void ComposerScene::load(const QDomDocument &doc)
                     // Item is added by model signal
                 }
             }
+        }
+        else if(childNode.nodeName() == "mainwindow")
+        {
+            mainWindow->restoreGeometry(QByteArray::fromHex(childNode.attribute("geometry").toUtf8()));
+            mainWindow->restoreState(QByteArray::fromHex(childNode.attribute("state").toUtf8()));
         }
     }
 }

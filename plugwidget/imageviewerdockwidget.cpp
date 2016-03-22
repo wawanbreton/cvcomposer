@@ -23,6 +23,8 @@
 #include "global/cvutils.h"
 
 
+int ImageViewerDockWidget::_count = 0;
+
 ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
     QDockWidget(parent),
     _ui(new Ui::ImageDockWidget)
@@ -34,6 +36,9 @@ ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
 
     _pixmapItem = new QGraphicsPixmapItem();
     scene->addItem(_pixmapItem);
+
+    // Saving and restoring dock widgets properly requires all of them to have a unique object name
+    setObjectName(QString("ImageViewerDockWidget%1").arg(_count++));
 }
 
 ImageViewerDockWidget::~ImageViewerDockWidget()

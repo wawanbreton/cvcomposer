@@ -37,6 +37,9 @@ class ImageViewerDockWidget : public QDockWidget
         void setImage(const cv::Mat &image);
 
     private:
+        static int _count;
+
+    private:
         Ui::ImageDockWidget *_ui;
         QGraphicsPixmapItem *_pixmapItem;
 };

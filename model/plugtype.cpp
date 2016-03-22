@@ -68,3 +68,16 @@ PlugType::Enum PlugType::getCompatibility(Enum value)
 
     return Image;
 }
+
+
+bool PlugType::isInputSavable(PlugType::Enum value)
+{
+    if(value == PlugType::DockableImageViewer)
+    {
+        return false;
+    }
+    else
+    {
+        return PlugType::isInputPluggable(value) != PlugType::Mandatory;
+    }
+}

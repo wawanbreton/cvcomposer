@@ -88,7 +88,7 @@ void MainWidget::onSave()
     doc.appendChild(header);
 
     ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
-    scene->save(doc);
+    scene->save(doc, this);
 
     QFile file(_currentFilePath);
     if(file.open(QIODevice::WriteOnly))
@@ -123,7 +123,7 @@ void MainWidget::loadFile(const QString &filePath)
         if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
         {
             ComposerScene *scene = new ComposerScene();
-            scene->load(doc);
+            scene->load(doc, this);
             _ui->graphicsView->replaceScene(scene);
 
             _currentFilePath = filePath;

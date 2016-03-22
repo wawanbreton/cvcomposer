@@ -18,6 +18,7 @@
 #include "dockableimageviewerwidget.h"
 
 #include <QApplication>
+#include <QDebug>
 #include <QHBoxLayout>
 
 #include "global/cvutils.h"
@@ -37,11 +38,32 @@ DockableImageViewerWidget::DockableImageViewerWidget(QWidget *parent) :
     QString title = "Image viewer";
 
     _lineEdit->setText(title);
-    connect(_lineEdit, SIGNAL(textChanged(QString)),
-            _dockWidget,   SLOT(setWindowTitle(QString)));
+    connect(_lineEdit,   SIGNAL(textChanged(QString)),
+            _dockWidget, SLOT(setWindowTitle(QString)));
 
     _dockWidget->show();
     _dockWidget->setWindowTitle(title);
+}
+
+QMap<QString, QString> DockableImageViewerWidget::save() const
+{
+    QMap<QString, QString> properties;
+
+    properties.insert("title", _lineEdit->text());
+    properties.insert("geometry", QString::fromUtf8(_dockWidget->saveGeometry().toHex()));
+
+    // We need to store dock widgets object name so that their state
+    // inside the QMainWindow is restored correctly
+    properties.insert("objectName", _dockWidget->objectName());
+
+    return properties;
+}
+
+void DockableImageViewerWidget::load(const QMap<QString, QString> &properties)
+{
+    _lineEdit->setText(properties["title"]);
+    _dockWidget->setObjectName(properties["objectName"]);
+    _dockWidget->restoreGeometry(QByteArray::fromHex(properties["geometry"].toUtf8()));
 }
 
 void DockableImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)

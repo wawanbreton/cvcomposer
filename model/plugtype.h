@@ -49,4 +49,6 @@ namespace PlugType
     bool isLabelVisible(Enum value);
 
     Enum getCompatibility(Enum value);
+
+    bool isInputSavable(Enum value);
 }
