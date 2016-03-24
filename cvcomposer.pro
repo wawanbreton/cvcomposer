@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     processor/filter/customfilterprocessor.cpp \
     model/node.cpp \
     processor/analyzer/discretefouriertransformprocessor.cpp \
-    processor/shape/rectangleprocessor.cpp
+    processor/shape/rectangleprocessor.cpp \
+    processor/shape/drawrectangleprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -121,7 +122,8 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/customfilterprocessor.h \
     model/node.h \
     processor/analyzer/discretefouriertransformprocessor.h \
-    processor/shape/rectangleprocessor.h
+    processor/shape/rectangleprocessor.h \
+    processor/shape/drawrectangleprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

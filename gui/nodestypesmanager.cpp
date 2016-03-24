@@ -30,6 +30,7 @@
 #include "processor/filter/thresholdprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
+#include "processor/shape/drawrectangleprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/viewer/dockableimageviewerprocessor.h"
 #include "processor/viewer/imagepreviewerprocessor.h"
@@ -52,6 +53,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<CustomFilterProcessor>();
     qRegisterMetaType<DiscreteFourierTransformProcessor>();
     qRegisterMetaType<RectangleProcessor>();
+    qRegisterMetaType<DrawRectangleProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -69,7 +71,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     nodes << QPair<QString, QStringList>("Data", data);
 
     QStringList shapes;
-    shapes << "Rectangle";
+    shapes << "Rectangle" << "DrawRectangle";
     nodes << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -140,6 +142,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "Rectangle")
     {
         return "Rectangle";
+    }
+    else if(name == "DrawRectangle")
+    {
+        return "Draw Rectangle";
     }
 
     qCritical() << "No user-readable name defined for" << name;
