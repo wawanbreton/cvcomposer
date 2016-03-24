@@ -15,23 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CVUTILS_H
-#define CVUTILS_H
+#include "rectangleprocessor.h"
 
-#include <QImage>
-#include <opencv2/core/core.hpp>
+#include "global/cvutils.h"
 
-namespace CvUtils
+
+RectangleProcessor::RectangleProcessor()
 {
-    QImage toQImage(const cv::Mat &mat);
+    addInput("position", PlugType::Point, QVariant::fromValue(cv::Point(0, 0)));
+    addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(10, 10)));
 
-    QList<QPair<QString, QVariant> > makeBlurBorderValues();
+    addOutput("rectangle", PlugType::Rectangle);
 }
 
-Q_DECLARE_METATYPE(cv::Point)
-Q_DECLARE_METATYPE(cv::Size)
-Q_DECLARE_METATYPE(cv::Rect)
-Q_DECLARE_METATYPE(cv::Mat)
-Q_DECLARE_METATYPE(cv::Scalar)
+Properties RectangleProcessor::processImpl(const Properties &inputs)
+{
+    cv::Point position = inputs["position"].value<cv::Point>();
+    cv::Size size = inputs["size"].value<cv::Size>();
 
-#endif // CVUTILS_H
+    cv::Rect rectangle(position, size);
+
+    Properties outputs;
+    outputs.insert("rectangle", QVariant::fromValue(rectangle));
+    return outputs;
+}

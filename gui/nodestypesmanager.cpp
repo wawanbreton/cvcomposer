@@ -30,6 +30,7 @@
 #include "processor/filter/thresholdprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
+#include "processor/shape/rectangleprocessor.h"
 #include "processor/viewer/dockableimageviewerprocessor.h"
 #include "processor/viewer/imagepreviewerprocessor.h"
 
@@ -50,16 +51,13 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<KernelProcessor>();
     qRegisterMetaType<CustomFilterProcessor>();
     qRegisterMetaType<DiscreteFourierTransformProcessor>();
+    qRegisterMetaType<RectangleProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
     QStringList inputs;
     inputs << "ImageFromFile" << "Camera";
     nodes << QPair<QString, QStringList>("Inputs", inputs);
-
-    QStringList viewers;
-    viewers << "ImagePreviewer" << "DockableImageViewer";
-    nodes << QPair<QString, QStringList>("Viewers", viewers);
 
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
@@ -70,9 +68,17 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     data << "Kernel";
     nodes << QPair<QString, QStringList>("Data", data);
 
+    QStringList shapes;
+    shapes << "Rectangle";
+    nodes << QPair<QString, QStringList>("Shapes", shapes);
+
     QStringList analyzers;
     analyzers << "DiscreteFourierTransform";
     nodes << QPair<QString, QStringList>("Analyzers", analyzers);
+
+    QStringList viewers;
+    viewers << "ImagePreviewer" << "DockableImageViewer";
+    nodes << QPair<QString, QStringList>("Viewers", viewers);
 
     return nodes;
 }
@@ -130,6 +136,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "DiscreteFourierTransform")
     {
         return "Discrete Fourier Transform";
+    }
+    else if(name == "Rectangle")
+    {
+        return "Rectangle";
     }
 
     qCritical() << "No user-readable name defined for" << name;

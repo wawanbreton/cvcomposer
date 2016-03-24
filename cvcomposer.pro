@@ -69,7 +69,8 @@ SOURCES += main.cpp\
     plugwidget/doubleitemdelegate.cpp \
     processor/filter/customfilterprocessor.cpp \
     model/node.cpp \
-    processor/analyzer/discretefouriertransformprocessor.cpp
+    processor/analyzer/discretefouriertransformprocessor.cpp \
+    processor/shape/rectangleprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -119,7 +120,8 @@ HEADERS  += gui/mainwidget.h \
     plugwidget/doubleitemdelegate.h \
     processor/filter/customfilterprocessor.h \
     model/node.h \
-    processor/analyzer/discretefouriertransformprocessor.h
+    processor/analyzer/discretefouriertransformprocessor.h \
+    processor/shape/rectangleprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
