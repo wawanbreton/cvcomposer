@@ -162,7 +162,7 @@ QVariant Plug::load(const QString &value) const
             {
                 QList<QPair<QString, QVariant> > values =
                         getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
-                if(index > 0 && index < values.count())
+                if(index >= 0 && index < values.count())
                 {
                     return values[index].second;
                 }
