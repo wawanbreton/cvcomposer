@@ -233,8 +233,8 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             break;
         case PlugType::Kernel:
         case PlugType::Image:
-            qCritical() << "GenericNodeWidget::makePlugWidget"
-                        << "plug type" << plug.type
+        case PlugType::Rectangle:
+            qCritical() << "plug type" << plug.type
                         << "is not supposed to be associated to a widget";
             break;
     }

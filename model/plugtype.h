@@ -32,7 +32,8 @@ namespace PlugType
         KernelDefinition,
         ImagePath,
         ImagePreview,
-        DockableImageViewer
+        DockableImageViewer,
+        Rectangle
     } Enum;
 
     typedef enum

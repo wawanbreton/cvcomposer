@@ -39,6 +39,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Image:
         case PlugType::Kernel:
         case PlugType::ImagePreview:
+        case PlugType::Rectangle:
             return Mandatory;
     }
 
