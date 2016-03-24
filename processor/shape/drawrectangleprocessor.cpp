@@ -19,6 +19,9 @@
 
 #include "global/cvutils.h"
 
+#include <opencv2/core/core_c.h>
+
+
 
 DrawRectangleProcessor::DrawRectangleProcessor()
 {
@@ -26,17 +29,35 @@ DrawRectangleProcessor::DrawRectangleProcessor()
     addInput("rectangle", PlugType::Rectangle);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
+    Properties thicknessProperties;
+    thicknessProperties.insert("minimum", -1);
+    thicknessProperties.insert("decimals", 0);
+    addInput("thickness", PlugType::Double, 1, thicknessProperties);
+
+    QList<QPair<QString, QVariant> > lineTypeValues;
+    lineTypeValues << QPair<QString, QVariant>("8-connected", 8);
+    lineTypeValues << QPair<QString, QVariant>("4-connected", 4);
+    lineTypeValues << QPair<QString, QVariant>("Antialiased", CV_AA);
+    addEnumerationInput("line type", lineTypeValues, 8);
+
+    Properties shiftProperties;
+    shiftProperties.insert("decimals", 0);
+    addInput("shift", PlugType::Double, 0, shiftProperties);
+
     addOutput("output image", PlugType::Image);
 }
 
 Properties DrawRectangleProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Rect rectangle = inputs["rectangle"].value<cv::Rect>();
-    cv::Scalar color = inputs["color"].value<cv::Scalar>();
 
     cv::Mat outputImage = inputImage.clone();
-    cv::rectangle(outputImage, rectangle, color);
+    cv::rectangle(outputImage,
+                  inputs["rectangle"].value<cv::Rect>(),
+                  inputs["color"].value<cv::Scalar>(),
+                  inputs["thickness"].toInt(),
+                  inputs["line type"].toInt(),
+                  inputs["shift"].toInt());
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
