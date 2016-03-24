@@ -26,6 +26,16 @@ class RectangleProcessor : public AbstractProcessor
 
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
+
+    private:
+        typedef enum
+        {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight,
+            Center
+        } Anchor;
 };
 
 Q_DECLARE_METATYPE(RectangleProcessor)

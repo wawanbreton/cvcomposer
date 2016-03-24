@@ -23,6 +23,15 @@
 RectangleProcessor::RectangleProcessor()
 {
     addInput("position", PlugType::Point, QVariant::fromValue(cv::Point(0, 0)));
+
+    QList<QPair<QString, QVariant> > anchorValues;
+    anchorValues << QPair<QString, QVariant>("Top left", TopLeft);
+    anchorValues << QPair<QString, QVariant>("Top Right", TopRight);
+    anchorValues << QPair<QString, QVariant>("Bottom left", BottomLeft);
+    anchorValues << QPair<QString, QVariant>("BottomRight", BottomRight);
+    anchorValues << QPair<QString, QVariant>("Center", Center);
+    addEnumerationInput("anchor", anchorValues, TopLeft);
+
     addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(10, 10)));
 
     addOutput("rectangle", PlugType::Rectangle);
@@ -31,7 +40,28 @@ RectangleProcessor::RectangleProcessor()
 Properties RectangleProcessor::processImpl(const Properties &inputs)
 {
     cv::Point position = inputs["position"].value<cv::Point>();
+    Anchor anchor = Anchor(inputs["anchor"].toInt());
     cv::Size size = inputs["size"].value<cv::Size>();
+
+    switch(anchor)
+    {
+        case TopLeft:
+            break;
+        case TopRight:
+            position.x -= size.width;
+            break;
+        case BottomLeft:
+            position.y -= size.height;
+            break;
+        case BottomRight:
+            position.x -= size.width;
+            position.y -= size.height;
+            break;
+        case Center:
+            position.x -= size.width / 2;
+            position.y -= size.height / 2;
+            break;
+    }
 
     cv::Rect rectangle(position, size);
 
