@@ -28,6 +28,7 @@
 #include "processor/filter/medianblurprocessor.h"
 #include "processor/filter/morphologytransformationprocessor.h"
 #include "processor/filter/thresholdprocessor.h"
+#include "processor/geometry/subimageprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
 #include "processor/shape/drawrectangleprocessor.h"
@@ -54,12 +55,17 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<DiscreteFourierTransformProcessor>();
     qRegisterMetaType<RectangleProcessor>();
     qRegisterMetaType<DrawRectangleProcessor>();
+    qRegisterMetaType<SubImageProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
     QStringList inputs;
     inputs << "ImageFromFile" << "Camera";
     nodes << QPair<QString, QStringList>("Inputs", inputs);
+
+    QStringList geometry;
+    geometry << "SubImage";
+    nodes << QPair<QString, QStringList>("Geometry", geometry);
 
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
@@ -146,6 +152,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "DrawRectangle")
     {
         return "Draw Rectangle";
+    }
+    else if(name == "SubImage")
+    {
+        return "Sub Image";
     }
 
     qCritical() << "No user-readable name defined for" << name;

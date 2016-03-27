@@ -62,5 +62,4 @@ Properties DrawRectangleProcessor::processImpl(const Properties &inputs)
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
     return outputs;
-
 }
