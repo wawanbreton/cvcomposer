@@ -72,7 +72,8 @@ SOURCES += main.cpp\
     processor/analyzer/discretefouriertransformprocessor.cpp \
     processor/shape/rectangleprocessor.cpp \
     processor/shape/drawrectangleprocessor.cpp \
-    processor/geometry/subimageprocessor.cpp
+    processor/geometry/subimageprocessor.cpp \
+    processor/geometry/makeborderprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -125,7 +126,8 @@ HEADERS  += gui/mainwidget.h \
     processor/analyzer/discretefouriertransformprocessor.h \
     processor/shape/rectangleprocessor.h \
     processor/shape/drawrectangleprocessor.h \
-    processor/geometry/subimageprocessor.h
+    processor/geometry/subimageprocessor.h \
+    processor/geometry/makeborderprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

@@ -29,6 +29,7 @@
 #include "processor/filter/morphologytransformationprocessor.h"
 #include "processor/filter/thresholdprocessor.h"
 #include "processor/geometry/subimageprocessor.h"
+#include "processor/geometry/makeborderprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
 #include "processor/shape/drawrectangleprocessor.h"
@@ -56,6 +57,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<RectangleProcessor>();
     qRegisterMetaType<DrawRectangleProcessor>();
     qRegisterMetaType<SubImageProcessor>();
+    qRegisterMetaType<MakeBorderProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -64,7 +66,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     nodes << QPair<QString, QStringList>("Inputs", inputs);
 
     QStringList geometry;
-    geometry << "SubImage";
+    geometry << "SubImage" << "MakeBorder";
     nodes << QPair<QString, QStringList>("Geometry", geometry);
 
     QStringList filters;
@@ -156,6 +158,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "SubImage")
     {
         return "Sub Image";
+    }
+    else if(name == "MakeBorder")
+    {
+        return "Make border";
     }
 
     qCritical() << "No user-readable name defined for" << name;
