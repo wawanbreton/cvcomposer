@@ -15,17 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "drawrectangleprocessor.h"
+#include "drawcircleprocessor.h"
 
 #include "global/cvutils.h"
 
 #include <opencv2/core/core_c.h>
 
 
-DrawRectangleProcessor::DrawRectangleProcessor()
+DrawCircleProcessor::DrawCircleProcessor()
 {
     addInput("input image", PlugType::Image);
-    addInput("rectangle", PlugType::Rectangle);
+    addInput("center", PlugType::Point);
+
+    Properties radiusProperties;
+    radiusProperties.insert("decimals", 0);
+    addInput("radius", PlugType::Double, 5, radiusProperties);
+
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;
@@ -42,19 +47,21 @@ DrawRectangleProcessor::DrawRectangleProcessor()
     addOutput("output image", PlugType::Image);
 }
 
-Properties DrawRectangleProcessor::processImpl(const Properties &inputs)
+Properties DrawCircleProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
 
     cv::Mat outputImage = inputImage.clone();
-    cv::rectangle(outputImage,
-                  inputs["rectangle"].value<cv::Rect>(),
-                  inputs["color"].value<cv::Scalar>(),
-                  inputs["thickness"].toInt(),
-                  inputs["line type"].toInt(),
-                  inputs["shift"].toInt());
+    cv::circle(outputImage,
+               inputs["center"].value<cv::Point>(),
+               inputs["radius"].toInt(),
+               inputs["color"].value<cv::Scalar>(),
+               inputs["thickness"].toInt(),
+               inputs["line type"].toInt(),
+               inputs["shift"].toInt());
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
     return outputs;
 }
+

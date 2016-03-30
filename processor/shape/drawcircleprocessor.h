@@ -15,25 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CVUTILS_H
-#define CVUTILS_H
+#pragma once
 
-#include <QImage>
-#include <opencv2/core/core.hpp>
+#include "processor/abstractprocessor.h"
 
-namespace CvUtils
+class DrawCircleProcessor : public AbstractProcessor
 {
-    QImage toQImage(const cv::Mat &mat);
+    public:
+        DrawCircleProcessor();
 
-    QList<QPair<QString, QVariant> > makeBlurBorderValues();
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};
 
-    QList<QPair<QString, QVariant> > makeLineTypeValues();
-}
+Q_DECLARE_METATYPE(DrawCircleProcessor)
 
-Q_DECLARE_METATYPE(cv::Point)
-Q_DECLARE_METATYPE(cv::Size)
-Q_DECLARE_METATYPE(cv::Rect)
-Q_DECLARE_METATYPE(cv::Mat)
-Q_DECLARE_METATYPE(cv::Scalar)
-
-#endif // CVUTILS_H

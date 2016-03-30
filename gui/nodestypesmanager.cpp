@@ -32,6 +32,7 @@
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
+#include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawrectangleprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/viewer/dockableimageviewerprocessor.h"
@@ -58,6 +59,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<DrawRectangleProcessor>();
     qRegisterMetaType<SubImageProcessor>();
     qRegisterMetaType<MakeBorderProcessor>();
+    qRegisterMetaType<DrawCircleProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -79,7 +81,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     nodes << QPair<QString, QStringList>("Data", data);
 
     QStringList shapes;
-    shapes << "Rectangle" << "DrawRectangle";
+    shapes << "Rectangle" << "DrawRectangle" << "DrawCircle";
     nodes << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -162,6 +164,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "MakeBorder")
     {
         return "Make border";
+    }
+    else if(name == "DrawCircle")
+    {
+        return "Draw circle";
     }
 
     qCritical() << "No user-readable name defined for" << name;

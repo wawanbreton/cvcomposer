@@ -143,3 +143,14 @@ QList<QPair<QString, QVariant> > CvUtils::makeBlurBorderValues()
 
     return borderValues;
 }
+
+
+QList<QPair<QString, QVariant> > CvUtils::makeLineTypeValues()
+{
+    QList<QPair<QString, QVariant> > lineTypeValues;
+    lineTypeValues << QPair<QString, QVariant>("8-connected", 8);
+    lineTypeValues << QPair<QString, QVariant>("4-connected", 4);
+    lineTypeValues << QPair<QString, QVariant>("Antialiased", CV_AA);
+
+    return lineTypeValues;
+}
