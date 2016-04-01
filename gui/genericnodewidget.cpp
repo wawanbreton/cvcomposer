@@ -79,9 +79,9 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
 
     if(inputs.count())
     {
-        QFormLayout *inputsLayout = new QFormLayout();
-        inputsLayout->setContentsMargins(0, 0, 0, 0);
+        bool hasLabel = false;
 
+        // Iterate once to create the widgets
         foreach(const Plug *input, inputs)
         {
             PlugWidget widget;
@@ -94,6 +94,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
                 widget.label = new QLabel(this);
                 widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
                 makeLabelText(widget, false);
+                hasLabel = true;
             }
 
             widget.widget = NULL;
@@ -104,9 +105,36 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             }
 
             _widgets[widget.definition.name] = widget;
-            inputsLayout->addRow(widget.label, widget.widget);
         }
 
+        // Now we know whether we have labels, so we can create the appropriate layout
+        QLayout *inputsLayout;
+        if(hasLabel)
+        {
+            QFormLayout *formLayout = new QFormLayout();
+
+            foreach(const Plug *input, inputs)
+            {
+                PlugWidget &widget = _widgets[input->getDefinition().name];
+                formLayout->addRow(widget.label, widget.widget);
+            }
+
+            inputsLayout = formLayout;
+        }
+        else
+        {
+            QVBoxLayout *vboxLayout = new QVBoxLayout();
+
+            foreach(const Plug *input, inputs)
+            {
+                PlugWidget &widget = _widgets[input->getDefinition().name];
+                vboxLayout->addWidget(widget.widget);
+            }
+
+            inputsLayout = vboxLayout;
+        }
+
+        inputsLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->addLayout(inputsLayout);
     }
 
