@@ -15,21 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "drawcircleprocessor.h"
+#include "drawellipseprocessor.h"
 
 #include "global/cvutils.h"
 
-#include <opencv2/core/core_c.h>
 
-
-DrawCircleProcessor::DrawCircleProcessor()
+DrawEllipseProcessor::DrawEllipseProcessor()
 {
     addInput("input image", PlugType::Image);
     addInput("center", PlugType::Point);
+    addInput("axes",
+             PlugType::Size,
+             QVariant::fromValue(cv::Size(CvUtils::defaultShapeSide, CvUtils::defaultShapeSide)));
 
-    Properties radiusProperties;
-    radiusProperties.insert("decimals", 0);
-    addInput("radius", PlugType::Double, CvUtils::defaultShapeSide / 2, radiusProperties);
+    Properties anglesProperties;
+    anglesProperties.insert("maximum", 360);
+    addInput("angle", PlugType::Double, 0, anglesProperties);
+    addInput("start angle", PlugType::Double, 0, anglesProperties);
+    addInput("end angle", PlugType::Double, 360, anglesProperties);
 
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
@@ -47,18 +50,21 @@ DrawCircleProcessor::DrawCircleProcessor()
     addOutput("output image", PlugType::Image);
 }
 
-Properties DrawCircleProcessor::processImpl(const Properties &inputs)
+Properties DrawEllipseProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
 
     cv::Mat outputImage = inputImage.clone();
-    cv::circle(outputImage,
-               inputs["center"].value<cv::Point>(),
-               inputs["radius"].toInt(),
-               inputs["color"].value<cv::Scalar>(),
-               inputs["thickness"].toInt(),
-               inputs["line type"].toInt(),
-               inputs["shift"].toInt());
+    cv::ellipse(outputImage,
+                inputs["center"].value<cv::Point>(),
+                inputs["axes"].value<cv::Size>(),
+                inputs["angle"].toDouble(),
+                inputs["start angle"].toDouble(),
+                inputs["end angle"].toDouble(),
+                inputs["color"].value<cv::Scalar>(),
+                inputs["thickness"].toInt(),
+                inputs["line type"].toInt(),
+                inputs["shift"].toInt());
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
