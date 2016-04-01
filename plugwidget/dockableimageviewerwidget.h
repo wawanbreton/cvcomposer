@@ -31,6 +31,8 @@ class DockableImageViewerWidget : public AbstractPlugWidget
     public:
         explicit DockableImageViewerWidget(QWidget *parent = NULL);
 
+        virtual ~DockableImageViewerWidget();
+
         virtual QMap<QString, QString> save() const;
 
         virtual void load(const QMap<QString, QString> &properties);

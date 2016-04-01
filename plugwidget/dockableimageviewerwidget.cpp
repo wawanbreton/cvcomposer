@@ -45,6 +45,11 @@ DockableImageViewerWidget::DockableImageViewerWidget(QWidget *parent) :
     _dockWidget->setWindowTitle(title);
 }
 
+DockableImageViewerWidget::~DockableImageViewerWidget()
+{
+    delete _dockWidget;
+}
+
 QMap<QString, QString> DockableImageViewerWidget::save() const
 {
     QMap<QString, QString> properties;
