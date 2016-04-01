@@ -75,7 +75,8 @@ SOURCES += main.cpp\
     processor/geometry/subimageprocessor.cpp \
     processor/geometry/makeborderprocessor.cpp \
     processor/shape/drawcircleprocessor.cpp \
-    processor/shape/drawellipseprocessor.cpp
+    processor/shape/drawellipseprocessor.cpp \
+    processor/shape/drawlineprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -131,7 +132,8 @@ HEADERS  += gui/mainwidget.h \
     processor/geometry/subimageprocessor.h \
     processor/geometry/makeborderprocessor.h \
     processor/shape/drawcircleprocessor.h \
-    processor/shape/drawellipseprocessor.h
+    processor/shape/drawellipseprocessor.h \
+    processor/shape/drawlineprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

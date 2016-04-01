@@ -34,6 +34,7 @@
 #include "processor/input/imagefromfileprocessor.h"
 #include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawellipseprocessor.h"
+#include "processor/shape/drawlineprocessor.h"
 #include "processor/shape/drawrectangleprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/viewer/dockableimageviewerprocessor.h"
@@ -62,6 +63,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<MakeBorderProcessor>();
     qRegisterMetaType<DrawCircleProcessor>();
     qRegisterMetaType<DrawEllipseProcessor>();
+    qRegisterMetaType<DrawLineProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -83,7 +85,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     nodes << QPair<QString, QStringList>("Data", data);
 
     QStringList shapes;
-    shapes << "Rectangle" << "DrawRectangle" << "DrawCircle" << "DrawEllipse";
+    shapes << "Rectangle" << "DrawRectangle" << "DrawCircle" << "DrawEllipse" << "DrawLine";
     nodes << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -174,6 +176,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "DrawEllipse")
     {
         return "Draw ellipse";
+    }
+    else if(name == "DrawLine")
+    {
+        return "Draw line";
     }
 
     qCritical() << "No user-readable name defined for" << name;
