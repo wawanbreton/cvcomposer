@@ -21,6 +21,7 @@
 
 #include "processor/analyzer/discretefouriertransformprocessor.h"
 #include "processor/data/kernelprocessor.h"
+#include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
 #include "processor/filter/customfilterprocessor.h"
@@ -64,6 +65,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<DrawCircleProcessor>();
     qRegisterMetaType<DrawEllipseProcessor>();
     qRegisterMetaType<DrawLineProcessor>();
+    qRegisterMetaType<AddWeightedProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -77,7 +79,8 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
 
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
-            << "MorphologyTransformation" << "Threshold" << "CustomFilter";
+            << "MorphologyTransformation" << "Threshold" << "CustomFilter"
+            << "AddWeighted";
     nodes << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
@@ -180,6 +183,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "DrawLine")
     {
         return "Draw line";
+    }
+    else if(name == "AddWeighted")
+    {
+        return "Add weighted";
     }
 
     qCritical() << "No user-readable name defined for" << name;

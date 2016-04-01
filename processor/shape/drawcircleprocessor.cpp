@@ -17,6 +17,7 @@
 
 #include "drawcircleprocessor.h"
 
+#include "global/cvconstants.h"
 #include "global/cvutils.h"
 
 #include <opencv2/core/core_c.h>
@@ -29,7 +30,7 @@ DrawCircleProcessor::DrawCircleProcessor()
 
     Properties radiusProperties;
     radiusProperties.insert("decimals", 0);
-    addInput("radius", PlugType::Double, CvUtils::defaultShapeSide / 2, radiusProperties);
+    addInput("radius", PlugType::Double, CvConstants::defaultShapeSide / 2, radiusProperties);
 
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 

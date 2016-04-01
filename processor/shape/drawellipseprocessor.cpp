@@ -17,6 +17,7 @@
 
 #include "drawellipseprocessor.h"
 
+#include "global/cvconstants.h"
 #include "global/cvutils.h"
 
 
@@ -26,7 +27,8 @@ DrawEllipseProcessor::DrawEllipseProcessor()
     addInput("center", PlugType::Point);
     addInput("axes",
              PlugType::Size,
-             QVariant::fromValue(cv::Size(CvUtils::defaultShapeSide, CvUtils::defaultShapeSide)));
+             QVariant::fromValue(cv::Size(CvConstants::defaultShapeSide,
+                                          CvConstants::defaultShapeSide)));
 
     Properties anglesProperties;
     anglesProperties.insert("maximum", 360);

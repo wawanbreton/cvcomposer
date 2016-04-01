@@ -21,4 +21,5 @@ namespace CvConstants
 {
     const int defaultDoubleDecimals = 2;
     const double defaultDoubleMax = 9999;
+    const int defaultShapeSide = 10;
 }
