@@ -33,6 +33,11 @@ AddWeightedProcessor::AddWeightedProcessor()
     addInput("beta", PlugType::Double, 0.5, coefficientsProperties);
     addInput("gamma", PlugType::Double, 0.0, coefficientsProperties);
 
+    Properties depthProperties;
+    depthProperties.insert("decimals", 0);
+    depthProperties.insert("minimum", -1);
+    addInput("depth", PlugType::Double, -1, depthProperties);
+
     addOutput("output image", PlugType::Image);
 }
 
@@ -44,7 +49,8 @@ Properties AddWeightedProcessor::processImpl(const Properties &inputs)
                     inputs["input image 2"].value<cv::Mat>(),
                     inputs["beta"].toDouble(),
                     inputs["gamma"].toDouble(),
-                    outputImage);
+                    outputImage,
+                    inputs["depth"].toInt());
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
