@@ -77,7 +77,8 @@ SOURCES += main.cpp\
     processor/shape/drawcircleprocessor.cpp \
     processor/shape/drawellipseprocessor.cpp \
     processor/shape/drawlineprocessor.cpp \
-    processor/filter/addweightedprocessor.cpp
+    processor/filter/addweightedprocessor.cpp \
+    processor/filter/converttoprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -135,7 +136,8 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/drawcircleprocessor.h \
     processor/shape/drawellipseprocessor.h \
     processor/shape/drawlineprocessor.h \
-    processor/filter/addweightedprocessor.h
+    processor/filter/addweightedprocessor.h \
+    processor/filter/converttoprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

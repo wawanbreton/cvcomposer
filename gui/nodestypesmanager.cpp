@@ -24,6 +24,7 @@
 #include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
+#include "processor/filter/converttoprocessor.h"
 #include "processor/filter/customfilterprocessor.h"
 #include "processor/filter/gaussianblurprocessor.h"
 #include "processor/filter/medianblurprocessor.h"
@@ -66,6 +67,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<DrawEllipseProcessor>();
     qRegisterMetaType<DrawLineProcessor>();
     qRegisterMetaType<AddWeightedProcessor>();
+    qRegisterMetaType<ConvertToProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -80,7 +82,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
             << "MorphologyTransformation" << "Threshold" << "CustomFilter"
-            << "AddWeighted";
+            << "AddWeighted" << "ConvertTo";
     nodes << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
@@ -187,6 +189,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "AddWeighted")
     {
         return "Add weighted";
+    }
+    else if(name == "ConvertTo")
+    {
+        return "Scale";
     }
 
     qCritical() << "No user-readable name defined for" << name;
