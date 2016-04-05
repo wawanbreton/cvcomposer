@@ -79,7 +79,8 @@ SOURCES += main.cpp\
     processor/shape/drawlineprocessor.cpp \
     processor/filter/addweightedprocessor.cpp \
     processor/filter/converttoprocessor.cpp \
-    plugwidget/booleanwidget.cpp
+    plugwidget/booleanwidget.cpp \
+    processor/shape/drawtextprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -139,7 +140,8 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/drawlineprocessor.h \
     processor/filter/addweightedprocessor.h \
     processor/filter/converttoprocessor.h \
-    plugwidget/booleanwidget.h
+    plugwidget/booleanwidget.h \
+    processor/shape/drawtextprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
