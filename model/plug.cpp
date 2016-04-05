@@ -108,6 +108,8 @@ QString Plug::save(const QVariant &value) const
             }
             return rowsStr.join("|");
         }
+        case PlugType::Boolean:
+            return value.toBool() ? "true" : "false";
         case PlugType::Image:
         case PlugType::Kernel:
         case PlugType::ImagePreview:
@@ -234,6 +236,8 @@ QVariant Plug::load(const QString &value) const
             }
             break;
         }
+        case PlugType::Boolean:
+            return QVariant(value).toBool();
         case PlugType::Image:
         case PlugType::Kernel:
         case PlugType::ImagePreview:

@@ -35,6 +35,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::String:
         case PlugType::Color:
         case PlugType::DockableImageViewer:
+        case PlugType::Boolean:
             return ManualOnly;
         case PlugType::Image:
         case PlugType::Kernel:

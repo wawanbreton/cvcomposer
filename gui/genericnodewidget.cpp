@@ -36,6 +36,7 @@
 #include "plugwidget/stringwidget.h"
 #include "plugwidget/colorwidget.h"
 #include "plugwidget/dockableimageviewerwidget.h"
+#include "plugwidget/booleanwidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
@@ -258,6 +259,9 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             break;
         case PlugType::DockableImageViewer:
             widget = new DockableImageViewerWidget(this);
+            break;
+        case PlugType::Boolean:
+            widget = new BooleanWidget(this);
             break;
         case PlugType::Kernel:
         case PlugType::Image:

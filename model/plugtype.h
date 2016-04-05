@@ -33,7 +33,8 @@ namespace PlugType
         ImagePath,
         ImagePreview,
         DockableImageViewer,
-        Rectangle
+        Rectangle,
+        Boolean
     } Enum;
 
     typedef enum
