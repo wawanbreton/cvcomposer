@@ -30,6 +30,7 @@
 #include "processor/filter/medianblurprocessor.h"
 #include "processor/filter/morphologytransformationprocessor.h"
 #include "processor/filter/thresholdprocessor.h"
+#include "processor/filter/sobelprocessor.h"
 #include "processor/geometry/subimageprocessor.h"
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/input/cameraprocessor.h"
@@ -70,6 +71,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
     qRegisterMetaType<AddWeightedProcessor>();
     qRegisterMetaType<ConvertToProcessor>();
     qRegisterMetaType<DrawTextProcessor>();
+    qRegisterMetaType<SobelProcessor>();
 
     QList<QPair<QString, QStringList> > nodes;
 
@@ -83,7 +85,7 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
 
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
-            << "MorphologyTransformation" << "Threshold" << "CustomFilter"
+            << "MorphologyTransformation" << "Threshold" << "Sobel" << "CustomFilter"
             << "AddWeighted" << "ConvertTo";
     nodes << QPair<QString, QStringList>("Filters", filters);
 
@@ -201,6 +203,10 @@ QString NodesTypesManager::toUserReadableName(const QString &name)
     else if(name == "DrawText")
     {
         return "Draw text";
+    }
+    else if(name == "Sobel")
+    {
+        return "Sobel";
     }
 
     qCritical() << "No user-readable name defined for" << name;
