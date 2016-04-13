@@ -26,6 +26,11 @@ SobelProcessor::SobelProcessor()
 {
     addInput("input image", PlugType::Image);
 
+    QList<QPair<QString, QVariant> > methods;
+    methods << QPair<QString, QVariant>("Sobel", 0);
+    methods << QPair<QString, QVariant>("Scharr", 1);
+    addEnumerationInput("method", methods, 0);
+
     Properties depthProperties;
     depthProperties.insert("decimals", 0);
     depthProperties.insert("minimum", -1);
@@ -49,18 +54,37 @@ SobelProcessor::SobelProcessor()
 
 Properties SobelProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat outputImage;
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    int depth =  inputs["depth"].toInt();
     cv::Size derivates = inputs["derivates"].value<cv::Size>();
+    double scale = inputs["scale"].toDouble();
+    double delta = inputs["delta"].toDouble();
+    int border = inputs["border"].toInt();
+    cv::Mat outputImage;
 
-    cv::Sobel(inputs["input image"].value<cv::Mat>(),
-              outputImage,
-              inputs["depth"].toInt(),
-              derivates.width,
-              derivates.height,
-              inputs["kernel size"].toInt(),
-              inputs["scale"].toDouble(),
-              inputs["delta"].toDouble(),
-              inputs["border"].toInt());
+    if(inputs["method"].toInt() == 0)
+    {
+        cv::Sobel(inputImage,
+                  outputImage,
+                  depth,
+                  derivates.width,
+                  derivates.height,
+                  inputs["kernel size"].toInt(),
+                  scale,
+                  delta,
+                  border);
+    }
+    else
+    {
+        cv::Scharr(inputImage,
+                   outputImage,
+                   depth,
+                   derivates.width,
+                   derivates.height,
+                   scale,
+                   delta,
+                   border);
+    }
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
