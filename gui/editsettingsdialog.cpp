@@ -15,41 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "editsettingsdialog.h"
+#include "ui_editsettingsdialog.h"
 
-#include <QMainWindow>
 
-#include <QSettings>
-
-namespace Ui { class MainWidget; }
-
-class MainWidget : public QMainWindow
+EditSettingsDialog::EditSettingsDialog(QWidget *parent) :
+    QDialog(parent),
+    _ui(new Ui::EditSettingsDialog)
 {
-    Q_OBJECT
+    _ui->setupUi(this);
 
-    public:
-        explicit MainWidget(QWidget *parent = 0);
-        ~MainWidget();
+    adjustSize();
+}
 
-    private slots:
-        void onSave();
-
-        void onLoad();
-
-        void onLoadRecent();
-
-        void onDisplaySettings();
-
-    private:
-        void updateTitle();
-
-        void addRecent(const QString &file);
-
-        void updateRecents(const QSettings &settings = QSettings());
-
-        void loadFile(const QString &filePath);
-
-    private:
-        Ui::MainWidget *_ui;
-        QString _currentFilePath;
-};
+EditSettingsDialog::~EditSettingsDialog()
+{
+    delete _ui;
+}

@@ -29,6 +29,7 @@
 #include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/nodestypesmanager.h"
+#include "gui/editsettingsdialog.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -58,9 +59,10 @@ MainWidget::MainWidget(QWidget *parent) :
 
     updateRecents();
 
-    connect(_ui->actionSave,   SIGNAL(triggered()), SLOT(onSave()));
-    connect(_ui->actionSaveAs, SIGNAL(triggered()), SLOT(onSave()));
-    connect(_ui->actionLoad,   SIGNAL(triggered()), SLOT(onLoad()));
+    connect(_ui->actionSave,     SIGNAL(triggered()), SLOT(onSave()));
+    connect(_ui->actionSaveAs,   SIGNAL(triggered()), SLOT(onSave()));
+    connect(_ui->actionLoad,     SIGNAL(triggered()), SLOT(onLoad()));
+    connect(_ui->actionSettings, SIGNAL(triggered()), SLOT(onDisplaySettings()));
 }
 
 MainWidget::~MainWidget()
@@ -147,6 +149,15 @@ void MainWidget::onLoadRecent()
 {
     // Use iconText property instead of text because it contains shortcuts we don't want
     loadFile(sender()->property("iconText").toString());
+}
+
+void MainWidget::onDisplaySettings()
+{
+    EditSettingsDialog *dialog = new EditSettingsDialog(this);
+    dialog->setModal(true);
+    connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+
+    dialog->show();
 }
 
 void MainWidget::updateTitle()

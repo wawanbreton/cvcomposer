@@ -44,13 +44,15 @@
     </property>
     <widget class="QMenu" name="menuRecents">
      <property name="title">
-      <string>Recents</string>
+      <string>&amp;Recents</string>
      </property>
     </widget>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="menuRecents"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -77,6 +79,11 @@
   <action name="actionTata">
    <property name="text">
     <string>tata</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

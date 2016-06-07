@@ -17,39 +17,18 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include <QDialog>
 
-#include <QSettings>
+namespace Ui { class EditSettingsDialog; }
 
-namespace Ui { class MainWidget; }
-
-class MainWidget : public QMainWindow
+class EditSettingsDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        explicit MainWidget(QWidget *parent = 0);
-        ~MainWidget();
-
-    private slots:
-        void onSave();
-
-        void onLoad();
-
-        void onLoadRecent();
-
-        void onDisplaySettings();
+        explicit EditSettingsDialog(QWidget *parent = 0);
+        ~EditSettingsDialog();
 
     private:
-        void updateTitle();
-
-        void addRecent(const QString &file);
-
-        void updateRecents(const QSettings &settings = QSettings());
-
-        void loadFile(const QString &filePath);
-
-    private:
-        Ui::MainWidget *_ui;
-        QString _currentFilePath;
+        Ui::EditSettingsDialog *_ui;
 };

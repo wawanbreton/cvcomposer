@@ -82,7 +82,8 @@ SOURCES += main.cpp\
     plugwidget/booleanwidget.cpp \
     processor/shape/drawtextprocessor.cpp \
     processor/filter/sobelprocessor.cpp \
-    processor/filter/laplacianprocessor.cpp
+    processor/filter/laplacianprocessor.cpp \
+    gui/editsettingsdialog.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -145,8 +146,10 @@ HEADERS  += gui/mainwidget.h \
     plugwidget/booleanwidget.h \
     processor/shape/drawtextprocessor.h \
     processor/filter/sobelprocessor.h \
-    processor/filter/laplacianprocessor.h
+    processor/filter/laplacianprocessor.h \
+    gui/editsettingsdialog.h
 
 FORMS    += \
     gui/mainwidget.ui \
-    plugwidget/imagedockwidget.ui
+    plugwidget/imagedockwidget.ui \
+    gui/editsettingsdialog.ui
