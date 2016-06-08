@@ -25,6 +25,8 @@ EditSettingsDialog::EditSettingsDialog(QWidget *parent) :
 {
     _ui->setupUi(this);
 
+    setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+
     adjustSize();
 }
 
