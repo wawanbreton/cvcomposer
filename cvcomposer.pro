@@ -147,7 +147,8 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/drawtextprocessor.h \
     processor/filter/sobelprocessor.h \
     processor/filter/laplacianprocessor.h \
-    gui/editsettingsdialog.h
+    gui/editsettingsdialog.h \
+    execution/executorsettings.h
 
 FORMS    += \
     gui/mainwidget.ui \
