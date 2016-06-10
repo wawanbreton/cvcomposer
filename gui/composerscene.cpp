@@ -24,6 +24,7 @@
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 
+#include "execution/executorsettings.h"
 #include "model/composermodel.h"
 #include "model/connection.h"
 #include "gui/nodestypesmanager.h"
@@ -33,6 +34,7 @@
 #include "gui/connectionitem.h"
 #include "gui/plugitem.h"
 #include "plugwidget/abstractplugwidget.h"
+#include "global/parser.h"
 
 
 ComposerScene::ComposerScene(QObject *parent) :
@@ -69,6 +71,11 @@ const ComposerModel *ComposerScene::getModel() const
     return _model;
 }
 
+ComposerModel *ComposerScene::accessModel()
+{
+    return _model;
+}
+
 GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
 {
     Node *node = new Node(nodeName, NodesTypesManager::toUserReadableName(nodeName));
@@ -90,6 +97,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
 {
     QDomElement rootNode = doc.createElement(QCoreApplication::applicationName().toLower());
 
+    // Nodes
     for(GenericNodeItem *nodeItem : getNodes())
     {
         const Node *node = nodeItem->getNode();
@@ -151,6 +159,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
         rootNode.appendChild(nodeElement);
     }
 
+    // Connections
     for(ConnectionItem *connectionItem : getConnections())
     {
         const Connection *connection = connectionItem->getConnection();
@@ -171,11 +180,28 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
         }
     }
 
+    // GUI
     QDomElement mainWindowNode = doc.createElement("mainwindow");
     mainWindowNode.setAttribute("state", QString::fromUtf8(mainWindow->saveState().toHex()));
     mainWindowNode.setAttribute("geometry", QString::fromUtf8(mainWindow->saveGeometry().toHex()));
     rootNode.appendChild(mainWindowNode);
 
+    // Executor settings
+    QDomElement executorSettingsNode = doc.createElement("executor-settings");
+    const ExecutorSettings &settings = _model->getExecutorSettings();
+
+    executorSettingsNode.setAttribute("cache-data",
+                                      Parser::toStringBool(settings.cacheData));
+    executorSettingsNode.setAttribute("use-multithreading",
+                                      Parser::toStringBool(settings.useMultiThreading));
+    executorSettingsNode.setAttribute("optimal-threads-count",
+                                      Parser::toStringBool(settings.useOptimalThreadsCount));
+    executorSettingsNode.setAttribute("fixed-threads-count",
+                                      QString::number(settings.fixedThreadsCount));
+
+    rootNode.appendChild(executorSettingsNode);
+
+    // Finalize
     doc.appendChild(rootNode);
 }
 
@@ -283,6 +309,19 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
         {
             mainWindow->restoreGeometry(QByteArray::fromHex(childNode.attribute("geometry").toUtf8()));
             mainWindow->restoreState(QByteArray::fromHex(childNode.attribute("state").toUtf8()));
+        }
+        else if(childNode.nodeName() == "executor-settings")
+        {
+            ExecutorSettings settings;
+
+            settings.cacheData = Parser::parseBool(childNode.attribute("cache-data"));
+            settings.useMultiThreading =
+                    Parser::parseBool(childNode.attribute("use-multithreading"));
+            settings.useOptimalThreadsCount =
+                    Parser::parseBool(childNode.attribute("optimal-threads-count"));
+            settings.fixedThreadsCount = childNode.attribute("fixed-threads-count").toUInt();
+
+            _model->setExecutorSettings(settings);
         }
     }
 }

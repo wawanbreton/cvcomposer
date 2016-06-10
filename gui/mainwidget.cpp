@@ -18,6 +18,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 
+#include <QDebug>
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -155,9 +156,42 @@ void MainWidget::onDisplaySettings()
 {
     EditSettingsDialog *dialog = new EditSettingsDialog(this);
     dialog->setModal(true);
+
+    ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
+    if(scene)
+    {
+        dialog->setSettings(scene->getModel()->getExecutorSettings());
+    }
+    else
+    {
+        qCritical() << "Scene is not a ComposerScene instance";
+    }
+
     connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+    connect(dialog, SIGNAL(accepted()), SLOT(onSettingsAccepted()));
 
     dialog->show();
+}
+
+void MainWidget::onSettingsAccepted()
+{
+    EditSettingsDialog *dialog = qobject_cast<EditSettingsDialog *>(sender());
+    if(dialog)
+    {
+        ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
+        if(scene)
+        {
+            scene->accessModel()->setExecutorSettings(dialog->getSettings());
+        }
+        else
+        {
+            qCritical() << "Scene is not a ComposerScene instance";
+        }
+    }
+    else
+    {
+        qCritical() << "Sender is not an EditSettingsDialog instance";
+    }
 }
 
 void MainWidget::updateTitle()

@@ -18,6 +18,7 @@
 #include "composermodel.h"
 
 #include <QDebug>
+#include <QThread>
 
 #include "execution/composerscheduler.h"
 #include "model/connection.h"
@@ -28,9 +29,13 @@ ComposerModel::ComposerModel(QObject *parent) :
     QObject(parent),
     _nodes(),
     _connections(),
+    _executorSettings(),
     _scheduler(NULL)
 {
-
+    _executorSettings.cacheData = true;
+    _executorSettings.useMultiThreading = true;
+    _executorSettings.useOptimalThreadsCount = true;
+    _executorSettings.fixedThreadsCount = QThread::idealThreadCount();
 }
 
 void ComposerModel::addNode(Node *node)
@@ -110,6 +115,17 @@ void ComposerModel::removeConnection(Connection *connection)
     {
         qWarning() << "ComposerModel::removeConnection No such connection";
     }
+}
+
+const ExecutorSettings &ComposerModel::getExecutorSettings() const
+{
+    return _executorSettings;
+}
+
+void ComposerModel::setExecutorSettings(const ExecutorSettings &settings)
+{
+    _executorSettings = settings;
+    startExecution();
 }
 
 void ComposerModel::startExecution()

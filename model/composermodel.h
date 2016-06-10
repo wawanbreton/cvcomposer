@@ -25,6 +25,7 @@
 #include <QPair>
 
 #include "model/plug.h"
+#include "execution/executorsettings.h"
 
 class Connection;
 class Node;
@@ -51,6 +52,10 @@ class ComposerModel : public QObject
 
         void removeConnection(Connection *connection);
 
+        const ExecutorSettings &getExecutorSettings() const;
+
+        void setExecutorSettings(const ExecutorSettings &settings);
+
     signals:
         void connectionAdded(Connection *connectionId);
 
@@ -62,6 +67,7 @@ class ComposerModel : public QObject
     private:
         QList<Node *> _nodes;
         QList<Connection *> _connections;
+        ExecutorSettings _executorSettings;
         QPointer<ComposerScheduler> _scheduler;
 };
 

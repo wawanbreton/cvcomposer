@@ -83,7 +83,8 @@ SOURCES += main.cpp\
     processor/shape/drawtextprocessor.cpp \
     processor/filter/sobelprocessor.cpp \
     processor/filter/laplacianprocessor.cpp \
-    gui/editsettingsdialog.cpp
+    gui/editsettingsdialog.cpp \
+    global/parser.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -148,7 +149,8 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/sobelprocessor.h \
     processor/filter/laplacianprocessor.h \
     gui/editsettingsdialog.h \
-    execution/executorsettings.h
+    execution/executorsettings.h \
+    global/parser.h
 
 FORMS    += \
     gui/mainwidget.ui \
