@@ -18,12 +18,20 @@
 #include "editsettingsdialog.h"
 #include "ui_editsettingsdialog.h"
 
+#include <QDebug>
+#include <QMouseEvent>
+
 
 EditSettingsDialog::EditSettingsDialog(QWidget *parent) :
     QDialog(parent),
     _ui(new Ui::EditSettingsDialog)
 {
     _ui->setupUi(this);
+
+    _ui->labelCache->installEventFilter(this);
+    _ui->labelMultiThreading->installEventFilter(this);
+    _ui->labelOptimalThreads->installEventFilter(this);
+    _ui->labelFixedThreads->installEventFilter(this);
 
     setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
@@ -33,4 +41,50 @@ EditSettingsDialog::EditSettingsDialog(QWidget *parent) :
 EditSettingsDialog::~EditSettingsDialog()
 {
     delete _ui;
+}
+
+ExecutorSettings EditSettingsDialog::getSettings() const
+{
+    ExecutorSettings settings;
+    settings.cacheData = _ui->checkBoxCache->isChecked();
+    settings.useMultiThreading = _ui->checkBoxMultiThreading->isChecked();
+    settings.useOptimalThreadsCount = _ui->radioButtonOptimalThreads->isChecked();
+    settings.fixedThreadsCount = _ui->spinBoxFixedThreads->value();
+
+    return settings;
+}
+
+void EditSettingsDialog::setSettings(const ExecutorSettings &settings)
+{
+    _ui->checkBoxCache->setChecked(settings.cacheData);
+    _ui->checkBoxMultiThreading->setChecked(settings.useMultiThreading);
+    _ui->radioButtonOptimalThreads->setChecked(settings.useOptimalThreadsCount);
+    _ui->radioButtonFixedThreads->setChecked(!settings.useOptimalThreadsCount);
+    _ui->spinBoxFixedThreads->setValue(settings.fixedThreadsCount);
+}
+
+bool EditSettingsDialog::eventFilter(QObject *receiver, QEvent *event)
+{
+    if(event->type() == QEvent::MouseButtonPress)
+    {
+        if(receiver == _ui->labelCache)
+        {
+            _ui->checkBoxCache->toggle();
+        }
+        else if(receiver == _ui->labelMultiThreading)
+        {
+            _ui->checkBoxMultiThreading->toggle();
+        }
+        else if(receiver == _ui->labelOptimalThreads)
+        {
+            _ui->radioButtonOptimalThreads->setChecked(true);
+        }
+        else if(receiver == _ui->labelFixedThreads)
+        {
+            _ui->radioButtonFixedThreads->setChecked(true);
+        }
+        return true;
+    }
+
+    return QDialog::eventFilter(receiver, event);
 }

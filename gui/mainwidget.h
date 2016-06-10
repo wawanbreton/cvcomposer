@@ -40,6 +40,8 @@ class MainWidget : public QMainWindow
 
         void onDisplaySettings();
 
+        void onSettingsAccepted();
+
     private:
         void updateTitle();
 

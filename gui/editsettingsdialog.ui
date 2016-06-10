@@ -24,7 +24,7 @@
        <number>0</number>
       </property>
       <item row="3" column="1">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="labelOptimalThreads">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -34,7 +34,7 @@
        </widget>
       </item>
       <item row="4" column="2">
-       <widget class="QSpinBox" name="spinBox">
+       <widget class="QSpinBox" name="spinBoxFixedThreads">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -47,10 +47,10 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBox_2"/>
+       <widget class="QCheckBox" name="checkBoxMultiThreading"/>
       </item>
       <item row="3" column="0">
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="radioButtonOptimalThreads">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -60,17 +60,17 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QCheckBox" name="checkBox"/>
+       <widget class="QCheckBox" name="checkBoxCache"/>
       </item>
       <item row="4" column="0">
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QRadioButton" name="radioButtonFixedThreads">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="labelFixedThreads">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -96,14 +96,14 @@
        </spacer>
       </item>
       <item row="2" column="1" colspan="3">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="labelMultiThreading">
         <property name="text">
          <string>&lt;html&gt;Use multi-threading&lt;br/&gt;&lt;span style=&quot; font-size:9pt; font-style:italic;&quot;&gt;(Faster execution, but slows the computer down)&lt;/span&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1" colspan="3">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="labelCache">
         <property name="text">
          <string>&lt;html&gt;Cache computed data&lt;br/&gt;&lt;span style=&quot; font-size:9pt; font-style:italic;&quot;&gt;(Faster execution, but uses a lot of memory)&lt;/span&gt;&lt;/html&gt;</string>
         </property>
@@ -159,9 +159,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBoxMultiThreading</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radioButton</receiver>
+   <receiver>radioButtonOptimalThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -175,9 +175,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBoxMultiThreading</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radioButton_2</receiver>
+   <receiver>radioButtonFixedThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -191,9 +191,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBoxMultiThreading</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
+   <receiver>labelOptimalThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -207,9 +207,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBoxMultiThreading</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
+   <receiver>labelFixedThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -223,9 +223,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBoxMultiThreading</sender>
    <signal>toggled(bool)</signal>
-   <receiver>spinBox</receiver>
+   <receiver>spinBoxFixedThreads</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

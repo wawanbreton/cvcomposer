@@ -19,6 +19,8 @@
 
 #include <QDialog>
 
+#include "execution/executorsettings.h"
+
 namespace Ui { class EditSettingsDialog; }
 
 class EditSettingsDialog : public QDialog
@@ -28,6 +30,13 @@ class EditSettingsDialog : public QDialog
     public:
         explicit EditSettingsDialog(QWidget *parent = 0);
         ~EditSettingsDialog();
+
+        ExecutorSettings getSettings() const;
+
+        void setSettings(const ExecutorSettings &settings);
+
+    protected:
+        virtual bool eventFilter(QObject *receiver, QEvent *event);
 
     private:
         Ui::EditSettingsDialog *_ui;
