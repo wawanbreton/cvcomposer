@@ -34,13 +34,20 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::process(Node *node, const Properties &inputs)
+void ComposerExecutor::process(const Node *node, const Properties &inputs)
 {
     _success = false;
     _node = node;
     _processor = createProcessor(node);
     _inputs = inputs;
     start();
+
+    qDebug() << this << node->getUserReadableName();
+}
+
+const Node *ComposerExecutor::getNode()
+{
+    return _node;
 }
 
 void ComposerExecutor::run()
@@ -58,6 +65,8 @@ void ComposerExecutor::run()
 
 void ComposerExecutor::onFinished()
 {
+    qDebug() << this;
+
     // Make local copies in case local values are modified during the signal emission
     Properties inputs = _inputs;
     Properties outputs = _outputs;
@@ -77,7 +86,7 @@ void ComposerExecutor::onFinished()
     emit nodeProcessed(success, outputs, keepProcessing);
 }
 
-AbstractProcessor *ComposerExecutor::createProcessor(Node *node)
+AbstractProcessor *ComposerExecutor::createProcessor(const Node *node)
 {
     QMetaType processorType(QMetaType::type((node->getName() + "Processor").toUtf8()));
     if(processorType.isValid())

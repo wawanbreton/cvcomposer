@@ -33,12 +33,12 @@ class ConnectionItem : public QGraphicsLineItem
 
         void setInput(const QPointF &input);
 
-        void setConnection(Connection *connection);
+        void setConnection(const Connection *connection);
 
-        Connection *getConnection() const;
+        const Connection *getConnection() const;
 
     private:
-        Connection *_connection;
+        const Connection *_connection;
 };
 
 #endif // CONNECTIONITEM_H

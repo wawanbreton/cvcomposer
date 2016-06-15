@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERMODEL_H
-#define COMPOSERMODEL_H
+#pragma once
 
 #include <QObject>
 
@@ -25,7 +24,6 @@
 #include <QPair>
 
 #include "model/plug.h"
-#include "execution/executorsettings.h"
 
 class Connection;
 class Node;
@@ -40,6 +38,8 @@ class ComposerModel : public QObject
 
         void addNode(Node *node);
 
+        QList<const Node *> getNodes() const;
+
         Node *findInputPlug(const Plug *plug) const;
 
         Node *findOutputPlug(const Plug *plug) const;
@@ -48,27 +48,18 @@ class ComposerModel : public QObject
                        bool fromInputs = true,
                        bool fromOutputs = true) const;
 
+        const Connection *findConnectionToInput(const Plug *input) const;
+
         void addConnection(Plug *output, Plug *input);
 
-        void removeConnection(Connection *connection);
+        void removeConnection(const Connection *connection);
 
-        const ExecutorSettings &getExecutorSettings() const;
+signals:
+        void connectionAdded(const Connection *connectionId);
 
-        void setExecutorSettings(const ExecutorSettings &settings);
-
-    signals:
-        void connectionAdded(Connection *connectionId);
-
-        void connectionRemoved(Connection *connectionId);
-
-    private slots:
-        void startExecution();
+        void connectionRemoved(const Connection *connectionId);
 
     private:
         QList<Node *> _nodes;
         QList<Connection *> _connections;
-        ExecutorSettings _executorSettings;
-        QPointer<ComposerScheduler> _scheduler;
 };
-
-#endif // COMPOSERMODEL_H

@@ -26,45 +26,56 @@
 #include <QQueue>
 
 #include "global/properties.h"
+#include "execution/executorsettings.h"
 
 class Connection;
 class Node;
 class ComposerExecutor;
 class AbstractProcessor;
 class Plug;
+class ComposerModel;
 
 class ComposerScheduler : public QObject
 {
     Q_OBJECT
 
     public:
-        explicit ComposerScheduler(QObject *parent = NULL);
+        explicit ComposerScheduler(const ComposerModel *model, QObject *parent = NULL);
+
+        void setSettings(const ExecutorSettings &settings);
+
+        const ExecutorSettings &getSettings() const;
 
         void prepareExecution(const QList<Node *> &nodes,
                               const QList<Connection *> &connections);
 
-        void cancel();
+        void execute();
 
     public slots:
-        void execute();
+        void onConnectionRemoved(const Connection *connection);
+
+        void onConnectionAdded(const Connection *connection);
 
     private slots:
         void onNodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
 
     private:
-        bool makeInputs(Node *node, Properties &inputs);
+        bool makeInputs(const Node *node, Properties &inputs);
 
-        void processNextIfPossible();
+        quint16 maxThreads() const;
 
-        const Connection *findConnectionToInput(const Plug *input);
+        void processNexts();
 
     private:
-        ComposerExecutor * _executor;
+        ExecutorSettings _settings;
+        QList<ComposerExecutor *> _executors;
+        const ComposerModel *_model;
+        QMap<const Node *, Properties> _processedNodes;
+
         QQueue<Node *> _executionList;
         QQueue<Node *> _initialExecutionList;
         QList<Connection *> _connections;
         QList<Node *> _unreachableNodes;
-        QMap<Node *, Properties> _processedNodes;
         bool _cancelled;
         bool _keepProcessing;
 };

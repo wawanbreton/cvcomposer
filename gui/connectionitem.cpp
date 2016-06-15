@@ -43,12 +43,12 @@ void ConnectionItem::setInput(const QPointF &input)
     setLine(currentLine);
 }
 
-void ConnectionItem::setConnection(Connection *connection)
+void ConnectionItem::setConnection(const Connection *connection)
 {
     _connection = connection;
 }
 
-Connection *ConnectionItem::getConnection() const
+const Connection *ConnectionItem::getConnection() const
 {
     return _connection;
 }

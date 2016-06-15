@@ -28,21 +28,28 @@
 ComposerModel::ComposerModel(QObject *parent) :
     QObject(parent),
     _nodes(),
-    _connections(),
-    _executorSettings(),
-    _scheduler(NULL)
+    _connections()
 {
-    _executorSettings.cacheData = true;
-    _executorSettings.useMultiThreading = true;
-    _executorSettings.useOptimalThreadsCount = true;
-    _executorSettings.fixedThreadsCount = QThread::idealThreadCount();
 }
 
 void ComposerModel::addNode(Node *node)
 {
     _nodes << node;
     node->setParent(this);
-    connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(startExecution()));
+    //connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(startExecution()));
+#warning tbd
+}
+
+QList<const Node *> ComposerModel::getNodes() const
+{
+    QList<const Node *> nodes;
+
+    foreach(const Node *node, _nodes)
+    {
+        nodes << node;
+    }
+
+    return nodes;
 }
 
 Node *ComposerModel::findInputPlug(const Plug *plug) const
@@ -66,6 +73,19 @@ Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutput
         if(fromOutputs && node->hasOutput(plug))
         {
             return node;
+        }
+    }
+
+    return NULL;
+}
+
+const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
+{
+    foreach(const Connection *connection, _connections)
+    {
+        if(connection->getInput() == input)
+        {
+            return connection;
         }
     }
 
@@ -96,52 +116,19 @@ void ComposerModel::addConnection(Plug *output, Plug *input)
     input->signalConnectedTo(output);
     output->signalConnectedTo(input);
     emit connectionAdded(connection);
-
-    startExecution();
 }
 
-void ComposerModel::removeConnection(Connection *connection)
+void ComposerModel::removeConnection(const Connection *connection)
 {
-    if(_connections.removeAll(connection))
+    if(_connections.removeAll((Connection *)connection))
     {
         connection->getInput()->signalConnectedTo(NULL);
         connection->getOutput()->signalConnectedTo(NULL);
         emit connectionRemoved(connection);
         delete connection;
-
-        startExecution();
     }
     else
     {
         qWarning() << "ComposerModel::removeConnection No such connection";
     }
-}
-
-const ExecutorSettings &ComposerModel::getExecutorSettings() const
-{
-    return _executorSettings;
-}
-
-void ComposerModel::setExecutorSettings(const ExecutorSettings &settings)
-{
-    _executorSettings = settings;
-    startExecution();
-}
-
-void ComposerModel::startExecution()
-{
-    ComposerScheduler *newScheduler = new ComposerScheduler(this);
-    newScheduler->prepareExecution(_nodes, _connections);
-
-    if(not _scheduler.isNull())
-    {
-        _scheduler->cancel();
-        connect(_scheduler.data(), SIGNAL(destroyed()), newScheduler, SLOT(execute()));
-    }
-    else
-    {
-        newScheduler->execute();
-    }
-
-    _scheduler = newScheduler;
 }

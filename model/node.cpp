@@ -114,12 +114,12 @@ Plug *Node::findOutput(const QString &name) const
     return NULL;
 }
 
-void Node::signalProcessDone(const Properties &outputs, const Properties &inputs)
+void Node::signalProcessDone(const Properties &outputs, const Properties &inputs) const
 {
     emit processDone(outputs, inputs);
 }
 
-void Node::signalProcessUnavailable()
+void Node::signalProcessUnavailable() const
 {
     emit processUnavailable();
 }

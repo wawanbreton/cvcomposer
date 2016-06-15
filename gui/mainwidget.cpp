@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "execution/composerscheduler.h"
 #include "model/composermodel.h"
 #include "model/connection.h"
 #include "model/node.h"
@@ -125,9 +126,7 @@ void MainWidget::loadFile(const QString &filePath)
         int errorLine, errorColumn;
         if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
         {
-            ComposerScene *scene = new ComposerScene();
-            scene->load(doc, this);
-            _ui->graphicsView->replaceScene(scene);
+            _ui->graphicsView->replaceScene(new ComposerScene(doc, this));
 
             _currentFilePath = filePath;
             updateTitle();
@@ -160,7 +159,7 @@ void MainWidget::onDisplaySettings()
     ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
     if(scene)
     {
-        dialog->setSettings(scene->getModel()->getExecutorSettings());
+        dialog->setSettings(scene->getScheduler()->getSettings());
     }
     else
     {
@@ -181,7 +180,7 @@ void MainWidget::onSettingsAccepted()
         ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
         if(scene)
         {
-            scene->accessModel()->setExecutorSettings(dialog->getSettings());
+            scene->accessScheduler()->setSettings(dialog->getSettings());
         }
         else
         {

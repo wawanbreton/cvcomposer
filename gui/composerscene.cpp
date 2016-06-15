@@ -24,6 +24,7 @@
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 
+#include "execution/composerscheduler.h"
 #include "execution/executorsettings.h"
 #include "model/composermodel.h"
 #include "model/connection.h"
@@ -40,9 +41,30 @@
 ComposerScene::ComposerScene(QObject *parent) :
     QGraphicsScene(parent),
     _model(new ComposerModel(this)),
+    _scheduler(new ComposerScheduler(_model, this)),
     _editedConnection(),
     _editedNode(),
     _connections()
+{
+    init();
+}
+
+ComposerScene::ComposerScene(const QDomDocument &doc, QMainWindow *mainWindow, QObject *parent) :
+    QGraphicsScene(parent),
+    _model(new ComposerModel(this)),
+    _scheduler(NULL),
+    _editedConnection(),
+    _editedNode(),
+    _connections()
+{
+    init();
+
+    load(doc, mainWindow);
+
+    _scheduler = new ComposerScheduler(_model, this);
+}
+
+void ComposerScene::init()
 {
     _editedConnection.item = NULL;
     _editedConnection.plugInput = NULL;
@@ -50,10 +72,10 @@ ComposerScene::ComposerScene(QObject *parent) :
 
     _editedNode.item = NULL;
 
-    connect(_model, SIGNAL(connectionAdded(Connection *)),
-                    SLOT(onConnectionAdded(Connection *)));
-    connect(_model, SIGNAL(connectionRemoved(Connection *)),
-            SLOT(onConnectionRemoved(Connection *)));
+    connect(_model, SIGNAL(connectionAdded(const Connection *)),
+                    SLOT(onConnectionAdded(const Connection *)));
+    connect(_model, SIGNAL(connectionRemoved(const Connection *)),
+                    SLOT(onConnectionRemoved(const Connection *)));
 }
 
 const QList<GenericNodeItem *> &ComposerScene::getNodes() const
@@ -66,14 +88,14 @@ const QList<ConnectionItem *> &ComposerScene::getConnections() const
     return _connections;
 }
 
-const ComposerModel *ComposerScene::getModel() const
+const ComposerScheduler *ComposerScene::getScheduler() const
 {
-    return _model;
+    return _scheduler;
 }
 
-ComposerModel *ComposerScene::accessModel()
+ComposerScheduler *ComposerScene::accessScheduler()
 {
-    return _model;
+    return _scheduler;
 }
 
 GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
@@ -166,8 +188,8 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
         const Plug *outputPlug = connection->getOutput();
         const Plug *inputPlug = connection->getInput();
 
-        Node *outputNode = getModel()->findOutputPlug(outputPlug);
-        Node *inputNode = getModel()->findInputPlug(inputPlug);
+        Node *outputNode = _model->findOutputPlug(outputPlug);
+        Node *inputNode = _model->findInputPlug(inputPlug);
 
         if(outputNode && inputNode)
         {
@@ -188,7 +210,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
 
     // Executor settings
     QDomElement executorSettingsNode = doc.createElement("executor-settings");
-    const ExecutorSettings &settings = _model->getExecutorSettings();
+    const ExecutorSettings &settings = _scheduler->getSettings();
 
     executorSettingsNode.setAttribute("cache-data",
                                       Parser::toStringBool(settings.cacheData));
@@ -321,7 +343,7 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                     Parser::parseBool(childNode.attribute("optimal-threads-count"));
             settings.fixedThreadsCount = childNode.attribute("fixed-threads-count").toUInt();
 
-            _model->setExecutorSettings(settings);
+            _scheduler->setSettings(settings);
         }
     }
 }
@@ -379,7 +401,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 {
                     foreach(ConnectionItem *connectionItem, _connections)
                     {
-                        Connection *connection = connectionItem->getConnection();
+                        const Connection *connection = connectionItem->getConnection();
                         if(connection->getInput() == plug->getPlug())
                         {
                             // We have found an existing connection, edit it
@@ -554,7 +576,7 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void ComposerScene::onConnectionAdded(Connection *connection)
+void ComposerScene::onConnectionAdded(const Connection *connection)
 {
     ConnectionItem *connectionItem = new ConnectionItem();
     connectionItem->setConnection(connection);
@@ -583,7 +605,7 @@ void ComposerScene::onConnectionAdded(Connection *connection)
     _connections << connectionItem;
 }
 
-void ComposerScene::onConnectionRemoved(Connection *connection)
+void ComposerScene::onConnectionRemoved(const Connection *connection)
 {
     foreach(ConnectionItem *connectionItem, _connections)
     {
@@ -606,7 +628,7 @@ void ComposerScene::onPlugItemPositionChanged()
         const Plug *plug = plugItem->getPlug();
         foreach(ConnectionItem *connectionItem, _connections)
         {
-            Connection *connection = connectionItem->getConnection();
+            const Connection *connection = connectionItem->getConnection();
 
             if(connection->getInput() == plug)
             {

@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERSCENE_H
-#define COMPOSERSCENE_H
+#pragma once
 
 #include <QGraphicsScene>
 
@@ -31,6 +30,7 @@ class Connection;
 class ComposerModel;
 class ConnectionItem;
 class GenericNodeItem;
+class ComposerScheduler;
 
 class ComposerScene : public QGraphicsScene
 {
@@ -38,19 +38,21 @@ class ComposerScene : public QGraphicsScene
     public:
         explicit ComposerScene(QObject *parent = NULL);
 
+        explicit ComposerScene(const QDomDocument &doc,
+                               QMainWindow *mainWindow,
+                               QObject *parent = NULL);
+
         const QList<GenericNodeItem *> &getNodes() const;
 
         const QList<ConnectionItem *> &getConnections() const;
 
-        const ComposerModel *getModel() const;
+        const ComposerScheduler *getScheduler() const;
 
-        ComposerModel *accessModel();
+        ComposerScheduler *accessScheduler();
 
         GenericNodeItem *addNode(const QString &nodeName);
 
         void save(QDomDocument &doc, QMainWindow *mainWindow) const;
-
-        void load(const QDomDocument &doc, QMainWindow *mainWindow);
 
     protected:
         virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
@@ -66,11 +68,16 @@ class ComposerScene : public QGraphicsScene
         virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     private slots:
-        void onConnectionAdded(Connection *connection);
+        void onConnectionAdded(const Connection *connection);
 
-        void onConnectionRemoved(Connection *connection);
+        void onConnectionRemoved(const Connection *connection);
 
         void onPlugItemPositionChanged();
+
+    private:
+        void init();
+
+        void load(const QDomDocument &doc, QMainWindow *mainWindow);
 
     private:
         typedef struct
@@ -91,10 +98,9 @@ class ComposerScene : public QGraphicsScene
 
     private:
         ComposerModel *_model;
+        ComposerScheduler *_scheduler;
         EditedConnection _editedConnection;
         EditedNode _editedNode;
         QList<ConnectionItem *> _connections;
         QList<GenericNodeItem *> _nodes;
 };
-
-#endif // COMPOSERSCENE_H

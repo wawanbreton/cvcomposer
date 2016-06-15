@@ -37,7 +37,9 @@ class ComposerExecutor : public QThread
     public:
         explicit ComposerExecutor(QObject *parent = NULL);
 
-        void process(Node *node, const Properties &inputs);
+        void process(const Node *node, const Properties &inputs);
+
+        const Node *getNode();
 
     signals:
         void nodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
@@ -49,10 +51,10 @@ class ComposerExecutor : public QThread
         void onFinished();
 
     private:
-        AbstractProcessor *createProcessor(Node *node);
+        AbstractProcessor *createProcessor(const Node *node);
 
     private:
-        Node *_node;
+        const Node *_node;
         AbstractProcessor *_processor;
         Properties _inputs;
         Properties _outputs;
