@@ -46,21 +46,23 @@ class ComposerScheduler : public QObject
 
         const ExecutorSettings &getSettings() const;
 
-        void prepareExecution(const QList<Node *> &nodes,
-                              const QList<Connection *> &connections);
-
         void execute();
 
-    public slots:
+    private slots:
+        void onNodeAdded(const Node *node);
+
+        void onNodePropertyChanged();
+
         void onConnectionRemoved(const Connection *connection);
 
         void onConnectionAdded(const Connection *connection);
 
-    private slots:
-        void onNodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
+        void onNodeProcessed(bool success);
 
     private:
-        bool makeInputs(const Node *node, Properties &inputs);
+        bool allInputsProcessed(const Node *node);
+
+        void makeInputs(const Node *node, Properties &inputs);
 
         quint16 maxThreads() const;
 
@@ -69,15 +71,9 @@ class ComposerScheduler : public QObject
     private:
         ExecutorSettings _settings;
         QList<ComposerExecutor *> _executors;
+        QList<ComposerExecutor *> _oldExecutors;
         const ComposerModel *_model;
         QMap<const Node *, Properties> _processedNodes;
-
-        QQueue<Node *> _executionList;
-        QQueue<Node *> _initialExecutionList;
-        QList<Connection *> _connections;
-        QList<Node *> _unreachableNodes;
-        bool _cancelled;
-        bool _keepProcessing;
 };
 
 #endif // COMPOSERSCHEDULER_H

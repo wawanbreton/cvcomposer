@@ -50,11 +50,15 @@ class ComposerModel : public QObject
 
         const Connection *findConnectionToInput(const Plug *input) const;
 
+        QSet<const Node *> findDescendantNodes(const Node *node) const;
+
         void addConnection(Plug *output, Plug *input);
 
         void removeConnection(const Connection *connection);
 
-signals:
+    signals:
+        void nodeAdded(const Node *node);
+
         void connectionAdded(const Connection *connectionId);
 
         void connectionRemoved(const Connection *connectionId);

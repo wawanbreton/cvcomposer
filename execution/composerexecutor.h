@@ -41,8 +41,12 @@ class ComposerExecutor : public QThread
 
         const Node *getNode();
 
+        const Properties &getInputs() const;
+
+        const Properties &getOutputs() const;
+
     signals:
-        void nodeProcessed(bool success, const Properties &outputs, bool keepProcessing);
+        void nodeProcessed(bool success);
 
     protected:
         virtual void run();

@@ -28,23 +28,23 @@
 ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent) :
     QObject(parent),
     _executors(),
-    _model(model),
-    _executionList(),
-    _connections(),
-    _unreachableNodes(),
-    _processedNodes(),
-    _cancelled(false),
-    _keepProcessing(false)
+    _model(model)
 {
     _settings.cacheData = true;
     _settings.useMultiThreading = true;
     _settings.useOptimalThreadsCount = true;
     _settings.fixedThreadsCount = QThread::idealThreadCount();
 
+    connect(_model, SIGNAL(nodeAdded(const Node*)), SLOT(onNodeAdded(const Node*)));
     connect(_model, SIGNAL(connectionAdded(const Connection*)),
                     SLOT(onConnectionAdded(const Connection*)));
     connect(_model, SIGNAL(connectionRemoved(const Connection*)),
                     SLOT(onConnectionRemoved(const Connection*)));
+
+    for(const Node *node : _model->getNodes())
+    {
+        onNodeAdded(node);
+    }
 
     processNexts();
 }
@@ -61,78 +61,37 @@ const ExecutorSettings &ComposerScheduler::getSettings() const
     return _settings;
 }
 
-void ComposerScheduler::prepareExecution(const QList<Node *> &nodes,
-                                         const QList<Connection *> &connections)
+void ComposerScheduler::onNodeAdded(const Node *node)
 {
-    _connections = connections;
+    connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
+}
 
-    QList<Node *> nodesToProcess = nodes;
-
-    do
+void ComposerScheduler::onNodePropertyChanged()
+{
+    const Node *node = qobject_cast<const Node *>(sender());
+    if(node)
     {
-        QMutableListIterator<Node *> iterator(nodesToProcess);
-        while(iterator.hasNext())
+        QSet<const Node *> descendantNodes = _model->findDescendantNodes(node);
+
+        for(const Node *node : descendantNodes)
         {
-            iterator.next();
-            Node *nodeToProcess = iterator.value();
+            _processedNodes.remove(node);
 
-            // For each remaining node, check whether all its inputs are available, i.e. we can
-            // process it now
-
-            bool allInputsProcessed = true;
-            foreach(Plug *input, nodeToProcess->getInputs())
+            for(ComposerExecutor *executor : _executors)
             {
-                if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::ManualOnly)
+                if(executor->getNode() == node)
                 {
-                    // Plug can't be connected, so it is always valid
-                    continue;
+                    _oldExecutors << executor;
                 }
-
-                // Find the connection to this input
-                const Connection *connection = _model->findConnectionToInput(input);
-
-                // We have found the connection, now find the previous node
-                Node *previousNode = NULL;
-                if(connection)
-                {
-                    foreach(Node *node, nodes)
-                    {
-                        if(node->hasOutput(connection->getOutput()))
-                        {
-                            previousNode = node;
-                            break;
-                        }
-                    }
-                }
-
-                if(_unreachableNodes.contains(previousNode) ||
-                   (previousNode == NULL && PlugType::isInputPluggable(input->getDefinition().type) == PlugType::Mandatory))
-                {
-                    // Previous node is unreachable or mandatory input is not connected,
-                    // there is no way we can process the node
-                    _unreachableNodes << iterator.value();
-                    iterator.remove();
-                    allInputsProcessed = false;
-                    break; // Don't bother checking other plugs
-                }
-                else if(previousNode != NULL && not _executionList.contains(previousNode))
-                {
-                    // Output of previous node has not been processed yet
-                    allInputsProcessed = false;
-                    break; // Don't bother checking other plugs
-                }
-            }
-
-            if(allInputsProcessed)
-            {
-                // All inputs of node have been processed, we can process it now !
-                _executionList.enqueue(nodeToProcess);
-                iterator.remove();
             }
         }
-    } while(not nodesToProcess.isEmpty());
 
-    _initialExecutionList = _executionList;
+        processNexts();
+    }
+    else
+    {
+        qCritical() << "Sender is not a Node instance";
+    }
 }
 
 void ComposerScheduler::onConnectionRemoved(const Connection *connection)
@@ -145,72 +104,80 @@ void ComposerScheduler::onConnectionAdded(const Connection *connection)
     processNexts();
 }
 
-#if 0
-void ComposerScheduler::cancel()
+void ComposerScheduler::onNodeProcessed(bool success)
 {
-    // Just tag the scheduler as cancelled, and wait for an execute() or onNodeProcessed() slot call
-    _cancelled = true;
-}
-
-void ComposerScheduler::execute()
-{
-    if(_cancelled)
+    ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
+    if(executor)
     {
-        // Scheduler was cancelled even before it started :(
-        deleteLater();
-        return;
-    }
+        _executors.removeAll(executor);
 
-    foreach(Node *node, _unreachableNodes)
-    {
-        node->signalProcessUnavailable();
-    }
-
-    processNextIfPossible();
-}
-#endif
-
-void ComposerScheduler::onNodeProcessed(bool success,
-                                        const Properties &outputs,
-                                        bool keepProcessing)
-{
-    if(success)
-    {
-        ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
-        if(executor)
+        if(_oldExecutors.removeAll(executor) == 0)
         {
-            _executors.removeAll(executor);
-            _processedNodes.insert(executor->getNode(), outputs);
-            processNexts();
+            if(success)
+            {
+                executor->getNode()->signalProcessDone(executor->getOutputs(),
+                                                       executor->getInputs());
+                _processedNodes.insert(executor->getNode(), executor->getOutputs());
+            }
+            else
+            {
+                executor->getNode()->signalProcessUnavailable();
+                #warning Run through all the dependant nodes and tag them as failed
+            }
         }
-        else
-        {
-            qCritical() << "Sender is not a ComposerExecutor instance";
-        }
+
+        processNexts();
     }
     else
     {
-
+        qCritical() << "Sender is not a ComposerExecutor instance";
     }
 
-    /*if(_cancelled)
-    {
-        deleteLater();
-        return;
-    }
-
-    _keepProcessing |= keepProcessing;
-
-    Node *processedNode = _executionList.dequeue();
-    if(success)
-    {
-        _processedNodes[processedNode] = outputs;
-    }
-
-    processNextIfPossible();*/
 }
 
-bool ComposerScheduler::makeInputs(const Node *node, Properties &inputs)
+bool ComposerScheduler::allInputsProcessed(const Node *node)
+{
+    foreach(Plug *input, node->getInputs())
+    {
+        if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::ManualOnly)
+        {
+            // Plug can't be connected, so it is always valid
+            continue;
+        }
+
+        // Find the connection to this input
+        const Connection *connection = _model->findConnectionToInput(input);
+
+        // We have found the connection, now find the previous node
+        Node *previousNode = NULL;
+        if(connection)
+        {
+            previousNode = _model->findOutputPlug(connection->getOutput());
+        }
+
+        if(previousNode == NULL)
+        {
+            if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::Mandatory)
+            {
+                // Plug is not connected and it should be
+                return false;
+            }
+            else
+            {
+                // Plug is not connected, but this is authorized
+            }
+        }
+        else if(!_processedNodes.contains(previousNode))
+        {
+            // Plug is connected, but its input node has not been processed yet
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void ComposerScheduler::makeInputs(const Node *node, Properties &inputs)
 {
     foreach(Plug *plug, node->getInputs())
     {
@@ -232,14 +199,15 @@ bool ComposerScheduler::makeInputs(const Node *node, Properties &inputs)
                     // The node providing the output has been processed, great !
                     nodeProcessed = true;
                     QString outputName = connection->getOutput()->getDefinition().name;
-                    inputs.insert(plugName, iterator.value()[outputName]);
+                    inputs.insert(plugName, iterator.value().value(outputName));
                 }
             }
 
             if(not nodeProcessed)
             {
-                // The input node couldn't be processed :(
-                return false;
+                qCritical() << "Inputs for node" << node->getName()
+                            << "are asked but at least one input node has not been processed yet";
+                return;
             }
         }
         else
@@ -248,39 +216,7 @@ bool ComposerScheduler::makeInputs(const Node *node, Properties &inputs)
             inputs.insert(plugName, node->getProperties()[plugName]);
         }
     }
-
-    return true;
 }
-#if 0
-void ComposerScheduler::processNextIfPossible()
-{
-    if(_executionList.isEmpty())
-    {
-        if(_keepProcessing && not _initialExecutionList.isEmpty())
-        {
-            _executionList = _initialExecutionList;
-            processNextIfPossible();
-        }
-        else
-        {
-            deleteLater();
-        }
-    }
-    else
-    {
-        Properties inputs;
-        if(makeInputs(_executionList.head(), inputs))
-        {
-            _executor->process(_executionList.head(), inputs);
-        }
-        else
-        {
-            onNodeProcessed(false, Properties(), false);
-        }
-    }
-}
-#endif
-
 
 quint16 ComposerScheduler::maxThreads() const
 {
@@ -321,78 +257,39 @@ void ComposerScheduler::processNexts()
 
         foreach(const Node *node, potentialNodes)
         {
-            // node, check whether all its inputs are available, i.e. we can process it now
-
-            bool allInputsProcessed = true;
-            foreach(Plug *input, node->getInputs())
-            {
-                if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::ManualOnly)
-                {
-                    // Plug can't be connected, so it is always valid
-                    continue;
-                }
-
-                // Find the connection to this input
-                const Connection *connection = _model->findConnectionToInput(input);
-
-                // We have found the connection, now find the previous node
-                Node *previousNode = NULL;
-                if(connection)
-                {
-                    previousNode = _model->findOutputPlug(connection->getOutput());
-                }
-
-                if(previousNode == NULL)
-                {
-                    if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::Mandatory)
-                    {
-                        // Plug is not connected and it should be
-                        allInputsProcessed = false;
-                        break;
-                    }
-                    else
-                    {
-                        // Plug is not connected, but this is authorized
-                    }
-                }
-                else if(!_processedNodes.contains(previousNode))
-                {
-                    // Plug is connected, but its input node has not been processed yet
-                    allInputsProcessed = false;
-                    break;
-                }
-            }
-
-            if(allInputsProcessed)
+            if(allInputsProcessed(node))
             {
                 // All inputs of node have been processed, we can process it now !
                 Properties inputs;
-                if(makeInputs(node, inputs))
-                {
-                    ComposerExecutor *executor = new ComposerExecutor(this);
-                    connect(executor, SIGNAL(nodeProcessed(bool,Properties,bool)),
-                            executor, SLOT(deleteLater()));
-                    connect(executor, SIGNAL(nodeProcessed(bool,Properties,bool)),
-                                      SLOT(onNodeProcessed(bool,Properties,bool)));
-                    executor->process(node, inputs);
+                makeInputs(node, inputs);
 
-                    nodeAddedForProcessing = true;
+                ComposerExecutor *executor = new ComposerExecutor(this);
+                connect(executor, SIGNAL(nodeProcessed(bool)),
+                        executor, SLOT(deleteLater()));
+                connect(executor, SIGNAL(nodeProcessed(bool)),
+                                  SLOT(onNodeProcessed(bool)));
+                executor->process(node, inputs);
 
-                    _executors << executor;
+                nodeAddedForProcessing = true;
 
-                    break;
-                }
-                else
-                {
-                    //onNodeProcessed(false, Properties(), false);
-                    #warning TBD
-                }
+                _executors << executor;
+
+                break;
             }
         }
 
         if(!nodeAddedForProcessing)
         {
-            // We have iterated through all the node, and there is nothing more to be done
+            // We have iterated through all the nodes, and there is nothing more to be done
+            if(_executors.isEmpty())
+            {
+                // We can't do anything more, so signal the remaining nodes as unreachable
+                foreach(const Node *node, potentialNodes)
+                {
+                    node->signalProcessUnavailable();
+                }
+            }
+
             return;
         }
     }

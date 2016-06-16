@@ -50,6 +50,16 @@ const Node *ComposerExecutor::getNode()
     return _node;
 }
 
+const Properties &ComposerExecutor::getInputs() const
+{
+    return _inputs;
+}
+
+const Properties &ComposerExecutor::getOutputs() const
+{
+    return _outputs;
+}
+
 void ComposerExecutor::run()
 {
     try
@@ -67,23 +77,9 @@ void ComposerExecutor::onFinished()
 {
     qDebug() << this;
 
-    // Make local copies in case local values are modified during the signal emission
-    Properties inputs = _inputs;
-    Properties outputs = _outputs;
-    bool success = _success;
-    bool keepProcessing = _processor->getRealTimeProcessing();
-
     delete _processor;
 
-    if(success)
-    {
-        _node->signalProcessDone(outputs, inputs);
-    }
-    else
-    {
-        _node->signalProcessUnavailable();
-    }
-    emit nodeProcessed(success, outputs, keepProcessing);
+    emit nodeProcessed(_success);
 }
 
 AbstractProcessor *ComposerExecutor::createProcessor(const Node *node)

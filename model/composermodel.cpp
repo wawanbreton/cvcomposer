@@ -36,8 +36,8 @@ void ComposerModel::addNode(Node *node)
 {
     _nodes << node;
     node->setParent(this);
-    //connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(startExecution()));
-#warning tbd
+
+    emit nodeAdded(node);
 }
 
 QList<const Node *> ComposerModel::getNodes() const
@@ -90,6 +90,36 @@ const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
     }
 
     return NULL;
+}
+
+QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node) const
+{
+    QSet<const Node *> nodes;
+
+    nodes << node;
+
+    foreach(const Plug *output, node->getOutputs())
+    {
+        foreach(const Connection *connection, _connections)
+        {
+            if(connection->getOutput() == output)
+            {
+                const Node *descendantNode = findInputPlug(connection->getInput());
+                if(descendantNode)
+                {
+                    nodes += findDescendantNodes(descendantNode);
+                }
+                else
+                {
+                    qCritical() << "A connection has no valid node";
+                }
+
+                break;
+            }
+        }
+    }
+
+    return nodes;
 }
 
 void ComposerModel::addConnection(Plug *output, Plug *input)
