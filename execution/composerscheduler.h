@@ -68,6 +68,12 @@ class ComposerScheduler : public QObject
 
         void processNexts();
 
+        void reProcessFromNode(const Node *node);
+
+        void invalidateFromNode(const Node *node);
+
+        void invalidateExecutors(const Node *node);
+
     private:
         ExecutorSettings _settings;
         QList<ComposerExecutor *> _executors;

@@ -63,7 +63,14 @@ const ExecutorSettings &ComposerScheduler::getSettings() const
 
 void ComposerScheduler::onNodeAdded(const Node *node)
 {
+    if(!allInputsProcessed(node))
+    {
+        node->signalProcessUnavailable();
+    }
+
     connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
+
+    processNexts();
 }
 
 void ComposerScheduler::onNodePropertyChanged()
@@ -71,22 +78,7 @@ void ComposerScheduler::onNodePropertyChanged()
     const Node *node = qobject_cast<const Node *>(sender());
     if(node)
     {
-        QSet<const Node *> descendantNodes = _model->findDescendantNodes(node);
-
-        for(const Node *node : descendantNodes)
-        {
-            _processedNodes.remove(node);
-
-            for(ComposerExecutor *executor : _executors)
-            {
-                if(executor->getNode() == node)
-                {
-                    _oldExecutors << executor;
-                }
-            }
-        }
-
-        processNexts();
+        reProcessFromNode(node);
     }
     else
     {
@@ -96,12 +88,38 @@ void ComposerScheduler::onNodePropertyChanged()
 
 void ComposerScheduler::onConnectionRemoved(const Connection *connection)
 {
-
+    const Node *descendantNode = _model->findInputPlug(connection->getInput());
+    if(descendantNode)
+    {
+        PlugType::Enum inputType = connection->getInput()->getDefinition().type;
+        if(PlugType::isInputPluggable(inputType) == PlugType::Mandatory)
+        {
+            // The descendant node is no more valid, and so are all its descendants
+            invalidateFromNode(descendantNode);
+        }
+        else
+        {
+            // The descendant node is to be recomputed now with the manually-entered value
+            reProcessFromNode(descendantNode);
+        }
+    }
+    else
+    {
+        qCritical() << "Unable to find descendant node";
+    }
 }
 
 void ComposerScheduler::onConnectionAdded(const Connection *connection)
 {
-    processNexts();
+    const Node *descendantNode = _model->findInputPlug(connection->getInput());
+    if(descendantNode)
+    {
+        reProcessFromNode(descendantNode);
+    }
+    else
+    {
+        qCritical() << "Unable to find descendant node";
+    }
 }
 
 void ComposerScheduler::onNodeProcessed(bool success)
@@ -121,8 +139,7 @@ void ComposerScheduler::onNodeProcessed(bool success)
             }
             else
             {
-                executor->getNode()->signalProcessUnavailable();
-                #warning Run through all the dependant nodes and tag them as failed
+                invalidateFromNode(executor->getNode());
             }
         }
 
@@ -244,18 +261,18 @@ void ComposerScheduler::processNexts()
         bool nodeAddedForProcessing = false;
 
         QList<const Node *> potentialNodes = _model->getNodes();
-        foreach(const Node *node, _processedNodes.keys())
+        for(const Node *node : _processedNodes.keys())
         {
             // Remove nodes which have already been processed
             potentialNodes.removeAll(node);
         }
-        foreach(ComposerExecutor *executor, _executors)
+        for(ComposerExecutor *executor : _executors)
         {
             // Remove nodes which are being processed
             potentialNodes.removeAll(executor->getNode());
         }
 
-        foreach(const Node *node, potentialNodes)
+        for(const Node *node : potentialNodes)
         {
             if(allInputsProcessed(node))
             {
@@ -280,17 +297,42 @@ void ComposerScheduler::processNexts()
 
         if(!nodeAddedForProcessing)
         {
-            // We have iterated through all the nodes, and there is nothing more to be done
-            if(_executors.isEmpty())
-            {
-                // We can't do anything more, so signal the remaining nodes as unreachable
-                foreach(const Node *node, potentialNodes)
-                {
-                    node->signalProcessUnavailable();
-                }
-            }
-
+            // There is no other node we can process yet
             return;
+        }
+    }
+}
+
+void ComposerScheduler::reProcessFromNode(const Node *node)
+{
+    QSet<const Node *> descendantNodes = _model->findDescendantNodes(node);
+
+    for(const Node *node : descendantNodes)
+    {
+        _processedNodes.remove(node);
+        invalidateExecutors(node);
+    }
+
+    processNexts();
+}
+
+void ComposerScheduler::invalidateFromNode(const Node *node)
+{
+    for(const Node *descendantNode : _model->findDescendantNodes(node))
+    {
+        _processedNodes[descendantNode] = Properties();
+        invalidateExecutors(descendantNode);
+        descendantNode->signalProcessUnavailable();
+    }
+}
+
+void ComposerScheduler::invalidateExecutors(const Node *node)
+{
+    for(ComposerExecutor *executor : _executors)
+    {
+        if(executor->getNode() == node)
+        {
+            _oldExecutors << executor;
         }
     }
 }
