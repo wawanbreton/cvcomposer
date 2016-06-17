@@ -51,9 +51,14 @@ ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent
 
 void ComposerScheduler::setSettings(const ExecutorSettings &settings)
 {
+    bool reprocess = settings.cacheData != _settings.cacheData;
+
     _settings = settings;
 
-    #warning TODO recompute everything
+    if(reprocess)
+    {
+        reProcessAll();
+    }
 }
 
 const ExecutorSettings &ComposerScheduler::getSettings() const
@@ -63,62 +68,87 @@ const ExecutorSettings &ComposerScheduler::getSettings() const
 
 void ComposerScheduler::onNodeAdded(const Node *node)
 {
-    if(!allInputsProcessed(node))
-    {
-        node->signalProcessUnavailable();
-    }
-
     connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
 
-    processNexts();
+    if(!allInputsProcessed(node))
+    {
+        // If the node has some mandotary plugs, invalid it until some connections are added
+        node->signalProcessUnavailable();
+    }
+    else
+    {
+        // If the node only has free plugs, process it ASAP
+        processNexts();
+    }
 }
 
 void ComposerScheduler::onNodePropertyChanged()
 {
-    const Node *node = qobject_cast<const Node *>(sender());
-    if(node)
+    if(_settings.cacheData)
     {
-        reProcessFromNode(node);
+        const Node *node = qobject_cast<const Node *>(sender());
+        if(node)
+        {
+            reProcessFromNode(node);
+        }
+        else
+        {
+            qCritical() << "Sender is not a Node instance";
+        }
     }
     else
     {
-        qCritical() << "Sender is not a Node instance";
+        reProcessAll();
     }
 }
 
 void ComposerScheduler::onConnectionRemoved(const Connection *connection)
 {
-    const Node *descendantNode = _model->findInputPlug(connection->getInput());
-    if(descendantNode)
+    if(_settings.cacheData)
     {
-        PlugType::Enum inputType = connection->getInput()->getDefinition().type;
-        if(PlugType::isInputPluggable(inputType) == PlugType::Mandatory)
+        const Node *descendantNode = _model->findInputPlug(connection->getInput());
+        if(descendantNode)
         {
-            // The descendant node is no more valid, and so are all its descendants
-            invalidateFromNode(descendantNode);
+            PlugType::Enum inputType = connection->getInput()->getDefinition().type;
+            if(PlugType::isInputPluggable(inputType) == PlugType::Mandatory)
+            {
+                // The descendant node is no more valid, and so are all its descendants
+                invalidateFromNode(descendantNode);
+            }
+            else
+            {
+                // The descendant node is to be recomputed now with the manually-entered value
+                reProcessFromNode(descendantNode);
+            }
         }
         else
         {
-            // The descendant node is to be recomputed now with the manually-entered value
-            reProcessFromNode(descendantNode);
+            qCritical() << "Unable to find descendant node";
         }
     }
     else
     {
-        qCritical() << "Unable to find descendant node";
+        reProcessAll();
     }
 }
 
 void ComposerScheduler::onConnectionAdded(const Connection *connection)
 {
-    const Node *descendantNode = _model->findInputPlug(connection->getInput());
-    if(descendantNode)
+    if(_settings.cacheData)
     {
-        reProcessFromNode(descendantNode);
+        const Node *descendantNode = _model->findInputPlug(connection->getInput());
+        if(descendantNode)
+        {
+            reProcessFromNode(descendantNode);
+        }
+        else
+        {
+            qCritical() << "Unable to find descendant node";
+        }
     }
     else
     {
-        qCritical() << "Unable to find descendant node";
+        reProcessAll();
     }
 }
 
@@ -140,6 +170,11 @@ void ComposerScheduler::onNodeProcessed(bool success)
             else
             {
                 invalidateFromNode(executor->getNode());
+            }
+
+            if(!_settings.cacheData)
+            {
+                clearUnusedCache();
             }
         }
 
@@ -316,6 +351,18 @@ void ComposerScheduler::reProcessFromNode(const Node *node)
     processNexts();
 }
 
+void ComposerScheduler::reProcessAll()
+{
+    for(ComposerExecutor *executor : _executors)
+    {
+        _oldExecutors << executor;
+    }
+
+    _processedNodes.clear();
+
+    processNexts();
+}
+
 void ComposerScheduler::invalidateFromNode(const Node *node)
 {
     for(const Node *descendantNode : _model->findDescendantNodes(node))
@@ -333,6 +380,35 @@ void ComposerScheduler::invalidateExecutors(const Node *node)
         if(executor->getNode() == node)
         {
             _oldExecutors << executor;
+        }
+    }
+}
+
+void ComposerScheduler::clearUnusedCache()
+{
+    for(auto iterator = _processedNodes.begin() ; iterator != _processedNodes.end() ; ++iterator)
+    {
+        const Node *node = iterator.key();
+        Properties &outputs = iterator.value();
+
+        for(const Plug *output : node->getOutputs())
+        {
+            bool allDescendantNodesProcessed = true;
+
+            for(const Node *descendantNode : _model->findDirectDescendantNodes(output))
+            {
+                if(!_processedNodes.contains(descendantNode))
+                {
+                    allDescendantNodesProcessed = false;
+                    break;
+                }
+            }
+
+            if(allDescendantNodesProcessed)
+            {
+                // The data is no more useful, remove it right now to save memory
+                outputs.remove(output->getDefinition().name);
+            }
         }
     }
 }

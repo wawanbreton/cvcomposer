@@ -70,9 +70,13 @@ class ComposerScheduler : public QObject
 
         void reProcessFromNode(const Node *node);
 
+        void reProcessAll();
+
         void invalidateFromNode(const Node *node);
 
         void invalidateExecutors(const Node *node);
+
+        void clearUnusedCache();
 
     private:
         ExecutorSettings _settings;

@@ -39,6 +39,7 @@ class ComposerExecutor : public QThread
 
         void process(const Node *node, const Properties &inputs);
 
+        #warning remove this
         const Node *getNode();
 
         const Properties &getInputs() const;

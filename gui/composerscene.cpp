@@ -343,6 +343,7 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                     Parser::parseBool(childNode.attribute("optimal-threads-count"));
             settings.fixedThreadsCount = childNode.attribute("fixed-threads-count").toUInt();
 
+            #warning crash here
             _scheduler->setSettings(settings);
         }
     }

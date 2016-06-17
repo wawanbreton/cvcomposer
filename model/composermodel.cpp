@@ -92,30 +92,40 @@ const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
     return NULL;
 }
 
+QSet<const Node *> ComposerModel::findDirectDescendantNodes(const Plug *output) const
+{
+    QSet<const Node *> nodes;
+
+    foreach(const Connection *connection, _connections)
+    {
+        if(connection->getOutput() == output)
+        {
+            const Node *descendantNode = findInputPlug(connection->getInput());
+            if(descendantNode)
+            {
+                nodes += findDescendantNodes(descendantNode);
+            }
+            else
+            {
+                qCritical() << "A connection has no valid node";
+            }
+        }
+    }
+
+    return nodes;
+}
+
 QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node) const
 {
     QSet<const Node *> nodes;
 
     nodes << node;
 
-    foreach(const Plug *output, node->getOutputs())
+    for(const Plug *output : node->getOutputs())
     {
-        foreach(const Connection *connection, _connections)
+        for(const Node *descendantNode : findDirectDescendantNodes(output))
         {
-            if(connection->getOutput() == output)
-            {
-                const Node *descendantNode = findInputPlug(connection->getInput());
-                if(descendantNode)
-                {
-                    nodes += findDescendantNodes(descendantNode);
-                }
-                else
-                {
-                    qCritical() << "A connection has no valid node";
-                }
-
-                break;
-            }
+            nodes += findDescendantNodes(descendantNode);
         }
     }
 
