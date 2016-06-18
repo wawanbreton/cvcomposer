@@ -42,7 +42,7 @@ void ComposerExecutor::process(const Node *node, const Properties &inputs)
     _inputs = inputs;
     start();
 
-    qDebug() << this << node->getUserReadableName();
+    qDebug() << "start   " << this << _node->getUserReadableName();
 }
 
 const Node *ComposerExecutor::getNode()
@@ -75,7 +75,7 @@ void ComposerExecutor::run()
 
 void ComposerExecutor::onFinished()
 {
-    qDebug() << this;
+    qDebug() << "finished" << this << _node->getUserReadableName();
 
     delete _processor;
 
