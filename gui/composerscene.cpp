@@ -47,12 +47,14 @@ ComposerScene::ComposerScene(QObject *parent) :
     _connections()
 {
     init();
+
+    _scheduler->start();
 }
 
 ComposerScene::ComposerScene(const QDomDocument &doc, QMainWindow *mainWindow, QObject *parent) :
     QGraphicsScene(parent),
     _model(new ComposerModel(this)),
-    _scheduler(NULL),
+    _scheduler(new ComposerScheduler(_model, this)),
     _editedConnection(),
     _editedNode(),
     _connections()
@@ -61,7 +63,7 @@ ComposerScene::ComposerScene(const QDomDocument &doc, QMainWindow *mainWindow, Q
 
     load(doc, mainWindow);
 
-    _scheduler = new ComposerScheduler(_model, this);
+    _scheduler->start();
 }
 
 void ComposerScene::init()
@@ -343,7 +345,6 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                     Parser::parseBool(childNode.attribute("optimal-threads-count"));
             settings.fixedThreadsCount = childNode.attribute("fixed-threads-count").toUInt();
 
-            #warning crash here
             _scheduler->setSettings(settings);
         }
     }

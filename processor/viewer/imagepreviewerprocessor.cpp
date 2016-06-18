@@ -25,6 +25,8 @@ ImagePreviewerProcessor::ImagePreviewerProcessor()
 
 Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
 {
+    #warning do the conversion to QImage here
+
     Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
     return Properties();
 }

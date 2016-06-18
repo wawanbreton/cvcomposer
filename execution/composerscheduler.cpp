@@ -34,7 +34,10 @@ ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent
     _settings.useMultiThreading = true;
     _settings.useOptimalThreadsCount = true;
     _settings.fixedThreadsCount = QThread::idealThreadCount();
+}
 
+void ComposerScheduler::start()
+{
     connect(_model, SIGNAL(nodeAdded(const Node*)), SLOT(onNodeAdded(const Node*)));
     connect(_model, SIGNAL(connectionAdded(const Connection*)),
                     SLOT(onConnectionAdded(const Connection*)));

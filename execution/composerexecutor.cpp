@@ -75,7 +75,7 @@ void ComposerExecutor::run()
 
 void ComposerExecutor::onFinished()
 {
-    qDebug() << "finished" << this << _node->getUserReadableName();
+    qDebug() << "finished" << this;
 
     delete _processor;
 

@@ -42,11 +42,11 @@ class ComposerScheduler : public QObject
     public:
         explicit ComposerScheduler(const ComposerModel *model, QObject *parent = NULL);
 
+        void start();
+
         void setSettings(const ExecutorSettings &settings);
 
         const ExecutorSettings &getSettings() const;
-
-        void execute();
 
     private slots:
         void onNodeAdded(const Node *node);
