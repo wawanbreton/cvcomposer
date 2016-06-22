@@ -17,17 +17,25 @@
 
 #include "imagepreviewerprocessor.h"
 
+#include "global/cvutils.h"
+
 
 ImagePreviewerProcessor::ImagePreviewerProcessor()
 {
-    addInput("image", PlugType::ImagePreview);
+    addInput("input image", PlugType::Image);
+
+    addOutput("output image", PlugType::ImagePreview);
 }
 
 Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
 {
-    #warning do the conversion to QImage here
-
     Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
-    return Properties();
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+
+    QImage outputImage = CvUtils::toQImage(inputImage);
+
+    Properties outputs;
+    outputs.insert("output image", outputImage);
+    return outputs;
 }
 

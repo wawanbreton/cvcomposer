@@ -62,7 +62,6 @@ class GenericNodeWidget : public QWidget
     private:
         typedef struct
         {
-            bool input;
             QLabel *label;
             AbstractPlugWidget *widget;
             PlugDefinition definition;

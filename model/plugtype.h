@@ -46,6 +46,8 @@ namespace PlugType
 
     Pluggable isInputPluggable(Enum value);
 
+    bool isOutputInternal(Enum value);
+
     bool isWidgetAlwaysVisible(Enum value);
 
     bool isLabelVisible(Enum value);

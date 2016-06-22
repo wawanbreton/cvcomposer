@@ -83,3 +83,9 @@ bool PlugType::isInputSavable(PlugType::Enum value)
         return PlugType::isInputPluggable(value) != PlugType::Mandatory;
     }
 }
+
+
+bool PlugType::isOutputInternal(PlugType::Enum value)
+{
+    return value == PlugType::ImagePreview;
+}

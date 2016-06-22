@@ -61,18 +61,29 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         foreach(const Plug *output, outputs)
         {
             PlugWidget widget;
-            widget.input = false;
             widget.definition = output->getDefinition();
 
-            widget.label = new QLabel(this);
-            widget.label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            makeLabelText(widget, true);
+            if(PlugType::isOutputInternal(widget.definition.type))
+            {
+                widget.label = NULL;
 
-            widget.widget = NULL;
+                widget.widget = makePlugWidget(widget.definition);
+
+                outputsLayout->addWidget(widget.widget);
+            }
+            else
+            {
+                widget.label = new QLabel(this);
+                widget.label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                makeLabelText(widget, true);
+
+                widget.widget = NULL;
+
+                outputsLayout->addWidget(widget.label);
+            }
 
             _widgets[widget.definition.name] = widget;
 
-            outputsLayout->addWidget(widget.label);
         }
 
         mainLayout->addLayout(outputsLayout);
@@ -86,7 +97,6 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         foreach(const Plug *input, inputs)
         {
             PlugWidget widget;
-            widget.input = true;
             widget.definition = input->getDefinition();
 
             widget.label = NULL;
@@ -206,7 +216,7 @@ void GenericNodeWidget::onProcessDone(const Properties &outputs, const Propertie
 {
     foreach(const PlugWidget &widget, _widgets)
     {
-        if(widget.input && widget.widget)
+        if(widget.widget)
         {
             widget.widget->onNodeProcessed(inputs, outputs);
         }
@@ -217,7 +227,7 @@ void GenericNodeWidget::onProcessUnavailable()
 {
     foreach(const PlugWidget &widget, _widgets)
     {
-        if(widget.input && widget.widget)
+        if(widget.widget)
         {
             widget.widget->onNodeProcessed(Properties(), Properties());
         }
