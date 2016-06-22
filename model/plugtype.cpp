@@ -61,9 +61,6 @@ PlugType::Enum PlugType::getCompatibility(Enum value)
 {
     switch(value)
     {
-        case PlugType::ImagePreview:
-            return Image;
-
         default:
             return value;
     }

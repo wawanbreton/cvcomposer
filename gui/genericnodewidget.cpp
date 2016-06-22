@@ -92,6 +92,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
     if(inputs.count())
     {
         bool hasLabel = false;
+        bool hasWidget = false;
 
         // Iterate once to create the widgets
         foreach(const Plug *input, inputs)
@@ -100,7 +101,14 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             widget.definition = input->getDefinition();
 
             widget.label = NULL;
-            if(PlugType::isLabelVisible(widget.definition.type))
+
+            bool labelVisible = PlugType::isLabelVisible(widget.definition.type);
+            if(widget.definition.labelVisible != ThreeStateBool::None)
+            {
+                labelVisible = bool(widget.definition.labelVisible);
+            }
+
+            if(labelVisible)
             {
                 widget.label = new QLabel(this);
                 widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -113,14 +121,15 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
                PlugType::isWidgetAlwaysVisible(widget.definition.type))
             {
                 widget.widget = makePlugWidget(widget.definition);
+                hasWidget = true;
             }
 
             _widgets[widget.definition.name] = widget;
         }
 
-        // Now we know whether we have labels, so we can create the appropriate layout
-        QLayout *inputsLayout;
-        if(hasLabel)
+        // Now we know whether we have labels and/or widget, so we can create the appropriate layout
+        QLayout *inputsLayout = NULL;
+        if(hasLabel && hasWidget)
         {
             QFormLayout *formLayout = new QFormLayout();
 
@@ -132,21 +141,42 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
 
             inputsLayout = formLayout;
         }
-        else
+        else if(hasWidget)
         {
             QVBoxLayout *vboxLayout = new QVBoxLayout();
 
             foreach(const Plug *input, inputs)
             {
                 PlugWidget &widget = _widgets[input->getDefinition().name];
-                vboxLayout->addWidget(widget.widget);
+                if(widget.widget)
+                {
+                    vboxLayout->addWidget(widget.widget);
+                }
+            }
+
+            inputsLayout = vboxLayout;
+        }
+        else if(hasLabel)
+        {
+            QVBoxLayout *vboxLayout = new QVBoxLayout();
+
+            foreach(const Plug *input, inputs)
+            {
+                PlugWidget &widget = _widgets[input->getDefinition().name];
+                if(widget.label)
+                {
+                    vboxLayout->addWidget(widget.label);
+                }
             }
 
             inputsLayout = vboxLayout;
         }
 
-        inputsLayout->setContentsMargins(0, 0, 0, 0);
-        mainLayout->addLayout(inputsLayout);
+        if(inputsLayout)
+        {
+            inputsLayout->setContentsMargins(0, 0, 0, 0);
+            mainLayout->addLayout(inputsLayout);
+        }
     }
 
     setLayout(mainLayout);
@@ -158,6 +188,11 @@ int GenericNodeWidget::getPlugPosY(const QString &plugName)
     if(iterator != _widgets.end())
     {
         QRect rect;
+        if(iterator.value().label == NULL && iterator.value().widget == NULL)
+        {
+            return height() / 2;
+        }
+
         if(iterator.value().label)
         {
             rect = rect.united(iterator.value().label->geometry());

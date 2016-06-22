@@ -86,9 +86,10 @@ void AbstractProcessor::addInput(const PlugDefinition &definition)
 void AbstractProcessor::addInput(const QString &name,
                                  PlugType::Enum type,
                                  const QVariant &defaultValue,
-                                 const Properties &widgetProperties)
+                                 const Properties &widgetProperties,
+                                 ThreeStateBool::Enum labelVisible)
 {
-    addInput(makePlug(name, type, defaultValue, widgetProperties));
+    addInput(makePlug(name, type, defaultValue, widgetProperties, labelVisible));
 }
 
 void AbstractProcessor::addEnumerationInput(const QString &name,
@@ -100,6 +101,7 @@ void AbstractProcessor::addEnumerationInput(const QString &name,
     plug.type = PlugType::Enumeration;
     plug.widgetProperties.insert("values", QVariant::fromValue(values));
     plug.defaultValue = defaultValue;
+    plug.labelVisible = ThreeStateBool::None;
 
     addInput(plug);
 }
@@ -117,13 +119,15 @@ void AbstractProcessor::addOutput(const QString &userReadableName, PlugType::Enu
 PlugDefinition AbstractProcessor::makePlug(const QString &name,
                                            PlugType::Enum type,
                                            const QVariant &defaultValue,
-                                           const Properties &widgetProperties)
+                                           const Properties &widgetProperties,
+                                           ThreeStateBool::Enum labelVisible)
 {
     PlugDefinition plug;
     plug.name = name;
     plug.type = type;
     plug.defaultValue = defaultValue;
     plug.widgetProperties = widgetProperties;
+    plug.labelVisible = labelVisible;
 
     return plug;
 }

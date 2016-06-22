@@ -150,7 +150,8 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/laplacianprocessor.h \
     gui/editsettingsdialog.h \
     execution/executorsettings.h \
-    global/parser.h
+    global/parser.h \
+    global/threestatebool.h
 
 FORMS    += \
     gui/mainwidget.ui \

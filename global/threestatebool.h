@@ -15,27 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagepreviewerprocessor.h"
+#pragma once
 
-#include "global/cvutils.h"
-
-
-ImagePreviewerProcessor::ImagePreviewerProcessor()
+namespace ThreeStateBool
 {
-    addInput("input image", PlugType::Image, QVariant(), Properties(), ThreeStateBool::False);
-
-    addOutput("output image", PlugType::ImagePreview);
+    typedef enum
+    {
+        False,
+        True,
+        None
+    } Enum;
 }
-
-Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
-{
-    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
-    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-
-    QImage outputImage = CvUtils::toQImage(inputImage);
-
-    Properties outputs;
-    outputs.insert("output image", outputImage);
-    return outputs;
-}
-

@@ -43,7 +43,8 @@ class AbstractProcessor
         void addInput(const QString &name,
                       PlugType::Enum type,
                       const QVariant &defaultValue = QVariant(),
-                      const Properties &widgetProperties = Properties());
+                      const Properties &widgetProperties = Properties(),
+                      ThreeStateBool::Enum labelVisible = ThreeStateBool::None);
 
         void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,
@@ -59,7 +60,8 @@ class AbstractProcessor
         PlugDefinition makePlug(const QString &name,
                                 PlugType::Enum type,
                                 const QVariant &defaultValue = QVariant(),
-                                const Properties &widgetProperties = Properties());
+                                const Properties &widgetProperties = Properties(),
+                                ThreeStateBool::Enum labelVisible = ThreeStateBool::None);
 
     private:
         QList<PlugDefinition> _inputs;

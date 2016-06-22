@@ -67,8 +67,11 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     }
     foreach(Plug *plug, _node->getOutputs())
     {
-        PlugItem *plugItem = new PlugItem(plug, this);
-        _outputPlugs << plugItem;
+        if(!PlugType::isOutputInternal(plug->getDefinition().type))
+        {
+            PlugItem *plugItem = new PlugItem(plug, this);
+            _outputPlugs << plugItem;
+        }
     }
 
     recomputeSizes();

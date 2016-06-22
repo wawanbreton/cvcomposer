@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGDEFINITION_H
-#define PLUGDEFINITION_H
+#pragma once
 
 #include "model/plugtype.h"
 #include "global/properties.h"
+#include "global/threestatebool.h"
 
 typedef struct
 {
@@ -27,7 +27,5 @@ typedef struct
     PlugType::Enum type;
     Properties widgetProperties;
     QVariant defaultValue;
+    ThreeStateBool::Enum labelVisible;
 } PlugDefinition;
-
-#endif // PLUGDEFINITION_H
-
