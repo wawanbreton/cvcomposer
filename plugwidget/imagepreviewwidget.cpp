@@ -33,7 +33,7 @@ void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Propert
 {
     AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
-    _image = QPixmap::fromImage(outputs["output image"].value<QImage>());
+    _image = outputs["output image"].value<QPixmap>();
     update();
 }
 

@@ -17,6 +17,12 @@
 
 #include "imagepreviewerprocessor.h"
 
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <QPixmap>
+#include <QDebug>
+#include <QElapsedTimer>
+
 #include "global/cvutils.h"
 
 
@@ -29,10 +35,32 @@ ImagePreviewerProcessor::ImagePreviewerProcessor()
 
 Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
 {
-    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat smallImage;
 
-    QImage outputImage = CvUtils::toQImage(inputImage);
+    // First resize the image if it is too big, because we only require a preview
+    double scale;
+    int previewSize = 512;
+    if(inputImage.cols > inputImage.rows)
+    {
+        scale = previewSize / double(inputImage.cols);
+    }
+    else
+    {
+        scale = previewSize / double(inputImage.rows);
+    }
+
+    if(scale < 1)
+    {
+        cv::resize(inputImage, smallImage, cv::Size(), scale, scale);
+    }
+    else
+    {
+        smallImage = inputImage;
+    }
+
+    // Now converts the small image to a QPixmap for display
+    QPixmap outputImage = QPixmap::fromImage(CvUtils::toQImage(smallImage));
 
     Properties outputs;
     outputs.insert("output image", outputImage);
