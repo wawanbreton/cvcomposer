@@ -113,108 +113,32 @@ QList<QPair<QString, QStringList> > NodesTypesManager::getNodes()
 
 QString NodesTypesManager::toUserReadableName(const QString &name)
 {
-    #warning generalize this
-    if(name == "ImageFromFile")
-    {
-        return "Image from file";
-    }
-    else if(name == "Camera")
-    {
-        return "Camera";
-    }
-    else if(name == "DockableImageViewer")
+    if(name == "DockableImageViewer")
     {
         return "Advanced image viewer";
-    }
-    else if(name == "ImagePreviewer")
-    {
-        return "Image previewer";
-    }
-    else if(name == "Blur")
-    {
-        return "Blur";
-    }
-    else if(name == "GaussianBlur")
-    {
-        return "Gaussian blur";
-    }
-    else if(name == "MedianBlur")
-    {
-        return "Median blur";
-    }
-    else if(name == "BilateralFilter")
-    {
-        return "Bilateral filter";
-    }
-    else if(name == "MorphologyTransformation")
-    {
-        return "Morphology transformation";
-    }
-    else if(name == "Threshold")
-    {
-        return "Threshold";
-    }
-    else if(name == "CustomFilter")
-    {
-        return "Custom filter";
-    }
-    else if(name == "Kernel")
-    {
-        return "Kernel";
-    }
-    else if(name == "DiscreteFourierTransform")
-    {
-        return "Discrete Fourier Transform";
-    }
-    else if(name == "Rectangle")
-    {
-        return "Rectangle";
-    }
-    else if(name == "DrawRectangle")
-    {
-        return "Draw Rectangle";
-    }
-    else if(name == "SubImage")
-    {
-        return "Sub Image";
-    }
-    else if(name == "MakeBorder")
-    {
-        return "Make border";
-    }
-    else if(name == "DrawCircle")
-    {
-        return "Draw circle";
-    }
-    else if(name == "DrawEllipse")
-    {
-        return "Draw ellipse";
-    }
-    else if(name == "DrawLine")
-    {
-        return "Draw line";
-    }
-    else if(name == "AddWeighted")
-    {
-        return "Add weighted";
     }
     else if(name == "ConvertTo")
     {
         return "Scale";
     }
-    else if(name == "DrawText")
+    else
     {
-        return "Draw text";
-    }
-    else if(name == "Sobel")
-    {
-        return "Sobel";
-    }
-    else if(name == "Laplacian")
-    {
-        return "Laplacian";
-    }
+        QString result;
 
-    qCritical() << "No user-readable name defined for" << name;
-    return "";
+        result += name.at(0); // Take first upper char, unmodified
+
+        foreach(const QChar &aChar, name.mid(1))
+        {
+            if(aChar.isUpper())
+            {
+                result += QString(" ") + aChar.toLower();
+            }
+            else
+            {
+                result += aChar;
+            }
+        }
+
+        return result;
+    }
 }
