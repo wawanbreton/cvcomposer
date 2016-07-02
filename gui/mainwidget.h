@@ -32,6 +32,8 @@ class MainWidget : public QMainWindow
         ~MainWidget();
 
     private slots:
+        void onNew();
+
         void onSave();
 
         void onLoad();

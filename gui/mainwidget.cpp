@@ -61,6 +61,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     updateRecents();
 
+    connect(_ui->actionNew,      SIGNAL(triggered()), SLOT(onNew()));
     connect(_ui->actionSave,     SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionSaveAs,   SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionLoad,     SIGNAL(triggered()), SLOT(onLoad()));
@@ -70,6 +71,15 @@ MainWidget::MainWidget(QWidget *parent) :
 MainWidget::~MainWidget()
 {
     delete _ui;
+}
+
+void MainWidget::onNew()
+{
+    _ui->graphicsView->replaceScene(new ComposerScene(this));
+
+    _currentFilePath.clear();
+
+    updateTitle();
 }
 
 void MainWidget::onSave()
