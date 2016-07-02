@@ -77,9 +77,11 @@ void ComposerExecutor::onFinished()
 {
     qDebug() << "finished" << this;
 
+    bool keepProcessing = _processor->getRealTimeProcessing();
+
     delete _processor;
 
-    emit nodeProcessed(_success);
+    emit nodeProcessed(_success, keepProcessing);
 }
 
 AbstractProcessor *ComposerExecutor::createProcessor(const Node *node)

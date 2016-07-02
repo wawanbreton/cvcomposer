@@ -57,7 +57,7 @@ class ComposerScheduler : public QObject
 
         void onConnectionAdded(const Connection *connection);
 
-        void onNodeProcessed(bool success);
+        void onNodeProcessed(bool success, bool keepProcessing);
 
     private:
         bool allInputsProcessed(const Node *node);
@@ -82,6 +82,7 @@ class ComposerScheduler : public QObject
         ExecutorSettings _settings;
         QList<ComposerExecutor *> _executors;
         QList<ComposerExecutor *> _oldExecutors;
+        QList<const Node *> _keepProcessingNodes;
         const ComposerModel *_model;
         QMap<const Node *, Properties> _processedNodes;
 };

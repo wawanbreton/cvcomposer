@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSEREXECUTOR_H
-#define COMPOSEREXECUTOR_H
+#pragma once
 
 #include <QThread>
 
@@ -46,7 +45,7 @@ class ComposerExecutor : public QThread
         const Properties &getOutputs() const;
 
     signals:
-        void nodeProcessed(bool success);
+        void nodeProcessed(bool success, bool keepProcessing);
 
     protected:
         virtual void run();
@@ -64,5 +63,3 @@ class ComposerExecutor : public QThread
         Properties _outputs;
         bool _success;
 };
-
-#endif // COMPOSEREXECUTOR_H

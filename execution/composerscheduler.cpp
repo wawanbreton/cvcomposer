@@ -28,6 +28,8 @@
 ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent) :
     QObject(parent),
     _executors(),
+    _oldExecutors(),
+    _keepProcessingNodes(),
     _model(model)
 {
     _settings.cacheData = true;
@@ -155,7 +157,7 @@ void ComposerScheduler::onConnectionAdded(const Connection *connection)
     }
 }
 
-void ComposerScheduler::onNodeProcessed(bool success)
+void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
 {
     ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
     if(executor)
@@ -164,6 +166,13 @@ void ComposerScheduler::onNodeProcessed(bool success)
 
         if(_oldExecutors.removeAll(executor) == 0)
         {
+            // The executor has not been invalidated during its execution
+
+            if(keepProcessing)
+            {
+                _keepProcessingNodes << executor->getNode();
+            }
+
             if(success)
             {
                 executor->getNode()->signalProcessDone(executor->getOutputs(),
@@ -319,10 +328,10 @@ void ComposerScheduler::processNexts()
                 makeInputs(node, inputs);
 
                 ComposerExecutor *executor = new ComposerExecutor(this);
-                connect(executor, SIGNAL(nodeProcessed(bool)),
+                connect(executor, SIGNAL(nodeProcessed(bool,bool)),
                         executor, SLOT(deleteLater()));
-                connect(executor, SIGNAL(nodeProcessed(bool)),
-                                  SLOT(onNodeProcessed(bool)));
+                connect(executor, SIGNAL(nodeProcessed(bool, bool)),
+                                  SLOT(onNodeProcessed(bool, bool)));
                 executor->process(node, inputs);
 
                 nodeAddedForProcessing = true;
@@ -336,6 +345,17 @@ void ComposerScheduler::processNexts()
         if(!nodeAddedForProcessing)
         {
             // There is no other node we can process yet
+
+            if(_executors.count() == 0)
+            {
+                // And no executor is running => we are globally over
+                foreach(const Node *node, _keepProcessingNodes)
+                {
+                    reProcessFromNode(node);
+                }
+                _keepProcessingNodes.clear();
+            }
+
             return;
         }
     }
