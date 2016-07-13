@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAUSSIANBLURPROCESSOR_H
-#define GAUSSIANBLURPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
@@ -28,7 +27,3 @@ class GaussianBlurProcessor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
 };
-
-Q_DECLARE_METATYPE(GaussianBlurProcessor)
-
-#endif // GAUSSIANBLURPROCESSOR_H

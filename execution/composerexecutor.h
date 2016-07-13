@@ -54,9 +54,6 @@ class ComposerExecutor : public QThread
         void onFinished();
 
     private:
-        AbstractProcessor *createProcessor(const Node *node);
-
-    private:
         const Node *_node;
         AbstractProcessor *_processor;
         Properties _inputs;

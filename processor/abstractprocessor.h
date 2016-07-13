@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTPROCESSOR_H
-#define ABSTRACTPROCESSOR_H
+#pragma once
 
 #include <opencv2/core/core.hpp>
 
@@ -67,5 +66,3 @@ class AbstractProcessor
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
 };
-
-#endif // ABSTRACTPROCESSOR_H

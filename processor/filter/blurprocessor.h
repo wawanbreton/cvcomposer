@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef BLURPROCESSOR_H
-#define BLURPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
@@ -28,7 +27,3 @@ class BlurProcessor : public AbstractProcessor
     protected:
         Properties processImpl(const Properties &inputs) override;
 };
-
-Q_DECLARE_METATYPE(BlurProcessor)
-
-#endif // BLURPROCESSOR_H

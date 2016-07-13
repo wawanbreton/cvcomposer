@@ -27,6 +27,3 @@ class DrawLineProcessor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
 };
-
-Q_DECLARE_METATYPE(DrawLineProcessor)
-

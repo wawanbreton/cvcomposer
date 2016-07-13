@@ -30,8 +30,8 @@
 #include "gui/genericnodeitem.h"
 #include "gui/connectionitem.h"
 #include "gui/composerscene.h"
-#include "gui/nodestypesmanager.h"
 #include "gui/editsettingsdialog.h"
+#include "processor/processorsfactory.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -41,7 +41,7 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    QList<QPair<QString, QStringList> > nodes = NodesTypesManager::getNodes();
+    QList<QPair<QString, QStringList> > nodes = ProcessorsFactory::getProcessors();
     for(const QPair<QString, QStringList> &group : nodes)
     {
         QTreeWidgetItem *groupItem = new QTreeWidgetItem(QStringList() << group.first);
@@ -49,7 +49,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
         for(const QString &node : group.second)
         {
-            QString nodeName = NodesTypesManager::toUserReadableName(node);
+            QString nodeName = ProcessorsFactory::toUserReadableName(node);
             QTreeWidgetItem *itemNode = new QTreeWidgetItem(groupItem, QStringList() << nodeName);
             itemNode->setData(0, Qt::UserRole, node);
         }

@@ -37,5 +37,3 @@ class RectangleProcessor : public AbstractProcessor
             Center
         } Anchor;
 };
-
-Q_DECLARE_METATYPE(RectangleProcessor)

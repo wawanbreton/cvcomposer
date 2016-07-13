@@ -28,8 +28,8 @@
 #include "execution/executorsettings.h"
 #include "model/composermodel.h"
 #include "model/connection.h"
-#include "gui/nodestypesmanager.h"
 #include "model/node.h"
+#include "processor/processorsfactory.h"
 #include "gui/genericnodeitem.h"
 #include "gui/customitems.h"
 #include "gui/connectionitem.h"
@@ -102,7 +102,7 @@ ComposerScheduler *ComposerScene::accessScheduler()
 
 GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
 {
-    Node *node = new Node(nodeName, NodesTypesManager::toUserReadableName(nodeName));
+    Node *node = new Node(nodeName, ProcessorsFactory::toUserReadableName(nodeName));
     _model->addNode(node);
 
     GenericNodeItem *item = new GenericNodeItem(node);

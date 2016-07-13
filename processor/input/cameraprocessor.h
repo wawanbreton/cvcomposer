@@ -15,14 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CAMERAPROCESSOR_H
-#define CAMERAPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
 #include <opencv2/highgui/highgui.hpp>
-
-class CameraGrabber;
 
 class CameraProcessor : public AbstractProcessor
 {
@@ -37,7 +34,3 @@ class CameraProcessor : public AbstractProcessor
     private:
         static cv::VideoCapture *_camera;
 };
-
-Q_DECLARE_METATYPE(CameraProcessor)
-
-#endif // CAMERAPROCESSOR_H

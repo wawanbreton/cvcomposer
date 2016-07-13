@@ -21,6 +21,7 @@
 
 #include "model/node.h"
 #include "processor/abstractprocessor.h"
+#include "processor/processorsfactory.h"
 
 
 ComposerExecutor::ComposerExecutor(QObject *parent) :
@@ -38,7 +39,7 @@ void ComposerExecutor::process(const Node *node, const Properties &inputs)
 {
     _success = false;
     _node = node;
-    _processor = createProcessor(node);
+    _processor = ProcessorsFactory::createProcessor(node->getName());
     _inputs = inputs;
     start();
 
@@ -82,19 +83,4 @@ void ComposerExecutor::onFinished()
     delete _processor;
 
     emit nodeProcessed(_success, keepProcessing);
-}
-
-AbstractProcessor *ComposerExecutor::createProcessor(const Node *node)
-{
-    QMetaType processorType(QMetaType::type((node->getName() + "Processor").toUtf8()));
-    if(processorType.isValid())
-    {
-        return static_cast<AbstractProcessor *>(processorType.create());
-    }
-    else
-    {
-        qCritical() << "ComposerScheduler::createProcessor"
-                    << "Unable to find processor for node" << node->getName();
-        return NULL;
-    }
 }

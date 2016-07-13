@@ -15,16 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NODESTYPESMANAGER_H
-#define NODESTYPESMANAGER_H
+#pragma once
 
-#include <QTreeWidgetItem>
+#include "processor/abstractprocessor.h"
 
-namespace NodesTypesManager
+namespace ProcessorsFactory
 {
-    QList<QPair<QString, QStringList> > getNodes();
+    QList<QPair<QString, QStringList> > getProcessors();
 
-    QString toUserReadableName(const QString &name);
+    AbstractProcessor *createProcessor(const QString &rawProcessorName);
+
+    QString toUserReadableName(const QString &rawProcessorName);
 }
-
-#endif // NODESTYPESMANAGER_H

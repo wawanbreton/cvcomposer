@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef KERNELPROCESSOR_H
-#define KERNELPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
@@ -28,7 +27,3 @@ class KernelProcessor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
 };
-
-Q_DECLARE_METATYPE(KernelProcessor)
-
-#endif // KERNELPROCESSOR_H

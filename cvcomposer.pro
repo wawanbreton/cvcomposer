@@ -26,7 +26,6 @@ else {
 SOURCES += main.cpp\
         gui/mainwidget.cpp \
     gui/composerwidget.cpp \
-    gui/nodestypesmanager.cpp \
     gui/composerscene.cpp \
     gui/plugitem.cpp \
     gui/connectionitem.cpp \
@@ -84,11 +83,11 @@ SOURCES += main.cpp\
     processor/filter/sobelprocessor.cpp \
     processor/filter/laplacianprocessor.cpp \
     gui/editsettingsdialog.cpp \
-    global/parser.cpp
+    global/parser.cpp \
+    processor/processorsfactory.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
-    gui/nodestypesmanager.h \
     gui/composerscene.h \
     gui/plugitem.h \
     gui/connectionitem.h \
@@ -151,7 +150,8 @@ HEADERS  += gui/mainwidget.h \
     gui/editsettingsdialog.h \
     execution/executorsettings.h \
     global/parser.h \
-    global/threestatebool.h
+    global/threestatebool.h \
+    processor/processorsfactory.h
 
 FORMS    += \
     gui/mainwidget.ui \

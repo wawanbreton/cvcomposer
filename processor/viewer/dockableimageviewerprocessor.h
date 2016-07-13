@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef DOCKABLEIMAGEVIEWERPROCESSOR_H
-#define DOCKABLEIMAGEVIEWERPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
@@ -28,7 +27,3 @@ class DockableImageViewerProcessor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs);
 };
-
-Q_DECLARE_METATYPE(DockableImageViewerProcessor)
-
-#endif // DOCKABLEIMAGEVIEWERPROCESSOR_H

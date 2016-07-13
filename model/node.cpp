@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QVariant>
 
+#include "processor/processorsfactory.h"
 #include "processor/abstractprocessor.h"
 #include "model/plug.h"
 
@@ -34,27 +35,21 @@ Node::Node(const QString &name,
     _inputs(),
     _outputs()
 {
-    QMetaType processorType(QMetaType::type((name + "Processor").toUtf8()));
-    if(processorType.isValid())
+    AbstractProcessor *processor = ProcessorsFactory::createProcessor(name);
+    if(processor)
     {
-         AbstractProcessor *processor = static_cast<AbstractProcessor *>(processorType.create());
+        foreach(const PlugDefinition input, processor->getInputs())
+        {
+            _inputs << new Plug(input, this);
+            _properties.insert(input.name, input.defaultValue);
+        }
+        foreach(const PlugDefinition output, processor->getOutputs())
+        {
+            _outputs << new Plug(output, this);
+            _properties.insert(output.name, output.defaultValue);
+        }
 
-         foreach(const PlugDefinition input, processor->getInputs())
-         {
-             _inputs << new Plug(input, this);
-             _properties.insert(input.name, input.defaultValue);
-         }
-         foreach(const PlugDefinition output, processor->getOutputs())
-         {
-             _outputs << new Plug(output, this);
-             _properties.insert(output.name, output.defaultValue);
-         }
-
-         delete processor;
-    }
-    else
-    {
-        qCritical() << "Node::Node" << "Unable to find processor for" << name;
+        delete processor;
     }
 }
 

@@ -32,8 +32,6 @@ class ${1}Processor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
 };
-
-Q_DECLARE_METATYPE(${1}Processor)
 " > $folder/${lower}processor.h
 
 ################################# CPP ################################

@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MORPHOLOGYTRANSFORMATIONPROCESSOR_H
-#define MORPHOLOGYTRANSFORMATIONPROCESSOR_H
+#pragma once
 
 #include "processor/abstractprocessor.h"
 
@@ -28,7 +27,3 @@ class MorphologyTransformationProcessor : public AbstractProcessor
     protected:
         virtual Properties processImpl(const Properties &inputs);
 };
-
-Q_DECLARE_METATYPE(MorphologyTransformationProcessor)
-
-#endif // MORPHOLOGYTRANSFORMATIONPROCESSOR_H
