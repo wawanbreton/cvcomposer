@@ -478,8 +478,18 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             foreach(PlugItem *plugItem, plugItems)
             {
                 PlugType::Enum plugType = plugItem->getPlug()->getDefinition().type;
-                PlugType::Enum compatible = PlugType::getCompatibility(plugType);
-                if(compatible == baseType)
+                bool compatible;
+
+                if(_editedConnection.fromOutput)
+                {
+                    compatible = PlugType::isCompatible(baseType, plugType);
+                }
+                else
+                {
+                    compatible = PlugType::isCompatible(plugType, baseType);
+                }
+
+                if(compatible)
                 {
                     QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
                     qreal distance = (event->scenePos() - itemPos).manhattanLength();

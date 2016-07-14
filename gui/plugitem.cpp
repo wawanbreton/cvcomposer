@@ -33,8 +33,11 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
     QBrush brush;
-    switch(PlugType::getCompatibility(plug->getDefinition().type))
+    switch(plug->getDefinition().type)
     {
+        case PlugType::Generic:
+            brush = Qt::red;
+            break;
         case PlugType::Image:
             brush = QColor(46, 204, 113);
             break;

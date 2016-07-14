@@ -37,6 +37,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::DockableImageViewer:
         case PlugType::Boolean:
             return ManualOnly;
+        case PlugType::Generic:
         case PlugType::Image:
         case PlugType::Kernel:
         case PlugType::ImagePreview:
@@ -57,18 +58,6 @@ bool PlugType::isLabelVisible(PlugType::Enum value)
     return value != PlugType::ImagePreview && value != PlugType::KernelDefinition;
 }
 
-PlugType::Enum PlugType::getCompatibility(Enum value)
-{
-    switch(value)
-    {
-        default:
-            return value;
-    }
-
-    return Image;
-}
-
-
 bool PlugType::isInputSavable(PlugType::Enum value)
 {
     if(value == PlugType::DockableImageViewer)
@@ -81,8 +70,18 @@ bool PlugType::isInputSavable(PlugType::Enum value)
     }
 }
 
-
 bool PlugType::isOutputInternal(PlugType::Enum value)
 {
     return value == PlugType::ImagePreview;
+}
+
+bool PlugType::isCompatible(PlugType::Enum output, PlugType::Enum input)
+{
+    switch(input)
+    {
+        case Generic:
+            return true;
+        default:
+            return output == input;
+    }
 }

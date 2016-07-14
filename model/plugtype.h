@@ -21,6 +21,7 @@ namespace PlugType
 {
     typedef enum
     {
+        Generic,
         Image,
         Size,
         Point,
@@ -52,7 +53,7 @@ namespace PlugType
 
     bool isLabelVisible(Enum value);
 
-    Enum getCompatibility(Enum value);
+    bool isCompatible(Enum output, Enum input);
 
     bool isInputSavable(Enum value);
 }

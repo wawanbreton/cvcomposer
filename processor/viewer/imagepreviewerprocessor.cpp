@@ -28,42 +28,52 @@
 
 ImagePreviewerProcessor::ImagePreviewerProcessor()
 {
-    addInput("input image", PlugType::Image, QVariant(), Properties(), ThreeStateBool::False);
+    addInput("input", PlugType::Generic, QVariant(), Properties(), ThreeStateBool::False);
 
-    addOutput("output image", PlugType::ImagePreview);
+    addOutput("output", PlugType::ImagePreview);
 }
 
 Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
 {
-    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat smallImage;
-
-    // First resize the image if it is too big, because we only require a preview
-    double scale;
-    int previewSize = 512;
-    if(inputImage.cols > inputImage.rows)
-    {
-        scale = previewSize / double(inputImage.cols);
-    }
-    else
-    {
-        scale = previewSize / double(inputImage.rows);
-    }
-
-    if(scale < 1)
-    {
-        cv::resize(inputImage, smallImage, cv::Size(), scale, scale);
-    }
-    else
-    {
-        smallImage = inputImage;
-    }
-
-    // Now converts the small image to a QPixmap for display
-    QPixmap outputImage = QPixmap::fromImage(CvUtils::toQImage(smallImage));
-
+    const QVariant &input = inputs["input"];
     Properties outputs;
-    outputs.insert("output image", outputImage);
+
+    if(input.userType() == qMetaTypeId<cv::Mat>())
+    {
+        // First resize the image if it is too big, because we only require a preview
+
+        cv::Mat inputImage = input.value<cv::Mat>();
+        cv::Mat smallImage;
+
+        double scale;
+        int previewSize = 512;
+        if(inputImage.cols > inputImage.rows)
+        {
+            scale = previewSize / double(inputImage.cols);
+        }
+        else
+        {
+            scale = previewSize / double(inputImage.rows);
+        }
+
+        if(scale < 1)
+        {
+            cv::resize(inputImage, smallImage, cv::Size(), scale, scale);
+        }
+        else
+        {
+            smallImage = inputImage;
+        }
+
+        // Now converts the small image to a QPixmap for display
+        outputs.insert("output", QPixmap::fromImage(CvUtils::toQImage(smallImage)));
+    }
+    else
+    {
+        // Just transfer the data
+        outputs.insert("output", input);
+    }
+
     return outputs;
 }
 
