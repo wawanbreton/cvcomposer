@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "dockableimageviewerwidget.h"
+#include "imageviewerwidget.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -25,7 +25,7 @@
 #include "plugwidget/imageviewerdockwidget.h"
 
 
-DockableImageViewerWidget::DockableImageViewerWidget(QWidget *parent) :
+ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
     AbstractPlugWidget(parent),
     _lineEdit(new QLineEdit(this)),
     _dockWidget(new ImageViewerDockWidget(QApplication::activeWindow()))
@@ -45,12 +45,12 @@ DockableImageViewerWidget::DockableImageViewerWidget(QWidget *parent) :
     _dockWidget->setWindowTitle(title);
 }
 
-DockableImageViewerWidget::~DockableImageViewerWidget()
+ImageViewerWidget::~ImageViewerWidget()
 {
     delete _dockWidget;
 }
 
-QMap<QString, QString> DockableImageViewerWidget::save() const
+QMap<QString, QString> ImageViewerWidget::save() const
 {
     QMap<QString, QString> properties;
 
@@ -64,14 +64,14 @@ QMap<QString, QString> DockableImageViewerWidget::save() const
     return properties;
 }
 
-void DockableImageViewerWidget::load(const QMap<QString, QString> &properties)
+void ImageViewerWidget::load(const QMap<QString, QString> &properties)
 {
     _lineEdit->setText(properties["title"]);
     _dockWidget->setObjectName(properties["objectName"]);
     _dockWidget->restoreGeometry(QByteArray::fromHex(properties["geometry"].toUtf8()));
 }
 
-void DockableImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
+void ImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
     AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 

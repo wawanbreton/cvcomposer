@@ -17,13 +17,29 @@
 
 #pragma once
 
-#include "processor/abstractprocessor.h"
+#include "plugwidget/abstractplugwidget.h"
 
-class DockableImageViewerProcessor : public AbstractProcessor
+#include <QLineEdit>
+
+class ImageViewerDockWidget;
+
+class ImageViewerWidget : public AbstractPlugWidget
 {
-    public:
-        DockableImageViewerProcessor();
+    Q_OBJECT
 
-    protected:
-        virtual Properties processImpl(const Properties &inputs);
+    public:
+        explicit ImageViewerWidget(QWidget *parent = NULL);
+
+        virtual ~ImageViewerWidget();
+
+        virtual QMap<QString, QString> save() const;
+
+        virtual void load(const QMap<QString, QString> &properties);
+
+    public slots:
+        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+
+    private:
+        QLineEdit *_lineEdit;
+        ImageViewerDockWidget *_dockWidget;
 };

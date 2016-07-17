@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagepreviewerprocessor.h"
+#include "dataviewerprocessor.h"
 
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -26,14 +26,14 @@
 #include "global/cvutils.h"
 
 
-ImagePreviewerProcessor::ImagePreviewerProcessor()
+DataViewerProcessor::DataViewerProcessor()
 {
     addInput("input", PlugType::Generic, QVariant(), Properties(), ThreeStateBool::False);
 
     addOutput("output", PlugType::ImagePreview);
 }
 
-Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
+Properties DataViewerProcessor::processImpl(const Properties &inputs)
 {
     const QVariant &input = inputs["input"];
     Properties outputs;

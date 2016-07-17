@@ -15,34 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef DOCKABLEIMAGEVIEWERWIDGET_H
-#define DOCKABLEIMAGEVIEWERWIDGET_H
+#pragma once
 
-#include "plugwidget/abstractplugwidget.h"
+#include "processor/abstractprocessor.h"
 
-#include <QLineEdit>
-
-class ImageViewerDockWidget;
-
-class DockableImageViewerWidget : public AbstractPlugWidget
+class DataViewerProcessor : public AbstractProcessor
 {
-    Q_OBJECT
-
     public:
-        explicit DockableImageViewerWidget(QWidget *parent = NULL);
+        DataViewerProcessor();
 
-        virtual ~DockableImageViewerWidget();
-
-        virtual QMap<QString, QString> save() const;
-
-        virtual void load(const QMap<QString, QString> &properties);
-
-    public slots:
-        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
-
-    private:
-        QLineEdit *_lineEdit;
-        ImageViewerDockWidget *_dockWidget;
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
 };
-
-#endif // DOCKABLEIMAGEVIEWERWIDGET_H

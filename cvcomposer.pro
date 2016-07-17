@@ -42,8 +42,6 @@ SOURCES += main.cpp\
     processor/abstractprocessor.cpp \
     processor/filter/blurprocessor.cpp \
     processor/input/imagefromfileprocessor.cpp \
-    processor/viewer/imagepreviewerprocessor.cpp \
-    processor/viewer/dockableimageviewerprocessor.cpp \
     processor/filter/gaussianblurprocessor.cpp \
     processor/filter/medianblurprocessor.cpp \
     processor/filter/bilateralfilterprocessor.cpp \
@@ -52,13 +50,11 @@ SOURCES += main.cpp\
     model/plug.cpp \
     plugwidget/imagepathwidget.cpp \
     plugwidget/abstractplugwidget.cpp \
-    plugwidget/imagepreviewwidget.cpp \
     plugwidget/sizewidget.cpp \
     plugwidget/pointwidget.cpp \
     plugwidget/enumerationwidget.cpp \
     plugwidget/doublewidget.cpp \
     plugwidget/stringwidget.cpp \
-    plugwidget/dockableimageviewerwidget.cpp \
     plugwidget/colorwidget.cpp \
     processor/filter/morphologytransformationprocessor.cpp \
     processor/filter/thresholdprocessor.cpp \
@@ -85,7 +81,11 @@ SOURCES += main.cpp\
     processor/filter/laplacianprocessor.cpp \
     gui/editsettingsdialog.cpp \
     global/parser.cpp \
-    processor/processorsfactory.cpp
+    processor/processorsfactory.cpp \
+    plugwidget/dataviewerwidget.cpp \
+    processor/viewer/dataviewerprocessor.cpp \
+    processor/viewer/imageviewerprocessor.cpp \
+    plugwidget/imageviewerwidget.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -107,8 +107,6 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/blurprocessor.h \
     processor/input/imagefromfileprocessor.h \
     global/properties.h \
-    processor/viewer/imagepreviewerprocessor.h \
-    processor/viewer/dockableimageviewerprocessor.h \
     processor/filter/gaussianblurprocessor.h \
     processor/filter/medianblurprocessor.h \
     processor/filter/bilateralfilterprocessor.h \
@@ -117,13 +115,11 @@ HEADERS  += gui/mainwidget.h \
     gui/genericnodewidget.h \
     plugwidget/imagepathwidget.h \
     plugwidget/abstractplugwidget.h \
-    plugwidget/imagepreviewwidget.h \
     plugwidget/sizewidget.h \
     plugwidget/pointwidget.h \
     plugwidget/enumerationwidget.h \
     plugwidget/doublewidget.h \
     plugwidget/stringwidget.h \
-    plugwidget/dockableimageviewerwidget.h \
     plugwidget/colorwidget.h \
     processor/filter/morphologytransformationprocessor.h \
     processor/filter/thresholdprocessor.h \
@@ -152,7 +148,11 @@ HEADERS  += gui/mainwidget.h \
     execution/executorsettings.h \
     global/parser.h \
     global/threestatebool.h \
-    processor/processorsfactory.h
+    processor/processorsfactory.h \
+    plugwidget/dataviewerwidget.h \
+    processor/viewer/dataviewerprocessor.h \
+    processor/viewer/imageviewerprocessor.h \
+    plugwidget/imageviewerwidget.h
 
 FORMS    += \
     gui/mainwidget.ui \

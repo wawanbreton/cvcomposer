@@ -17,22 +17,13 @@
 
 #pragma once
 
-#include "plugwidget/abstractplugwidget.h"
+#include "processor/abstractprocessor.h"
 
-class ImagePreviewWidget : public AbstractPlugWidget
+class ImageViewerProcessor : public AbstractProcessor
 {
-    Q_OBJECT
-
     public:
-        explicit ImagePreviewWidget(QWidget *parent = NULL);
-
-    public slots:
-        void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+        ImageViewerProcessor();
 
     protected:
-        virtual void paintEvent(QPaintEvent *event);
-
-    private:
-        QPixmap _image;
-        QString _text;
+        virtual Properties processImpl(const Properties &inputs);
 };

@@ -27,7 +27,7 @@
 
 #include "model/plug.h"
 #include "plugwidget/imagepathwidget.h"
-#include "plugwidget/imagepreviewwidget.h"
+#include "plugwidget/dataviewerwidget.h"
 #include "plugwidget/sizewidget.h"
 #include "plugwidget/pointwidget.h"
 #include "plugwidget/enumerationwidget.h"
@@ -35,7 +35,7 @@
 #include "plugwidget/doublewidget.h"
 #include "plugwidget/stringwidget.h"
 #include "plugwidget/colorwidget.h"
-#include "plugwidget/dockableimageviewerwidget.h"
+#include "plugwidget/imageviewerwidget.h"
 #include "plugwidget/booleanwidget.h"
 
 
@@ -300,10 +300,10 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             widget = new ImagePathWidget(this);
             break;
         case PlugType::ImagePreview:
-            widget = new ImagePreviewWidget(this);
+            widget = new DataViewerWidget(this);
             break;
         case PlugType::DockableImageViewer:
-            widget = new DockableImageViewerWidget(this);
+            widget = new ImageViewerWidget(this);
             break;
         case PlugType::Boolean:
             widget = new BooleanWidget(this);

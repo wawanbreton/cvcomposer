@@ -15,19 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "dockableimageviewerprocessor.h"
+#pragma once
 
+#include "plugwidget/abstractplugwidget.h"
 
-DockableImageViewerProcessor::DockableImageViewerProcessor() :
-    AbstractProcessor()
+class DataViewerWidget : public AbstractPlugWidget
 {
-    addInput("image", PlugType::Image);
-    addInput("title", PlugType::DockableImageViewer);
-}
+    Q_OBJECT
 
-Properties DockableImageViewerProcessor::processImpl(const Properties &inputs)
-{
-    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
-    return Properties();
-}
+    public:
+        explicit DataViewerWidget(QWidget *parent = NULL);
 
+    public slots:
+        void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+
+    protected:
+        virtual void paintEvent(QPaintEvent *event);
+
+    private:
+        QPixmap _image;
+        QString _text;
+};

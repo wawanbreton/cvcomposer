@@ -42,8 +42,8 @@
 #include "processor/shape/drawrectangleprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/shape/drawtextprocessor.h"
-#include "processor/viewer/dockableimageviewerprocessor.h"
-#include "processor/viewer/imagepreviewerprocessor.h"
+#include "processor/viewer/imageviewerprocessor.h"
+#include "processor/viewer/dataviewerprocessor.h"
 
 
 QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
@@ -78,7 +78,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Analyzers", analyzers);
 
     QStringList viewers;
-    viewers << "ImagePreviewer" << "DockableImageViewer";
+    viewers << "DataViewer" << "ImageViewer";
     processors << QPair<QString, QStringList>("Viewers", viewers);
 
     return processors;
@@ -127,13 +127,13 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     {
         return new ImageFromFileProcessor();
     }
-    else if(rawProcessorName == "ImagePreviewer")
+    else if(rawProcessorName == "DataViewer")
     {
-        return new ImagePreviewerProcessor();
+        return new DataViewerProcessor();
     }
-    else if(rawProcessorName == "DockableImageViewer")
+    else if(rawProcessorName == "ImageViewer")
     {
-        return new DockableImageViewerProcessor();
+        return new ImageViewerProcessor();
     }
     else if(rawProcessorName == "GaussianBlur")
     {

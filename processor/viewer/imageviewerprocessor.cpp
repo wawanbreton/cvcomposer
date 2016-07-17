@@ -15,15 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "imageviewerprocessor.h"
 
-#include "processor/abstractprocessor.h"
 
-class ImagePreviewerProcessor : public AbstractProcessor
+ImageViewerProcessor::ImageViewerProcessor() :
+    AbstractProcessor()
 {
-    public:
-        ImagePreviewerProcessor();
+    addInput("image", PlugType::Image);
+    addInput("title", PlugType::DockableImageViewer);
+}
 
-    protected:
-        virtual Properties processImpl(const Properties &inputs) override;
-};
+Properties ImageViewerProcessor::processImpl(const Properties &inputs)
+{
+    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
+    return Properties();
+}
+

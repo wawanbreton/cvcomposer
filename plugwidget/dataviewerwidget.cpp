@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagepreviewwidget.h"
+#include "dataviewerwidget.h"
 
 #include <QPainter>
 #include <QVariant>
@@ -24,13 +24,13 @@
 #include "global/cvutils.h"
 
 
-ImagePreviewWidget::ImagePreviewWidget(QWidget *parent) :
+DataViewerWidget::DataViewerWidget(QWidget *parent) :
     AbstractPlugWidget(parent)
 {
     setMinimumSize(128, 128);
 }
 
-void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
+void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
 {
     AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
@@ -55,7 +55,7 @@ void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Propert
     update();
 }
 
-void ImagePreviewWidget::paintEvent(QPaintEvent *event)
+void DataViewerWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
