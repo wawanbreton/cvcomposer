@@ -17,6 +17,7 @@
 
 #include "plugitem.h"
 
+#include <QPen>
 #include <QBrush>
 #include <QCursor>
 #include <QDebug>
@@ -36,8 +37,20 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     switch(plug->getDefinition().type)
     {
         case PlugType::Generic:
-            brush = Qt::red;
+        {
+            // Make a rainbow gradient :)
+            int precision = 10;
+            QLinearGradient gradient;
+            gradient.setStart(rect().topLeft() + QPoint(pen().width(), 0));
+            gradient.setFinalStop(rect().topRight() - QPoint(pen().width(), 0));
+            for(int i = 0 ; i < precision ; i++)
+            {
+                qreal coeff = qreal(i) / precision;
+                gradient.setColorAt(coeff, QColor::fromHsvF(coeff, 0.78, 1));
+            }
+            brush = gradient;
             break;
+        }
         case PlugType::Image:
             brush = QColor(46, 204, 113);
             break;
