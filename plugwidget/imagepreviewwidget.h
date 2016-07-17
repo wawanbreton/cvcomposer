@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEPREVIEWWIDGET_H
-#define IMAGEPREVIEWWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -35,6 +34,5 @@ class ImagePreviewWidget : public AbstractPlugWidget
 
     private:
         QPixmap _image;
+        QString _text;
 };
-
-#endif // IMAGEPREVIEWWIDGET_H

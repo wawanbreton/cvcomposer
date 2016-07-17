@@ -40,7 +40,7 @@ Properties ImagePreviewerProcessor::processImpl(const Properties &inputs)
 
     if(input.userType() == qMetaTypeId<cv::Mat>())
     {
-        // First resize the image if it is too big, because we only require a preview
+        // In case of an image, resize it if it is too big, because we only require a preview
 
         cv::Mat inputImage = input.value<cv::Mat>();
         cv::Mat smallImage;

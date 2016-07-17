@@ -19,6 +19,7 @@
 
 #include <QPainter>
 #include <QVariant>
+#include <QStyle>
 
 #include "global/cvutils.h"
 
@@ -33,7 +34,24 @@ void ImagePreviewWidget::onNodeProcessed(const Properties &inputs, const Propert
 {
     AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
-    _image = outputs["output"].value<QPixmap>();
+    _image = QPixmap();
+    _text.clear();
+
+    const QVariant &output = outputs["output"];
+    if(output.userType() == qMetaTypeId<QPixmap>())
+    {
+        _image = output.value<QPixmap>();
+    }
+    else if(output.userType() == qMetaTypeId<cv::Rect>())
+    {
+        cv::Rect rect = output.value<cv::Rect>();
+        _text = QString("x: %1\ny: %2\nw: %3\nh:%4");
+        _text = _text.arg(rect.x);
+        _text = _text.arg(rect.y);
+        _text = _text.arg(rect.width);
+        _text = _text.arg(rect.height);
+    }
+
     update();
 }
 
@@ -43,11 +61,7 @@ void ImagePreviewWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
-    if(_image.isNull())
-    {
-        painter.fillRect(rect(), Qt::gray);
-    }
-    else
+    if(!_image.isNull())
     {
         qreal imageRatio = qreal(_image.width()) / _image.height();
         qreal widgetRatio = qreal(width()) / height();
@@ -63,5 +77,13 @@ void ImagePreviewWidget::paintEvent(QPaintEvent *event)
             rect.translate((width() - rect.width()) / 2, 0);
         }
         painter.drawPixmap(rect, _image);
+    }
+    else if(!_text.isEmpty())
+    {
+        style()->drawItemText(&painter, rect(), Qt::AlignLeft | Qt::AlignVCenter, palette(), true, _text);
+    }
+    else
+    {
+        painter.fillRect(rect(), Qt::gray);
     }
 }
