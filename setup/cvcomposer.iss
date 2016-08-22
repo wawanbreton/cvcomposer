@@ -25,9 +25,9 @@ Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Widgets.dll";             DestDir: "{app}";
 Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Xml.dll";                 DestDir: "{app}"; Flags: ignoreversion
 source: "C:\Qt\5.7\mingw53_32\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 source: "C:\Qt\5.7\mingw53_32\plugins\imageformats\qjpeg.dll"; DestDir: "{app}\imageformats"; Flags: ignoreversion
-Source: "c:\qt\5.7\5.7\mingw53_32\bin\LIBWINPTHREAD-1.DLL";    DestDir: "{app}"; Flags: ignoreversion
-Source: "c:\qt\5.7\5.7\mingw53_32\bin\LIBSTDC++-6.DLL";        DestDir: "{app}"; Flags: ignoreversion
-Source: "c:\qt\5.7\5.7\mingw53_32\bin\LIBGCC_S_DW2-1.DLL";     DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\qt\5.7\mingw53_32\bin\LIBWINPTHREAD-1.DLL";        DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\qt\5.7\mingw53_32\bin\LIBSTDC++-6.DLL";            DestDir: "{app}"; Flags: ignoreversion
+Source: "c:\qt\5.7\mingw53_32\bin\LIBGCC_S_DW2-1.DLL";         DestDir: "{app}"; Flags: ignoreversion
 
 ; OpenCV
 Source: "C:\Program Files\opencv2.4.6\build-mingw\bin\libopencv_core249.dll";    DestDir: "{app}"; Flags: ignoreversion
