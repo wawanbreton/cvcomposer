@@ -51,6 +51,7 @@ void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Propertie
         _text = _text.arg(rect.width);
         _text = _text.arg(rect.height);
     }
+    #warning TBD display kernel
 
     update();
 }

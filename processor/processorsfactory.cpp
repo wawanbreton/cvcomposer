@@ -116,7 +116,6 @@ QString ProcessorsFactory::toUserReadableName(const QString &name)
     }
 }
 
-
 AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcessorName)
 {
     if(rawProcessorName == "Blur")
