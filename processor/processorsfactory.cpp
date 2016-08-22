@@ -36,6 +36,7 @@
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
+#include "processor/math/countnonzeroprocessor.h"
 #include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawellipseprocessor.h"
 #include "processor/shape/drawlineprocessor.h"
@@ -67,6 +68,10 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList data;
     data << "Kernel";
     processors << QPair<QString, QStringList>("Data", data);
+
+    QStringList math;
+    math << "CountNonZero";
+    processors << QPair<QString, QStringList>("Math", math);
 
     QStringList shapes;
     shapes << "Rectangle" << "DrawRectangle" << "DrawCircle" << "DrawEllipse" << "DrawLine"
@@ -217,6 +222,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Laplacian")
     {
         return new LaplacianProcessor();
+    }
+    else if(rawProcessorName == "CountNonZero")
+    {
+        return new CountNonZeroProcessor();
     }
     else
     {

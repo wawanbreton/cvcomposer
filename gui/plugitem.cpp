@@ -60,6 +60,9 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
         case PlugType::Rectangle:
             brush = QColor(142, 68, 173);
             break;
+        case PlugType::Double:
+            brush = QColor(230, 126, 34);
+            break;
         default:
             brush = Qt::white;
             break;

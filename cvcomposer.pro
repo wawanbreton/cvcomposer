@@ -85,7 +85,8 @@ SOURCES += main.cpp\
     plugwidget/dataviewerwidget.cpp \
     processor/viewer/dataviewerprocessor.cpp \
     processor/viewer/imageviewerprocessor.cpp \
-    plugwidget/imageviewerwidget.cpp
+    plugwidget/imageviewerwidget.cpp \
+    processor/math/countnonzeroprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -152,7 +153,8 @@ HEADERS  += gui/mainwidget.h \
     plugwidget/dataviewerwidget.h \
     processor/viewer/dataviewerprocessor.h \
     processor/viewer/imageviewerprocessor.h \
-    plugwidget/imageviewerwidget.h
+    plugwidget/imageviewerwidget.h \
+    processor/math/countnonzeroprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
