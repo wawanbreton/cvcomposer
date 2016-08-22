@@ -18,6 +18,7 @@
 #include "model/plug.h"
 
 #include <QDebug>
+#include <QStringList>
 
 #include "global/cvutils.h"
 
