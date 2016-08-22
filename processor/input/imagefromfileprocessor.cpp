@@ -30,11 +30,11 @@ ImageFromFileProcessor::ImageFromFileProcessor() :
     addInput("path",   PlugType::ImagePath);
 
     QList<QPair<QString, QVariant> > valuesTypes;
-    valuesTypes << QPair<QString, int>("Unchanged", CV_LOAD_IMAGE_UNCHANGED);
-    valuesTypes << QPair<QString, int>("Grayscale", CV_LOAD_IMAGE_GRAYSCALE);
-    valuesTypes << QPair<QString, int>("Color",     CV_LOAD_IMAGE_COLOR);
-    valuesTypes << QPair<QString, int>("Any depth", CV_LOAD_IMAGE_ANYDEPTH);
-    valuesTypes << QPair<QString, int>("Any color", CV_LOAD_IMAGE_ANYCOLOR);
+    valuesTypes << QPair<QString, QVariant>("Unchanged", CV_LOAD_IMAGE_UNCHANGED);
+    valuesTypes << QPair<QString, QVariant>("Grayscale", CV_LOAD_IMAGE_GRAYSCALE);
+    valuesTypes << QPair<QString, QVariant>("Color",     CV_LOAD_IMAGE_COLOR);
+    valuesTypes << QPair<QString, QVariant>("Any depth", CV_LOAD_IMAGE_ANYDEPTH);
+    valuesTypes << QPair<QString, QVariant>("Any color", CV_LOAD_IMAGE_ANYCOLOR);
     addEnumerationInput("mode", valuesTypes, CV_LOAD_IMAGE_COLOR);
 
     addOutput("image", PlugType::Image);
