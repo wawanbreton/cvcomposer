@@ -30,7 +30,7 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     setMouseTracking(true);
     setRenderHint(QPainter::Antialiasing, true);
     setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 }
 
 void ComposerWidget::replaceScene(QGraphicsScene *newScene)

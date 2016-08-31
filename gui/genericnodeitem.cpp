@@ -25,6 +25,7 @@
 #include <QFontMetrics>
 
 #include "model/node.h"
+#include "gui/boundedgraphicsproxywidget.h"
 #include "gui/customitems.h"
 #include "gui/plugitem.h"
 #include "gui/genericnodewidget.h"
@@ -35,7 +36,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
     _widget(new GenericNodeWidget()),
-    _proxy(new QGraphicsProxyWidget(this)),
+    _proxy(new BoundedGraphicsProxyWidget(this)),
     _inputPlugs(),
     _outputPlugs()
 {
