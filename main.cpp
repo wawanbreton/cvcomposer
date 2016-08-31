@@ -18,6 +18,8 @@
 #include "gui/mainwidget.h"
 #include <QApplication>
 
+#include "processor/input/cameraprocessor.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -28,5 +30,11 @@ int main(int argc, char *argv[])
     MainWidget w;
     w.show();
 
-    return a.exec();
+    int result = a.exec();
+
+    // We need to cleanup the camera resources at some point before exiting, or OpenCV will
+    // keep a handle and not allow the application to exit
+    CameraProcessor::cleanup();
+
+    return result;
 }

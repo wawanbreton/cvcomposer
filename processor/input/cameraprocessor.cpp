@@ -32,6 +32,15 @@ bool CameraProcessor::getRealTimeProcessing() const
     return true;
 }
 
+void CameraProcessor::cleanup()
+{
+    if(_camera)
+    {
+        delete _camera;
+        _camera = NULL;
+    }
+}
+
 Properties CameraProcessor::processImpl(const Properties &inputs)
 {
     Q_UNUSED(inputs);
