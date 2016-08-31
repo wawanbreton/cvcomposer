@@ -229,6 +229,12 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
     doc.appendChild(rootNode);
 }
 
+void ComposerScene::end()
+{
+    connect(_scheduler, SIGNAL(ended()), SIGNAL(ended()));
+    _scheduler->end();
+}
+
 void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
 {
     QDomNode mainNode = doc.namedItem(QCoreApplication::applicationName().toLower());

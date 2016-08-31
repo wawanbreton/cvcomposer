@@ -18,6 +18,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 
+#include <QCloseEvent>
 #include <QDebug>
 #include <QDomDocument>
 #include <QFileDialog>
@@ -66,11 +67,32 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(_ui->actionSaveAs,   SIGNAL(triggered()), SLOT(onSave()));
     connect(_ui->actionLoad,     SIGNAL(triggered()), SLOT(onLoad()));
     connect(_ui->actionSettings, SIGNAL(triggered()), SLOT(onDisplaySettings()));
+
+    // Do not quit automatically, we are going to decide
+    qApp->setQuitOnLastWindowClosed(false);
 }
 
 MainWidget::~MainWidget()
 {
     delete _ui;
+}
+
+void MainWidget::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event)
+
+    ComposerScene *scene = qobject_cast<ComposerScene *>(_ui->graphicsView->scene());
+    if(scene)
+    {
+        // The window will be closed right now, but the application may be exited a bit later
+        connect(scene, SIGNAL(ended()), qApp, SLOT(quit()));
+        scene->end();
+    }
+    else
+    {
+        qCritical() << "Scene is not a ComposerScene instance";
+        qApp->quit();
+    }
 }
 
 void MainWidget::onNew()

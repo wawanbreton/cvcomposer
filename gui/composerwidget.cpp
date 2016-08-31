@@ -33,7 +33,8 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
 
 void ComposerWidget::replaceScene(QGraphicsScene *newScene)
 {
-    scene()->deleteLater();
+    // Let the current scene end its processings before it is destroyed
+    connect(scene(), SIGNAL(ended()), scene(), SLOT(deleteLater()));
 
     newScene->setParent(this);
     setScene(newScene);

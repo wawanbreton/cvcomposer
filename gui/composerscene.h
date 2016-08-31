@@ -54,6 +54,11 @@ class ComposerScene : public QGraphicsScene
 
         void save(QDomDocument &doc, QMainWindow *mainWindow) const;
 
+        void end();
+
+    signals:
+        void ended();
+
     protected:
         virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 

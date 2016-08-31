@@ -31,6 +31,9 @@ class MainWidget : public QMainWindow
         explicit MainWidget(QWidget *parent = 0);
         ~MainWidget();
 
+    protected:
+        virtual void closeEvent(QCloseEvent *event);
+
     private slots:
         void onNew();
 

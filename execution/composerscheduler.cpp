@@ -18,6 +18,7 @@
 #include "execution/composerscheduler.h"
 
 #include <QDebug>
+#include <QTimer>
 
 #include "model/composermodel.h"
 #include "model/connection.h"
@@ -27,10 +28,11 @@
 
 ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent) :
     QObject(parent),
-    _executors(),
+    _currentExecutors(),
     _oldExecutors(),
     _keepProcessingNodes(),
-    _model(model)
+    _model(model),
+    _end(false)
 {
     _settings.cacheData = true;
     _settings.useMultiThreading = true;
@@ -52,6 +54,20 @@ void ComposerScheduler::start()
     }
 
     processNexts();
+}
+
+void ComposerScheduler::end()
+{
+    if(_currentExecutors.isEmpty())
+    {
+        // There is no executor being processed, exit asap
+        QTimer::singleShot(0, this, SIGNAL(ended()));
+    }
+    else
+    {
+        // There are remaining executors, wait for their end before exiting
+        _end = true;
+    }
 }
 
 void ComposerScheduler::setSettings(const ExecutorSettings &settings)
@@ -162,35 +178,48 @@ void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
     ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
     if(executor)
     {
-        _executors.removeAll(executor);
+        _currentExecutors.removeAll(executor);
 
-        if(_oldExecutors.removeAll(executor) == 0)
+        if(_end)
         {
-            // The executor has not been invalidated during its execution
+            // Execution has been asked to end, give up
 
-            if(keepProcessing)
+            if(_currentExecutors.isEmpty())
             {
-                _keepProcessingNodes << executor->getNode();
-            }
-
-            if(success)
-            {
-                executor->getNode()->signalProcessDone(executor->getOutputs(),
-                                                       executor->getInputs());
-                _processedNodes.insert(executor->getNode(), executor->getOutputs());
-            }
-            else
-            {
-                invalidateFromNode(executor->getNode());
-            }
-
-            if(!_settings.cacheData)
-            {
-                clearUnusedCache();
+                // This is the last executors we were waiting for
+                QTimer::singleShot(0, this, SIGNAL(ended()));
             }
         }
+        else
+        {
+            if(_oldExecutors.removeAll(executor) == 0)
+            {
+                // The executor has not been invalidated during its execution
 
-        processNexts();
+                if(keepProcessing)
+                {
+                    _keepProcessingNodes << executor->getNode();
+                }
+
+                if(success)
+                {
+                    executor->getNode()->signalProcessDone(executor->getOutputs(),
+                                                           executor->getInputs());
+                    _processedNodes.insert(executor->getNode(), executor->getOutputs());
+                }
+                else
+                {
+                    invalidateFromNode(executor->getNode());
+                }
+
+                if(!_settings.cacheData)
+                {
+                    clearUnusedCache();
+                }
+            }
+
+            processNexts();
+        }
     }
     else
     {
@@ -303,7 +332,7 @@ quint16 ComposerScheduler::maxThreads() const
 
 void ComposerScheduler::processNexts()
 {
-    while(_executors.count() < maxThreads())
+    while(_currentExecutors.count() < maxThreads())
     {
         bool nodeAddedForProcessing = false;
 
@@ -313,7 +342,7 @@ void ComposerScheduler::processNexts()
             // Remove nodes which have already been processed
             potentialNodes.removeAll(node);
         }
-        for(ComposerExecutor *executor : _executors)
+        for(ComposerExecutor *executor : _currentExecutors)
         {
             // Remove nodes which are being processed
             potentialNodes.removeAll(executor->getNode());
@@ -336,7 +365,7 @@ void ComposerScheduler::processNexts()
 
                 nodeAddedForProcessing = true;
 
-                _executors << executor;
+                _currentExecutors << executor;
 
                 break;
             }
@@ -346,7 +375,7 @@ void ComposerScheduler::processNexts()
         {
             // There is no other node we can process yet
 
-            if(_executors.count() == 0)
+            if(_currentExecutors.count() == 0)
             {
                 // And no executor is running => we are globally over
                 foreach(const Node *node, _keepProcessingNodes)
@@ -376,7 +405,7 @@ void ComposerScheduler::reProcessFromNode(const Node *node)
 
 void ComposerScheduler::reProcessAll()
 {
-    for(ComposerExecutor *executor : _executors)
+    for(ComposerExecutor *executor : _currentExecutors)
     {
         _oldExecutors << executor;
     }
@@ -398,7 +427,7 @@ void ComposerScheduler::invalidateFromNode(const Node *node)
 
 void ComposerScheduler::invalidateExecutors(const Node *node)
 {
-    for(ComposerExecutor *executor : _executors)
+    for(ComposerExecutor *executor : _currentExecutors)
     {
         if(executor->getNode() == node)
         {

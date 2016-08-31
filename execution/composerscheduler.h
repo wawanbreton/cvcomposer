@@ -44,9 +44,14 @@ class ComposerScheduler : public QObject
 
         void start();
 
+        void end();
+
         void setSettings(const ExecutorSettings &settings);
 
         const ExecutorSettings &getSettings() const;
+
+    signals:
+        void ended();
 
     private slots:
         void onNodeAdded(const Node *node);
@@ -80,11 +85,12 @@ class ComposerScheduler : public QObject
 
     private:
         ExecutorSettings _settings;
-        QList<ComposerExecutor *> _executors;
+        QList<ComposerExecutor *> _currentExecutors;
         QList<ComposerExecutor *> _oldExecutors;
         QList<const Node *> _keepProcessingNodes;
         const ComposerModel *_model;
         QMap<const Node *, Properties> _processedNodes;
+        bool _end;
 };
 
 #endif // COMPOSERSCHEDULER_H
