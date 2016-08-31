@@ -39,6 +39,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _inputPlugs(),
     _outputPlugs()
 {
+    setFlag(QGraphicsItem::ItemClipsToShape, true);
+
     _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_NoBackground, true);

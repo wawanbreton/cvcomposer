@@ -29,6 +29,8 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
     setRenderHint(QPainter::Antialiasing, true);
+    setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 }
 
 void ComposerWidget::replaceScene(QGraphicsScene *newScene)
