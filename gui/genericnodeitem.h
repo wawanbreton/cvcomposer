@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GenericNodeItem_H
-#define GenericNodeItem_H
+#pragma once
 
 #include <QObject>
 #include <QGraphicsItem>
@@ -76,9 +75,6 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     private:
         Node *_node;
         GenericNodeWidget *_widget;
-        QGraphicsProxyWidget *_proxy;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
 };
-
-#endif // GenericNodeItem_H

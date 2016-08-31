@@ -36,7 +36,6 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
     _widget(new GenericNodeWidget()),
-    _proxy(new BoundedGraphicsProxyWidget(this)),
     _inputPlugs(),
     _outputPlugs()
 {
@@ -55,8 +54,9 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     connect(node,    SIGNAL(processUnavailable()),
             _widget, SLOT(onProcessUnavailable()));
 
-    _proxy->setWidget(_widget);
-    _proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+    QGraphicsProxyWidget *proxy = new BoundedGraphicsProxyWidget(this);
+    proxy->setWidget(_widget);
+    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
 
     foreach(Plug *plug, _node->getInputs())
     {
