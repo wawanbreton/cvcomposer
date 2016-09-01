@@ -454,7 +454,13 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedNode.initClickPos = event->scenePos();
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
+
+                QGraphicsScene::mousePressEvent(event);
             }
+        }
+        else
+        {
+            clearSelection();
         }
     }
 }

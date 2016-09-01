@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <QLayout>
 #include <QFontMetrics>
+#include <QStyleOptionGraphicsItem>
 
 #include "model/node.h"
 #include "gui/boundedgraphicsproxywidget.h"
@@ -40,6 +41,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _outputPlugs()
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
 
     _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setAutoFillBackground(false);
@@ -149,6 +151,36 @@ void GenericNodeItem::load(const QMap<QString, QString> &properties)
 
 QRectF GenericNodeItem::boundingRect() const
 {
+    QRectF rect = computeBaseRect();
+
+    qreal semiBorderWidth = selectionBorderWidth / 2.0;
+    rect.adjust(-semiBorderWidth, -semiBorderWidth, semiBorderWidth, semiBorderWidth);
+
+    return rect;
+}
+
+void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    if(option->state.testFlag(QStyle::State_Selected))
+    {
+        painter->setPen(QPen(Qt::black, selectionBorderWidth));
+    }
+
+    QRectF baseRect = computeBaseRect();
+
+    painter->setBrush(Qt::white);
+    painter->drawRect(baseRect);
+
+    painter->drawText(QRect(0, 0, baseRect.width(), titleHeight),
+                      Qt::AlignCenter,
+                      _node->getUserReadableName());
+}
+
+QRectF GenericNodeItem::computeBaseRect() const
+{
     int widgetWidth = _widget->sizeHint().width() + 4 * PlugItem::radius;
     QFont defaultFont;
     QFontMetrics metrics(defaultFont);
@@ -158,20 +190,6 @@ QRectF GenericNodeItem::boundingRect() const
                   0,
                   qMax(widgetWidth, titleWidth),
                   titleHeight + _widget->sizeHint().height() + 2 * PlugItem::radius);
-}
-
-void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
-
-    qreal semiWidth = painter->pen().widthF() / 2;
-
-    painter->setBrush(Qt::white);
-    painter->drawRect(boundingRect().adjusted(semiWidth, semiWidth, -semiWidth, -semiWidth));
-    painter->drawText(boundingRect().adjusted(0, 5, 0, 0),
-                      Qt::AlignHCenter | Qt::AlignTop,
-                      _node->getUserReadableName());
 }
 
 void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
@@ -189,18 +207,18 @@ void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
 
 void GenericNodeItem::recomputeSizes()
 {
-    QRectF actualBoundingRect = boundingRect();
-    _widget->resize(actualBoundingRect.width() - 4 * PlugItem::radius,
-                    actualBoundingRect.height() - titleHeight - 2 * PlugItem::radius);
+    QRectF actualBaseRect = computeBaseRect();
+    _widget->resize(actualBaseRect.width() - 4 * PlugItem::radius,
+                    actualBaseRect.height() - titleHeight - 2 * PlugItem::radius);
 
     foreach(PlugItem *plugItem, _inputPlugs)
     {
-        plugItem->setPos(QPointF(boundingRect().left(),
+        plugItem->setPos(QPointF(actualBaseRect.left(),
                                  _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));
     }
     foreach(PlugItem *plugItem, _outputPlugs)
     {
-        plugItem->setPos(QPointF(boundingRect().right(),
+        plugItem->setPos(QPointF(actualBaseRect.right(),
                                  _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));
     }
 

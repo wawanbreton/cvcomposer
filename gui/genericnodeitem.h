@@ -64,6 +64,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget);
 
+    private:
+        QRectF computeBaseRect() const;
+
     private slots:
         void onPlugConnectionChanged(const Plug *connectedTo);
 
@@ -71,6 +74,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
     public:
         static const int titleHeight = 30;
+        static const int selectionBorderWidth = 6;
 
     private:
         Node *_node;
