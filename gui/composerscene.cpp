@@ -385,12 +385,14 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
+        event->setModifiers(event->modifiers() & ~Qt::ControlModifier);
+
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
             if(item->type() == QGraphicsProxyWidget::Type)
             {
-                // Let the parent do its job fully
+                // Let the parent do its job fully but disable multi-selection
                 return QGraphicsScene::mousePressEvent(event);
             }
             else if(item->type() == CustomItems::Plug)
@@ -455,7 +457,9 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
 
-                QGraphicsScene::mousePressEvent(event);
+                QPainterPath path;
+                path.addRect(QRectF(event->scenePos(), QSize(1, 1)));
+                setSelectionArea(path);
             }
         }
         else
@@ -578,7 +582,8 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    Q_UNUSED(event);
+    // Disable multi-selection
+    event->setModifiers(event->modifiers() & ~Qt::ControlModifier);
 
     if(_editedConnection.item)
     {
