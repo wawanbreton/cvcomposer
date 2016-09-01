@@ -162,3 +162,6 @@ FORMS    += \
     gui/mainwidget.ui \
     plugwidget/imagedockwidget.ui \
     gui/editsettingsdialog.ui
+
+RESOURCES += \
+    resources.qrc

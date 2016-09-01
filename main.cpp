@@ -15,14 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/mainwidget.h"
 #include <QApplication>
+#include <QFontDatabase>
 
+#include "gui/mainwidget.h"
 #include "processor/input/cameraprocessor.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    int fontId = QFontDatabase::addApplicationFont(":/Ubuntu-R.ttf");
+    QString fontFamily = QFontDatabase::applicationFontFamilies(fontId).at(0);
+    a.setFont(QFont(fontFamily));
 
     QCoreApplication::setApplicationName("CvComposer");
     QCoreApplication::setOrganizationName("CvComposer");
