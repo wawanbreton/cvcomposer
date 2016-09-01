@@ -447,10 +447,13 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             else if(item->type() == CustomItems::Node)
             {
-                event->widget()->setCursor(Qt::ClosedHandCursor);
-                _editedNode.item = static_cast<GenericNodeItem *>(item);
-                _editedNode.initClickPos = event->scenePos();
-                _editedNode.initNodePose = _editedNode.item->pos();
+                if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
+                {
+                    event->widget()->setCursor(Qt::ClosedHandCursor);
+                    _editedNode.item = static_cast<GenericNodeItem *>(item);
+                    _editedNode.initClickPos = event->scenePos();
+                    _editedNode.initNodePose = _editedNode.item->pos();
+                }
             }
         }
     }
@@ -556,7 +559,10 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
             else if(item->type() == CustomItems::Node)
             {
-                cursor = Qt::OpenHandCursor;
+                if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
+                {
+                    cursor = Qt::OpenHandCursor;
+                }
             }
         }
     }

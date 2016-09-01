@@ -69,7 +69,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void recomputeSizes();
 
-    private:
+    public:
         static const int titleHeight = 30;
 
     private:
