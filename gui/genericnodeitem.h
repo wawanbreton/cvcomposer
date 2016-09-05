@@ -73,8 +73,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         void recomputeSizes();
 
     public:
-        static const int titleHeight = 30;
-        static const int selectionBorderWidth = 6;
+        static const int titleHeight = 24;
+        static const int selectionBorderWidth = 3;
+        static const int titleFontSize = 12;
 
     private:
         Node *_node;

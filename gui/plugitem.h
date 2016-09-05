@@ -41,7 +41,7 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
         virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     public:
-        static const int radius = 6;
+        static const int radius = 10;
         static const int magnetRadius = 20;
         Plug *_plug;
 };

@@ -27,7 +27,9 @@ int main(int argc, char *argv[])
 
     int fontId = QFontDatabase::addApplicationFont(":/Ubuntu-R.ttf");
     QString fontFamily = QFontDatabase::applicationFontFamilies(fontId).at(0);
-    a.setFont(QFont(fontFamily));
+    QFont ubuntuFont(fontFamily);
+    ubuntuFont.setPointSize(10);
+    a.setFont(ubuntuFont);
 
     QCoreApplication::setApplicationName("CvComposer");
     QCoreApplication::setOrganizationName("CvComposer");
