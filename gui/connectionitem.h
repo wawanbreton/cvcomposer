@@ -15,14 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CONNECTIONITEM_H
-#define CONNECTIONITEM_H
+#pragma once
 
-#include <QGraphicsLineItem>
+#include <QGraphicsItem>
 
 class Connection;
 
-class ConnectionItem : public QGraphicsLineItem
+class ConnectionItem : public QGraphicsItem
 {
     public:
         ConnectionItem(QGraphicsItem *parent = NULL);
@@ -37,8 +36,14 @@ class ConnectionItem : public QGraphicsLineItem
 
         const Connection *getConnection() const;
 
+        virtual QRectF boundingRect() const;
+
+        virtual void paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget = Q_NULLPTR);
+
     private:
         const Connection *_connection;
+        QPointF _output;
+        QPointF _input;
 };
-
-#endif // CONNECTIONITEM_H

@@ -33,6 +33,7 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     setRect(-radius, -radius, radius * 2, radius * 2);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
+    setPen(Qt::NoPen);
 
     QBrush brush;
     switch(plug->getDefinition().type)
