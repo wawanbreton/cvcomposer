@@ -453,15 +453,26 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             {
                 if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
                 {
+                    // Mouse pressed over title : start dragging it
                     event->widget()->setCursor(Qt::ClosedHandCursor);
                     _editedNode.item = static_cast<GenericNodeItem *>(item);
                     _editedNode.initClickPos = event->scenePos();
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
 
+                // Select node
                 QPainterPath path;
                 path.addRect(QRectF(event->scenePos(), QSize(1, 1)));
                 setSelectionArea(path);
+
+                // Move node on top
+                foreach(GenericNodeItem *node, _nodes)
+                {
+                    if(node != item)
+                    {
+                        node->stackBefore(item);
+                    }
+                }
             }
         }
         else
