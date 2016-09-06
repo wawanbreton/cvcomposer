@@ -23,26 +23,54 @@
 
 
 ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
-    QGraphicsItem(parent),
-    _connection(NULL)
+    QGraphicsItemGroup(parent),
+    _connection(NULL),
+    _itemConnectorOutput(new QGraphicsPathItem(this)),
+    _itemConnectorInput(new QGraphicsPathItem(this)),
+    _itemLine(new QGraphicsPathItem(this))
 {
+    _itemConnectorOutput->setBrush(Qt::NoBrush);
+    _itemConnectorInput->setBrush(Qt::NoBrush);
+    _itemLine->setBrush(Qt::NoBrush);
+
+    QPen pen(QColor("#2ecc71"), 3);
+    pen.setCapStyle(Qt::RoundCap);
+
+    _itemConnectorOutput->setPen(pen);
+    _itemConnectorInput->setPen(pen);
+    _itemLine->setPen(pen);
+
+    const qreal connectorRadius = PlugItem::radius + _deltaCenter;
+    const qreal connectorAngle = 75;
+    QRectF connectorRect(0, 0, connectorRadius * 2, connectorRadius * 2);
+    connectorRect.moveCenter(QPointF(0, 0));
+
+    QPainterPath pathOutput;
+    pathOutput.arcMoveTo(connectorRect, -connectorAngle);
+    pathOutput.arcTo(connectorRect, -connectorAngle, 2 * connectorAngle);
+    _itemConnectorOutput->setPath(pathOutput);
+
+    QPainterPath pathInput;
+    pathInput.arcMoveTo(connectorRect, 180 - connectorAngle);
+    pathInput.arcTo(connectorRect, 180 - connectorAngle, 2 * connectorAngle);
+    _itemConnectorInput->setPath(pathInput);
 }
 
 QPointF ConnectionItem::getOutput() const
 {
-    return _output;
+    return _itemConnectorOutput->pos();
 }
 
 void ConnectionItem::setOutput(const QPointF &output)
 {
-    _output = output;
-    update();
+    _itemConnectorOutput->setPos(output);
+    updateLine();
 }
 
 void ConnectionItem::setInput(const QPointF &input)
 {
-    _input = input;
-    update();
+    _itemConnectorInput->setPos(input);
+    updateLine();
 }
 
 void ConnectionItem::setConnection(const Connection *connection)
@@ -55,47 +83,16 @@ const Connection *ConnectionItem::getConnection() const
     return _connection;
 }
 
-QRectF ConnectionItem::boundingRect() const
+void ConnectionItem::updateLine()
 {
-    return QRectF(_output, _input).adjusted(-100, -100, 100, 100);
-}
-
-void ConnectionItem::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
-{
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
-
-    // Configure things
-    const qreal penWidth = 3;
-    const qreal deltaCenter = 3;
-    const qreal connectorRadius = PlugItem::radius + deltaCenter;
-    const QPointF start = _output + QPointF(connectorRadius + penWidth / 2, 0);
-    const QPointF end = _input - QPointF(connectorRadius + penWidth / 2, 0);
+    const qreal penWidth = _itemLine->pen().widthF();
+    const qreal connectorRadius = PlugItem::radius + _deltaCenter;
+    const QPointF delta = QPointF(connectorRadius + penWidth / 2, 0);
+    const QPointF start = _itemConnectorOutput->pos() + delta;
+    const QPointF end = _itemConnectorInput->pos() - delta;
     const QPointF bezierControl = QPointF(50, 0);
-    const qreal connectorAngle = 75;
 
-    QPen pen(QColor("#2ecc71"), penWidth);
-    pen.setCapStyle(Qt::RoundCap);
-    painter->setPen(pen);
-
-    QPainterPath path;
-
-    // Main line
-    path.moveTo(start);
+    QPainterPath path(start);
     path.cubicTo(start + bezierControl, end - bezierControl, end);
-
-    // Half-circle on output
-    QRectF connectorRect(0, 0, connectorRadius * 2, connectorRadius * 2);
-    connectorRect.moveCenter(_input);
-    path.arcMoveTo(connectorRect, 180 - connectorAngle);
-    path.arcTo(connectorRect, 180 - connectorAngle, 2 * connectorAngle);
-
-    // Half-circle on input
-    connectorRect.moveCenter(_output);
-    path.arcMoveTo(connectorRect, -connectorAngle);
-    path.arcTo(connectorRect, -connectorAngle, 2 * connectorAngle);
-
-    painter->drawPath(path);
+    _itemLine->setPath(path);
 }

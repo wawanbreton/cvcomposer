@@ -17,11 +17,13 @@
 
 #pragma once
 
-#include <QGraphicsItem>
+#include <QGraphicsItemGroup>
+
+#include <QGraphicsPathItem>
 
 class Connection;
 
-class ConnectionItem : public QGraphicsItem
+class ConnectionItem : public QGraphicsItemGroup
 {
     public:
         ConnectionItem(QGraphicsItem *parent = NULL);
@@ -36,14 +38,15 @@ class ConnectionItem : public QGraphicsItem
 
         const Connection *getConnection() const;
 
-        virtual QRectF boundingRect() const;
+    private:
+        void updateLine();
 
-        virtual void paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget = Q_NULLPTR);
+    private:
+        static const int _deltaCenter = 3;
 
     private:
         const Connection *_connection;
-        QPointF _output;
-        QPointF _input;
+        QGraphicsPathItem *_itemConnectorOutput;
+        QGraphicsPathItem *_itemConnectorInput;
+        QGraphicsPathItem *_itemLine;
 };
