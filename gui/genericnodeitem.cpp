@@ -164,16 +164,39 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if(option->state.testFlag(QStyle::State_Selected))
-    {
-        painter->setPen(QPen(Qt::black, selectionBorderWidth));
-    }
-
+    painter->setPen(Qt::NoPen);
     QRectF baseRect = computeBaseRect();
-
-    painter->setBrush(Qt::white);
+    painter->setBrush(QColor("#efa14c"));
     painter->drawRect(baseRect);
 
+    QRectF titleRect = baseRect;
+    titleRect.setHeight(titleHeight);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor("#ea8a1f"));
+    painter->drawRect(titleRect);
+
+    if(option->state.testFlag(QStyle::State_Selected))
+    {
+        painter->setBrush(Qt::NoBrush);
+
+        QPen borderPen(Qt::white, selectionBorderWidth);
+        borderPen.setJoinStyle(Qt::MiterJoin);
+        painter->setPen(borderPen);
+        painter->drawRect(baseRect);
+    }
+
+    QFont font;
+    font.setPointSize(titleFontSize);
+    painter->setFont(font);
+
+    if(option->state.testFlag(QStyle::State_Selected))
+    {
+        painter->setPen(Qt::white);
+    }
+    else
+    {
+        painter->setPen(Qt::black);
+    }
     painter->drawText(QRect(0, 0, baseRect.width(), titleHeight),
                       Qt::AlignCenter,
                       _node->getUserReadableName());
@@ -182,8 +205,9 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 QRectF GenericNodeItem::computeBaseRect() const
 {
     int widgetWidth = _widget->sizeHint().width() + 4 * PlugItem::radius;
-    QFont defaultFont;
-    QFontMetrics metrics(defaultFont);
+    QFont titleFont;
+    titleFont.setPointSize(titleFontSize);
+    QFontMetrics metrics(titleFont);
     int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width() + 2 * PlugItem::radius;
 
     return QRectF(0,

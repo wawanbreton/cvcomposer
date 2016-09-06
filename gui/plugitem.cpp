@@ -71,6 +71,7 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     }
 
     setBrush(brush);
+    setPen(Qt::NoPen);
 }
 
 int PlugItem::type() const
