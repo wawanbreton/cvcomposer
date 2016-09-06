@@ -186,7 +186,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     }
 
     QFont font;
-    font.setPointSize(titleFontSize);
+    font.setPixelSize(titleFontSize);
     painter->setFont(font);
 
     if(option->state.testFlag(QStyle::State_Selected))
@@ -206,7 +206,7 @@ QRectF GenericNodeItem::computeBaseRect() const
 {
     int widgetWidth = _widget->sizeHint().width() + 4 * PlugItem::radius;
     QFont titleFont;
-    titleFont.setPointSize(titleFontSize);
+    titleFont.setPixelSize(titleFontSize);
     QFontMetrics metrics(titleFont);
     int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width() + 2 * PlugItem::radius;
 

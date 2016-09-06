@@ -75,7 +75,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     public:
         static const int titleHeight = 24;
         static const int selectionBorderWidth = 3;
-        static const int titleFontSize = 12;
+        static const int titleFontSize = 18;
 
     private:
         Node *_node;
