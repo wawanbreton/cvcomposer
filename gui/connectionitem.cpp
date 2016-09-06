@@ -90,7 +90,8 @@ void ConnectionItem::updateLine()
     const QPointF delta = QPointF(connectorRadius + penWidth / 2, 0);
     const QPointF start = _itemConnectorOutput->pos() + delta;
     const QPointF end = _itemConnectorInput->pos() - delta;
-    const QPointF bezierControl = QPointF(50, 0);
+    const qreal lineWidth = end.x() - start.x();
+    const QPointF bezierControl = QPointF(qAbs(lineWidth) * 0.5, 0);
 
     QPainterPath path(start);
     path.cubicTo(start + bezierControl, end - bezierControl, end);
