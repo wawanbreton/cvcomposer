@@ -56,6 +56,8 @@ class ComposerScheduler : public QObject
     private slots:
         void onNodeAdded(const Node *node);
 
+        void onNodeRemoved(const Node *node);
+
         void onNodePropertyChanged();
 
         void onConnectionRemoved(const Connection *connection);

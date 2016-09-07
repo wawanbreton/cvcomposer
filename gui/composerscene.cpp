@@ -74,6 +74,8 @@ void ComposerScene::init()
 
     _editedNode.item = NULL;
 
+    connect(_model, SIGNAL(nodeRemoved(const Node*)),
+                    SLOT(onNodeRemoved(const Node*)));
     connect(_model, SIGNAL(connectionAdded(const Connection *)),
                     SLOT(onConnectionAdded(const Connection *)));
     connect(_model, SIGNAL(connectionRemoved(const Connection *)),
@@ -621,6 +623,38 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         // Let the parent do its job fully
         return QGraphicsScene::mouseReleaseEvent(event);
+    }
+}
+
+void ComposerScene::keyPressEvent(QKeyEvent *keyEvent)
+{
+    if(keyEvent->key() == Qt::Key_Backspace || keyEvent->key() == Qt::Key_Delete)
+    {
+        foreach(QGraphicsItem *item, selectedItems())
+        {
+            if(item->type() == CustomItems::Node)
+            {
+                _model->removeNode(((GenericNodeItem *)item)->accessNode());
+            }
+        }
+    }
+    else
+    {
+        QGraphicsScene::keyPressEvent(keyEvent);
+    }
+}
+
+void ComposerScene::onNodeRemoved(const Node *node)
+{
+    foreach(GenericNodeItem *nodeItem, _nodes)
+    {
+        if(nodeItem->getNode() == node)
+        {
+            removeItem(nodeItem);
+            delete nodeItem;
+            _nodes.removeAll(nodeItem);
+            break;
+        }
     }
 }
 

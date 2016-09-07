@@ -43,6 +43,7 @@ ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent
 void ComposerScheduler::start()
 {
     connect(_model, SIGNAL(nodeAdded(const Node*)), SLOT(onNodeAdded(const Node*)));
+    connect(_model, SIGNAL(nodeRemoved(const Node*)), SLOT(onNodeRemoved(const Node*)));
     connect(_model, SIGNAL(connectionAdded(const Connection*)),
                     SLOT(onConnectionAdded(const Connection*)));
     connect(_model, SIGNAL(connectionRemoved(const Connection*)),
@@ -101,6 +102,24 @@ void ComposerScheduler::onNodeAdded(const Node *node)
         // If the node only has free plugs, process it ASAP
         processNexts();
     }
+}
+
+void ComposerScheduler::onNodeRemoved(const Node *node)
+{
+    // Invalidate potential executors currently running for this node
+    foreach(ComposerExecutor *executor, _currentExecutors)
+    {
+        if(executor->getNode() == node)
+        {
+            _oldExecutors << executor;
+        }
+    }
+
+    // Untag the node as needeing a reprocess
+    _keepProcessingNodes.removeAll(node);
+
+    // Removed the cached data for this node
+    _processedNodes.remove(node);
 }
 
 void ComposerScheduler::onNodePropertyChanged()

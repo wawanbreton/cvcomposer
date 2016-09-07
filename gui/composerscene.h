@@ -72,7 +72,11 @@ class ComposerScene : public QGraphicsScene
 
         virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+        virtual void keyPressEvent(QKeyEvent *keyEvent);
+
     private slots:
+        void onNodeRemoved(const Node *node);
+
         void onConnectionAdded(const Connection *connection);
 
         void onConnectionRemoved(const Connection *connection);

@@ -52,6 +52,28 @@ QList<const Node *> ComposerModel::getNodes() const
     return nodes;
 }
 
+void ComposerModel::removeNode(Node *node)
+{
+    foreach(Connection *connection, _connections)
+    {
+        if(node->getInputs().contains(connection->getInput()) ||
+           node->getOutputs().contains(connection->getOutput()))
+        {
+            removeConnection(connection);
+        }
+    }
+
+    if(_nodes.removeAll(node))
+    {
+        emit nodeRemoved(node);
+        delete node;
+    }
+    else
+    {
+        qCritical() << "Removing a not registered node ?!";
+    }
+}
+
 Node *ComposerModel::findInputPlug(const Plug *plug) const
 {
     return findPlug(plug, true, false);
