@@ -96,14 +96,13 @@ void AbstractProcessor::addEnumerationInput(const QString &name,
                                             const QList<QPair<QString, QVariant> > &values,
                                             const QVariant &defaultValue)
 {
-    PlugDefinition plug;
-    plug.name = name;
-    plug.type = PlugType::Enumeration;
-    plug.widgetProperties.insert("values", QVariant::fromValue(values));
-    plug.defaultValue = defaultValue;
-    plug.labelVisible = ThreeStateBool::None;
+    Properties widgetProperties;
+    widgetProperties.insert("values", QVariant::fromValue(values));
 
-    addInput(plug);
+    addInput(makePlug(name,
+                      PlugType::Enumeration,
+                      defaultValue,
+                      widgetProperties));
 }
 
 void AbstractProcessor::addOutput(const PlugDefinition &definition)
@@ -111,16 +110,24 @@ void AbstractProcessor::addOutput(const PlugDefinition &definition)
     _outputs << definition;
 }
 
-void AbstractProcessor::addOutput(const QString &userReadableName, PlugType::Enum type)
+void AbstractProcessor::addOutput(const QString &userReadableName,
+                                  PlugType::Enum type,
+                                  bool supportsList)
 {
-    addOutput(makePlug(userReadableName, type));
+    addOutput(makePlug(userReadableName,
+                       type,
+                       QVariant(),
+                       Properties(),
+                       ThreeStateBool::None,
+                       supportsList));
 }
 
 PlugDefinition AbstractProcessor::makePlug(const QString &name,
                                            PlugType::Enum type,
                                            const QVariant &defaultValue,
                                            const Properties &widgetProperties,
-                                           ThreeStateBool::Enum labelVisible)
+                                           ThreeStateBool::Enum labelVisible,
+                                           bool supportsList)
 {
     PlugDefinition plug;
     plug.name = name;
@@ -128,6 +135,7 @@ PlugDefinition AbstractProcessor::makePlug(const QString &name,
     plug.defaultValue = defaultValue;
     plug.widgetProperties = widgetProperties;
     plug.labelVisible = labelVisible;
+    plug.supportsList = supportsList;
 
     return plug;
 }

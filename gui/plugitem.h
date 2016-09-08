@@ -34,6 +34,10 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
 
         Plug *getPlug() const;
 
+        virtual void paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget = Q_NULLPTR);
+
     signals:
         void positionChanged();
 

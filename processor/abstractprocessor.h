@@ -51,7 +51,9 @@ class AbstractProcessor
 
         void addOutput(const PlugDefinition &definition);
 
-        void addOutput(const QString &userReadableName, PlugType::Enum type);
+        void addOutput(const QString &userReadableName,
+                       PlugType::Enum type,
+                       bool supportsList = false);
 
         virtual Properties processImpl(const Properties &inputs) = 0;
 
@@ -60,7 +62,8 @@ class AbstractProcessor
                                 PlugType::Enum type,
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties(),
-                                ThreeStateBool::Enum labelVisible = ThreeStateBool::None);
+                                ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
+                                bool supportsList = false);
 
     private:
         QList<PlugDefinition> _inputs;

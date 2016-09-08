@@ -28,4 +28,5 @@ typedef struct
     Properties widgetProperties;
     QVariant defaultValue;
     ThreeStateBool::Enum labelVisible;
+    bool supportsList;
 } PlugDefinition;

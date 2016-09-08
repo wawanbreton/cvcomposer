@@ -17,6 +17,7 @@
 
 #include "plugitem.h"
 
+#include <QPainter>
 #include <QPen>
 #include <QBrush>
 #include <QCursor>
@@ -85,6 +86,22 @@ int PlugItem::type() const
 Plug *PlugItem::getPlug() const
 {
     return _plug;
+}
+
+void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QGraphicsEllipseItem::paint(painter, option, widget);
+
+    if(_plug->getDefinition().supportsList)
+    {
+        painter->setPen(Qt::white);
+
+        QFont font;
+        font.setPixelSize(32);
+        painter->setFont(font);
+
+        painter->drawText(rect().translated(0.1, 4.5), Qt::AlignCenter, "*");
+    }
 }
 
 QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
