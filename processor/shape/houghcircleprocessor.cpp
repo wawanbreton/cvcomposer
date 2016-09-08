@@ -17,6 +17,8 @@
 
 #include "houghcircleprocessor.h"
 
+#include <QDebug>
+
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "model/circle.h"
@@ -73,10 +75,14 @@ Properties HoughCircleProcessor::processImpl(const Properties &inputs)
     {
         Circle circle;
         circle.center.x = circles[0][0];
-        circle.center.y = circles[1][0];
-        circle.radius = circles[2][0];
+        circle.center.y = circles[0][1];
+        circle.radius = circles[0][2];
 
         outputs.insert("circles", QVariant::fromValue(circle));
+    }
+    else
+    {
+        outputs.insert("circles", QVariant());
     }
 
     return outputs;
