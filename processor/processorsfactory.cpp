@@ -37,6 +37,7 @@
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
 #include "processor/math/countnonzeroprocessor.h"
+#include "processor/shape/circleprocessor.h"
 #include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawellipseprocessor.h"
 #include "processor/shape/drawlineprocessor.h"
@@ -74,8 +75,9 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Math", math);
 
     QStringList shapes;
-    shapes << "Rectangle" << "DrawRectangle" << "DrawCircle" << "DrawEllipse" << "DrawLine"
-           << "DrawText";
+    shapes << "Rectangle" << "DrawRectangle"
+           << "Circle" << "DrawCircle"
+           << "DrawEllipse" << "DrawLine" << "DrawText";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -190,6 +192,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "MakeBorder")
     {
         return new MakeBorderProcessor();
+    }
+    else if(rawProcessorName == "Circle")
+    {
+        return new CircleProcessor();
     }
     else if(rawProcessorName == "DrawCircle")
     {

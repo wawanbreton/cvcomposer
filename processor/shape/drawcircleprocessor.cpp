@@ -19,6 +19,7 @@
 
 #include "global/cvconstants.h"
 #include "global/cvutils.h"
+#include "model/circle.h"
 
 #include <opencv2/core/core_c.h>
 
@@ -26,12 +27,7 @@
 DrawCircleProcessor::DrawCircleProcessor()
 {
     addInput("input image", PlugType::Image);
-    addInput("center", PlugType::Point);
-
-    Properties radiusProperties;
-    radiusProperties.insert("decimals", 0);
-    addInput("radius", PlugType::Double, CvConstants::defaultShapeSide / 2, radiusProperties);
-
+    addInput("circle", PlugType::Circle);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;
@@ -51,11 +47,12 @@ DrawCircleProcessor::DrawCircleProcessor()
 Properties DrawCircleProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    Circle circle = inputs["circle"].value<Circle>();
 
     cv::Mat outputImage = inputImage.clone();
     cv::circle(outputImage,
-               inputs["center"].value<cv::Point>(),
-               inputs["radius"].toInt(),
+               circle.center,
+               circle.radius,
                inputs["color"].value<cv::Scalar>(),
                inputs["thickness"].toInt(),
                inputs["line type"].toInt(),

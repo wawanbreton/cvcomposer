@@ -35,6 +35,7 @@ namespace PlugType
         ImagePreview,
         DockableImageViewer,
         Rectangle,
+        Circle,
         Boolean
     } Enum;
 

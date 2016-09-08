@@ -65,6 +65,9 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
         case PlugType::Double:
             brush = QColor(230, 126, 34);
             break;
+        case PlugType::Circle:
+            brush = QColor(85, 110, 134);
+            break;
         default:
             brush = Qt::white;
             break;
