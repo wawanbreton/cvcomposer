@@ -23,6 +23,7 @@
 
 #include "model/circle.h"
 #include "global/cvutils.h"
+#include "global/utils.h"
 
 
 HoughCircleProcessor::HoughCircleProcessor()
@@ -71,19 +72,19 @@ Properties HoughCircleProcessor::processImpl(const Properties &inputs)
 
     Properties outputs;
 
-    if(circles.size())
+    QList<QVariant> outputCircles;
+
+    for(const cv::Vec3f &pseudoCircle : circles)
     {
         Circle circle;
-        circle.center.x = circles[0][0];
-        circle.center.y = circles[0][1];
-        circle.radius = circles[0][2];
+        circle.center.x = pseudoCircle[0];
+        circle.center.y = pseudoCircle[1];
+        circle.radius = pseudoCircle[2];
 
-        outputs.insert("circles", QVariant::fromValue(circle));
+        outputCircles << QVariant::fromValue(circle);
     }
-    else
-    {
-        outputs.insert("circles", QVariant());
-    }
+
+    outputs.insert("circles", QVariant::fromValue(outputCircles));
 
     return outputs;
 }

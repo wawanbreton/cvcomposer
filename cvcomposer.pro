@@ -161,7 +161,8 @@ HEADERS  += gui/mainwidget.h \
     gui/boundedgraphicsproxywidget.h \
     model/circle.h \
     processor/shape/circleprocessor.h \
-    processor/shape/houghcircleprocessor.h
+    processor/shape/houghcircleprocessor.h \
+    global/utils.h
 
 FORMS    += \
     gui/mainwidget.ui \

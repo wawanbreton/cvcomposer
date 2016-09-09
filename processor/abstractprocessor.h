@@ -43,7 +43,8 @@ class AbstractProcessor
                       PlugType::Enum type,
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties(),
-                      ThreeStateBool::Enum labelVisible = ThreeStateBool::None);
+                      ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
+                      bool supportsList = false);
 
         void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,

@@ -40,14 +40,20 @@ const QList<PlugDefinition> &AbstractProcessor::getOutputs()
 
 Properties AbstractProcessor::process(const Properties &inputs)
 {
-    // Check that given inputs match the expected inputs
+    // Check that given inputs match the expected inputs and check whether an input supports list
     QList<QString> inputNames = inputs.keys();
     qSort(inputNames);
+
+    QString inputWhichSupportsList;
 
     QList<QString> expectedInputNames;
     foreach(const PlugDefinition &plug, _inputs)
     {
         expectedInputNames << plug.name;
+        if(plug.supportsList)
+        {
+            inputWhichSupportsList = plug.name;
+        }
     }
     qSort(expectedInputNames);
 
@@ -87,9 +93,10 @@ void AbstractProcessor::addInput(const QString &name,
                                  PlugType::Enum type,
                                  const QVariant &defaultValue,
                                  const Properties &widgetProperties,
-                                 ThreeStateBool::Enum labelVisible)
+                                 ThreeStateBool::Enum labelVisible,
+                                 bool supportsList)
 {
-    addInput(makePlug(name, type, defaultValue, widgetProperties, labelVisible));
+    addInput(makePlug(name, type, defaultValue, widgetProperties, labelVisible, supportsList));
 }
 
 void AbstractProcessor::addEnumerationInput(const QString &name,

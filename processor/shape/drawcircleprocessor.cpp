@@ -27,7 +27,7 @@
 DrawCircleProcessor::DrawCircleProcessor()
 {
     addInput("input image", PlugType::Image);
-    addInput("circle", PlugType::Circle);
+    addInput("circle", PlugType::Circle, QVariant(), Properties(), ThreeStateBool::None, true);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;
@@ -47,16 +47,34 @@ DrawCircleProcessor::DrawCircleProcessor()
 Properties DrawCircleProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    Circle circle = inputs["circle"].value<Circle>();
+
+    QList<Circle> circles;
+    if(inputs["circle"].userType() == qMetaTypeId<QList<QVariant>>())
+    {
+        // A list of circles is provided
+        foreach(const QVariant &circle, inputs["circle"].value<QList<QVariant>>())
+        {
+            circles << circle.value<Circle>();
+        }
+    }
+    else
+    {
+        // A single circle is provided
+        circles << inputs["circle"].value<Circle>();
+    }
 
     cv::Mat outputImage = inputImage.clone();
-    cv::circle(outputImage,
-               circle.center,
-               circle.radius,
-               inputs["color"].value<cv::Scalar>(),
-               inputs["thickness"].toInt(),
-               inputs["line type"].toInt(),
-               inputs["shift"].toInt());
+
+    foreach(const Circle &circle, circles)
+    {
+        cv::circle(outputImage,
+                   circle.center,
+                   circle.radius,
+                   inputs["color"].value<cv::Scalar>(),
+                   inputs["thickness"].toInt(),
+                   inputs["line type"].toInt(),
+                   inputs["shift"].toInt());
+    }
 
     Properties outputs;
     outputs.insert("output image", QVariant::fromValue(outputImage));
