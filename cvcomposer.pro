@@ -89,7 +89,8 @@ SOURCES += main.cpp\
     processor/math/countnonzeroprocessor.cpp \
     gui/boundedgraphicsproxywidget.cpp \
     processor/shape/circleprocessor.cpp \
-    processor/shape/houghcircleprocessor.cpp
+    processor/shape/houghcircleprocessor.cpp \
+    processor/data/sublistprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -162,7 +163,8 @@ HEADERS  += gui/mainwidget.h \
     model/circle.h \
     processor/shape/circleprocessor.h \
     processor/shape/houghcircleprocessor.h \
-    global/utils.h
+    global/utils.h \
+    processor/data/sublistprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

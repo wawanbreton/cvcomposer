@@ -21,6 +21,7 @@
 
 #include "processor/analyzer/discretefouriertransformprocessor.h"
 #include "processor/data/kernelprocessor.h"
+#include "processor/data/sublistprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
@@ -68,7 +69,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
-    data << "Kernel";
+    data << "Kernel" << "SubList";
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
@@ -237,6 +238,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "CountNonZero")
     {
         return new CountNonZeroProcessor();
+    }
+    else if(rawProcessorName == "SubList")
+    {
+        return new SubListProcessor();
     }
     else
     {

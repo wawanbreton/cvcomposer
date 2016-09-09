@@ -78,11 +78,12 @@ bool PlugType::isOutputInternal(PlugType::Enum value)
 
 bool PlugType::isCompatible(PlugType::Enum output, PlugType::Enum input)
 {
-    switch(input)
+    if(input == Generic || output == Generic)
     {
-        case Generic:
-            return true;
-        default:
-            return output == input;
+        return true;
+    }
+    else
+    {
+        return output == input;
     }
 }
