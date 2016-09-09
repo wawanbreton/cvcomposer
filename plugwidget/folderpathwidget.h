@@ -15,27 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CVUTILS_H
-#define CVUTILS_H
+#pragma once
 
-#include <QImage>
-#include <opencv2/core/core.hpp>
+#include "plugwidget/abstractplugwidget.h"
 
-namespace CvUtils
+#include <QLineEdit>
+
+class FolderPathWidget : public AbstractPlugWidget
 {
-    QImage toQImage(const cv::Mat &mat);
+    Q_OBJECT
 
-    QList<QPair<QString, QVariant> > makeBlurBorderValues();
+    public:
+        explicit FolderPathWidget(QWidget *parent = Q_NULLPTR);
 
-    QList<QPair<QString, QVariant> > makeLineTypeValues();
+        virtual QVariant getValue() const override;
 
-    QList<QPair<QString, QVariant> > makeImageLoadFormatsValues();
-}
+        virtual void setValue(const QVariant &value) override;
 
-Q_DECLARE_METATYPE(cv::Point)
-Q_DECLARE_METATYPE(cv::Size)
-Q_DECLARE_METATYPE(cv::Rect)
-Q_DECLARE_METATYPE(cv::Mat)
-Q_DECLARE_METATYPE(cv::Scalar)
+    private slots:
+        void onButtonPressed();
 
-#endif // CVUTILS_H
+    private:
+        QLineEdit *_lineEdit;
+};

@@ -37,6 +37,7 @@
 #include "plugwidget/colorwidget.h"
 #include "plugwidget/imageviewerwidget.h"
 #include "plugwidget/booleanwidget.h"
+#include "plugwidget/folderpathwidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
@@ -298,6 +299,9 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             break;
         case PlugType::ImagePath:
             widget = new ImagePathWidget(this);
+            break;
+        case PlugType::FolderPath:
+            widget = new FolderPathWidget(this);
             break;
         case PlugType::ImagePreview:
             widget = new DataViewerWidget(this);

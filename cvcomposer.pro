@@ -90,7 +90,9 @@ SOURCES += main.cpp\
     gui/boundedgraphicsproxywidget.cpp \
     processor/shape/circleprocessor.cpp \
     processor/shape/houghcircleprocessor.cpp \
-    processor/data/sublistprocessor.cpp
+    processor/data/sublistprocessor.cpp \
+    processor/input/imagesfromfolderprocessor.cpp \
+    plugwidget/folderpathwidget.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -164,7 +166,9 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/circleprocessor.h \
     processor/shape/houghcircleprocessor.h \
     global/utils.h \
-    processor/data/sublistprocessor.h
+    processor/data/sublistprocessor.h \
+    processor/input/imagesfromfolderprocessor.h \
+    plugwidget/folderpathwidget.h
 
 FORMS    += \
     gui/mainwidget.ui \

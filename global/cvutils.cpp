@@ -20,6 +20,7 @@
 #include <QDebug>
 
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 QImage CvUtils::toQImage(const cv::Mat &mat)
@@ -153,4 +154,16 @@ QList<QPair<QString, QVariant> > CvUtils::makeLineTypeValues()
     lineTypeValues << QPair<QString, QVariant>("Antialiased", CV_AA);
 
     return lineTypeValues;
+}
+
+QList<QPair<QString, QVariant> > CvUtils::makeImageLoadFormatsValues()
+{
+    QList<QPair<QString, QVariant> > valuesTypes;
+    valuesTypes << QPair<QString, QVariant>("Unchanged", CV_LOAD_IMAGE_UNCHANGED);
+    valuesTypes << QPair<QString, QVariant>("Grayscale", CV_LOAD_IMAGE_GRAYSCALE);
+    valuesTypes << QPair<QString, QVariant>("Color",     CV_LOAD_IMAGE_COLOR);
+    valuesTypes << QPair<QString, QVariant>("Any depth", CV_LOAD_IMAGE_ANYDEPTH);
+    valuesTypes << QPair<QString, QVariant>("Any color", CV_LOAD_IMAGE_ANYCOLOR);
+
+    return valuesTypes;
 }

@@ -32,6 +32,7 @@ namespace PlugType
         Kernel,
         KernelDefinition,
         ImagePath,
+        FolderPath,
         ImagePreview,
         DockableImageViewer,
         Rectangle,

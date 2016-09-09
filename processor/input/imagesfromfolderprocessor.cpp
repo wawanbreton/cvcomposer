@@ -15,32 +15,43 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "imagefromfileprocessor.h"
+#include "imagesfromfolderprocessor.h"
 
 #include <opencv2/highgui/highgui.hpp>
 
+#include <QDir>
 #include <QDebug>
 
 #include "global/cvutils.h"
 
 
-ImageFromFileProcessor::ImageFromFileProcessor() :
-    AbstractProcessor()
+ImagesFromFolderProcessor::ImagesFromFolderProcessor()
 {
-    addInput("path", PlugType::ImagePath);
+    addInput("path", PlugType::FolderPath);
 
     addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), CV_LOAD_IMAGE_COLOR);
 
-    addOutput("image", PlugType::Image);
+    addOutput("images", PlugType::Image, true);
 }
 
-Properties ImageFromFileProcessor::processImpl(const Properties &inputs)
+Properties ImagesFromFolderProcessor::processImpl(const Properties &inputs)
 {
-    Q_UNUSED(inputs);
+    QList<QVariant> images;
+
+    QDir dir(inputs["path"].toString());
+    foreach(const QFileInfo &file, dir.entryInfoList(QDir::Files | QDir::Readable))
+    {
+        cv::Mat image = cv::imread(file.absoluteFilePath().toStdString(), inputs["mode"].toInt());
+        if(image.rows > 0 && image.cols > 0)
+        {
+            images << QVariant::fromValue(image);
+        }
+    }
+
+    qDebug() << images.count();
 
     Properties outputs;
-    outputs.insert("image", QVariant::fromValue(cv::imread(inputs["path"].toString().toStdString(),
-                                                           inputs["mode"].toInt())));
-
+    outputs.insert("images", QVariant::fromValue(images));
     return outputs;
 }
+

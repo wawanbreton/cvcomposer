@@ -37,6 +37,7 @@
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
+#include "processor/input/imagesfromfolderprocessor.h"
 #include "processor/math/countnonzeroprocessor.h"
 #include "processor/shape/circleprocessor.h"
 #include "processor/shape/drawcircleprocessor.h"
@@ -55,7 +56,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QList<QPair<QString, QStringList> > processors;
 
     QStringList inputs;
-    inputs << "ImageFromFile" << "Camera";
+    inputs << "ImageFromFile" << "ImagesFromFolder" << "Camera";
     processors << QPair<QString, QStringList>("Inputs", inputs);
 
     QStringList geometry;
@@ -134,6 +135,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "ImageFromFile")
     {
         return new ImageFromFileProcessor();
+    }
+    else if(rawProcessorName == "ImagesFromFolder")
+    {
+        return new ImagesFromFolderProcessor();
     }
     else if(rawProcessorName == "DataViewer")
     {

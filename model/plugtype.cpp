@@ -30,6 +30,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Point:
         case PlugType::Enumeration:
         case PlugType::ImagePath:
+        case PlugType::FolderPath:
         case PlugType::KernelDefinition:
         case PlugType::Double:
         case PlugType::String:
