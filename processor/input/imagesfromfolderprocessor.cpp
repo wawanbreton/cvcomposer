@@ -48,8 +48,6 @@ Properties ImagesFromFolderProcessor::processImpl(const Properties &inputs)
         }
     }
 
-    qDebug() << images.count();
-
     Properties outputs;
     outputs.insert("images", QVariant::fromValue(images));
     return outputs;

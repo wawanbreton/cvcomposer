@@ -17,6 +17,10 @@
 
 #include "averageprocessor.h"
 
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <QDebug>
+
 #include "global/cvutils.h"
 
 
@@ -30,26 +34,53 @@ AverageProcessor::AverageProcessor()
 Properties AverageProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat average;
-    int count;
+    int count = 0;
+    int baseFormat = -1;
+    int workFormat = -1;
 
     foreach(const QVariant &input, inputs["input images"].value<QList<QVariant>>())
     {
         cv::Mat image = input.value<cv::Mat>();
 
-        if(average.rows == 0)
+        if(baseFormat < 0)
         {
-            average = cv::Mat::zeros(image.rows, image.cols, CV_32F);
-        }
+            baseFormat = CV_MAT_TYPE(image.flags);
 
-        average += image;
+            switch(CV_MAT_TYPE(image.flags))
+            {
+                case CV_8UC1:
+                    workFormat = CV_16UC1;
+                    break;
+                case CV_8UC3:
+                    workFormat = CV_16UC3;
+                    break;
+                case CV_8UC4:
+                    workFormat = CV_16UC4;
+                    break;
+                default:
+                    qCritical() << "Unsupported image format";
+                    break;
+            }
+
+            image.convertTo(average, workFormat);
+        }
+        else
+        {
+            cv::Mat convertedImage;
+            image.convertTo(convertedImage, workFormat);
+            average += convertedImage;
+        }
 
         count++;
     }
 
     average /= count;
 
+    cv::Mat finalImage;
+    average.convertTo(finalImage, baseFormat);
+
     Properties outputs;
-    outputs.insert("output image", QVariant::fromValue(average));
+    outputs.insert("output image", QVariant::fromValue(finalImage));
     return outputs;
 }
 
