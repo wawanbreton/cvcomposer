@@ -93,7 +93,8 @@ SOURCES += main.cpp\
     processor/data/sublistprocessor.cpp \
     processor/input/imagesfromfolderprocessor.cpp \
     plugwidget/folderpathwidget.cpp \
-    processor/math/averageprocessor.cpp
+    processor/math/averageprocessor.cpp \
+    gui/cvcomposerstyle.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -170,7 +171,8 @@ HEADERS  += gui/mainwidget.h \
     processor/data/sublistprocessor.h \
     processor/input/imagesfromfolderprocessor.h \
     plugwidget/folderpathwidget.h \
-    processor/math/averageprocessor.h
+    processor/math/averageprocessor.h \
+    gui/cvcomposerstyle.h
 
 FORMS    += \
     gui/mainwidget.ui \

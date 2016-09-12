@@ -15,29 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "cvcomposerstyle.h"
+
 #include <QApplication>
+#include <QFontDatabase>
 
-#include "gui/mainwidget.h"
-#include "processor/input/cameraprocessor.h"
-#include "gui/cvcomposerstyle.h"
 
-int main(int argc, char *argv[])
+CvComposerStyle::CvComposerStyle()
 {
-    QApplication a(argc, argv);
 
-    QCoreApplication::setApplicationName("CvComposer");
-    QCoreApplication::setOrganizationName("CvComposer");
+}
 
-    a.setStyle(new CvComposerStyle());
-
-    MainWidget w;
-    w.show();
-
-    int result = a.exec();
-
-    // We need to cleanup the camera resources at some point before exiting, or OpenCV will
-    // keep a handle and not allow the application to exit
-    CameraProcessor::cleanup();
-
-    return result;
+void CvComposerStyle::polish(QApplication *application)
+{
+    int fontId = QFontDatabase::addApplicationFont(":/Ubuntu-R.ttf");
+    QString fontFamily = QFontDatabase::applicationFontFamilies(fontId).at(0);
+    QFont ubuntuFont(fontFamily);
+    ubuntuFont.setPixelSize(14);
+    application->setFont(ubuntuFont);
 }

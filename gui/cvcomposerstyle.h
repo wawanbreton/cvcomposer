@@ -15,29 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <QApplication>
+#pragma once
 
-#include "gui/mainwidget.h"
-#include "processor/input/cameraprocessor.h"
-#include "gui/cvcomposerstyle.h"
+#include <QCommonStyle>
 
-int main(int argc, char *argv[])
+class CvComposerStyle : public QCommonStyle
 {
-    QApplication a(argc, argv);
+    Q_OBJECT
 
-    QCoreApplication::setApplicationName("CvComposer");
-    QCoreApplication::setOrganizationName("CvComposer");
+    public:
+        CvComposerStyle();
 
-    a.setStyle(new CvComposerStyle());
-
-    MainWidget w;
-    w.show();
-
-    int result = a.exec();
-
-    // We need to cleanup the camera resources at some point before exiting, or OpenCV will
-    // keep a handle and not allow the application to exit
-    CameraProcessor::cleanup();
-
-    return result;
-}
+        virtual void polish(QApplication *application);
+};
