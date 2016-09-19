@@ -94,7 +94,9 @@ SOURCES += main.cpp\
     processor/input/imagesfromfolderprocessor.cpp \
     plugwidget/folderpathwidget.cpp \
     processor/math/averageprocessor.cpp \
-    processor/math/operatorprocessor.cpp
+    processor/math/operatorprocessor.cpp \
+    processor/analyzer/findcontoursprocessor.cpp \
+    processor/data/countlistprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -172,7 +174,10 @@ HEADERS  += gui/mainwidget.h \
     processor/input/imagesfromfolderprocessor.h \
     plugwidget/folderpathwidget.h \
     processor/math/averageprocessor.h \
-    processor/math/operatorprocessor.h
+    processor/math/operatorprocessor.h \
+    processor/analyzer/findcontoursprocessor.h \
+    model/contour.h \
+    processor/data/countlistprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

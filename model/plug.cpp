@@ -119,6 +119,7 @@ QString Plug::save(const QVariant &value) const
         case PlugType::Rectangle:
         case PlugType::Circle:
         case PlugType::Generic:
+        case PlugType::Contour:
             qCritical() << "Plug::save" << "Type" << getDefinition().type << "is not savable";
             break;
     }
@@ -249,6 +250,7 @@ QVariant Plug::load(const QString &value) const
         case PlugType::DockableImageViewer:
         case PlugType::Rectangle:
         case PlugType::Circle:
+        case PlugType::Contour:
         case PlugType::Generic:
             break;
     }

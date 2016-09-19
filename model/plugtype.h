@@ -37,7 +37,8 @@ namespace PlugType
         DockableImageViewer,
         Rectangle,
         Circle,
-        Boolean
+        Boolean,
+        Contour
     } Enum;
 
     typedef enum

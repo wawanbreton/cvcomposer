@@ -69,6 +69,9 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
         case PlugType::Circle:
             brush = QColor(85, 110, 134);
             break;
+        case PlugType::Contour:
+            brush = QColor(241, 196, 15);
+            break;
         default:
             brush = Qt::white;
             break;

@@ -20,8 +20,10 @@
 #include <QDebug>
 
 #include "processor/analyzer/discretefouriertransformprocessor.h"
+#include "processor/analyzer/findcontoursprocessor.h"
 #include "processor/data/kernelprocessor.h"
 #include "processor/data/sublistprocessor.h"
+#include "processor/data/countlistprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
@@ -72,7 +74,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
-    data << "Kernel" << "SubList";
+    data << "Kernel" << "SubList" << "CountList";
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
@@ -86,7 +88,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
-    analyzers << "DiscreteFourierTransform";
+    analyzers << "DiscreteFourierTransform" << "FindContours";
     processors << QPair<QString, QStringList>("Analyzers", analyzers);
 
     QStringList viewers;
@@ -257,6 +259,14 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Operator")
     {
         return new OperatorProcessor();
+    }
+    else if(rawProcessorName == "FindContours")
+    {
+        return new FindContoursProcessor();
+    }
+    else if(rawProcessorName == "CountList")
+    {
+        return new CountListProcessor();
     }
     else
     {
