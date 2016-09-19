@@ -40,6 +40,7 @@
 #include "processor/input/imagesfromfolderprocessor.h"
 #include "processor/math/countnonzeroprocessor.h"
 #include "processor/math/averageprocessor.h"
+#include "processor/math/operatorprocessor.h"
 #include "processor/shape/circleprocessor.h"
 #include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawellipseprocessor.h"
@@ -75,7 +76,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
-    math << "CountNonZero" << "Average";
+    math << "CountNonZero" << "Average" << "Operator";
     processors << QPair<QString, QStringList>("Math", math);
 
     QStringList shapes;
@@ -252,6 +253,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Average")
     {
         return new AverageProcessor();
+    }
+    else if(rawProcessorName == "Operator")
+    {
+        return new OperatorProcessor();
     }
     else
     {
