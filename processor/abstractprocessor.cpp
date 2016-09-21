@@ -44,15 +44,25 @@ Properties AbstractProcessor::process(const Properties &inputs)
     QList<QString> inputNames = inputs.keys();
     qSort(inputNames);
 
-    QString inputWhichSupportsList;
+    Properties listCompliantImputs;
 
     QList<QString> expectedInputNames;
     foreach(const PlugDefinition &plug, _inputs)
     {
         expectedInputNames << plug.name;
-        if(plug.supportsList)
+        if(plug.supportsList && inputs[plug.name].userType() != qMetaTypeId<QList<QVariant> >())
         {
-            inputWhichSupportsList = plug.name;
+            // Input expects a list, give it a list containing the element
+            listCompliantImputs[plug.name] = QList<QVariant>() << inputs[plug.name];
+        }
+        else if(!plug.supportsList && inputs[plug.name].userType() == qMetaTypeId<QList<QVariant> >())
+        {
+            // Input expects a single element, give it the first element of the list
+            listCompliantImputs[plug.name] = inputs[plug.name].value<QList<QVariant> >().value(0, QVariant());
+        }
+        else
+        {
+            listCompliantImputs[plug.name] = inputs[plug.name];
         }
     }
     qSort(expectedInputNames);
@@ -60,7 +70,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
     Q_ASSERT(inputNames == expectedInputNames);
 
     // Do the actual computing
-    Properties outputs = processImpl(inputs);
+    Properties outputs = processImpl(listCompliantImputs);
 
     // Check that computed outputs match the expected ouputs
     QList<QString> outputNames = outputs.keys();
