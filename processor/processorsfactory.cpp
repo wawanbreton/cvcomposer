@@ -24,6 +24,7 @@
 #include "processor/data/kernelprocessor.h"
 #include "processor/data/sublistprocessor.h"
 #include "processor/data/countlistprocessor.h"
+#include "processor/data/splitchannelsprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
@@ -74,7 +75,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
-    data << "Kernel" << "SubList" << "CountList";
+    data << "Kernel" << "SubList" << "CountList" << "SplitChannels";
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
@@ -267,6 +268,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "CountList")
     {
         return new CountListProcessor();
+    }
+    else if(rawProcessorName == "SplitChannels")
+    {
+        return new SplitChannelsProcessor();
     }
     else
     {

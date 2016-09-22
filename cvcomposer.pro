@@ -96,7 +96,8 @@ SOURCES += main.cpp\
     processor/math/averageprocessor.cpp \
     processor/math/operatorprocessor.cpp \
     processor/analyzer/findcontoursprocessor.cpp \
-    processor/data/countlistprocessor.cpp
+    processor/data/countlistprocessor.cpp \
+    processor/data/splitchannelsprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -177,7 +178,8 @@ HEADERS  += gui/mainwidget.h \
     processor/math/operatorprocessor.h \
     processor/analyzer/findcontoursprocessor.h \
     model/contour.h \
-    processor/data/countlistprocessor.h
+    processor/data/countlistprocessor.h \
+    processor/data/splitchannelsprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
