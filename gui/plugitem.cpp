@@ -97,13 +97,18 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     if(_plug->getDefinition().supportsList)
     {
-        painter->setPen(Qt::white);
+        QPen pen;
+        pen.setColor(Qt::white);
+        pen.setWidthF(2.5);
+        pen.setCapStyle(Qt::RoundCap);
+        painter->setPen(pen);
 
-        QFont font;
-        font.setPixelSize(32);
-        painter->setFont(font);
-
-        painter->drawText(rect().translated(0.1, 4.5), Qt::AlignCenter, "*");
+        qreal semiWidth = radius * 0.65;
+        for(int i = 0 ; i < 3 ; i++)
+        {
+            painter->drawLine(0, semiWidth, 0, -semiWidth);
+            painter->rotate(120);
+        }
     }
 }
 
