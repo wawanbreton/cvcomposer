@@ -96,7 +96,8 @@ SOURCES += main.cpp\
     processor/analyzer/findcontoursprocessor.cpp \
     processor/data/countlistprocessor.cpp \
     processor/data/splitchannelsprocessor.cpp \
-    plugwidget/pathwidget.cpp
+    plugwidget/pathwidget.cpp \
+    processor/shape/drawshapeprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -177,7 +178,8 @@ HEADERS  += gui/mainwidget.h \
     model/contour.h \
     processor/data/countlistprocessor.h \
     processor/data/splitchannelsprocessor.h \
-    plugwidget/pathwidget.h
+    plugwidget/pathwidget.h \
+    processor/shape/drawshapeprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
