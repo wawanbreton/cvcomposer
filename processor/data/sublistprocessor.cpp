@@ -34,16 +34,7 @@ SubListProcessor::SubListProcessor()
 
 Properties SubListProcessor::processImpl(const Properties &inputs)
 {
-    QList<QVariant> list;
-    if(inputs["input list"].userType() == qMetaTypeId<QList<QVariant>>())
-    {
-        list = inputs["input list"].value<QList<QVariant>>();
-    }
-    else
-    {
-        list << inputs["input list"];
-    }
-
+    QList<QVariant> list = inputs["input list"].value<QList<QVariant>>();
     list = list.mid(inputs["first element"].toInt(), inputs["amount"].toInt());
 
     Properties outputs;
