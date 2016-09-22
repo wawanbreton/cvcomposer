@@ -48,7 +48,6 @@ SOURCES += main.cpp\
     gui/genericnodewidget.cpp \
     model/plugtype.cpp \
     model/plug.cpp \
-    plugwidget/imagepathwidget.cpp \
     plugwidget/abstractplugwidget.cpp \
     plugwidget/sizewidget.cpp \
     plugwidget/pointwidget.cpp \
@@ -92,12 +91,12 @@ SOURCES += main.cpp\
     processor/shape/houghcircleprocessor.cpp \
     processor/data/sublistprocessor.cpp \
     processor/input/imagesfromfolderprocessor.cpp \
-    plugwidget/folderpathwidget.cpp \
     processor/math/averageprocessor.cpp \
     processor/math/operatorprocessor.cpp \
     processor/analyzer/findcontoursprocessor.cpp \
     processor/data/countlistprocessor.cpp \
-    processor/data/splitchannelsprocessor.cpp
+    processor/data/splitchannelsprocessor.cpp \
+    plugwidget/pathwidget.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -125,7 +124,6 @@ HEADERS  += gui/mainwidget.h \
     model/plugdefinition.h \
     model/plugtype.h \
     gui/genericnodewidget.h \
-    plugwidget/imagepathwidget.h \
     plugwidget/abstractplugwidget.h \
     plugwidget/sizewidget.h \
     plugwidget/pointwidget.h \
@@ -173,13 +171,13 @@ HEADERS  += gui/mainwidget.h \
     global/utils.h \
     processor/data/sublistprocessor.h \
     processor/input/imagesfromfolderprocessor.h \
-    plugwidget/folderpathwidget.h \
     processor/math/averageprocessor.h \
     processor/math/operatorprocessor.h \
     processor/analyzer/findcontoursprocessor.h \
     model/contour.h \
     processor/data/countlistprocessor.h \
-    processor/data/splitchannelsprocessor.h
+    processor/data/splitchannelsprocessor.h \
+    plugwidget/pathwidget.h
 
 FORMS    += \
     gui/mainwidget.ui \

@@ -15,19 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEPATHWIDGET_H
-#define IMAGEPATHWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
 #include <QLineEdit>
 
-class ImagePathWidget : public AbstractPlugWidget
+/*! @brief This widget is useful to browse to a path
+ *
+ *  The following properties may be given :
+ *    - folder  : a Boolean which indicates wether we want to selected a folder or a file :
+ *                defaults to false
+ *    - formats : a QList<QPair<QString, QStringList> > which indicates the supported file
+ *                formats to be loaded
+ */
+class PathWidget : public AbstractPlugWidget
 {
     Q_OBJECT
 
     public:
-        explicit ImagePathWidget(QWidget *parent = NULL);
+        explicit PathWidget(const Properties &properties, QWidget *parent = NULL);
 
         virtual QVariant getValue() const override;
 
@@ -38,6 +45,6 @@ class ImagePathWidget : public AbstractPlugWidget
 
     private:
         QLineEdit *_lineEdit;
+        bool _folder;
+        QList<QPair<QString, QStringList> > _formats;
 };
-
-#endif // IMAGEPATHWIDGET_H

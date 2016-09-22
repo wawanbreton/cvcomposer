@@ -26,7 +26,7 @@
 #include <QPushButton>
 
 #include "model/plug.h"
-#include "plugwidget/imagepathwidget.h"
+#include "plugwidget/pathwidget.h"
 #include "plugwidget/dataviewerwidget.h"
 #include "plugwidget/sizewidget.h"
 #include "plugwidget/pointwidget.h"
@@ -37,7 +37,6 @@
 #include "plugwidget/colorwidget.h"
 #include "plugwidget/imageviewerwidget.h"
 #include "plugwidget/booleanwidget.h"
-#include "plugwidget/folderpathwidget.h"
 
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
@@ -297,11 +296,8 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
         case PlugType::KernelDefinition:
             widget = new KernelDefinitionWidget(plug.widgetProperties, this);
             break;
-        case PlugType::ImagePath:
-            widget = new ImagePathWidget(this);
-            break;
-        case PlugType::FolderPath:
-            widget = new FolderPathWidget(this);
+        case PlugType::Path:
+            widget = new PathWidget(plug.widgetProperties, this);
             break;
         case PlugType::ImagePreview:
             widget = new DataViewerWidget(this);

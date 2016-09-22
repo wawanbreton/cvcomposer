@@ -27,7 +27,9 @@
 
 ImagesFromFolderProcessor::ImagesFromFolderProcessor()
 {
-    addInput("path", PlugType::FolderPath);
+    Properties pathProperties;
+    pathProperties.insert("folder", true);
+    addInput("path", PlugType::Path, QVariant(), pathProperties);
 
     addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), CV_LOAD_IMAGE_COLOR);
 

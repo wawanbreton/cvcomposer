@@ -73,8 +73,7 @@ QString Plug::save(const QVariant &value) const
         case PlugType::Double:
             return saveDouble(value.toDouble());
         case PlugType::String:
-        case PlugType::ImagePath:
-        case PlugType::FolderPath:
+        case PlugType::Path:
             return value.toString();
         case PlugType::Color:
         {
@@ -189,8 +188,7 @@ QVariant Plug::load(const QString &value) const
             break;
         }
         case PlugType::String:
-        case PlugType::ImagePath:
-        case PlugType::FolderPath:
+        case PlugType::Path:
             return value;
         case PlugType::Color:
         {
