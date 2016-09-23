@@ -45,10 +45,7 @@
 #include "processor/math/averageprocessor.h"
 #include "processor/math/operatorprocessor.h"
 #include "processor/shape/circleprocessor.h"
-#include "processor/shape/drawcircleprocessor.h"
 #include "processor/shape/drawellipseprocessor.h"
-#include "processor/shape/drawlineprocessor.h"
-#include "processor/shape/drawrectangleprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/shape/drawtextprocessor.h"
 #include "processor/shape/houghcircleprocessor.h"
@@ -85,10 +82,10 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Math", math);
 
     QStringList shapes;
-    shapes << "Rectangle" << "DrawRectangle"
-           << "Circle" << "DrawCircle" << "HoughCircle"
-           << "DrawEllipse" << "DrawLine" << "DrawText"
-           << "DrawShape" << "Line";
+    shapes << "Rectangle" << "Line"
+           << "Circle" << "HoughCircle"
+           << "DrawEllipse" << "DrawText"
+           << "DrawShape";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -196,10 +193,6 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     {
         return new RectangleProcessor();
     }
-    else if(rawProcessorName == "DrawRectangle")
-    {
-        return new DrawRectangleProcessor();
-    }
     else if(rawProcessorName == "SubImage")
     {
         return new SubImageProcessor();
@@ -212,10 +205,6 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     {
         return new CircleProcessor();
     }
-    else if(rawProcessorName == "DrawCircle")
-    {
-        return new DrawCircleProcessor();
-    }
     else if(rawProcessorName == "HoughCircle")
     {
         return new HoughCircleProcessor();
@@ -223,10 +212,6 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "DrawEllipse")
     {
         return new DrawEllipseProcessor();
-    }
-    else if(rawProcessorName == "DrawLine")
-    {
-        return new DrawLineProcessor();
     }
     else if(rawProcessorName == "AddWeighted")
     {

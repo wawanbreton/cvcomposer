@@ -66,12 +66,9 @@ SOURCES += main.cpp\
     model/node.cpp \
     processor/analyzer/discretefouriertransformprocessor.cpp \
     processor/shape/rectangleprocessor.cpp \
-    processor/shape/drawrectangleprocessor.cpp \
     processor/geometry/subimageprocessor.cpp \
     processor/geometry/makeborderprocessor.cpp \
-    processor/shape/drawcircleprocessor.cpp \
     processor/shape/drawellipseprocessor.cpp \
-    processor/shape/drawlineprocessor.cpp \
     processor/filter/addweightedprocessor.cpp \
     processor/filter/converttoprocessor.cpp \
     plugwidget/booleanwidget.cpp \
@@ -144,12 +141,9 @@ HEADERS  += gui/mainwidget.h \
     model/node.h \
     processor/analyzer/discretefouriertransformprocessor.h \
     processor/shape/rectangleprocessor.h \
-    processor/shape/drawrectangleprocessor.h \
     processor/geometry/subimageprocessor.h \
     processor/geometry/makeborderprocessor.h \
-    processor/shape/drawcircleprocessor.h \
     processor/shape/drawellipseprocessor.h \
-    processor/shape/drawlineprocessor.h \
     processor/filter/addweightedprocessor.h \
     processor/filter/converttoprocessor.h \
     plugwidget/booleanwidget.h \
