@@ -97,7 +97,8 @@ SOURCES += main.cpp\
     processor/data/countlistprocessor.cpp \
     processor/data/splitchannelsprocessor.cpp \
     plugwidget/pathwidget.cpp \
-    processor/shape/drawshapeprocessor.cpp
+    processor/shape/drawshapeprocessor.cpp \
+    processor/shape/lineprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -179,7 +180,9 @@ HEADERS  += gui/mainwidget.h \
     processor/data/countlistprocessor.h \
     processor/data/splitchannelsprocessor.h \
     plugwidget/pathwidget.h \
-    processor/shape/drawshapeprocessor.h
+    processor/shape/drawshapeprocessor.h \
+    model/line.h \
+    processor/shape/lineprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

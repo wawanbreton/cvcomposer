@@ -44,6 +44,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
         case PlugType::Rectangle:
         case PlugType::Circle:
         case PlugType::Contour:
+        case PlugType::Line:
             return Mandatory;
     }
 

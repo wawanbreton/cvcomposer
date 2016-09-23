@@ -53,6 +53,7 @@
 #include "processor/shape/drawtextprocessor.h"
 #include "processor/shape/houghcircleprocessor.h"
 #include "processor/shape/drawshapeprocessor.h"
+#include "processor/shape/lineprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -87,7 +88,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     shapes << "Rectangle" << "DrawRectangle"
            << "Circle" << "DrawCircle" << "HoughCircle"
            << "DrawEllipse" << "DrawLine" << "DrawText"
-           << "DrawShape";
+           << "DrawShape" << "Line";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -278,6 +279,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "DrawShape")
     {
         return new DrawShapeProcessor();
+    }
+    else if(rawProcessorName == "Line")
+    {
+        return new LineProcessor();
     }
     else
     {

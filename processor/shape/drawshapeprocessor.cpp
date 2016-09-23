@@ -19,6 +19,7 @@
 
 #include "global/cvutils.h"
 #include "model/circle.h"
+#include "model/line.h"
 
 
 DrawShapeProcessor::DrawShapeProcessor()
@@ -63,6 +64,11 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
         {
             cv::Rect rect = shape.value<cv::Rect>();
             cv::rectangle(outputImage, rect, color, thickness, lineType, shift);
+        }
+        else if(shape.userType() == qMetaTypeId<Line>())
+        {
+            Line line = shape.value<Line>();
+            cv::line(outputImage, line.point1, line.point2, color, thickness, lineType, shift);
         }
     }
 

@@ -37,7 +37,8 @@ namespace PlugType
         Rectangle,
         Circle,
         Boolean,
-        Contour
+        Contour,
+        Line
     } Enum;
 
     typedef enum
