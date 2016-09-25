@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <QColor>
+
 namespace PlugType
 {
     typedef enum
@@ -60,4 +62,6 @@ namespace PlugType
     bool isCompatible(Enum output, Enum input);
 
     bool isInputSavable(Enum value);
+
+    QColor getColor(Enum value);
 }

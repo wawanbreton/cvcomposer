@@ -37,47 +37,23 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     setPen(Qt::NoPen);
 
     QBrush brush;
-    switch(plug->getDefinition().type)
+    if(plug->getDefinition().type == PlugType::Generic)
     {
-        case PlugType::Generic:
+        // Make a rainbow gradient :)
+        int precision = 10;
+        QLinearGradient gradient;
+        gradient.setStart(rect().topLeft() + QPoint(pen().width(), 0));
+        gradient.setFinalStop(rect().topRight() - QPoint(pen().width(), 0));
+        for(int i = 0 ; i < precision ; i++)
         {
-            // Make a rainbow gradient :)
-            int precision = 10;
-            QLinearGradient gradient;
-            gradient.setStart(rect().topLeft() + QPoint(pen().width(), 0));
-            gradient.setFinalStop(rect().topRight() - QPoint(pen().width(), 0));
-            for(int i = 0 ; i < precision ; i++)
-            {
-                qreal coeff = qreal(i) / precision;
-                gradient.setColorAt(coeff, QColor::fromHsvF(coeff, 0.78, 1));
-            }
-            brush = gradient;
-            break;
+            qreal coeff = qreal(i) / precision;
+            gradient.setColorAt(coeff, QColor::fromHsvF(coeff, 0.78, 1));
         }
-        case PlugType::Image:
-            brush = QColor(46, 204, 113);
-            break;
-        case PlugType::Kernel:
-            brush = QColor(52, 152, 219);
-            break;
-        case PlugType::Rectangle:
-            brush = QColor(142, 68, 173);
-            break;
-        case PlugType::Double:
-            brush = QColor(230, 126, 34);
-            break;
-        case PlugType::Circle:
-            brush = QColor(85, 110, 134);
-            break;
-        case PlugType::Contour:
-            brush = QColor(241, 196, 15);
-            break;
-        case PlugType::Line:
-            brush = QColor(156, 80, 6);
-            break;
-        default:
-            brush = Qt::white;
-            break;
+        brush = gradient;
+    }
+    else
+    {
+        brush = PlugType::getColor(plug->getDefinition().type);
     }
 
     setBrush(brush);

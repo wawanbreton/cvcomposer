@@ -90,3 +90,42 @@ bool PlugType::isCompatible(PlugType::Enum output, PlugType::Enum input)
         return output == input;
     }
 }
+
+
+QColor PlugType::getColor(PlugType::Enum value)
+{
+    switch(value)
+    {
+        case PlugType::Image:
+            return QColor(46, 204, 113);
+        case PlugType::Kernel:
+            return QColor(52, 152, 219);
+        case PlugType::Rectangle:
+            return QColor(142, 68, 173);
+        case PlugType::Double:
+            return QColor(230, 126, 34);
+        case PlugType::Circle:
+            return QColor(85, 110, 134);
+        case PlugType::Contour:
+            return QColor(241, 196, 15);
+        case PlugType::Line:
+            return QColor(156, 80, 6);
+        case PlugType::Ellipse:
+            return QColor(255, 79, 70);
+        case PlugType::Generic:
+        case PlugType::Size:
+        case PlugType::Point:
+        case PlugType::Enumeration:
+        case PlugType::String:
+        case PlugType::Color:
+        case PlugType::KernelDefinition:
+        case PlugType::Path:
+        case PlugType::ImagePreview:
+        case PlugType::DockableImageViewer:
+        case PlugType::Boolean:
+            qCritical() << "Plug type" << value << "has no defined color";
+            break;
+    }
+
+    return Qt::white;
+}
