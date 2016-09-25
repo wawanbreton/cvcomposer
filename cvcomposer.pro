@@ -68,7 +68,6 @@ SOURCES += main.cpp\
     processor/shape/rectangleprocessor.cpp \
     processor/geometry/subimageprocessor.cpp \
     processor/geometry/makeborderprocessor.cpp \
-    processor/shape/drawellipseprocessor.cpp \
     processor/filter/addweightedprocessor.cpp \
     processor/filter/converttoprocessor.cpp \
     plugwidget/booleanwidget.cpp \
@@ -95,7 +94,8 @@ SOURCES += main.cpp\
     processor/data/splitchannelsprocessor.cpp \
     plugwidget/pathwidget.cpp \
     processor/shape/drawshapeprocessor.cpp \
-    processor/shape/lineprocessor.cpp
+    processor/shape/lineprocessor.cpp \
+    processor/shape/ellipseprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -143,7 +143,6 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/rectangleprocessor.h \
     processor/geometry/subimageprocessor.h \
     processor/geometry/makeborderprocessor.h \
-    processor/shape/drawellipseprocessor.h \
     processor/filter/addweightedprocessor.h \
     processor/filter/converttoprocessor.h \
     plugwidget/booleanwidget.h \
@@ -176,7 +175,9 @@ HEADERS  += gui/mainwidget.h \
     plugwidget/pathwidget.h \
     processor/shape/drawshapeprocessor.h \
     model/line.h \
-    processor/shape/lineprocessor.h
+    processor/shape/lineprocessor.h \
+    processor/shape/ellipseprocessor.h \
+    model/ellipse.h
 
 FORMS    += \
     gui/mainwidget.ui \

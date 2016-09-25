@@ -45,12 +45,12 @@
 #include "processor/math/averageprocessor.h"
 #include "processor/math/operatorprocessor.h"
 #include "processor/shape/circleprocessor.h"
-#include "processor/shape/drawellipseprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/shape/drawtextprocessor.h"
 #include "processor/shape/houghcircleprocessor.h"
 #include "processor/shape/drawshapeprocessor.h"
 #include "processor/shape/lineprocessor.h"
+#include "processor/shape/ellipseprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -83,9 +83,8 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
 
     QStringList shapes;
     shapes << "Rectangle" << "Line"
-           << "Circle" << "HoughCircle"
-           << "DrawEllipse" << "DrawText"
-           << "DrawShape";
+           << "Circle" << "Ellipse" << "HoughCircle"
+           << "DrawText" << "DrawShape";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -209,10 +208,6 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     {
         return new HoughCircleProcessor();
     }
-    else if(rawProcessorName == "DrawEllipse")
-    {
-        return new DrawEllipseProcessor();
-    }
     else if(rawProcessorName == "AddWeighted")
     {
         return new AddWeightedProcessor();
@@ -268,6 +263,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Line")
     {
         return new LineProcessor();
+    }
+    else if(rawProcessorName == "Ellipse")
+    {
+        return new EllipseProcessor();
     }
     else
     {

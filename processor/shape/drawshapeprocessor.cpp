@@ -17,8 +17,11 @@
 
 #include "drawshapeprocessor.h"
 
+#include <QDebug>
+
 #include "global/cvutils.h"
 #include "model/circle.h"
+#include "model/ellipse.h"
 #include "model/line.h"
 
 
@@ -69,6 +72,20 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
         {
             Line line = shape.value<Line>();
             cv::line(outputImage, line.point1, line.point2, color, thickness, lineType, shift);
+        }
+        else if(shape.userType() == qMetaTypeId<Ellipse>())
+        {
+            Ellipse ellipse = shape.value<Ellipse>();
+            cv::ellipse(outputImage,
+                        ellipse.center,
+                        ellipse.axes,
+                        ellipse.angle,
+                        ellipse.startAngle,
+                        ellipse.endAngle,
+                        color,
+                        thickness,
+                        lineType,
+                        shift);
         }
     }
 

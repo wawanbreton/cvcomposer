@@ -120,6 +120,7 @@ QString Plug::save(const QVariant &value) const
         case PlugType::Generic:
         case PlugType::Contour:
         case PlugType::Line:
+        case PlugType::Ellipse:
             qCritical() << "Plug::save" << "Type" << getDefinition().type << "is not savable";
             break;
     }
@@ -251,6 +252,7 @@ QVariant Plug::load(const QString &value) const
         case PlugType::Circle:
         case PlugType::Contour:
         case PlugType::Line:
+        case PlugType::Ellipse:
         case PlugType::Generic:
             break;
     }
