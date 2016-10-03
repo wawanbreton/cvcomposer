@@ -21,10 +21,10 @@
 #include "global/properties.h"
 #include "global/threestatebool.h"
 
-typedef struct
+typedef struct PlugDefinitionStruct
 {
     QString name;
-    PlugType::Enum type;
+    PlugType::PlugTypes types;
     Properties widgetProperties;
     QVariant defaultValue;
     ThreeStateBool::Enum labelVisible;

@@ -36,8 +36,12 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setPen(Qt::NoPen);
 
-    QBrush brush;
-    if(plug->getDefinition().type == PlugType::Generic)
+    if(PlugType::isSingleType(_plug->getDefinition().types))
+    {
+        setBrush(PlugType::getColor(PlugType::flagsToEnum(plug->getDefinition().types)));
+    }
+    //QBrush brush;
+    /*if(plug->getDefinition().type == PlugType::Generic)
     {
         // Make a rainbow gradient :)
         int precision = 10;
@@ -54,10 +58,7 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     else
     {
         brush = PlugType::getColor(plug->getDefinition().type);
-    }
-
-    setBrush(brush);
-    setPen(Qt::NoPen);
+    }*/
 }
 
 int PlugItem::type() const
@@ -72,7 +73,14 @@ Plug *PlugItem::getPlug() const
 
 void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QGraphicsEllipseItem::paint(painter, option, widget);
+    if(PlugType::isSingleType(_plug->getDefinition().types))
+    {
+        return QGraphicsEllipseItem::paint(painter, option, widget);
+    }
+    else
+    {
+        //int nbTypes =
+    }
 
     if(_plug->getDefinition().supportsList)
     {

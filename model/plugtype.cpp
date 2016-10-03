@@ -22,75 +22,78 @@
 #include "global/cvutils.h"
 
 
-PlugType::Pluggable PlugType::isInputPluggable(PlugType::Enum value)
+#warning make this dynamic somehow
+const PlugType::PlugTypes All = PlugType::PlugTypes(0x3ffff);
+
+PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
 {
-    switch(value)
+    if(isSingleType(inputTypes))
     {
-        case PlugType::Size:
-        case PlugType::Point:
-        case PlugType::Enumeration:
-        case PlugType::Path:
-        case PlugType::KernelDefinition:
-        case PlugType::Double:
-        case PlugType::String:
-        case PlugType::Color:
-        case PlugType::DockableImageViewer:
-        case PlugType::Boolean:
-            return ManualOnly;
-        case PlugType::Generic:
-        case PlugType::Image:
-        case PlugType::Kernel:
-        case PlugType::ImagePreview:
-        case PlugType::Rectangle:
-        case PlugType::Circle:
-        case PlugType::Contour:
-        case PlugType::Line:
-        case PlugType::Ellipse:
-            return Mandatory;
+        switch(flagsToEnum(inputTypes))
+        {
+            case PlugType::Size:
+            case PlugType::Point:
+            case PlugType::Enumeration:
+            case PlugType::Path:
+            case PlugType::KernelDefinition:
+            case PlugType::Double:
+            case PlugType::String:
+            case PlugType::Color:
+            case PlugType::DockableImageViewer:
+            case PlugType::Boolean:
+                return ManualOnly;
+            case PlugType::Image:
+            case PlugType::Kernel:
+            case PlugType::ImagePreview:
+            case PlugType::Rectangle:
+            case PlugType::Circle:
+            case PlugType::Contour:
+            case PlugType::Line:
+            case PlugType::Ellipse:
+                return Mandatory;
+        }
     }
 
     return Mandatory;
 }
 
-bool PlugType::isWidgetAlwaysVisible(PlugType::Enum value)
+bool PlugType::isWidgetAlwaysVisible(PlugType::PlugTypes types)
 {
-    return value == PlugType::ImagePreview || value == PlugType::DockableImageViewer;
+    return isSingleType(types) &&
+           (flagsToEnum(types) == PlugType::ImagePreview ||
+            flagsToEnum(types) == PlugType::DockableImageViewer);
 }
 
-bool PlugType::isLabelVisible(PlugType::Enum value)
+bool PlugType::isLabelVisible(PlugType::PlugTypes types)
 {
-    return value != PlugType::ImagePreview && value != PlugType::KernelDefinition;
+    return !isSingleType(types) ||
+           (flagsToEnum(types) != PlugType::ImagePreview &&
+            flagsToEnum(types) != PlugType::KernelDefinition);
 }
 
-bool PlugType::isInputSavable(PlugType::Enum value)
+bool PlugType::isInputSavable(PlugType::PlugTypes inputTypes)
 {
-    if(value == PlugType::DockableImageViewer)
+    if(isSingleType(inputTypes))
+    {
+        if(flagsToEnum(inputTypes) == PlugType::DockableImageViewer)
+        {
+            return false;
+        }
+        else
+        {
+            return PlugType::isInputPluggable(inputTypes) != PlugType::Mandatory;
+        }
+    }
+    else
     {
         return false;
     }
-    else
-    {
-        return PlugType::isInputPluggable(value) != PlugType::Mandatory;
-    }
 }
 
-bool PlugType::isOutputInternal(PlugType::Enum value)
+bool PlugType::isOutputInternal(PlugType::PlugTypes types)
 {
-    return value == PlugType::ImagePreview;
+    return isSingleType(types) && flagsToEnum(types) == PlugType::ImagePreview;
 }
-
-bool PlugType::isCompatible(PlugType::Enum output, PlugType::Enum input)
-{
-    if(input == Generic || output == Generic)
-    {
-        return true;
-    }
-    else
-    {
-        return output == input;
-    }
-}
-
 
 QColor PlugType::getColor(PlugType::Enum value)
 {
@@ -112,7 +115,6 @@ QColor PlugType::getColor(PlugType::Enum value)
             return QColor(156, 80, 6);
         case PlugType::Ellipse:
             return QColor(255, 79, 70);
-        case PlugType::Generic:
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
@@ -128,4 +130,21 @@ QColor PlugType::getColor(PlugType::Enum value)
     }
 
     return Qt::white;
+}
+
+
+bool PlugType::isSingleType(PlugTypes types)
+{
+    return (types & (types - 1)) == 0;
+}
+
+
+PlugType::Enum PlugType::flagsToEnum(PlugTypes types)
+{
+    return Enum(int(types));
+}
+
+QList<PlugType::Enum> PlugType::toList(PlugTypes types)
+{
+todo
 }

@@ -100,13 +100,13 @@ void AbstractProcessor::addInput(const PlugDefinition &definition)
 }
 
 void AbstractProcessor::addInput(const QString &name,
-                                 PlugType::Enum type,
+                                 PlugType::PlugTypes types,
                                  const QVariant &defaultValue,
                                  const Properties &widgetProperties,
                                  ThreeStateBool::Enum labelVisible,
                                  bool supportsList)
 {
-    addInput(makePlug(name, type, defaultValue, widgetProperties, labelVisible, supportsList));
+    addInput(makePlug(name, types, defaultValue, widgetProperties, labelVisible, supportsList));
 }
 
 void AbstractProcessor::addEnumerationInput(const QString &name,
@@ -128,11 +128,11 @@ void AbstractProcessor::addOutput(const PlugDefinition &definition)
 }
 
 void AbstractProcessor::addOutput(const QString &userReadableName,
-                                  PlugType::Enum type,
+                                  PlugType::PlugTypes types,
                                   bool supportsList)
 {
     addOutput(makePlug(userReadableName,
-                       type,
+                       types,
                        QVariant(),
                        Properties(),
                        ThreeStateBool::None,
@@ -140,7 +140,7 @@ void AbstractProcessor::addOutput(const QString &userReadableName,
 }
 
 PlugDefinition AbstractProcessor::makePlug(const QString &name,
-                                           PlugType::Enum type,
+                                           PlugType::PlugTypes types,
                                            const QVariant &defaultValue,
                                            const Properties &widgetProperties,
                                            ThreeStateBool::Enum labelVisible,
@@ -148,7 +148,7 @@ PlugDefinition AbstractProcessor::makePlug(const QString &name,
 {
     PlugDefinition plug;
     plug.name = name;
-    plug.type = type;
+    plug.types = types;
     plug.defaultValue = defaultValue;
     plug.widgetProperties = widgetProperties;
     plug.labelVisible = labelVisible;

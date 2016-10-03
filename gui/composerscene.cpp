@@ -154,7 +154,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
             QDomElement plugNode = doc.createElement("plug");
             plugNode.setAttribute("name", plugName);
 
-            if(PlugType::isInputSavable(plug->getDefinition().type))
+            if(PlugType::isInputSavable(plug->getDefinition().types))
             {
                 plugNode.setAttribute("value", plug->save(node->getProperties()[plugName]));
                 hasValue = true;
@@ -491,15 +491,6 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if(_editedConnection.item)
     {
         bool plugFound = false;
-        PlugType::Enum baseType;
-        if(_editedConnection.fromOutput)
-        {
-            baseType = _editedConnection.plugOutput->getDefinition().type;
-        }
-        else
-        {
-            baseType = _editedConnection.plugInput->getDefinition().type;
-        }
 
         foreach(GenericNodeItem *nodeItem, _nodes)
         {
@@ -511,19 +502,21 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
             foreach(PlugItem *plugItem, plugItems)
             {
-                PlugType::Enum plugType = plugItem->getPlug()->getDefinition().type;
-                bool compatible;
+                PlugType::PlugTypes outputTypes;
+                PlugType::PlugTypes inputTypes;
 
                 if(_editedConnection.fromOutput)
                 {
-                    compatible = PlugType::isCompatible(baseType, plugType);
+                    outputTypes = _editedConnection.plugOutput->getDefinition().types;
+                    inputTypes = plugItem->getPlug()->getDefinition().types;
                 }
                 else
                 {
-                    compatible = PlugType::isCompatible(plugType, baseType);
+                    outputTypes = plugItem->getPlug()->getDefinition().types;
+                    inputTypes = _editedConnection.plugInput->getDefinition().types;
                 }
 
-                if(compatible)
+                if(inputTypes & outputTypes)
                 {
                     QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
                     qreal distance = (event->scenePos() - itemPos).manhattanLength();

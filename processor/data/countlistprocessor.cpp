@@ -22,7 +22,7 @@
 
 CountListProcessor::CountListProcessor()
 {
-    addInput("list", PlugType::Generic, QVariant(), Properties(), ThreeStateBool::None, true);
+    addInput("list", PlugType::All, QVariant(), Properties(), ThreeStateBool::None, true);
 
     addOutput("count", PlugType::Double, false);
 }
