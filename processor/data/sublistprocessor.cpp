@@ -22,14 +22,14 @@
 
 SubListProcessor::SubListProcessor()
 {
-    addInput("input list", PlugType::All, QVariant(), Properties(), ThreeStateBool::None, true);
+    addInput("input list", PlugType::getAllFlags(), QVariant(), Properties(), ThreeStateBool::None, true);
 
     Properties sizeProperties;
     sizeProperties.insert("decimals", 0);
     addInput("first element", PlugType::Double, 0, sizeProperties);
     addInput("amount", PlugType::Double, 1, sizeProperties);
 
-    addOutput("output list", PlugType::All, true);
+    addOutput("output list", PlugType::getAllFlags(), true);
 }
 
 Properties SubListProcessor::processImpl(const Properties &inputs)

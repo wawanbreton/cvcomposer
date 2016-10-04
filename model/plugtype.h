@@ -61,7 +61,13 @@ class PlugType : public QObject
 
         static Enum flagsToEnum(PlugTypes types);
 
+        static QList<PlugType::Enum> getAllValues();
+
+        static PlugType::PlugTypes getAllFlags();
+
         static QList<Enum> toList(PlugTypes types);
+
+        static PlugType::PlugTypes fromList(const QList<PlugType::Enum> &types);
 
         static bool isSingleType(PlugTypes types);
 
@@ -74,9 +80,6 @@ class PlugType : public QObject
         static bool isLabelVisible(PlugTypes types);
 
         static bool isInputSavable(PlugTypes inputTypes);
-
-    public:
-        static const PlugTypes All;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(PlugType::PlugTypes)

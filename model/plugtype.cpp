@@ -18,12 +18,10 @@
 #include "plugtype.h"
 
 #include <QDebug>
+#include <QMetaEnum>
 
 #include "global/cvutils.h"
 
-
-#warning make this dynamic somehow
-const PlugType::PlugTypes All = PlugType::PlugTypes(0x3ffff);
 
 PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
 {
@@ -144,7 +142,41 @@ PlugType::Enum PlugType::flagsToEnum(PlugTypes types)
     return Enum(int(types));
 }
 
+PlugType::PlugTypes PlugType::getAllFlags()
+{
+    return fromList(getAllValues());
+}
+
+QList<PlugType::Enum> PlugType::getAllValues()
+{
+    QList<PlugType::Enum> result;
+    QMetaEnum me = PlugType::staticMetaObject.enumerator(0);
+    for(int i = 0 ; i < me.keyCount() ; i++)
+    {
+        result << (PlugType::Enum)me.value(i);
+    }
+    return result;
+}
+
 QList<PlugType::Enum> PlugType::toList(PlugTypes types)
 {
-todo
+    QList<PlugType::Enum> result;
+    foreach(PlugType::Enum type, PlugType::getAllValues())
+    {
+        if(types.testFlag(type))
+        {
+            result << type;
+        }
+    }
+    return result;
+}
+
+PlugType::PlugTypes PlugType::fromList(const QList<PlugType::Enum> &types)
+{
+    PlugType::PlugTypes result;
+    foreach(const PlugType::Enum &type, types)
+    {
+        result |= type;
+    }
+    return result;
 }
