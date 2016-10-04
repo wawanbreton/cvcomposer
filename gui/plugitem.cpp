@@ -34,31 +34,6 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     setRect(-radius, -radius, radius * 2, radius * 2);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
-    setPen(Qt::NoPen);
-
-    if(PlugType::isSingleType(_plug->getDefinition().types))
-    {
-        setBrush(PlugType::getColor(PlugType::flagsToEnum(plug->getDefinition().types)));
-    }
-    //QBrush brush;
-    /*if(plug->getDefinition().type == PlugType::Generic)
-    {
-        // Make a rainbow gradient :)
-        int precision = 10;
-        QLinearGradient gradient;
-        gradient.setStart(rect().topLeft() + QPoint(pen().width(), 0));
-        gradient.setFinalStop(rect().topRight() - QPoint(pen().width(), 0));
-        for(int i = 0 ; i < precision ; i++)
-        {
-            qreal coeff = qreal(i) / precision;
-            gradient.setColorAt(coeff, QColor::fromHsvF(coeff, 0.78, 1));
-        }
-        brush = gradient;
-    }
-    else
-    {
-        brush = PlugType::getColor(plug->getDefinition().type);
-    }*/
 }
 
 int PlugItem::type() const
@@ -73,13 +48,19 @@ Plug *PlugItem::getPlug() const
 
 void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if(PlugType::isSingleType(_plug->getDefinition().types))
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    painter->setPen(Qt::NoPen);
+
+    QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
+    qreal delta = 360 / types.count();
+    int count = 0;
+    foreach(const PlugType::Enum type, types)
     {
-        return QGraphicsEllipseItem::paint(painter, option, widget);
-    }
-    else
-    {
-        //int nbTypes =
+        painter->setBrush(PlugType::getColor(type));
+        painter->drawPie(rect(), count * delta * 16, delta * 16);
+        count++;
     }
 
     if(_plug->getDefinition().supportsList)

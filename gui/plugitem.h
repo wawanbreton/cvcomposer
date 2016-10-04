@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGITEM_H
-#define PLUGITEM_H
+#pragma once
 
 #include <QObject>
 #include <QGraphicsEllipseItem>
@@ -47,7 +46,8 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
     public:
         static const int radius = 10;
         static const int magnetRadius = 20;
-        Plug *_plug;
-};
 
-#endif // PLUGITEM_H
+    private:
+        Plug *_plug;
+        qreal _currentAngle;
+};
