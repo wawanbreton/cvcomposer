@@ -33,12 +33,7 @@ ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
     _itemConnectorInput->setBrush(Qt::NoBrush);
     _itemLine->setBrush(Qt::NoBrush);
 
-    QPen pen(QColor("#2ecc71"), 3);
-    pen.setCapStyle(Qt::RoundCap);
-
-    _itemConnectorOutput->setPen(pen);
-    _itemConnectorInput->setPen(pen);
-    _itemLine->setPen(pen);
+    setCurrentType(PlugType::Enum(0));
 
     const qreal connectorRadius = PlugItem::radius + _deltaCenter;
     const qreal connectorAngle = 75;
@@ -81,6 +76,18 @@ void ConnectionItem::setConnection(const Connection *connection)
 const Connection *ConnectionItem::getConnection() const
 {
     return _connection;
+}
+
+void ConnectionItem::setCurrentType(PlugType::Enum type)
+{
+    QPen pen;
+    pen.setWidth(3);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(type == PlugType::Enum(0) ? Qt::white : PlugType::getColor(type));
+
+    _itemConnectorOutput->setPen(pen);
+    _itemConnectorInput->setPen(pen);
+    _itemLine->setPen(pen);
 }
 
 void ConnectionItem::updateLine()

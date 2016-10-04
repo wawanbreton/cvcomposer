@@ -653,23 +653,31 @@ void ComposerScene::onNodeRemoved(const Node *node)
 
 void ComposerScene::onConnectionAdded(const Connection *connection)
 {
+    PlugType::PlugTypes outputTypes = connection->getOutput()->getDefinition().types;
+    PlugType::PlugTypes inputTypes = connection->getInput()->getDefinition().types;
+    PlugType::PlugTypes compatibleTypes = outputTypes & inputTypes;
+    PlugType::Enum connectionType = PlugType::toList(compatibleTypes).value(0);
+
     ConnectionItem *connectionItem = new ConnectionItem();
     connectionItem->setConnection(connection);
+    connectionItem->setCurrentType(connectionType);
 
     foreach(const GenericNodeItem *nodeView, _nodes)
     {
-        foreach(const PlugItem *plugItem, nodeView->getInputs())
+        foreach(PlugItem *plugItem, nodeView->getInputs())
         {
             if(plugItem->getPlug() == connection->getInput())
             {
+                plugItem->setCurrentType(connectionType, true);
                 connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
             }
         }
-        foreach(const PlugItem *plugItem, nodeView->getOutputs())
+        foreach(PlugItem *plugItem, nodeView->getOutputs())
         {
             if(plugItem->getPlug() == connection->getOutput())
             {
+                plugItem->setCurrentType(connectionType, false);
                 connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
             }

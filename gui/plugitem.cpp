@@ -29,11 +29,14 @@
 PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     QObject(),
     QGraphicsEllipseItem(parent),
-    _plug(plug)
+    _plug(plug),
+    _currentAngle(0)
 {
     setRect(-radius, -radius, radius * 2, radius * 2);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
+
+    setCurrentType(PlugType::Image, true);
 }
 
 int PlugItem::type() const
@@ -53,6 +56,9 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     painter->setPen(Qt::NoPen);
 
+    painter->save();
+    painter->rotate(_currentAngle);
+
     QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
     qreal delta = 360 / types.count();
     int count = 0;
@@ -62,6 +68,8 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->drawPie(rect(), count * delta * 16, delta * 16);
         count++;
     }
+
+    painter->restore();
 
     if(_plug->getDefinition().supportsList)
     {
@@ -78,6 +86,18 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             painter->rotate(120);
         }
     }
+}
+
+void PlugItem::setCurrentType(PlugType::Enum type, bool input)
+{
+    QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
+    int index = types.indexOf(type);
+    qreal delta = 360 / types.count();
+    qreal partAngle = delta * (index + 0.5);
+    qreal target = input ? 180 : 0;
+
+    _currentAngle = partAngle - target;
+    update();
 }
 
 QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

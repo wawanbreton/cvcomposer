@@ -21,6 +21,8 @@
 
 #include <QGraphicsPathItem>
 
+#include "model/plugtype.h"
+
 class Connection;
 
 class ConnectionItem : public QGraphicsItemGroup
@@ -37,6 +39,8 @@ class ConnectionItem : public QGraphicsItemGroup
         void setConnection(const Connection *connection);
 
         const Connection *getConnection() const;
+
+        void setCurrentType(PlugType::Enum type);
 
     private:
         void updateLine();

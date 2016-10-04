@@ -37,6 +37,8 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget = Q_NULLPTR);
 
+        void setCurrentType(PlugType::Enum type, bool input);
+
     signals:
         void positionChanged();
 
