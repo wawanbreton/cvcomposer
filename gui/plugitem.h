@@ -45,9 +45,13 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
     protected:
         virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
+    private slots:
+        void onCurrentAngleChanged(const QVariant &value);
+
     public:
         static const int radius = 10;
         static const int magnetRadius = 20;
+        static const int maxMultiTypes = 8;
 
     private:
         Plug *_plug;

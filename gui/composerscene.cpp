@@ -402,6 +402,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if(item->type() == CustomItems::Plug)
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
+                PlugType::PlugTypes types = plug->getPlug()->getDefinition().types;
                 Node *nodeInput = _model->findInputPlug(plug->getPlug());
                 Node *nodeOutput = _model->findOutputPlug(plug->getPlug());
                 bool isInput = nodeInput != NULL;
@@ -419,6 +420,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                         if(connection->getInput() == plug->getPlug())
                         {
                             // We have found an existing connection, edit it
+                            _editedConnection.item->copyColorFrom(connectionItem);
                             _editedConnection.item->setOutput(connectionItem->getOutput());
                             _editedConnection.item->setInput(event->scenePos());
                             _editedConnection.plugOutput = connection->getOutput();
@@ -430,6 +432,11 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 }
 
                 // We are not editing an existing connection
+                if(PlugType::isSingleType(types))
+                {
+                    _editedConnection.item->setCurrentType(PlugType::flagsToEnum(types), true);
+                }
+
                 if(isInput)
                 {
                     _editedConnection.item->setOutput(event->scenePos());
@@ -655,12 +662,21 @@ void ComposerScene::onConnectionAdded(const Connection *connection)
 {
     PlugType::PlugTypes outputTypes = connection->getOutput()->getDefinition().types;
     PlugType::PlugTypes inputTypes = connection->getInput()->getDefinition().types;
-    PlugType::PlugTypes compatibleTypes = outputTypes & inputTypes;
-    PlugType::Enum connectionType = PlugType::toList(compatibleTypes).value(0);
+    QList<PlugType::Enum> compatibleTypes = PlugType::toList(outputTypes & inputTypes);
+    PlugType::Enum connectionType = compatibleTypes.value(0);
 
     ConnectionItem *connectionItem = new ConnectionItem();
     connectionItem->setConnection(connection);
-    connectionItem->setCurrentType(connectionType);
+
+    if(_editedConnection.item)
+    {
+        connectionItem->copyColorFrom(_editedConnection.item);
+    }
+
+    if(compatibleTypes.count() <= PlugItem::maxMultiTypes)
+    {
+        connectionItem->setCurrentType(connectionType);
+    }
 
     foreach(const GenericNodeItem *nodeView, _nodes)
     {

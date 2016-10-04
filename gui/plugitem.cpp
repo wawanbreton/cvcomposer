@@ -17,6 +17,7 @@
 
 #include "plugitem.h"
 
+#include <QVariantAnimation>
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
@@ -56,20 +57,30 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     painter->setPen(Qt::NoPen);
 
-    painter->save();
-    painter->rotate(_currentAngle);
-
     QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
-    qreal delta = 360 / types.count();
-    int count = 0;
-    foreach(const PlugType::Enum type, types)
-    {
-        painter->setBrush(PlugType::getColor(type));
-        painter->drawPie(rect(), count * delta * 16, delta * 16);
-        count++;
-    }
 
-    painter->restore();
+    if(types.count() <= maxMultiTypes)
+    {
+        painter->save();
+        painter->rotate(_currentAngle);
+
+        qreal delta = 360 / types.count();
+        int count = 0;
+        foreach(const PlugType::Enum type, types)
+        {
+            painter->setBrush(PlugType::getColor(type));
+            painter->drawPie(rect(), count * delta * 16, delta * 16);
+            count++;
+        }
+
+        painter->restore();
+    }
+    else
+    {
+        // With too many types, it becomes irrelevant to display them all
+        painter->setBrush(Qt::white);
+        painter->drawEllipse(rect());
+    }
 
     if(_plug->getDefinition().supportsList)
     {
@@ -95,9 +106,15 @@ void PlugItem::setCurrentType(PlugType::Enum type, bool input)
     qreal delta = 360 / types.count();
     qreal partAngle = delta * (index + 0.5);
     qreal target = input ? 180 : 0;
+    qreal nextAngle = partAngle - target;
 
-    _currentAngle = partAngle - target;
-    update();
+    QVariantAnimation *animation = new QVariantAnimation(this);
+    animation->setStartValue(_currentAngle);
+    animation->setEndValue(nextAngle);
+    animation->setDuration(1000);
+    animation->setEasingCurve(QEasingCurve::OutElastic);
+    connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(onCurrentAngleChanged(QVariant)));
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
@@ -108,4 +125,10 @@ QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QV
     }
 
     return QGraphicsEllipseItem::itemChange(change, value);
+}
+
+void PlugItem::onCurrentAngleChanged(const QVariant &value)
+{
+    _currentAngle = value.toReal();
+    update();
 }

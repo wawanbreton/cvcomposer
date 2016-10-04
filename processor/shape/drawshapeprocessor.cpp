@@ -28,7 +28,12 @@
 DrawShapeProcessor::DrawShapeProcessor()
 {
     addInput("input image", PlugType::Image);
-    addInput("shape", PlugType::getAllFlags(), QVariant(), Properties(), ThreeStateBool::None, true);
+    addInput("shape",
+             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse,
+             QVariant(),
+             Properties(),
+             ThreeStateBool::None,
+             true);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;
