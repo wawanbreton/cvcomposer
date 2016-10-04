@@ -17,13 +17,17 @@
 
 #pragma once
 
-#include "processor/abstractprocessor.h"
+#include <opencv2/core/core.hpp>
 
-class DrawEllipseProcessor : public AbstractProcessor
+#include <QMetaType>
+
+typedef struct
 {
-    public:
-        DrawEllipseProcessor();
+    cv::Point center;
+    cv::Size axes;
+    double angle;
+    double startAngle;
+    double endAngle;
+} Ellipse;
 
-    protected:
-        virtual Properties processImpl(const Properties &inputs) override;
-};
+Q_DECLARE_METATYPE(Ellipse)

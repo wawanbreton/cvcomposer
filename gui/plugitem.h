@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUGITEM_H
-#define PLUGITEM_H
+#pragma once
 
 #include <QObject>
 #include <QGraphicsEllipseItem>
@@ -38,16 +37,23 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget = Q_NULLPTR);
 
+        void setCurrentType(PlugType::Enum type, bool input);
+
     signals:
         void positionChanged();
 
     protected:
         virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
+    private slots:
+        void onCurrentAngleChanged(const QVariant &value);
+
     public:
         static const int radius = 10;
         static const int magnetRadius = 20;
-        Plug *_plug;
-};
+        static const int maxMultiTypes = 8;
 
-#endif // PLUGITEM_H
+    private:
+        Plug *_plug;
+        qreal _currentAngle;
+};

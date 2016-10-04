@@ -17,14 +17,19 @@
 
 #pragma once
 
+#include <QObject>
 #include <QGraphicsItemGroup>
 
 #include <QGraphicsPathItem>
 
+#include "model/plugtype.h"
+
 class Connection;
 
-class ConnectionItem : public QGraphicsItemGroup
+class ConnectionItem : public QObject, public QGraphicsItemGroup
 {
+    Q_OBJECT
+
     public:
         ConnectionItem(QGraphicsItem *parent = NULL);
 
@@ -38,8 +43,15 @@ class ConnectionItem : public QGraphicsItemGroup
 
         const Connection *getConnection() const;
 
+        void setCurrentType(PlugType::Enum type, bool immediate = false);
+
+        void copyColorFrom(const ConnectionItem *other);
+
     private:
         void updateLine();
+
+    private slots:
+        void onColorChanged(const QVariant &value);
 
     private:
         static const int _deltaCenter = 3;

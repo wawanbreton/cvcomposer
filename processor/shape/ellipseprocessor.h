@@ -15,22 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "countlistprocessor.h"
+#pragma once
 
-#include "global/cvutils.h"
+#include "processor/abstractprocessor.h"
 
-
-CountListProcessor::CountListProcessor()
+class EllipseProcessor : public AbstractProcessor
 {
-    addInput("list", PlugType::getAllFlags(), QVariant(), Properties(), ThreeStateBool::None, true);
+    public:
+        EllipseProcessor();
 
-    addOutput("count", PlugType::Double, false);
-}
-
-Properties CountListProcessor::processImpl(const Properties &inputs)
-{
-    Properties outputs;
-    outputs.insert("count", inputs["list"].value<QList<QVariant> >().count());
-    return outputs;
-}
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};
 

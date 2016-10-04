@@ -40,7 +40,7 @@ class AbstractProcessor
         void addInput(const PlugDefinition &definition);
 
         void addInput(const QString &name,
-                      PlugType::Enum type,
+                      PlugType::PlugTypes types,
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties(),
                       ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
@@ -53,14 +53,14 @@ class AbstractProcessor
         void addOutput(const PlugDefinition &definition);
 
         void addOutput(const QString &userReadableName,
-                       PlugType::Enum type,
+                       PlugType::PlugTypes types,
                        bool supportsList = false);
 
         virtual Properties processImpl(const Properties &inputs) = 0;
 
     private:
         PlugDefinition makePlug(const QString &name,
-                                PlugType::Enum type,
+                                PlugType::PlugTypes types,
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties(),
                                 ThreeStateBool::Enum labelVisible = ThreeStateBool::None,

@@ -63,7 +63,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             PlugWidget widget;
             widget.definition = output->getDefinition();
 
-            if(PlugType::isOutputInternal(widget.definition.type))
+            if(PlugType::isOutputInternal(widget.definition.types))
             {
                 widget.label = NULL;
 
@@ -102,7 +102,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
 
             widget.label = NULL;
 
-            bool labelVisible = PlugType::isLabelVisible(widget.definition.type);
+            bool labelVisible = PlugType::isLabelVisible(widget.definition.types);
             if(widget.definition.labelVisible != ThreeStateBool::None)
             {
                 labelVisible = bool(widget.definition.labelVisible);
@@ -117,8 +117,8 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             }
 
             widget.widget = NULL;
-            if(PlugType::isInputPluggable(widget.definition.type) != PlugType::Mandatory ||
-               PlugType::isWidgetAlwaysVisible(widget.definition.type))
+            if(PlugType::isInputPluggable(widget.definition.types) != PlugType::Mandatory ||
+               PlugType::isWidgetAlwaysVisible(widget.definition.types))
             {
                 widget.widget = makePlugWidget(widget.definition);
                 hasWidget = true;
@@ -216,7 +216,7 @@ void GenericNodeWidget::setInputPlugged(const QString &inputName, bool plugged)
     const PlugWidget &widget = _widgets[inputName];
     if(widget.widget)
     {
-        widget.widget->setVisible(PlugType::isWidgetAlwaysVisible(widget.definition.type) ||
+        widget.widget->setVisible(PlugType::isWidgetAlwaysVisible(widget.definition.types) ||
                                   not plugged);
     }
     makeLabelText(widget, plugged);
@@ -273,51 +273,60 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
 {
     AbstractPlugWidget *widget = NULL;
 
-    switch(plug.type)
+    if(PlugType::isSingleType(plug.types))
     {
-        case PlugType::Size:
-            widget = new SizeWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::Point:
-            widget = new PointWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::Enumeration:
-            widget = new EnumerationWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::Double:
-            widget = new DoubleWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::String:
-            widget = new StringWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::Color:
-            widget = new ColorWidget(this);
-            break;
-        case PlugType::KernelDefinition:
-            widget = new KernelDefinitionWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::Path:
-            widget = new PathWidget(plug.widgetProperties, this);
-            break;
-        case PlugType::ImagePreview:
-            widget = new DataViewerWidget(this);
-            break;
-        case PlugType::DockableImageViewer:
-            widget = new ImageViewerWidget(this);
-            break;
-        case PlugType::Boolean:
-            widget = new BooleanWidget(this);
-            break;
-        case PlugType::Kernel:
-        case PlugType::Image:
-        case PlugType::Rectangle:
-        case PlugType::Circle:
-        case PlugType::Contour:
-        case PlugType::Line:
-        case PlugType::Generic:
-            qCritical() << "plug type" << plug.type
-                        << "is not supposed to be associated to a widget";
-            break;
+        switch(PlugType::flagsToEnum(plug.types))
+        {
+            case PlugType::Size:
+                widget = new SizeWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::Point:
+                widget = new PointWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::Enumeration:
+                widget = new EnumerationWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::Double:
+                widget = new DoubleWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::String:
+                widget = new StringWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::Color:
+                widget = new ColorWidget(this);
+                break;
+            case PlugType::KernelDefinition:
+                widget = new KernelDefinitionWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::Path:
+                widget = new PathWidget(plug.widgetProperties, this);
+                break;
+            case PlugType::ImagePreview:
+                widget = new DataViewerWidget(this);
+                break;
+            case PlugType::DockableImageViewer:
+                widget = new ImageViewerWidget(this);
+                break;
+            case PlugType::Boolean:
+                widget = new BooleanWidget(this);
+                break;
+            case PlugType::Kernel:
+            case PlugType::Image:
+            case PlugType::Rectangle:
+            case PlugType::Circle:
+            case PlugType::Contour:
+            case PlugType::Line:
+            case PlugType::Ellipse:
+                qCritical() << "plug" << plug.name
+                            << "is not supposed to be associated to a widget"
+                            << "because it is of type" << plug.types;
+                break;
+        }
+    }
+    else
+    {
+        qCritical() << "plug" << plug.name
+                    << "is not supposed to be associated to a widget because it is of multiple";
     }
 
     if(widget)
@@ -341,8 +350,8 @@ void GenericNodeWidget::makeLabelText(const PlugWidget &widget, bool plugged)
         QString text = widget.definition.name;
         text = text[0].toUpper() + text.mid(1);
 
-        if((plugged || PlugType::isInputPluggable(widget.definition.type) == PlugType::Mandatory) &&
-           not PlugType::isWidgetAlwaysVisible(widget.definition.type))
+        if((plugged || PlugType::isInputPluggable(widget.definition.types) == PlugType::Mandatory) &&
+           not PlugType::isWidgetAlwaysVisible(widget.definition.types))
         {
             widget.label->setText(text);
         }

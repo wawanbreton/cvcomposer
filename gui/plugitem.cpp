@@ -17,6 +17,7 @@
 
 #include "plugitem.h"
 
+#include <QVariantAnimation>
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
@@ -29,59 +30,14 @@
 PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
     QObject(),
     QGraphicsEllipseItem(parent),
-    _plug(plug)
+    _plug(plug),
+    _currentAngle(0)
 {
     setRect(-radius, -radius, radius * 2, radius * 2);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setFlag(QGraphicsItem::ItemClipsToShape, true);
-    setPen(Qt::NoPen);
 
-    QBrush brush;
-    switch(plug->getDefinition().type)
-    {
-        case PlugType::Generic:
-        {
-            // Make a rainbow gradient :)
-            int precision = 10;
-            QLinearGradient gradient;
-            gradient.setStart(rect().topLeft() + QPoint(pen().width(), 0));
-            gradient.setFinalStop(rect().topRight() - QPoint(pen().width(), 0));
-            for(int i = 0 ; i < precision ; i++)
-            {
-                qreal coeff = qreal(i) / precision;
-                gradient.setColorAt(coeff, QColor::fromHsvF(coeff, 0.78, 1));
-            }
-            brush = gradient;
-            break;
-        }
-        case PlugType::Image:
-            brush = QColor(46, 204, 113);
-            break;
-        case PlugType::Kernel:
-            brush = QColor(52, 152, 219);
-            break;
-        case PlugType::Rectangle:
-            brush = QColor(142, 68, 173);
-            break;
-        case PlugType::Double:
-            brush = QColor(230, 126, 34);
-            break;
-        case PlugType::Circle:
-            brush = QColor(85, 110, 134);
-            break;
-        case PlugType::Contour:
-            brush = QColor(241, 196, 15);
-            break;
-        case PlugType::Line:
-            brush = QColor(156, 80, 6);
-            break;
-        default:
-            brush = Qt::white;
-            break;
-    }
-
-    setBrush(brush);
-    setPen(Qt::NoPen);
+    setCurrentType(PlugType::Image, true);
 }
 
 int PlugItem::type() const
@@ -96,7 +52,35 @@ Plug *PlugItem::getPlug() const
 
 void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QGraphicsEllipseItem::paint(painter, option, widget);
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    painter->setPen(Qt::NoPen);
+
+    QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
+
+    if(types.count() <= maxMultiTypes)
+    {
+        painter->save();
+        painter->rotate(_currentAngle);
+
+        qreal delta = 360 / types.count();
+        int count = 0;
+        foreach(const PlugType::Enum type, types)
+        {
+            painter->setBrush(PlugType::getColor(type));
+            painter->drawPie(rect(), count * delta * 16, delta * 16);
+            count++;
+        }
+
+        painter->restore();
+    }
+    else
+    {
+        // With too many types, it becomes irrelevant to display them all
+        painter->setBrush(Qt::white);
+        painter->drawEllipse(rect());
+    }
 
     if(_plug->getDefinition().supportsList)
     {
@@ -115,6 +99,24 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     }
 }
 
+void PlugItem::setCurrentType(PlugType::Enum type, bool input)
+{
+    QList<PlugType::Enum> types = PlugType::toList(_plug->getDefinition().types);
+    int index = types.indexOf(type);
+    qreal delta = 360 / types.count();
+    qreal partAngle = delta * (index + 0.5);
+    qreal target = input ? 180 : 0;
+    qreal nextAngle = partAngle - target;
+
+    QVariantAnimation *animation = new QVariantAnimation(this);
+    animation->setStartValue(_currentAngle);
+    animation->setEndValue(nextAngle);
+    animation->setDuration(1000);
+    animation->setEasingCurve(QEasingCurve::OutElastic);
+    connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(onCurrentAngleChanged(QVariant)));
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
 QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
     if(change == QGraphicsItem::ItemScenePositionHasChanged)
@@ -123,4 +125,10 @@ QVariant PlugItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QV
     }
 
     return QGraphicsEllipseItem::itemChange(change, value);
+}
+
+void PlugItem::onCurrentAngleChanged(const QVariant &value)
+{
+    _currentAngle = value.toReal();
+    update();
 }
