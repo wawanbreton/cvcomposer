@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <QObject>
+
 #include <QColor>
 
 class PlugType : public QObject

@@ -123,8 +123,7 @@ QColor PlugType::getColor(PlugType::Enum value)
         case PlugType::ImagePreview:
         case PlugType::DockableImageViewer:
         case PlugType::Boolean:
-            #warning todo
-            //qCritical() << "Plug type" << value << "has no defined color";
+            qCritical() << "Plug type" << value << "has no defined color";
             break;
     }
 
