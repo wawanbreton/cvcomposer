@@ -17,14 +17,43 @@
 
 #pragma once
 
-#include <QCommonStyle>
+#include <QProxyStyle>
 
-class CvComposerStyle : public QCommonStyle
+class CvComposerStyle : public QProxyStyle
 {
     Q_OBJECT
 
     public:
         CvComposerStyle();
 
-        virtual void polish(QApplication *application);
+        virtual void polish(QApplication *application) override;
+
+        virtual void polish(QPalette &palette) override;
+
+        virtual void drawPrimitive(PrimitiveElement element,
+                                   const QStyleOption *option,
+                                   QPainter *painter,
+                                   const QWidget *widget) const override;
+
+        void drawControl(ControlElement element,
+                         const QStyleOption *option,
+                         QPainter *painter,
+                         const QWidget *widget) const override;
+
+        void drawComplexControl(ComplexControl control,
+                                const QStyleOptionComplex *option,
+                                QPainter *painter,
+                                const QWidget *widget) const override;
+
+        virtual QRect subControlRect(ComplexControl control,
+                                     const QStyleOptionComplex *option,
+                                     SubControl subControl,
+                                     const QWidget *widget = NULL) const override;
+
+        virtual int pixelMetric(PixelMetric metric,
+                                const QStyleOption *option = NULL,
+                                const QWidget * widget = NULL) const override;
+
+    private:
+        void drawBaseControlFrame(const QStyleOption *option, QPainter *painter) const;
 };

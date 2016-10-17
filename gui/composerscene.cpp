@@ -81,7 +81,7 @@ void ComposerScene::init()
     connect(_model, SIGNAL(connectionRemoved(const Connection *)),
                     SLOT(onConnectionRemoved(const Connection *)));
 
-    setBackgroundBrush(QColor("#273035"));
+    setBackgroundBrush(palette().window());
 }
 
 const QList<GenericNodeItem *> &ComposerScene::getNodes() const
