@@ -55,5 +55,12 @@ class CvComposerStyle : public QProxyStyle
                                 const QWidget * widget = NULL) const override;
 
     private:
-        void drawBaseControlFrame(const QStyleOption *option, QPainter *painter) const;
+        static void drawBaseControlFrame(const QStyleOption *option, QPainter *painter);
+
+        static void drawArrow(QPainter *painter,
+                              const QStyleOption *option,
+                              const QRectF &rect,
+                              bool enabled,
+                              bool active,
+                              bool down = true);
 };

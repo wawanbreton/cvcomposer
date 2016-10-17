@@ -56,8 +56,12 @@ void CvComposerStyle::polish(QPalette &palette)
     palette.setColor(QPalette::Text,       Qt::black);
     palette.setColor(QPalette::WindowText, Qt::black);
     palette.setColor(QPalette::ButtonText, Qt::black);
+
     palette.setColor(QPalette::BrightText, Qt::white);
     palette.setColor(QPalette::Inactive, QPalette::BrightText, Qt::gray);
+
+    palette.setColor(QPalette::Highlight,       Qt::white);
+    palette.setColor(QPalette::HighlightedText, Qt::black);
 
     palette.setColor(QPalette::Light, Qt::green);
     palette.setColor(QPalette::Midlight, Qt::red);
@@ -125,42 +129,40 @@ void CvComposerStyle::drawComplexControl(QStyle::ComplexControl control,
         QRectF rectDown = subControlRect(CC_SpinBox, option, SC_SpinBoxDown, widget);
         painter->fillRect(rectUp | rectDown, spinFrameColor);
 
-        qreal deltaHeight = rectUp.height() / 6;
-        qreal deltaWidth = rectUp.width() / 3;
-        QPainterPath upDownSymbolPath(QPointF(0, deltaHeight));
-        upDownSymbolPath.lineTo(deltaWidth, -deltaHeight);
-        upDownSymbolPath.lineTo(-deltaWidth, -deltaHeight);
-        upDownSymbolPath.closeSubpath();
+        drawArrow(painter,
+                  option,
+                  rectUp,
+                  optionSB->stepEnabled & QAbstractSpinBox::StepUpEnabled,
+                  option->activeSubControls & SC_SpinBoxUp,
+                  false);
 
-        bool mouseOver = (option->state & QStyle::State_MouseOver) && !(option->state & QStyle::State_Sunken);
-        qreal bigScale = 1.3;
+        drawArrow(painter,
+                  option,
+                  rectDown,
+                  optionSB->stepEnabled & QAbstractSpinBox::StepDownEnabled,
+                  option->activeSubControls & SC_SpinBoxDown,
+                  true);
 
-        bool enabledUp = optionSB->stepEnabled & QAbstractSpinBox::StepUpEnabled;
-        bool bigUp = mouseOver && (option->activeSubControls & SC_SpinBoxUp) && enabledUp;
-        painter->save();
-        painter->translate(rectUp.center());
-        painter->scale(1, -1);
-        if(bigUp)
-        {
-            painter->scale(bigScale, bigScale);
-        }
-        QBrush upColor = option->palette.color(enabledUp ? QPalette::Active : QPalette::Inactive,
-                                               QPalette::BrightText);
-        painter->fillPath(upDownSymbolPath, upColor);
-        painter->restore();
+        return;
+    }
+    else if(control == CC_ComboBox)
+    {
+        const QStyleOptionComboBox *optionCB = qstyleoption_cast<const QStyleOptionComboBox *>(option);
+        QStyleOptionComboBox optionCopy = *optionCB;
+        optionCopy.subControls &= ~SC_ComboBoxFrame;
+        optionCopy.frame = false;
 
-        bool enabledDown = optionSB->stepEnabled & QAbstractSpinBox::StepDownEnabled;
-        bool bigDown = mouseOver && (option->activeSubControls & SC_SpinBoxDown) && enabledDown;
-        painter->save();
-        painter->translate(rectDown.center());
-        if(bigDown)
-        {
-            painter->scale(bigScale, bigScale);
-        }
-        QBrush downColor = option->palette.color(enabledDown ? QPalette::Active : QPalette::Inactive,
-                                                 QPalette::BrightText);
-        painter->fillPath(upDownSymbolPath, downColor);
-        painter->restore();
+        drawBaseControlFrame(option, painter);
+
+        QBrush arrowColor = option->palette.alternateBase();
+        QRectF rectArrow = subControlRect(control, &optionCopy, SC_ComboBoxArrow, widget);
+        painter->fillRect(rectArrow, arrowColor);
+
+        drawArrow(painter,
+                  option,
+                  rectArrow,
+                  true,
+                  true);
 
         return;
     }
@@ -199,7 +201,41 @@ int CvComposerStyle::pixelMetric(QStyle::PixelMetric metric,
     return QCommonStyle::pixelMetric(metric, option, widget);
 }
 
-void CvComposerStyle::drawBaseControlFrame(const QStyleOption *option, QPainter *painter) const
+void CvComposerStyle::drawArrow(QPainter *painter,
+                                const QStyleOption *option,
+                                const QRectF &rect,
+                                bool enabled,
+                                bool active,
+                                bool down)
+{
+    bool mouseOver = (option->state & QStyle::State_MouseOver) && !(option->state & QStyle::State_Sunken);
+    qreal bigScale = 1.3;
+
+    painter->save();
+    painter->translate(rect.center());
+    if(!down)
+    {
+        painter->scale(1, -1);
+    }
+    if(mouseOver && active && enabled)
+    {
+        painter->scale(bigScale, bigScale);
+    }
+    QBrush color = option->palette.color(enabled ? QPalette::Active : QPalette::Inactive,
+                                         QPalette::BrightText);
+
+    qreal deltaX = rect.width() / 3;
+    qreal deltaY = deltaX * 0.7;
+    QPainterPath arrowPath(QPointF(0, deltaY));
+    arrowPath.lineTo(deltaX, -deltaY);
+    arrowPath.lineTo(-deltaX, -deltaY);
+    arrowPath.closeSubpath();
+
+    painter->fillPath(arrowPath, color);
+    painter->restore();
+}
+
+void CvComposerStyle::drawBaseControlFrame(const QStyleOption *option, QPainter *painter)
 {
     painter->fillRect(option->rect, option->palette.base());
 }
