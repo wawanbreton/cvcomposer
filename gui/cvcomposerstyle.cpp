@@ -17,6 +17,7 @@
 
 #include "cvcomposerstyle.h"
 
+#include <QLineEdit>
 #include <QDebug>
 #include <QApplication>
 #include <QFontDatabase>
@@ -48,10 +49,9 @@ void CvComposerStyle::polish(QPalette &palette)
     palette.setColor(QPalette::Window,        QColor("#273035"));
     palette.setColor(QPalette::AlternateBase, QColor("#34495e"));
 
-    palette.setColor(QPalette::Inactive, QPalette::Button, QColor("#cccccc"));
-    palette.setColor(QPalette::Active,   QPalette::Button, QColor("#2ecc71"));
+    palette.setColor(QPalette::Button, QColor("#cccccc"));
 
-    palette.setColor(QPalette::Base,          QColor("#cccccc"));
+    palette.setColor(QPalette::Base,   QColor("#cccccc"));
 
     palette.setColor(QPalette::Text,       Qt::black);
     palette.setColor(QPalette::WindowText, Qt::black);
@@ -80,12 +80,12 @@ void CvComposerStyle::drawPrimitive(QStyle::PrimitiveElement element,
         drawBaseControlFrame(option, painter);
         return;
     }
-    else if(element == PE_IndicatorSpinUp || element == PE_IndicatorSpinDown)
+    #warning remove this ?
+    /*else if(element == PE_IndicatorSpinUp || element == PE_IndicatorSpinDown)
     {
         //painter->fillRect(option->rect, option->palette.color(QPalette::AlternateBase));
-        painter->fillRect(option->rect, Qt::red);
         return;
-    }
+    }*/
 
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
@@ -97,8 +97,19 @@ void CvComposerStyle::drawControl(QStyle::ControlElement element,
 {
     if(element == CE_PushButtonBevel)
     {
-        QPalette::ColorGroup group = (option->state & QStyle::State_MouseOver) ? QPalette::Active : QPalette::Inactive;
-        painter->fillRect(option->rect, option->palette.color(group, QPalette::Button));
+        QPen pen = Qt::NoPen;
+        if(option->state & QStyle::State_Sunken)
+        {
+            pen = QPen(option->palette.alternateBase(), 4);
+        }
+        else if(option->state & QStyle::State_MouseOver)
+        {
+            pen = QPen(option->palette.highlight(), 4);
+        }
+        painter->setPen(pen);
+        painter->setBrush(option->palette.color(QPalette::Button));
+
+        painter->drawRect(option->rect);
         return;
     }
     else if(element == CE_PushButtonLabel)
@@ -194,6 +205,15 @@ int CvComposerStyle::pixelMetric(QStyle::PixelMetric metric,
                                  const QWidget *widget) const
 {
     if(metric == PM_DefaultFrameWidth)
+    {
+        if(qobject_cast<const QLineEdit *>(widget))
+        {
+            return 6;
+        }
+
+        return 0;
+    }
+    else if(metric == PM_ButtonShiftHorizontal || metric == PM_ButtonShiftVertical)
     {
         return 0;
     }
