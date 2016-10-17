@@ -36,8 +36,6 @@ class KernelDefinitionWidget : public AbstractPlugWidget
     public:
         explicit KernelDefinitionWidget(const Properties &properties, QWidget *parent = NULL);
 
-        virtual QSize sizeHint() const override;
-
         virtual QVariant getValue() const override;
 
         virtual void setValue(const QVariant &value) override;

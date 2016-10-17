@@ -47,6 +47,7 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
     sizeProperties.insert("height-maximum", 10);
     _sizeWidget = new SizeWidget(sizeProperties, this);
     connect(_sizeWidget, SIGNAL(valueChanged()), SLOT(onSizeChanged()));
+    QTimer::singleShot(0, this, SLOT(onSizeChanged()));
     _layout->addRow("Size :", _sizeWidget);
 
     Properties symmetryProperties;
@@ -82,27 +83,6 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
                       SLOT(onCellEdited(QModelIndex, double)));
 
     _layout->addRow("Definition :", _table);
-}
-
-QSize KernelDefinitionWidget::sizeHint() const
-{
-    QSize tableSize = tableSizeHint();
-
-    int width = qMax(_layout->itemAt(0, QFormLayout::LabelRole)->widget()->sizeHint().width(),
-                     _layout->itemAt(1, QFormLayout::LabelRole)->widget()->sizeHint().width());
-    // FIXME: QFormLayout takes us 6px more that it should, don't know why ?!
-    width += 2 * _layout->horizontalSpacing();
-    width += qMax(qMax(_sizeWidget->sizeHint().width(),
-                       tableSize.width()),
-                  _symmetryWidget->sizeHint().width());
-
-    int height = _sizeWidget->sizeHint().height() +
-                 _layout->verticalSpacing() +
-                 _symmetryWidget->sizeHint().height() +
-                 _layout->verticalSpacing() +
-                 tableSize.height();
-
-    return QSize(width, height);
 }
 
 QVariant KernelDefinitionWidget::getValue() const
@@ -175,7 +155,7 @@ void KernelDefinitionWidget::load(const QMap<QString, QString> &properties)
 
 QSize KernelDefinitionWidget::tableSizeHint() const
 {
-    return QSize(_table->horizontalHeader()->length() + 4, _table->verticalHeader()->length() + 4);
+    return QSize(_table->horizontalHeader()->length(), _table->verticalHeader()->length());
 }
 
 void KernelDefinitionWidget::updateCellColors()

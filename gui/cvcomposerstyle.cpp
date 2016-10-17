@@ -66,7 +66,7 @@ void CvComposerStyle::polish(QPalette &palette)
     palette.setColor(QPalette::Light, Qt::green);
     palette.setColor(QPalette::Midlight, Qt::red);
     palette.setColor(QPalette::Dark, Qt::blue);
-    palette.setColor(QPalette::Mid, Qt::yellow);
+    palette.setColor(QPalette::Mid, QColor("#808a95"));
     palette.setColor(QPalette::Shadow, Qt::magenta);
 }
 
@@ -80,12 +80,6 @@ void CvComposerStyle::drawPrimitive(QStyle::PrimitiveElement element,
         drawBaseControlFrame(option, painter);
         return;
     }
-    #warning remove this ?
-    /*else if(element == PE_IndicatorSpinUp || element == PE_IndicatorSpinDown)
-    {
-        //painter->fillRect(option->rect, option->palette.color(QPalette::AlternateBase));
-        return;
-    }*/
 
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
