@@ -58,7 +58,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
 
     QGraphicsProxyWidget *proxy = new BoundedGraphicsProxyWidget(this);
     proxy->setWidget(_widget);
-    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+    proxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
 
     foreach(Plug *plug, _node->getInputs())
     {
@@ -169,10 +169,15 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setBrush(QColor("#efa14c"));
     painter->drawRect(baseRect);
 
+    // Draw the upper title rectangle
     QRectF titleRect = baseRect;
     titleRect.setHeight(titleHeight);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor("#ea8a1f"));
+    painter->drawRect(titleRect);
+
+    // Draw the lower status rectangle
+    titleRect.moveBottom(baseRect.bottom());
     painter->drawRect(titleRect);
 
     if(option->state.testFlag(QStyle::State_Selected))
@@ -213,7 +218,7 @@ QRectF GenericNodeItem::computeBaseRect() const
     return QRectF(0,
                   0,
                   qMax(widgetWidth, titleWidth),
-                  titleHeight + _widget->sizeHint().height() + 2 * PlugItem::radius);
+                  titleHeight * 2 + _widget->sizeHint().height() + 2 * PlugItem::radius);
 }
 
 void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
@@ -233,7 +238,7 @@ void GenericNodeItem::recomputeSizes()
 {
     QRectF actualBaseRect = computeBaseRect();
     _widget->resize(actualBaseRect.width() - 4 * PlugItem::radius,
-                    actualBaseRect.height() - titleHeight - 2 * PlugItem::radius);
+                    actualBaseRect.height() - titleHeight * 2 - 4 * PlugItem::radius);
 
     foreach(PlugItem *plugItem, _inputPlugs)
     {
