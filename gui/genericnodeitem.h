@@ -60,7 +60,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void executionStarted();
 
-        void executionEnded(qint64 duration);
+        void executionEnded(qint64 duration, const QString &error);
 
     protected:
         virtual QRectF boundingRect() const;
@@ -95,4 +95,5 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         QAbstractAnimation *_animationExecution;
         qreal _executionMarkOpacity;
         QString _executionDuration;
+        QString _executionError;
 };

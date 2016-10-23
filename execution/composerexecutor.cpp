@@ -31,15 +31,16 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     _processor(NULL),
     _inputs(),
     _outputs(),
-    _success(false),
-    _duration(0)
+    _keepProcessing(false),
+    _duration(0),
+    _error()
 {
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
 void ComposerExecutor::process(const Node *node, const Properties &inputs)
 {
-    _success = false;
+    _error.clear();
     _node = node;
     _processor = ProcessorsFactory::createProcessor(node->getName());
     _inputs = inputs;
@@ -68,6 +69,16 @@ qint64 ComposerExecutor::getDuration() const
     return _duration;
 }
 
+const QString &ComposerExecutor::getError() const
+{
+    return _error;
+}
+
+bool ComposerExecutor::getKeepProcessing() const
+{
+    return _keepProcessing;
+}
+
 void ComposerExecutor::run()
 {
     QElapsedTimer timer;
@@ -76,11 +87,12 @@ void ComposerExecutor::run()
     try
     {
         _outputs = _processor->process(_inputs);
-        _success = true;
     }
     catch(const std::exception &exception)
     {
-        qDebug() << "Exception when executing node" << _node->getUserReadableName() << " : " << exception.what();
+        qDebug() << "Exception when executing node"
+                 << _node->getUserReadableName() << " : " << exception.what();
+        _error = exception.what();
     }
 
     _duration = timer.elapsed();
@@ -90,9 +102,9 @@ void ComposerExecutor::onFinished()
 {
     qDebug() << "finished" << this;
 
-    bool keepProcessing = _processor->getRealTimeProcessing();
+    _keepProcessing = _processor->getRealTimeProcessing();
 
     delete _processor;
 
-    emit nodeProcessed(_success, keepProcessing);
+    emit nodeProcessed();
 }

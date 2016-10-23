@@ -42,7 +42,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _outputPlugs(),
     _animationExecution(NULL),
     _executionMarkOpacity(0),
-    _executionDuration()
+    _executionDuration(),
+    _executionError()
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -170,7 +171,7 @@ void GenericNodeItem::executionStarted()
     }
 }
 
-void GenericNodeItem::executionEnded(qint64 duration)
+void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
 {
     if(_animationExecution != NULL)
     {
@@ -178,7 +179,7 @@ void GenericNodeItem::executionEnded(qint64 duration)
         _animationExecution = NULL;
     }
 
-    qDebug() << _node->getUserReadableName() << duration << _executionMarkOpacity;
+    _executionError = error;
 
     if(duration < 1000)
     {

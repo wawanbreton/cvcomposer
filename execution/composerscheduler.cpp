@@ -192,7 +192,7 @@ void ComposerScheduler::onConnectionAdded(const Connection *connection)
     }
 }
 
-void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
+void ComposerScheduler::onNodeProcessed()
 {
     ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
     if(executor)
@@ -215,12 +215,12 @@ void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
             {
                 // The executor has not been invalidated during its execution
 
-                if(keepProcessing)
+                if(executor->getKeepProcessing())
                 {
                     _keepProcessingNodes << executor->getNode();
                 }
 
-                if(success)
+                if(executor->getError().isEmpty())
                 {
                     executor->getNode()->signalProcessDone(executor->getOutputs(),
                                                            executor->getInputs());
@@ -236,7 +236,9 @@ void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
                     clearUnusedCache();
                 }
 
-                emit executorEnded(executor->getNode(), executor->getDuration());
+                emit executorEnded(executor->getNode(),
+                                   executor->getDuration(),
+                                   executor->getError());
             }
 
             processNexts();
@@ -378,10 +380,8 @@ void ComposerScheduler::processNexts()
                 makeInputs(node, inputs);
 
                 ComposerExecutor *executor = new ComposerExecutor(this);
-                connect(executor, SIGNAL(nodeProcessed(bool,bool)),
-                        executor, SLOT(deleteLater()));
-                connect(executor, SIGNAL(nodeProcessed(bool, bool)),
-                                  SLOT(onNodeProcessed(bool, bool)));
+                connect(executor, SIGNAL(nodeProcessed()), executor, SLOT(deleteLater()));
+                connect(executor, SIGNAL(nodeProcessed()), SLOT(onNodeProcessed()));
                 executor->process(node, inputs);
 
                 nodeAddedForProcessing = true;

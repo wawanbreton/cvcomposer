@@ -85,7 +85,7 @@ class ComposerScene : public QGraphicsScene
 
         void onExecutionStarted(const Node *node);
 
-        void onExecutionEnded(const Node *node, qint64 duration);
+        void onExecutionEnded(const Node *node, qint64 duration, const QString &error);
 
     private:
         void init();
