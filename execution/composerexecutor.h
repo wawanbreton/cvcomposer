@@ -44,6 +44,8 @@ class ComposerExecutor : public QThread
 
         const Properties &getOutputs() const;
 
+        qint64 getDuration() const;
+
     signals:
         void nodeProcessed(bool success, bool keepProcessing);
 
@@ -59,4 +61,5 @@ class ComposerExecutor : public QThread
         Properties _inputs;
         Properties _outputs;
         bool _success;
+        qint64 _duration;
 };

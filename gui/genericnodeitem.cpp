@@ -41,7 +41,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _inputPlugs(),
     _outputPlugs(),
     _animationExecution(NULL),
-    _executionMarkOpacity(0)
+    _executionMarkOpacity(0),
+    _executionDuration()
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -169,12 +170,23 @@ void GenericNodeItem::executionStarted()
     }
 }
 
-void GenericNodeItem::executionEnded()
+void GenericNodeItem::executionEnded(qint64 duration)
 {
     if(_animationExecution != NULL)
     {
-        _animationExecution->deleteLater();
+        delete _animationExecution;
         _animationExecution = NULL;
+    }
+
+    qDebug() << _node->getUserReadableName() << duration << _executionMarkOpacity;
+
+    if(duration < 1000)
+    {
+        _executionDuration = QString::number(duration) + " ms";
+    }
+    else
+    {
+        _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
     }
 
     _executionMarkOpacity = 0;
@@ -191,7 +203,9 @@ QRectF GenericNodeItem::boundingRect() const
     return rect;
 }
 
-void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GenericNodeItem::paint(QPainter *painter,
+                            const QStyleOptionGraphicsItem *option,
+                            QWidget *widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -209,8 +223,9 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->drawRect(titleRect);
 
     // Draw the lower status rectangle
-    titleRect.moveBottom(baseRect.bottom());
-    painter->drawRect(titleRect);
+    QRectF bottomRect = titleRect;
+    bottomRect.moveBottom(baseRect.bottom());
+    painter->drawRect(bottomRect);
 
     // Draw the outer selection frame
     if(option->state.testFlag(QStyle::State_Selected))
@@ -252,6 +267,19 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->setBrush(Qt::white);
         painter->setOpacity(_executionMarkOpacity);
         painter->drawEllipse(markRect);
+        painter->setOpacity(1);
+    }
+
+    // Draw the execution duration
+    if(!_executionDuration.isEmpty())
+    {
+        font.setPixelSize(bottomFontSize);
+        painter->setFont(font);
+
+        QRectF durationRect = bottomRect;
+        durationRect.setLeft(6);
+        painter->setPen(widget->palette().text().color());
+        painter->drawText(durationRect, Qt::AlignLeft | Qt::AlignVCenter, _executionDuration);
     }
 }
 

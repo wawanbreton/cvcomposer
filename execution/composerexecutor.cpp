@@ -18,6 +18,7 @@
 #include "composerexecutor.h"
 
 #include <QDebug>
+#include <QElapsedTimer>
 
 #include "model/node.h"
 #include "processor/abstractprocessor.h"
@@ -30,7 +31,8 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     _processor(NULL),
     _inputs(),
     _outputs(),
-    _success(false)
+    _success(false),
+    _duration(0)
 {
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
@@ -61,8 +63,16 @@ const Properties &ComposerExecutor::getOutputs() const
     return _outputs;
 }
 
+qint64 ComposerExecutor::getDuration() const
+{
+    return _duration;
+}
+
 void ComposerExecutor::run()
 {
+    QElapsedTimer timer;
+    timer.start();
+
     try
     {
         _outputs = _processor->process(_inputs);
@@ -72,6 +82,8 @@ void ComposerExecutor::run()
     {
         qDebug() << "Exception when executing node" << _node->getUserReadableName() << " : " << exception.what();
     }
+
+    _duration = timer.elapsed();
 }
 
 void ComposerExecutor::onFinished()

@@ -55,7 +55,7 @@ class ComposerScheduler : public QObject
 
         void executorStarted(const Node *node);
 
-        void executorEnded(const Node *node);
+        void executorEnded(const Node *node, qint64 duration);
 
     private slots:
         void onNodeAdded(const Node *node);

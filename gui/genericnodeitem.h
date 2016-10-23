@@ -60,7 +60,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void executionStarted();
 
-        void executionEnded();
+        void executionEnded(qint64 duration);
 
     protected:
         virtual QRectF boundingRect() const;
@@ -85,6 +85,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         static const int titleHeight = 24;
         static const int selectionBorderWidth = 3;
         static const int titleFontSize = 18;
+        static const int bottomFontSize = 14;
 
     private:
         Node *_node;
@@ -93,4 +94,5 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         QList<PlugItem *> _outputPlugs;
         QAbstractAnimation *_animationExecution;
         qreal _executionMarkOpacity;
+        QString _executionDuration;
 };

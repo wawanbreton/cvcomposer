@@ -82,8 +82,8 @@ void ComposerScene::init()
                     SLOT(onConnectionRemoved(const Connection *)));
     connect(_scheduler, SIGNAL(executorStarted(const Node*)),
                         SLOT(onExecutionStarted(const Node*)));
-    connect(_scheduler, SIGNAL(executorEnded(const Node*)),
-                        SLOT(onExecutionEnded(const Node*)));
+    connect(_scheduler, SIGNAL(executorEnded(const Node*, qint64)),
+                        SLOT(onExecutionEnded(const Node*, qint64)));
 
     setBackgroundBrush(QColor("#273035"));
 }
@@ -744,13 +744,13 @@ void ComposerScene::onExecutionStarted(const Node *node)
     }
 }
 
-void ComposerScene::onExecutionEnded(const Node *node)
+void ComposerScene::onExecutionEnded(const Node *node, qint64 duration)
 {
     for(GenericNodeItem *nodeItem : _nodes)
     {
         if(nodeItem->getNode() == node)
         {
-            nodeItem->executionEnded();
+            nodeItem->executionEnded(duration);
             return;
         }
     }
