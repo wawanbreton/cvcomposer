@@ -80,6 +80,10 @@ void ComposerScene::init()
                     SLOT(onConnectionAdded(const Connection *)));
     connect(_model, SIGNAL(connectionRemoved(const Connection *)),
                     SLOT(onConnectionRemoved(const Connection *)));
+    connect(_scheduler, SIGNAL(executorStarted(const Node*)),
+                        SLOT(onExecutionStarted(const Node*)));
+    connect(_scheduler, SIGNAL(executorEnded(const Node*)),
+                        SLOT(onExecutionEnded(const Node*)));
 
     setBackgroundBrush(QColor("#273035"));
 }
@@ -725,5 +729,29 @@ void ComposerScene::onPlugItemPositionChanged()
     else
     {
         qCritical() << "ComposerScene::onPlugItemPositionChanged" << "Sender is not a PlugItem";
+    }
+}
+
+void ComposerScene::onExecutionStarted(const Node *node)
+{
+    for(GenericNodeItem *nodeItem : _nodes)
+    {
+        if(nodeItem->getNode() == node)
+        {
+            nodeItem->executionStarted();
+            return;
+        }
+    }
+}
+
+void ComposerScene::onExecutionEnded(const Node *node)
+{
+    for(GenericNodeItem *nodeItem : _nodes)
+    {
+        if(nodeItem->getNode() == node)
+        {
+            nodeItem->executionEnded();
+            return;
+        }
     }
 }

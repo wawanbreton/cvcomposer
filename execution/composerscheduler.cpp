@@ -235,6 +235,8 @@ void ComposerScheduler::onNodeProcessed(bool success, bool keepProcessing)
                 {
                     clearUnusedCache();
                 }
+
+                emit executorEnded(executor->getNode());
             }
 
             processNexts();
@@ -385,6 +387,8 @@ void ComposerScheduler::processNexts()
                 nodeAddedForProcessing = true;
 
                 _currentExecutors << executor;
+
+                emit executorStarted(node);
 
                 break;
             }

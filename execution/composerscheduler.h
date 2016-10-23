@@ -53,6 +53,10 @@ class ComposerScheduler : public QObject
     signals:
         void ended();
 
+        void executorStarted(const Node *node);
+
+        void executorEnded(const Node *node);
+
     private slots:
         void onNodeAdded(const Node *node);
 

@@ -83,6 +83,10 @@ class ComposerScene : public QGraphicsScene
 
         void onPlugItemPositionChanged();
 
+        void onExecutionStarted(const Node *node);
+
+        void onExecutionEnded(const Node *node);
+
     private:
         void init();
 

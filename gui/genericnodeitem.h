@@ -57,6 +57,10 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void load(const QMap<QString, QString> &properties);
 
+        void executionStarted();
+
+        void executionEnded();
+
     protected:
         virtual QRectF boundingRect() const;
 
@@ -82,4 +86,5 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         GenericNodeWidget *_widget;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
+        bool _executing;
 };

@@ -38,7 +38,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _node(node),
     _widget(new GenericNodeWidget()),
     _inputPlugs(),
-    _outputPlugs()
+    _outputPlugs(),
+    _executing(false)
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -149,6 +150,18 @@ void GenericNodeItem::load(const QMap<QString, QString> &properties)
     }
 }
 
+void GenericNodeItem::executionStarted()
+{
+    _executing = true;
+    update();
+}
+
+void GenericNodeItem::executionEnded()
+{
+    _executing = false;
+    update();
+}
+
 QRectF GenericNodeItem::boundingRect() const
 {
     QRectF rect = computeBaseRect();
@@ -180,6 +193,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     titleRect.moveBottom(baseRect.bottom());
     painter->drawRect(titleRect);
 
+    // Draw the outer selection frame
     if(option->state.testFlag(QStyle::State_Selected))
     {
         painter->setBrush(Qt::NoBrush);
@@ -190,6 +204,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->drawRect(baseRect);
     }
 
+    // Draw the title
     QFont font;
     font.setPixelSize(titleFontSize);
     painter->setFont(font);
@@ -205,6 +220,19 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->drawText(QRect(0, 0, baseRect.width(), titleHeight),
                       Qt::AlignCenter,
                       _node->getUserReadableName());
+
+    // Draw the execution mark
+    if(_executing)
+    {
+        const qreal markRadius = 8;
+        QRectF markRect(0, 0, markRadius * 2, markRadius * 2);
+        qreal side = (titleHeight - markRadius * 2) / 2;
+        markRect.moveRight(baseRect.width() - side);
+        markRect.moveBottom(baseRect.height() - side);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(Qt::white);
+        painter->drawEllipse(markRect);
+    }
 }
 
 QRectF GenericNodeItem::computeBaseRect() const
