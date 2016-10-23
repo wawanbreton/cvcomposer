@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QGraphicsItem>
 
+#include <QAbstractAnimation>
 #include <QGraphicsEllipseItem>
 #include <QWidget>
 
@@ -76,6 +77,10 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void recomputeSizes();
 
+        void setExecutionMarkOpacity(const QVariant &value);
+
+        void onExecutionAnimationOver();
+
     public:
         static const int titleHeight = 24;
         static const int selectionBorderWidth = 3;
@@ -86,5 +91,6 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         GenericNodeWidget *_widget;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
-        bool _executing;
+        QAbstractAnimation *_animationExecution;
+        qreal _executionMarkOpacity;
 };

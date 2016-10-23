@@ -24,6 +24,7 @@
 #include <QLayout>
 #include <QFontMetrics>
 #include <QStyleOptionGraphicsItem>
+#include <QVariantAnimation>
 
 #include "model/node.h"
 #include "gui/boundedgraphicsproxywidget.h"
@@ -39,7 +40,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _widget(new GenericNodeWidget()),
     _inputPlugs(),
     _outputPlugs(),
-    _executing(false)
+    _animationExecution(NULL),
+    _executionMarkOpacity(0)
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -152,13 +154,30 @@ void GenericNodeItem::load(const QMap<QString, QString> &properties)
 
 void GenericNodeItem::executionStarted()
 {
-    _executing = true;
-    update();
+    if(_animationExecution == NULL)
+    {
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setStartValue(0.0);
+        animation->setEndValue(1.0);
+        animation->setEasingCurve(QEasingCurve::InOutSine);
+        animation->setDuration(500);
+        connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(setExecutionMarkOpacity(QVariant)));
+        connect(animation, SIGNAL(finished()), SLOT(onExecutionAnimationOver()));
+        animation->start();
+
+        _animationExecution = animation;
+    }
 }
 
 void GenericNodeItem::executionEnded()
 {
-    _executing = false;
+    if(_animationExecution != NULL)
+    {
+        _animationExecution->deleteLater();
+        _animationExecution = NULL;
+    }
+
+    _executionMarkOpacity = 0;
     update();
 }
 
@@ -222,7 +241,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
                       _node->getUserReadableName());
 
     // Draw the execution mark
-    if(_executing)
+    if(_executionMarkOpacity > 0)
     {
         const qreal markRadius = 8;
         QRectF markRect(0, 0, markRadius * 2, markRadius * 2);
@@ -231,6 +250,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         markRect.moveBottom(baseRect.height() - side);
         painter->setPen(Qt::NoPen);
         painter->setBrush(Qt::white);
+        painter->setOpacity(_executionMarkOpacity);
         painter->drawEllipse(markRect);
     }
 }
@@ -280,4 +300,17 @@ void GenericNodeItem::recomputeSizes()
     }
 
     prepareGeometryChange();
+}
+
+void GenericNodeItem::setExecutionMarkOpacity(const QVariant &value)
+{
+    _executionMarkOpacity = value.toReal();
+    update();
+}
+
+void GenericNodeItem::onExecutionAnimationOver()
+{
+    QAbstractAnimation::Direction direction = _animationExecution->direction();
+    _animationExecution->setDirection(direction == QAbstractAnimation::Forward ? QAbstractAnimation::Backward : QAbstractAnimation::Forward);
+    _animationExecution->start();
 }
