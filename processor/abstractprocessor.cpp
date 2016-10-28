@@ -94,19 +94,23 @@ Properties AbstractProcessor::process(const Properties &inputs)
     // Do the actual computing
     if(simpleInputListPlug.isEmpty())
     {
+        // No list support, just give the inputs and retrieve the outputs
         outputs = processImpl(listCompliantImputs);
     }
     else
     {
+        // Simple list support : iterate on each value of the given list
         Properties singleOutputs;
         QList<QVariant> simpleListValues = listCompliantImputs[simpleInputListPlug].value<QList<QVariant> >();
         foreach(const QVariant &simpleListValue, simpleListValues)
         {
+            // For each element, extract it and process the computation
             Properties singleInputs = listCompliantImputs;
             singleInputs[simpleInputListPlug] = simpleListValue;
 
             singleOutputs = processImpl(singleInputs);
 
+            // Then add the computed output values to the complete list of outputs
             for(Properties::const_iterator it = singleOutputs.begin() ; it != singleOutputs.end() ; ++it)
             {
                 QList<QVariant> outputValues = outputs[it.key()].value<QList<QVariant> >();
