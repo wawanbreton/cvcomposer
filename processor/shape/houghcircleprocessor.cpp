@@ -52,7 +52,7 @@ HoughCircleProcessor::HoughCircleProcessor()
     addInput("minimum radius", PlugType::Double, 0, radiusProperties);
     addInput("maximum radius", PlugType::Double, 0, radiusProperties);
 
-    addOutput("circles", PlugType::Circle, true);
+    addOutput("circles", PlugType::Circle, ProcessorListType::Custom);
 }
 
 Properties HoughCircleProcessor::processImpl(const Properties &inputs)

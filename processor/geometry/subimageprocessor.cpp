@@ -22,10 +22,12 @@
 
 SubImageProcessor::SubImageProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
+
+    // TODO : multiples rectangles
     addInput("rectangle", PlugType::Rectangle);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties SubImageProcessor::processImpl(const Properties &inputs)

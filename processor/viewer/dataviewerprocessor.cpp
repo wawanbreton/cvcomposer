@@ -29,7 +29,6 @@
 DataViewerProcessor::DataViewerProcessor()
 {
     addInput("input", PlugType::Generic, QVariant(), Properties(), ThreeStateBool::False);
-
     addOutput("output", PlugType::ImagePreview);
 }
 

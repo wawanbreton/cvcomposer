@@ -24,7 +24,7 @@
 
 LaplacianProcessor::LaplacianProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties depthProperties;
     depthProperties.insert("decimals", 0);
@@ -42,7 +42,7 @@ LaplacianProcessor::LaplacianProcessor()
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties LaplacianProcessor::processImpl(const Properties &inputs)

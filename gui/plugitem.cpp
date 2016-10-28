@@ -74,7 +74,7 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 {
     QGraphicsEllipseItem::paint(painter, option, widget);
 
-    if(_plug->getDefinition().supportsList)
+    if(_plug->getDefinition().listSupport != ProcessorListType::None)
     {
         QPen pen;
         pen.setColor(Qt::white);

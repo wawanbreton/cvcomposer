@@ -24,7 +24,7 @@
 
 MakeBorderProcessor::MakeBorderProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties marginsProperties;
     marginsProperties.insert("decimals", 0);
@@ -37,7 +37,7 @@ MakeBorderProcessor::MakeBorderProcessor()
 
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(0)));
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties MakeBorderProcessor::processImpl(const Properties &inputs)

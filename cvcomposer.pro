@@ -177,7 +177,8 @@ HEADERS  += gui/mainwidget.h \
     model/line.h \
     processor/shape/lineprocessor.h \
     processor/shape/ellipseprocessor.h \
-    model/ellipse.h
+    model/ellipse.h \
+    processor/processorlisttype.h
 
 FORMS    += \
     gui/mainwidget.ui \

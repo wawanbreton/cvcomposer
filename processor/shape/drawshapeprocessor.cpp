@@ -27,8 +27,8 @@
 
 DrawShapeProcessor::DrawShapeProcessor()
 {
-    addInput("input image", PlugType::Image);
-    addInput("shape", PlugType::Generic, QVariant(), Properties(), ThreeStateBool::None, true);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
+    addInput("shape", PlugType::Generic, ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;
@@ -42,7 +42,7 @@ DrawShapeProcessor::DrawShapeProcessor()
     shiftProperties.insert("decimals", 0);
     addInput("shift", PlugType::Double, 0, shiftProperties);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties DrawShapeProcessor::processImpl(const Properties &inputs)

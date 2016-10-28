@@ -15,31 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "splitchannelsprocessor.h"
+#pragma once
 
-#include "global/cvutils.h"
-
-
-SplitChannelsProcessor::SplitChannelsProcessor()
+namespace ProcessorListType
 {
-    addInput("image", PlugType::Image);
-    addOutput("channels", PlugType::Image, ProcessorListType::Custom);
-}
-
-Properties SplitChannelsProcessor::processImpl(const Properties &inputs)
-{
-    cv::Mat image = inputs["image"].value<cv::Mat>();
-    QList<QVariant> channels;
-
-    for(int channelId = 0 ; channelId < image.channels() ; channelId++)
+    typedef enum
     {
-        cv::Mat channel;
-        cv::extractChannel(image, channel, channelId);
-        channels << QVariant::fromValue(channel);
-    }
-
-    Properties outputs;
-    outputs.insert("channels", QVariant::fromValue(channels));
-    return outputs;
+        None,   /*< No list support */
+        Simple, /*< Simple list support : values are given one by one */
+        Custom  /*< Custom list support : values are given as is */
+    } Enum;
 }
-

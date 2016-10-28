@@ -17,16 +17,19 @@
 
 #pragma once
 
+#include <QObject>
+
 #include <opencv2/core/core.hpp>
 
 #include "global/properties.h"
 #include "model/plugdefinition.h"
 
-class AbstractProcessor
+class AbstractProcessor : public QObject
 {
+    Q_OBJECT
+
     public:
         AbstractProcessor();
-        virtual ~AbstractProcessor();
 
         const QList<PlugDefinition> &getInputs();
 
@@ -36,6 +39,9 @@ class AbstractProcessor
 
         virtual bool getRealTimeProcessing() const;
 
+    signals:
+        void progress(qreal value);
+
     protected:
         void addInput(const PlugDefinition &definition);
 
@@ -44,7 +50,11 @@ class AbstractProcessor
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties(),
                       ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
-                      bool supportsList = false);
+                      ProcessorListType::Enum listSupport = ProcessorListType::None);
+
+        void addInput(const QString &name,
+                      PlugType::Enum type,
+                      ProcessorListType::Enum listSupport);
 
         void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,
@@ -54,7 +64,9 @@ class AbstractProcessor
 
         void addOutput(const QString &userReadableName,
                        PlugType::Enum type,
-                       bool supportsList = false);
+                       ProcessorListType::Enum listSupport = ProcessorListType::None);
+
+        void listProgress(const QList<QVariant> &list);
 
         virtual Properties processImpl(const Properties &inputs) = 0;
 
@@ -64,9 +76,10 @@ class AbstractProcessor
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties(),
                                 ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
-                                bool supportsList = false);
+                                ProcessorListType::Enum listSupport = ProcessorListType::None);
 
     private:
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
+        int _listProgress;
 };

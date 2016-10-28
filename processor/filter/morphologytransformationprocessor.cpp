@@ -24,7 +24,7 @@
 
 MorphologyTransformationProcessor::MorphologyTransformationProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     QList<QPair<QString, QVariant> > operators;
     operators << QPair<QString, QVariant>("Erode",     cv::MORPH_ERODE);
@@ -63,7 +63,7 @@ MorphologyTransformationProcessor::MorphologyTransformationProcessor()
              PlugType::Color,
              QVariant::fromValue(cv::morphologyDefaultBorderValue()));
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties MorphologyTransformationProcessor::processImpl(const Properties &inputs)

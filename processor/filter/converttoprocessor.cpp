@@ -23,7 +23,7 @@
 
 ConvertToProcessor::ConvertToProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties alphaProperties;
     alphaProperties.insert("singleStep", 0.1);
@@ -33,7 +33,7 @@ ConvertToProcessor::ConvertToProcessor()
     betaProperties.insert("minimum", -CvConstants::defaultDoubleMax);
     addInput("beta", PlugType::Double, 0.0, betaProperties);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties ConvertToProcessor::processImpl(const Properties &inputs)

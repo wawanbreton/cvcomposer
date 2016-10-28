@@ -26,13 +26,13 @@ using namespace cv;
 
 DiscreteFourierTransformProcessor::DiscreteFourierTransformProcessor()
 {
-    addInput("input image", PlugType::Image);
-    addOutput("output image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties DiscreteFourierTransformProcessor::processImpl(const Properties &inputs)
 {
-    Mat inputImage = inputs["input image"].value<Mat>();
+    Mat inputImage = inputs["input image"].value<cv::Mat>();
 
     // Code from http://docs.opencv.org/2.4/doc/tutorials/core/discrete_fourier_transform/discrete_fourier_transform.html
     Mat padded;

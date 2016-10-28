@@ -20,6 +20,7 @@
 #include "model/plugtype.h"
 #include "global/properties.h"
 #include "global/threestatebool.h"
+#include "processor/processorlisttype.h"
 
 typedef struct
 {
@@ -28,5 +29,5 @@ typedef struct
     Properties widgetProperties;
     QVariant defaultValue;
     ThreeStateBool::Enum labelVisible;
-    bool supportsList;
+    ProcessorListType::Enum listSupport;
 } PlugDefinition;

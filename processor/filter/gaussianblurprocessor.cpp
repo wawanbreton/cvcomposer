@@ -27,7 +27,7 @@
 GaussianBlurProcessor::GaussianBlurProcessor() :
     AbstractProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties sizeProperties;
     sizeProperties.insert("width-minimum", 1);
@@ -41,7 +41,7 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties GaussianBlurProcessor::processImpl(const Properties &inputs)

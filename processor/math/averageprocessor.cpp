@@ -26,8 +26,7 @@
 
 AverageProcessor::AverageProcessor()
 {
-    addInput("input images", PlugType::Image, QVariant(), Properties(), ThreeStateBool::None, true);
-
+    addInput("input images", PlugType::Image, ProcessorListType::Custom);
     addOutput("output image", PlugType::Image);
 }
 

@@ -22,9 +22,8 @@
 
 CountNonZeroProcessor::CountNonZeroProcessor()
 {
-    addInput("image", PlugType::Image);
-
-    addOutput("count", PlugType::Double);
+    addInput("image", PlugType::Image, ProcessorListType::Simple);
+    addOutput("count", PlugType::Double, ProcessorListType::Simple);
 }
 
 Properties CountNonZeroProcessor::processImpl(const Properties &inputs)
