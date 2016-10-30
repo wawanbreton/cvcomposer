@@ -55,6 +55,8 @@ class ComposerScheduler : public QObject
 
         void executorStarted(const Node *node);
 
+        void executorProgress(const Node *node, qreal progress);
+
         void executorEnded(const Node *node, qint64 duration, const QString &error);
 
     private slots:
@@ -69,6 +71,8 @@ class ComposerScheduler : public QObject
         void onConnectionAdded(const Connection *connection);
 
         void onNodeProcessed();
+
+        void onProgress(qreal progress);
 
     private:
         bool allInputsProcessed(const Node *node);

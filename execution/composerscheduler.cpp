@@ -248,7 +248,22 @@ void ComposerScheduler::onNodeProcessed()
     {
         qCritical() << "Sender is not a ComposerExecutor instance";
     }
+}
 
+void ComposerScheduler::onProgress(qreal progress)
+{
+    ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
+    if(executor)
+    {
+        if(!_oldExecutors.contains(executor))
+        {
+            emit executorProgress(executor->getNode(), progress);
+        }
+    }
+    else
+    {
+        qCritical() << "Sender is not a ComposerExecutor instance";
+    }
 }
 
 bool ComposerScheduler::allInputsProcessed(const Node *node)
@@ -382,6 +397,7 @@ void ComposerScheduler::processNexts()
                 ComposerExecutor *executor = new ComposerExecutor(this);
                 connect(executor, SIGNAL(nodeProcessed()), executor, SLOT(deleteLater()));
                 connect(executor, SIGNAL(nodeProcessed()), SLOT(onNodeProcessed()));
+                connect(executor, SIGNAL(executionProgress(qreal)), SLOT(onProgress(qreal)));
                 executor->process(node, inputs);
 
                 nodeAddedForProcessing = true;

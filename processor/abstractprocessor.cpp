@@ -23,7 +23,7 @@
 AbstractProcessor::AbstractProcessor() :
     _inputs(),
     _outputs(),
-    _listProgress(-1)
+    _listProgress(0)
 {
 }
 
@@ -102,6 +102,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
         // Simple list support : iterate on each value of the given list
         Properties singleOutputs;
         QList<QVariant> simpleListValues = listCompliantImputs[simpleInputListPlug].value<QList<QVariant> >();
+        listProgress(simpleListValues);
         foreach(const QVariant &simpleListValue, simpleListValues)
         {
             // For each element, extract it and process the computation
@@ -117,6 +118,8 @@ Properties AbstractProcessor::process(const Properties &inputs)
                 outputValues << it.value();
                 outputs[it.key()] = outputValues;
             }
+
+            listProgress(simpleListValues);
         }
     }
 

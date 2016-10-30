@@ -85,12 +85,16 @@ class ComposerScene : public QGraphicsScene
 
         void onExecutionStarted(const Node *node);
 
+        void onExecutionProgress(const Node *node, qreal progress);
+
         void onExecutionEnded(const Node *node, qint64 duration, const QString &error);
 
     private:
         void init();
 
         void load(const QDomDocument &doc, QMainWindow *mainWindow);
+
+        GenericNodeItem *findItem(const Node *node);
 
     private:
         typedef struct

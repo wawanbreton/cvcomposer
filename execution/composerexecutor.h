@@ -51,6 +51,8 @@ class ComposerExecutor : public QThread
         bool getKeepProcessing() const;
 
     signals:
+        void executionProgress(qreal progress);
+
         void nodeProcessed();
 
     protected:

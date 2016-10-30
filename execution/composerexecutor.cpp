@@ -43,6 +43,7 @@ void ComposerExecutor::process(const Node *node, const Properties &inputs)
     _error.clear();
     _node = node;
     _processor = ProcessorsFactory::createProcessor(node->getName());
+    connect(_processor, SIGNAL(progress(qreal)), SIGNAL(executionProgress(qreal)));
     _inputs = inputs;
     start();
 

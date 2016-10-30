@@ -60,6 +60,8 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void executionStarted();
 
+        void executionProgress(qreal progress);
+
         void executionEnded(qint64 duration, const QString &error);
 
     protected:
@@ -96,4 +98,5 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         qreal _executionMarkOpacity;
         QString _executionDuration;
         QString _executionError;
+        qreal _executionProgress;
 };

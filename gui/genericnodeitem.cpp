@@ -43,7 +43,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _animationExecution(NULL),
     _executionMarkOpacity(0),
     _executionDuration(),
-    _executionError()
+    _executionError(),
+    _executionProgress(-1)
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -171,6 +172,12 @@ void GenericNodeItem::executionStarted()
     }
 }
 
+void GenericNodeItem::executionProgress(qreal progress)
+{
+    _executionProgress = progress;
+    update();
+}
+
 void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
 {
     if(_animationExecution != NULL)
@@ -179,6 +186,7 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
         _animationExecution = NULL;
     }
 
+    #warning display error !
     _executionError = error;
 
     if(duration < 1000)
@@ -190,6 +198,7 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
         _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
     }
 
+    _executionProgress = -1;
     _executionMarkOpacity = 0;
     update();
 }
@@ -259,15 +268,39 @@ void GenericNodeItem::paint(QPainter *painter,
     // Draw the execution mark
     if(_executionMarkOpacity > 0)
     {
-        const qreal markRadius = 8;
-        QRectF markRect(0, 0, markRadius * 2, markRadius * 2);
-        qreal side = (titleHeight - markRadius * 2) / 2;
+        const qreal markSide = 16;
+        const int progressWidth = 80;
+        qreal side = (titleHeight - markSide) / 2;
+        bool displayProgress = _executionProgress > -0.5; // Display a progress or just a mark
+
+        QRectF markRect(0, 0, markSide, markSide);
+
+        if(displayProgress)
+        {
+            markRect.setWidth(progressWidth);
+        }
+
         markRect.moveRight(baseRect.width() - side);
         markRect.moveBottom(baseRect.height() - side);
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(Qt::white);
+
         painter->setOpacity(_executionMarkOpacity);
-        painter->drawEllipse(markRect);
+        painter->setPen(Qt::NoPen);
+
+        if(displayProgress)
+        {
+            painter->setBrush(QColor(204, 204, 204));
+            painter->drawRect(markRect);
+
+            markRect.setWidth(_executionProgress * progressWidth);
+            painter->setBrush(Qt::white);
+            painter->drawRect(markRect);
+        }
+        else
+        {
+            painter->setBrush(Qt::white);
+            painter->drawEllipse(markRect);
+        }
+
         painter->setOpacity(1);
     }
 
