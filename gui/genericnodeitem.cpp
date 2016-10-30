@@ -170,6 +170,9 @@ void GenericNodeItem::executionStarted()
 
         _animationExecution = animation;
     }
+
+    _executionDuration.clear();
+    _executionError.clear();
 }
 
 void GenericNodeItem::executionProgress(qreal progress)
@@ -186,7 +189,6 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
         _animationExecution = NULL;
     }
 
-    #warning display error !
     _executionError = error;
 
     if(duration < 1000)
@@ -266,11 +268,11 @@ void GenericNodeItem::paint(QPainter *painter,
                       _node->getUserReadableName());
 
     // Draw the execution mark
+    const qreal markSide = 16;
+    qreal markMargin = (titleHeight - markSide) / 2;
     if(_executionMarkOpacity > 0)
     {
-        const qreal markSide = 16;
         const int progressWidth = 80;
-        qreal side = (titleHeight - markSide) / 2;
         bool displayProgress = _executionProgress > -0.5; // Display a progress or just a mark
 
         QRectF markRect(0, 0, markSide, markSide);
@@ -280,8 +282,8 @@ void GenericNodeItem::paint(QPainter *painter,
             markRect.setWidth(progressWidth);
         }
 
-        markRect.moveRight(baseRect.width() - side);
-        markRect.moveBottom(baseRect.height() - side);
+        markRect.moveRight(baseRect.width() - markMargin);
+        markRect.moveBottom(baseRect.height() - markMargin);
 
         painter->setOpacity(_executionMarkOpacity);
         painter->setPen(Qt::NoPen);
@@ -304,9 +306,36 @@ void GenericNodeItem::paint(QPainter *painter,
         painter->setOpacity(1);
     }
 
-    // Draw the execution duration
-    if(!_executionDuration.isEmpty())
+    if(!_executionError.isEmpty())
     {
+        QRectF markRect(markMargin, baseRect.height() - markMargin - markSide, markSide, markSide);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(231, 76, 60));
+        painter->drawEllipse(markRect);
+
+        painter->setBrush(Qt::NoBrush);
+
+        QPen linesPen;
+        linesPen.setWidthF(2);
+        linesPen.setCapStyle(Qt::FlatCap);
+        linesPen.setColor(Qt::white);
+        painter->setPen(linesPen);
+
+        const qreal linesPercent = 0.8;
+
+        painter->save();
+
+        painter->translate(markRect.center());
+        painter->rotate(45);
+        painter->drawLine(-linesPercent * markSide / 2, 0, linesPercent * markSide / 2, 0);
+        painter->rotate(90);
+        painter->drawLine(-linesPercent * markSide / 2, 0, linesPercent * markSide / 2, 0);
+
+        painter->restore();
+    }
+    else if(!_executionDuration.isEmpty())
+    {
+        // Draw the execution duration
         font.setPixelSize(bottomFontSize);
         painter->setFont(font);
 
