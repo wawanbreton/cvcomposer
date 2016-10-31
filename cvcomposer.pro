@@ -95,7 +95,8 @@ SOURCES += main.cpp\
     plugwidget/pathwidget.cpp \
     processor/shape/drawshapeprocessor.cpp \
     processor/shape/lineprocessor.cpp \
-    processor/shape/ellipseprocessor.cpp
+    processor/shape/ellipseprocessor.cpp \
+    gui/errordisplaydialog.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -178,12 +179,14 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/lineprocessor.h \
     processor/shape/ellipseprocessor.h \
     model/ellipse.h \
-    processor/processorlisttype.h
+    processor/processorlisttype.h \
+    gui/errordisplaydialog.h
 
 FORMS    += \
     gui/mainwidget.ui \
     plugwidget/imagedockwidget.ui \
-    gui/editsettingsdialog.ui
+    gui/editsettingsdialog.ui \
+    gui/errordisplaydialog.ui
 
 RESOURCES += \
     resources.qrc

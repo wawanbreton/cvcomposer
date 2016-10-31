@@ -30,6 +30,7 @@
 #include "model/node.h"
 #include "gui/boundedgraphicsproxywidget.h"
 #include "gui/customitems.h"
+#include "gui/errordisplaydialog.h"
 #include "gui/plugitem.h"
 #include "gui/genericnodewidget.h"
 #include "model/plug.h"
@@ -395,7 +396,7 @@ void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if(event->button() == Qt::LeftButton && _mouseOverBottom && !_executionError.isEmpty())
     {
         event->accept();
-        qDebug() << "coucou" << _executionError;
+        ErrorDisplayDialog::displayError(_executionError);
     }
     else
     {
