@@ -777,5 +777,5 @@ GenericNodeItem *ComposerScene::findItem(const Node *node)
     }
 
     qCritical() << "No item found for node" << node->getName();
-    return false;
+    return NULL;
 }

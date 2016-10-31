@@ -255,10 +255,7 @@ void ComposerScheduler::onProgress(qreal progress)
     ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
     if(executor)
     {
-        if(!_oldExecutors.contains(executor))
-        {
-            emit executorProgress(executor->getNode(), progress);
-        }
+        emit executorProgress(executor->getNode(), progress);
     }
     else
     {
@@ -437,6 +434,7 @@ void ComposerScheduler::reProcessFromNode(const Node *node)
     {
         _processedNodes.remove(node);
         invalidateExecutors(node);
+        emit executorEnded(node, -1, "");
     }
 
     processNexts();
@@ -471,6 +469,7 @@ void ComposerScheduler::invalidateExecutors(const Node *node)
         if(executor->getNode() == node)
         {
             _oldExecutors << executor;
+            disconnect(executor, SIGNAL(executionProgress(qreal)), this, SLOT(onProgress(qreal)));
         }
     }
 }

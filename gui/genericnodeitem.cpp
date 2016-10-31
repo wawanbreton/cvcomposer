@@ -193,17 +193,20 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
         _animationExecution = NULL;
     }
 
+    _executionDuration.clear();
+    if(duration >= 0)
+    {
+        if(duration < 1000)
+        {
+            _executionDuration = QString::number(duration) + " ms";
+        }
+        else
+        {
+            _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
+        }
+    }
+
     _executionError = error;
-
-    if(duration < 1000)
-    {
-        _executionDuration = QString::number(duration) + " ms";
-    }
-    else
-    {
-        _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
-    }
-
     _executionProgress = -1;
     _executionMarkOpacity = 0;
     update();
@@ -322,7 +325,6 @@ void GenericNodeItem::paint(QPainter *painter,
 
     if(!_executionError.isEmpty())
     {
-        #warning display the error message
         #warning fix bugs when re-executing previous node
         // Draw the execution error mark
         QRectF markRect(markMargin, baseRect.height() - markMargin - markSide, markSide, markSide);
