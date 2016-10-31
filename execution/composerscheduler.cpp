@@ -379,8 +379,11 @@ void ComposerScheduler::processNexts()
         }
         for(ComposerExecutor *executor : _currentExecutors)
         {
-            // Remove nodes which are being processed
-            potentialNodes.removeAll(executor->getNode());
+            // Remove nodes which are (really) being processed
+            if(!_oldExecutors.contains(executor))
+            {
+                potentialNodes.removeAll(executor->getNode());
+            }
         }
 
         for(const Node *node : potentialNodes)

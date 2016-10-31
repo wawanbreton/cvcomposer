@@ -325,7 +325,6 @@ void GenericNodeItem::paint(QPainter *painter,
 
     if(!_executionError.isEmpty())
     {
-        #warning fix bugs when re-executing previous node
         // Draw the execution error mark
         QRectF markRect(markMargin, baseRect.height() - markMargin - markSide, markSide, markSide);
         qreal linesPercent = 0.8;
