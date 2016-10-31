@@ -92,12 +92,7 @@ void ComposerScheduler::onNodeAdded(const Node *node)
 {
     connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
 
-    if(!allInputsProcessed(node))
-    {
-        // If the node has some mandotary plugs, invalid it until some connections are added
-        node->signalProcessUnavailable();
-    }
-    else
+    if(allInputsProcessed(node))
     {
         // If the node only has free plugs, process it ASAP
         processNexts();
@@ -222,12 +217,18 @@ void ComposerScheduler::onNodeProcessed()
 
                 if(executor->getError().isEmpty())
                 {
-                    executor->getNode()->signalProcessDone(executor->getOutputs(),
-                                                           executor->getInputs());
                     _processedNodes.insert(executor->getNode(), executor->getOutputs());
+
+                    emit executorEnded(executor->getNode(),
+                                       executor->getOutputs(),
+                                       executor->getInputs(),
+                                       executor->getDuration(),
+                                       executor->getError());
                 }
                 else
                 {
+                    executorAborted(executor->getNode(), executor->getError());
+
                     invalidateFromNode(executor->getNode());
                 }
 
@@ -236,9 +237,6 @@ void ComposerScheduler::onNodeProcessed()
                     clearUnusedCache();
                 }
 
-                emit executorEnded(executor->getNode(),
-                                   executor->getDuration(),
-                                   executor->getError());
             }
 
             processNexts();
@@ -437,7 +435,6 @@ void ComposerScheduler::reProcessFromNode(const Node *node)
     {
         _processedNodes.remove(node);
         invalidateExecutors(node);
-        emit executorEnded(node, -1, "");
     }
 
     processNexts();
@@ -461,7 +458,6 @@ void ComposerScheduler::invalidateFromNode(const Node *node)
     {
         _processedNodes[descendantNode] = Properties();
         invalidateExecutors(descendantNode);
-        descendantNode->signalProcessUnavailable();
     }
 }
 
@@ -469,10 +465,11 @@ void ComposerScheduler::invalidateExecutors(const Node *node)
 {
     for(ComposerExecutor *executor : _currentExecutors)
     {
-        if(executor->getNode() == node)
+        if(executor->getNode() == node && !_oldExecutors.contains(executor))
         {
             _oldExecutors << executor;
             disconnect(executor, SIGNAL(executionProgress(qreal)), this, SLOT(onProgress(qreal)));
+            executorAborted(node);
         }
     }
 }
@@ -504,4 +501,9 @@ void ComposerScheduler::clearUnusedCache()
             }
         }
     }
+}
+
+void ComposerScheduler::executorAborted(const Node *node, const QString &error)
+{
+    emit executorEnded(node, Properties(), Properties(), -1, error);
 }

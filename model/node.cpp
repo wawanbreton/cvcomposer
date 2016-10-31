@@ -109,16 +109,6 @@ Plug *Node::findOutput(const QString &name) const
     return NULL;
 }
 
-void Node::signalProcessDone(const Properties &outputs, const Properties &inputs) const
-{
-    emit processDone(outputs, inputs);
-}
-
-void Node::signalProcessUnavailable() const
-{
-    emit processUnavailable();
-}
-
 const Properties &Node::getProperties() const
 {
     return _properties;

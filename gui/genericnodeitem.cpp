@@ -28,6 +28,7 @@
 #include <QGraphicsSceneHoverEvent>
 
 #include "model/node.h"
+#include "global/properties.h"
 #include "gui/boundedgraphicsproxywidget.h"
 #include "gui/customitems.h"
 #include "gui/errordisplaydialog.h"
@@ -61,10 +62,6 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
                      SLOT(recomputeSizes()));
     connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
             node,    SLOT(setProperty(QString,QVariant)));
-    connect(node,    SIGNAL(processDone(Properties,Properties)),
-            _widget, SLOT(onProcessDone(Properties,Properties)));
-    connect(node,    SIGNAL(processUnavailable()),
-            _widget, SLOT(onProcessUnavailable()));
 
     QGraphicsProxyWidget *proxy = new BoundedGraphicsProxyWidget(this);
     proxy->setWidget(_widget);
@@ -185,7 +182,10 @@ void GenericNodeItem::executionProgress(qreal progress)
     update();
 }
 
-void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
+void GenericNodeItem::executionEnded(const Properties &outputs,
+                                     const Properties &inputs,
+                                     qint64 duration,
+                                     const QString &error)
 {
     if(_animationExecution != NULL)
     {
@@ -204,6 +204,12 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
         {
             _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
         }
+
+        _widget->onProcessDone(outputs, inputs);
+    }
+    else
+    {
+        _widget->onProcessUnavailable();
     }
 
     _executionError = error;

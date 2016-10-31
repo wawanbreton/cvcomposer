@@ -29,6 +29,7 @@ class GenericNodeWidget;
 class Node;
 class PlugItem;
 class Plug;
+class Properties;
 
 class GenericNodeItem : public QObject, public QGraphicsItem
 {
@@ -62,7 +63,10 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void executionProgress(qreal progress);
 
-        void executionEnded(qint64 duration, const QString &error);
+        void executionEnded(const Properties &outputs,
+                            const Properties &inputs,
+                            qint64 duration,
+                            const QString &error);
 
         QCursor overrideMouseCursor();
 

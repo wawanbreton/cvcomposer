@@ -51,10 +51,6 @@ class Node : public QObject
 
         Plug *findOutput(const QString &name) const;
 
-        void signalProcessDone(const Properties &outputs, const Properties &inputs) const;
-
-        void signalProcessUnavailable() const;
-
         const Properties &getProperties() const;
 
     public slots:
@@ -62,12 +58,6 @@ class Node : public QObject
 
     signals:
         void propertyChanged(const QString &name, const QVariant &value);
-
-        #warning remove this
-        void processDone(const Properties &outputs, const Properties &inputs) const;
-
-        #warning and this too
-        void processUnavailable() const;
 
     private:
         const QString _name;

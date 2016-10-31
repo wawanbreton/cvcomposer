@@ -87,7 +87,11 @@ class ComposerScene : public QGraphicsScene
 
         void onExecutionProgress(const Node *node, qreal progress);
 
-        void onExecutionEnded(const Node *node, qint64 duration, const QString &error);
+        void onExecutionEnded(const Node *node,
+                              const Properties &outputs,
+                              const Properties &inputs,
+                              qint64 duration,
+                              const QString &error);
 
     private:
         void init();

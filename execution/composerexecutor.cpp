@@ -19,6 +19,7 @@
 
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QTimer>
 
 #include "model/node.h"
 #include "processor/abstractprocessor.h"
@@ -40,7 +41,6 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
 
 void ComposerExecutor::process(const Node *node, const Properties &inputs)
 {
-    _error.clear();
     _node = node;
     _processor = ProcessorsFactory::createProcessor(node->getName());
     connect(_processor, SIGNAL(progress(qreal)), SIGNAL(executionProgress(qreal)));
@@ -101,11 +101,12 @@ void ComposerExecutor::run()
 
 void ComposerExecutor::onFinished()
 {
-    qDebug() << "finished" << this;
+    qDebug() << "finished" << this << _error;
 
     _keepProcessing = _processor->getRealTimeProcessing();
 
     delete _processor;
 
+    // Send the signal when we are fully finished
     emit nodeProcessed();
 }
