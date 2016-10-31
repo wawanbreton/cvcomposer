@@ -64,12 +64,20 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void executionEnded(qint64 duration, const QString &error);
 
+        QCursor overrideMouseCursor();
+
     protected:
-        virtual QRectF boundingRect() const;
+        virtual QRectF boundingRect() const override;
 
         virtual void paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
-                           QWidget *widget);
+                           QWidget *widget) override;
+
+        void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+        void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
     private:
         QRectF computeBaseRect() const;
@@ -99,4 +107,5 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         QString _executionDuration;
         QString _executionError;
         qreal _executionProgress;
+        bool _mouseOverBottom;
 };

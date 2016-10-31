@@ -467,6 +467,10 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedNode.initClickPos = event->scenePos();
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
+                else
+                {
+                    QGraphicsScene::mousePressEvent(event);
+                }
 
                 // Select node
                 QPainterPath path;
@@ -492,6 +496,8 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsScene::mouseMoveEvent(event);
+
     QCursor cursor = Qt::ArrowCursor;
 
     if(_editedConnection.item)
@@ -579,12 +585,7 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
-            if(item->type() == QGraphicsProxyWidget::Type)
-            {
-                // Let the parent do its job fully
-                return QGraphicsScene::mouseMoveEvent(event);
-            }
-            else if(item->type() == CustomItems::Plug)
+            if(item->type() == CustomItems::Plug)
             {
                 cursor = Qt::PointingHandCursor;
             }
@@ -593,6 +594,10 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
                 {
                     cursor = Qt::OpenHandCursor;
+                }
+                else
+                {
+                    cursor = ((GenericNodeItem *)item)->overrideMouseCursor();
                 }
             }
         }

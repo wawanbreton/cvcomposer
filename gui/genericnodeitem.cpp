@@ -25,6 +25,7 @@
 #include <QFontMetrics>
 #include <QStyleOptionGraphicsItem>
 #include <QVariantAnimation>
+#include <QGraphicsSceneHoverEvent>
 
 #include "model/node.h"
 #include "gui/boundedgraphicsproxywidget.h"
@@ -44,10 +45,12 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _executionMarkOpacity(0),
     _executionDuration(),
     _executionError(),
-    _executionProgress(-1)
+    _executionProgress(-1),
+    _mouseOverBottom(false)
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setAcceptHoverEvents(true);
 
     _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setAutoFillBackground(false);
@@ -205,6 +208,16 @@ void GenericNodeItem::executionEnded(qint64 duration, const QString &error)
     update();
 }
 
+QCursor GenericNodeItem::overrideMouseCursor()
+{
+    if(!_executionError.isEmpty() && _mouseOverBottom)
+    {
+        return Qt::PointingHandCursor;
+    }
+
+    return QCursor();
+}
+
 QRectF GenericNodeItem::boundingRect() const
 {
     QRectF rect = computeBaseRect();
@@ -308,7 +321,18 @@ void GenericNodeItem::paint(QPainter *painter,
 
     if(!_executionError.isEmpty())
     {
+        #warning display the error message
+        #warning fix bugs when re-executing previous node
+        // Draw the execution error mark
         QRectF markRect(markMargin, baseRect.height() - markMargin - markSide, markSide, markSide);
+        qreal linesPercent = 0.8;
+
+        if(_mouseOverBottom)
+        {
+            markRect.adjust(-2, -2, 2, 2);
+            linesPercent = 0.9;
+        }
+
         painter->setPen(Qt::NoPen);
         painter->setBrush(QColor(231, 76, 60));
         painter->drawEllipse(markRect);
@@ -316,12 +340,11 @@ void GenericNodeItem::paint(QPainter *painter,
         painter->setBrush(Qt::NoBrush);
 
         QPen linesPen;
-        linesPen.setWidthF(2);
+        linesPen.setWidthF(_mouseOverBottom ? 3 : 2);
         linesPen.setCapStyle(Qt::FlatCap);
         linesPen.setColor(Qt::white);
         painter->setPen(linesPen);
 
-        const qreal linesPercent = 0.8;
 
         painter->save();
 
@@ -343,6 +366,40 @@ void GenericNodeItem::paint(QPainter *painter,
         durationRect.setLeft(6);
         painter->setPen(widget->palette().text().color());
         painter->drawText(durationRect, Qt::AlignLeft | Qt::AlignVCenter, _executionDuration);
+    }
+}
+
+void GenericNodeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    bool mouseOverBottom = event->pos().y() > computeBaseRect().height() - titleHeight;
+    if(mouseOverBottom != _mouseOverBottom)
+    {
+        _mouseOverBottom = mouseOverBottom;
+        update();
+    }
+}
+
+void GenericNodeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event)
+
+    if(_mouseOverBottom)
+    {
+        _mouseOverBottom = false;
+        update();
+    }
+}
+
+void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton && _mouseOverBottom && !_executionError.isEmpty())
+    {
+        event->accept();
+        qDebug() << "coucou" << _executionError;
+    }
+    else
+    {
+        QGraphicsItem::mousePressEvent(event);
     }
 }
 
