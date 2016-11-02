@@ -93,6 +93,8 @@ class ComposerScene : public QGraphicsScene
                               qint64 duration,
                               const QString &error);
 
+        void onNodeInvalid(const Node *node);
+
     private:
         void init();
 

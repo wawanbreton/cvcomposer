@@ -86,6 +86,7 @@ void ComposerScene::init()
                         SLOT(onExecutionProgress(const Node*, qreal)));
     connect(_scheduler, SIGNAL(executorEnded(const Node*, Properties, Properties, qint64, QString)),
                         SLOT(onExecutionEnded(const Node*, Properties, Properties, qint64, QString)));
+    connect(_scheduler, SIGNAL(nodeInvalid(const Node*)), SLOT(onNodeInvalid(const Node*)));
 
     setBackgroundBrush(QColor("#273035"));
 }
@@ -767,6 +768,15 @@ void ComposerScene::onExecutionEnded(const Node *node,
     if((nodeItem = findItem(node)) != NULL)
     {
         nodeItem->executionEnded(outputs, inputs, duration, error);
+    }
+}
+
+void ComposerScene::onNodeInvalid(const Node *node)
+{
+    GenericNodeItem *nodeItem;
+    if((nodeItem = findItem(node)) != NULL)
+    {
+        nodeItem->nodeInvalid();
     }
 }
 

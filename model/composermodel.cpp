@@ -137,11 +137,14 @@ QSet<const Node *> ComposerModel::findDirectDescendantNodes(const Plug *output) 
     return nodes;
 }
 
-QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node) const
+QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node, bool includeParent) const
 {
     QSet<const Node *> nodes;
 
-    nodes << node;
+    if(includeParent)
+    {
+        nodes << node;
+    }
 
     for(const Plug *output : node->getOutputs())
     {

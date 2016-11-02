@@ -54,7 +54,7 @@ class ComposerModel : public QObject
 
         QSet<const Node *> findDirectDescendantNodes(const Plug *output) const;
 
-        QSet<const Node *> findDescendantNodes(const Node *node) const;
+        QSet<const Node *> findDescendantNodes(const Node *node, bool includeParent = true) const;
 
         void addConnection(Plug *output, Plug *input);
 

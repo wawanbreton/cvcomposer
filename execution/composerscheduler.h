@@ -63,6 +63,8 @@ class ComposerScheduler : public QObject
                            qint64 duration,
                            const QString &error);
 
+        void nodeInvalid(const Node *node);
+
     private slots:
         void onNodeAdded(const Node *node);
 
@@ -91,13 +93,13 @@ class ComposerScheduler : public QObject
 
         void reProcessAll();
 
-        void invalidateFromNode(const Node *node);
+        void invalidateFromNode(const Node *node, bool includeCurrent = true);
 
-        void invalidateExecutors(const Node *node);
+        void cancelExecutors(const Node *node);
+
+        void cancelExecutor(ComposerExecutor *executor);
 
         void clearUnusedCache();
-
-        void executorAborted(const Node *node, const QString &error = "");
 
     private:
         ExecutorSettings _settings;

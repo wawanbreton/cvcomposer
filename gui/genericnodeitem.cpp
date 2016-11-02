@@ -194,27 +194,36 @@ void GenericNodeItem::executionEnded(const Properties &outputs,
     }
 
     _executionDuration.clear();
-    if(duration >= 0)
-    {
-        if(duration < 1000)
-        {
-            _executionDuration = QString::number(duration) + " ms";
-        }
-        else
-        {
-            _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
-        }
 
-        _widget->onProcessDone(outputs, inputs);
-    }
-    else
+    if(error.isEmpty())
     {
-        _widget->onProcessUnavailable();
+        if(duration >= 0)
+        {
+            // The execution was processed correctly
+            if(duration < 1000)
+            {
+                _executionDuration = QString::number(duration) + " ms";
+            }
+            else
+            {
+                _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
+            }
+
+            _widget->onProcessDone(outputs, inputs);
+        }
     }
 
     _executionError = error;
     _executionProgress = -1;
     _executionMarkOpacity = 0;
+    update();
+}
+
+void GenericNodeItem::nodeInvalid()
+{
+    _executionDuration.clear();
+    _executionError.clear();
+    _widget->onProcessUnavailable();
     update();
 }
 

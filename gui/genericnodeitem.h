@@ -68,6 +68,8 @@ class GenericNodeItem : public QObject, public QGraphicsItem
                             qint64 duration,
                             const QString &error);
 
+        void nodeInvalid();
+
         QCursor overrideMouseCursor();
 
     protected:

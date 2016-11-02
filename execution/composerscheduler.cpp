@@ -59,7 +59,7 @@ void ComposerScheduler::start()
 
 void ComposerScheduler::end()
 {
-    if(_currentExecutors.isEmpty())
+    if(_currentExecutors.isEmpty() && _oldExecutors.isEmpty())
     {
         // There is no executor being processed, exit asap
         QTimer::singleShot(0, this, SIGNAL(ended()));
@@ -102,13 +102,7 @@ void ComposerScheduler::onNodeAdded(const Node *node)
 void ComposerScheduler::onNodeRemoved(const Node *node)
 {
     // Invalidate potential executors currently running for this node
-    foreach(ComposerExecutor *executor, _currentExecutors)
-    {
-        if(executor->getNode() == node)
-        {
-            _oldExecutors << executor;
-        }
-    }
+    cancelExecutors(node);
 
     // Untag the node as needeing a reprocess
     _keepProcessingNodes.removeAll(node);
@@ -192,44 +186,50 @@ void ComposerScheduler::onNodeProcessed()
     ComposerExecutor *executor = qobject_cast<ComposerExecutor *>(sender());
     if(executor)
     {
-        _currentExecutors.removeAll(executor);
-
         if(_end)
         {
             // Execution has been asked to end, give up
+            _currentExecutors.removeAll(executor);
+            _oldExecutors.removeAll(executor);
 
-            if(_currentExecutors.isEmpty())
-            {
-                // This is the last executors we were waiting for
-                QTimer::singleShot(0, this, SIGNAL(ended()));
-            }
+            end();
         }
         else
         {
-            if(_oldExecutors.removeAll(executor) == 0)
-            {
-                // The executor has not been invalidated during its execution
+            bool current = _currentExecutors.contains(executor);
+            bool old = _oldExecutors.contains(executor);
 
+            if(current && old)
+            {
+                qCritical() << "Executor is registered as both current and old ?!";
+            }
+            if(!current && !old)
+            {
+                qCritical() << "Executor is not registered as current nor old ?!";
+            }
+
+            if(current)
+            {
+                // The executor is still awaited
                 if(executor->getKeepProcessing())
                 {
                     _keepProcessingNodes << executor->getNode();
                 }
 
+                emit executorEnded(executor->getNode(),
+                                   executor->getOutputs(),
+                                   executor->getInputs(),
+                                   executor->getDuration(),
+                                   executor->getError());
+
                 if(executor->getError().isEmpty())
                 {
-                    _processedNodes.insert(executor->getNode(), executor->getOutputs());
-
-                    emit executorEnded(executor->getNode(),
-                                       executor->getOutputs(),
-                                       executor->getInputs(),
-                                       executor->getDuration(),
-                                       executor->getError());
+                    _processedNodes[executor->getNode()] = executor->getOutputs();
                 }
                 else
                 {
-                    executorAborted(executor->getNode(), executor->getError());
-
-                    invalidateFromNode(executor->getNode());
+                    _processedNodes[executor->getNode()] = Properties();
+                    invalidateFromNode(executor->getNode(), false);
                 }
 
                 if(!_settings.cacheData)
@@ -237,6 +237,12 @@ void ComposerScheduler::onNodeProcessed()
                     clearUnusedCache();
                 }
 
+                _currentExecutors.removeAll(executor);
+            }
+            else
+            {
+                // This is an old executor, just unregister it and keep processing
+                _oldExecutors.removeAll(executor);
             }
 
             processNexts();
@@ -365,7 +371,7 @@ quint16 ComposerScheduler::maxThreads() const
 
 void ComposerScheduler::processNexts()
 {
-    while(_currentExecutors.count() < maxThreads())
+    while(_currentExecutors.count() + _oldExecutors.count() < maxThreads())
     {
         bool nodeAddedForProcessing = false;
 
@@ -377,11 +383,8 @@ void ComposerScheduler::processNexts()
         }
         for(ComposerExecutor *executor : _currentExecutors)
         {
-            // Remove nodes which are (really) being processed
-            if(!_oldExecutors.contains(executor))
-            {
-                potentialNodes.removeAll(executor->getNode());
-            }
+            // Remove nodes which are being processed
+            potentialNodes.removeAll(executor->getNode());
         }
 
         for(const Node *node : potentialNodes)
@@ -411,7 +414,6 @@ void ComposerScheduler::processNexts()
         if(!nodeAddedForProcessing)
         {
             // There is no other node we can process yet
-
             if(_currentExecutors.count() == 0)
             {
                 // And no executor is running => we are globally over
@@ -429,12 +431,11 @@ void ComposerScheduler::processNexts()
 
 void ComposerScheduler::reProcessFromNode(const Node *node)
 {
-    QSet<const Node *> descendantNodes = _model->findDescendantNodes(node);
-
-    for(const Node *node : descendantNodes)
+    for(const Node *descendantNode : _model->findDescendantNodes(node))
     {
-        _processedNodes.remove(node);
-        invalidateExecutors(node);
+        cancelExecutors(descendantNode);
+
+        _processedNodes.remove(descendantNode);
     }
 
     processNexts();
@@ -444,7 +445,7 @@ void ComposerScheduler::reProcessAll()
 {
     for(ComposerExecutor *executor : _currentExecutors)
     {
-        _oldExecutors << executor;
+        cancelExecutor(executor);
     }
 
     _processedNodes.clear();
@@ -452,25 +453,46 @@ void ComposerScheduler::reProcessAll()
     processNexts();
 }
 
-void ComposerScheduler::invalidateFromNode(const Node *node)
+void ComposerScheduler::invalidateFromNode(const Node *node, bool includeCurrent)
 {
-    for(const Node *descendantNode : _model->findDescendantNodes(node))
+    for(const Node *descendantNode : _model->findDescendantNodes(node, includeCurrent))
     {
-        _processedNodes[descendantNode] = Properties();
-        invalidateExecutors(descendantNode);
+        cancelExecutors(descendantNode);
+
+        // Indicate that node has been processed, but with no result
+       _processedNodes[descendantNode] = Properties();
+
+       emit nodeInvalid(descendantNode);
     }
 }
 
-void ComposerScheduler::invalidateExecutors(const Node *node)
+void ComposerScheduler::cancelExecutors(const Node *node)
 {
     for(ComposerExecutor *executor : _currentExecutors)
     {
-        if(executor->getNode() == node && !_oldExecutors.contains(executor))
+        if(executor->getNode() == node)
         {
-            _oldExecutors << executor;
-            disconnect(executor, SIGNAL(executionProgress(qreal)), this, SLOT(onProgress(qreal)));
-            executorAborted(node);
+            cancelExecutor(executor);
         }
+    }
+}
+
+void ComposerScheduler::cancelExecutor(ComposerExecutor *executor)
+{
+    // Register executor as old
+    if(_currentExecutors.removeAll(executor) > 0)
+    {
+        _oldExecutors << executor;
+
+        // Disconnect progress signal we may keep receiving
+        disconnect(executor, SIGNAL(executionProgress(qreal)), this, SLOT(onProgress(qreal)));
+
+        // Signal that the executor is aborted
+        emit executorEnded(executor->getNode(), Properties(), Properties(), -1, "");
+    }
+    else
+    {
+        qCritical() << "Given executor is not registered as current";
     }
 }
 
@@ -501,9 +523,4 @@ void ComposerScheduler::clearUnusedCache()
             }
         }
     }
-}
-
-void ComposerScheduler::executorAborted(const Node *node, const QString &error)
-{
-    emit executorEnded(node, Properties(), Properties(), -1, error);
 }
