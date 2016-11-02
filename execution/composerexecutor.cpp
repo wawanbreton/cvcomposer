@@ -18,6 +18,8 @@
 #include "composerexecutor.h"
 
 #include <QDebug>
+#include <QElapsedTimer>
+#include <QTimer>
 
 #include "model/node.h"
 #include "processor/abstractprocessor.h"
@@ -30,16 +32,18 @@ ComposerExecutor::ComposerExecutor(QObject *parent) :
     _processor(NULL),
     _inputs(),
     _outputs(),
-    _success(false)
+    _keepProcessing(false),
+    _duration(0),
+    _error()
 {
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
 void ComposerExecutor::process(const Node *node, const Properties &inputs)
 {
-    _success = false;
     _node = node;
     _processor = ProcessorsFactory::createProcessor(node->getName());
+    connect(_processor, SIGNAL(progress(qreal)), SIGNAL(executionProgress(qreal)));
     _inputs = inputs;
     start();
 
@@ -61,26 +65,48 @@ const Properties &ComposerExecutor::getOutputs() const
     return _outputs;
 }
 
+qint64 ComposerExecutor::getDuration() const
+{
+    return _duration;
+}
+
+const QString &ComposerExecutor::getError() const
+{
+    return _error;
+}
+
+bool ComposerExecutor::getKeepProcessing() const
+{
+    return _keepProcessing;
+}
+
 void ComposerExecutor::run()
 {
+    QElapsedTimer timer;
+    timer.start();
+
     try
     {
         _outputs = _processor->process(_inputs);
-        _success = true;
     }
     catch(const std::exception &exception)
     {
-        qDebug() << "Exception when executing node" << _node->getUserReadableName() << " : " << exception.what();
+        qDebug() << "Exception when executing node"
+                 << _node->getUserReadableName() << " : " << exception.what();
+        _error = exception.what();
     }
+
+    _duration = timer.elapsed();
 }
 
 void ComposerExecutor::onFinished()
 {
-    qDebug() << "finished" << this;
+    qDebug() << "finished" << this << _error;
 
-    bool keepProcessing = _processor->getRealTimeProcessing();
+    _keepProcessing = _processor->getRealTimeProcessing();
 
     delete _processor;
 
-    emit nodeProcessed(_success, keepProcessing);
+    // Send the signal when we are fully finished
+    emit nodeProcessed();
 }

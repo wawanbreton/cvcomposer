@@ -53,6 +53,18 @@ class ComposerScheduler : public QObject
     signals:
         void ended();
 
+        void executorStarted(const Node *node);
+
+        void executorProgress(const Node *node, qreal progress);
+
+        void executorEnded(const Node *node,
+                           const Properties &outputs,
+                           const Properties &inputs,
+                           qint64 duration,
+                           const QString &error);
+
+        void nodeInvalid(const Node *node);
+
     private slots:
         void onNodeAdded(const Node *node);
 
@@ -64,7 +76,9 @@ class ComposerScheduler : public QObject
 
         void onConnectionAdded(const Connection *connection);
 
-        void onNodeProcessed(bool success, bool keepProcessing);
+        void onNodeProcessed();
+
+        void onProgress(qreal progress);
 
     private:
         bool allInputsProcessed(const Node *node);
@@ -79,9 +93,11 @@ class ComposerScheduler : public QObject
 
         void reProcessAll();
 
-        void invalidateFromNode(const Node *node);
+        void invalidateFromNode(const Node *node, bool includeCurrent = true);
 
-        void invalidateExecutors(const Node *node);
+        void cancelExecutors(const Node *node);
+
+        void cancelExecutor(ComposerExecutor *executor);
 
         void clearUnusedCache();
 

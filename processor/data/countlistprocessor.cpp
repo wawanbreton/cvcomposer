@@ -22,9 +22,8 @@
 
 CountListProcessor::CountListProcessor()
 {
-    addInput("list", PlugType::getAllFlags(), QVariant(), Properties(), ThreeStateBool::None, true);
-
-    addOutput("count", PlugType::Double, false);
+    addInput("list", PlugType::getAllFlags(), ProcessorListType::Custom);
+    addOutput("count", PlugType::Double);
 }
 
 Properties CountListProcessor::processImpl(const Properties &inputs)

@@ -33,7 +33,7 @@ ImagesFromFolderProcessor::ImagesFromFolderProcessor()
 
     addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), CV_LOAD_IMAGE_COLOR);
 
-    addOutput("images", PlugType::Image, true);
+    addOutput("images", PlugType::Image, ProcessorListType::Custom);
 }
 
 Properties ImagesFromFolderProcessor::processImpl(const Properties &inputs)

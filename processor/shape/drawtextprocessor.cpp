@@ -23,6 +23,8 @@
 DrawTextProcessor::DrawTextProcessor()
 {
     addInput("input image", PlugType::Image);
+
+    // TODO : manage multiple texts with multiples positions
     addInput("text", PlugType::String);
     addInput("position", PlugType::Point);
 

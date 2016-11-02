@@ -15,31 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "splitchannelsprocessor.h"
+#pragma once
 
-#include "global/cvutils.h"
+#include <QDialog>
 
+namespace Ui { class ErrorDisplayDialog; }
 
-SplitChannelsProcessor::SplitChannelsProcessor()
+class ErrorDisplayDialog : public QDialog
 {
-    addInput("image", PlugType::Image);
-    addOutput("channels", PlugType::Image, ProcessorListType::Custom);
-}
+    Q_OBJECT
 
-Properties SplitChannelsProcessor::processImpl(const Properties &inputs)
-{
-    cv::Mat image = inputs["image"].value<cv::Mat>();
-    QList<QVariant> channels;
+    public:
+        static void displayError(const QString &error);
 
-    for(int channelId = 0 ; channelId < image.channels() ; channelId++)
-    {
-        cv::Mat channel;
-        cv::extractChannel(image, channel, channelId);
-        channels << QVariant::fromValue(channel);
-    }
+        ~ErrorDisplayDialog();
 
-    Properties outputs;
-    outputs.insert("channels", QVariant::fromValue(channels));
-    return outputs;
-}
+    private:
+        explicit ErrorDisplayDialog(QWidget *parent = NULL);
 
+    private:
+        Ui::ErrorDisplayDialog *_ui;
+};

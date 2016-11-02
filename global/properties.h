@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PROPERTIES_H
-#define PROPERTIES_H
+#pragma once
 
 #include <QMap>
 #include <QVariant>
@@ -26,6 +25,3 @@ class Properties : public QMap<QString, QVariant>
     public:
         void applyTo(QObject *object) const;
 };
-
-#endif // PROPERTIES_H
-

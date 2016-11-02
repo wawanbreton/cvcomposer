@@ -30,4 +30,3 @@ Properties ImageViewerProcessor::processImpl(const Properties &inputs)
     Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
     return Properties();
 }
-

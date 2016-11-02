@@ -20,11 +20,10 @@
 #include <QDebug>
 
 
-AbstractProcessor::AbstractProcessor()
-{
-}
-
-AbstractProcessor::~AbstractProcessor()
+AbstractProcessor::AbstractProcessor() :
+    _inputs(),
+    _outputs(),
+    _listProgress(0)
 {
 }
 
@@ -45,32 +44,84 @@ Properties AbstractProcessor::process(const Properties &inputs)
     qSort(inputNames);
 
     Properties listCompliantImputs;
-
     QList<QString> expectedInputNames;
+    QString simpleInputListPlug;
     foreach(const PlugDefinition &plug, _inputs)
     {
         expectedInputNames << plug.name;
-        if(plug.supportsList && inputs[plug.name].userType() != qMetaTypeId<QList<QVariant> >())
+
+        if(plug.listSupport == ProcessorListType::None)
         {
-            // Input expects a list, give it a list containing the element
-            listCompliantImputs[plug.name] = QList<QVariant>() << inputs[plug.name];
-        }
-        else if(!plug.supportsList && inputs[plug.name].userType() == qMetaTypeId<QList<QVariant> >())
-        {
-            // Input expects a single element, give it the first element of the list
-            listCompliantImputs[plug.name] = inputs[plug.name].value<QList<QVariant> >().value(0, QVariant());
+            if(inputs[plug.name].userType() == qMetaTypeId<QList<QVariant> >())
+            {
+                // Input expects a single element, give it the first element of the list
+                listCompliantImputs[plug.name] = inputs[plug.name].value<QList<QVariant> >().value(0, QVariant());
+            }
+            else
+            {
+                listCompliantImputs[plug.name] = inputs[plug.name];
+            }
         }
         else
         {
-            listCompliantImputs[plug.name] = inputs[plug.name];
+            if(plug.listSupport == ProcessorListType::Simple)
+            {
+                if(!simpleInputListPlug.isEmpty())
+                {
+                    qCritical() << "Multiple simple list support is not implemented yet";
+                }
+                simpleInputListPlug = plug.name;
+            }
+
+            if(inputs[plug.name].userType() != qMetaTypeId<QList<QVariant> >())
+            {
+                // Input expects a list, give it a list containing the single element
+                listCompliantImputs[plug.name] = QList<QVariant>() << inputs[plug.name];
+            }
+            else
+            {
+                listCompliantImputs[plug.name] = inputs[plug.name];
+            }
         }
     }
+
     qSort(expectedInputNames);
 
     Q_ASSERT(inputNames == expectedInputNames);
 
+    Properties outputs;
+
     // Do the actual computing
-    Properties outputs = processImpl(listCompliantImputs);
+    if(simpleInputListPlug.isEmpty())
+    {
+        // No list support, just give the inputs and retrieve the outputs
+        outputs = processImpl(listCompliantImputs);
+    }
+    else
+    {
+        // Simple list support : iterate on each value of the given list
+        Properties singleOutputs;
+        QList<QVariant> simpleListValues = listCompliantImputs[simpleInputListPlug].value<QList<QVariant> >();
+        listProgress(simpleListValues);
+        foreach(const QVariant &simpleListValue, simpleListValues)
+        {
+            // For each element, extract it and process the computation
+            Properties singleInputs = listCompliantImputs;
+            singleInputs[simpleInputListPlug] = simpleListValue;
+
+            singleOutputs = processImpl(singleInputs);
+
+            // Then add the computed output values to the complete list of outputs
+            for(Properties::const_iterator it = singleOutputs.begin() ; it != singleOutputs.end() ; ++it)
+            {
+                QList<QVariant> outputValues = outputs[it.key()].value<QList<QVariant> >();
+                outputValues << it.value();
+                outputs[it.key()] = outputValues;
+            }
+
+            listProgress(simpleListValues);
+        }
+    }
 
     // Check that computed outputs match the expected ouputs
     QList<QString> outputNames = outputs.keys();
@@ -104,9 +155,16 @@ void AbstractProcessor::addInput(const QString &name,
                                  const QVariant &defaultValue,
                                  const Properties &widgetProperties,
                                  ThreeStateBool::Enum labelVisible,
-                                 bool supportsList)
+                                 ProcessorListType::Enum listSupport)
 {
-    addInput(makePlug(name, types, defaultValue, widgetProperties, labelVisible, supportsList));
+    addInput(makePlug(name, types, defaultValue, widgetProperties, labelVisible, listSupport));
+}
+
+void AbstractProcessor::addInput(const QString &name,
+                                 PlugType::PlugTypes types,
+                                 ProcessorListType::Enum listSupport)
+{
+    addInput(name, types, QVariant(), Properties(), ThreeStateBool::None, listSupport);
 }
 
 void AbstractProcessor::addEnumerationInput(const QString &name,
@@ -129,14 +187,22 @@ void AbstractProcessor::addOutput(const PlugDefinition &definition)
 
 void AbstractProcessor::addOutput(const QString &userReadableName,
                                   PlugType::PlugTypes types,
-                                  bool supportsList)
+                                  ProcessorListType::Enum listSupport)
 {
     addOutput(makePlug(userReadableName,
                        types,
                        QVariant(),
                        Properties(),
                        ThreeStateBool::None,
-                       supportsList));
+                       listSupport));
+}
+
+void AbstractProcessor::listProgress(const QList<QVariant> &list)
+{
+    if(list.size() > 1)
+    {
+        emit progress(qreal(_listProgress++) / list.size());
+    }
 }
 
 PlugDefinition AbstractProcessor::makePlug(const QString &name,
@@ -144,7 +210,7 @@ PlugDefinition AbstractProcessor::makePlug(const QString &name,
                                            const QVariant &defaultValue,
                                            const Properties &widgetProperties,
                                            ThreeStateBool::Enum labelVisible,
-                                           bool supportsList)
+                                           ProcessorListType::Enum listSupport)
 {
     PlugDefinition plug;
     plug.name = name;
@@ -152,7 +218,7 @@ PlugDefinition AbstractProcessor::makePlug(const QString &name,
     plug.defaultValue = defaultValue;
     plug.widgetProperties = widgetProperties;
     plug.labelVisible = labelVisible;
-    plug.supportsList = supportsList;
+    plug.listSupport = listSupport;
 
     return plug;
 }

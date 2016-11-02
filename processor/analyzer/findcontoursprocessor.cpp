@@ -45,7 +45,7 @@ FindContoursProcessor::FindContoursProcessor()
 
     addInput("offset", PlugType::Point);
 
-    addOutput("contours", PlugType::Contour, true);
+    addOutput("contours", PlugType::Contour, ProcessorListType::Custom);
 }
 
 Properties FindContoursProcessor::processImpl(const Properties &inputs)

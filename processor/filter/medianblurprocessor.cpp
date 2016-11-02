@@ -25,14 +25,14 @@
 MedianBlurProcessor::MedianBlurProcessor() :
     AbstractProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties sizeProperties;
     sizeProperties.insert("singleStep", 2);
     sizeProperties.insert("decimals", 0);
     addInput("size", PlugType::Double,  1.0, sizeProperties);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties MedianBlurProcessor::processImpl(const Properties &inputs)

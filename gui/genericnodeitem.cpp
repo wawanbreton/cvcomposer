@@ -24,10 +24,14 @@
 #include <QLayout>
 #include <QFontMetrics>
 #include <QStyleOptionGraphicsItem>
+#include <QVariantAnimation>
+#include <QGraphicsSceneHoverEvent>
 
 #include "model/node.h"
+#include "global/properties.h"
 #include "gui/boundedgraphicsproxywidget.h"
 #include "gui/customitems.h"
+#include "gui/errordisplaydialog.h"
 #include "gui/plugitem.h"
 #include "gui/genericnodewidget.h"
 #include "model/plug.h"
@@ -38,10 +42,17 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _node(node),
     _widget(new GenericNodeWidget()),
     _inputPlugs(),
-    _outputPlugs()
+    _outputPlugs(),
+    _animationExecution(NULL),
+    _executionMarkOpacity(0),
+    _executionDuration(),
+    _executionError(),
+    _executionProgress(-1),
+    _mouseOverBottom(false)
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setAcceptHoverEvents(true);
 
     _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setAutoFillBackground(false);
@@ -51,14 +62,10 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
                      SLOT(recomputeSizes()));
     connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
             node,    SLOT(setProperty(QString,QVariant)));
-    connect(node,    SIGNAL(processDone(Properties,Properties)),
-            _widget, SLOT(onProcessDone(Properties,Properties)));
-    connect(node,    SIGNAL(processUnavailable()),
-            _widget, SLOT(onProcessUnavailable()));
 
     QGraphicsProxyWidget *proxy = new BoundedGraphicsProxyWidget(this);
     proxy->setWidget(_widget);
-    proxy->setPos(2 * PlugItem::radius, 30 + PlugItem::radius);
+    proxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
 
     foreach(Plug *plug, _node->getInputs())
     {
@@ -149,6 +156,87 @@ void GenericNodeItem::load(const QMap<QString, QString> &properties)
     }
 }
 
+void GenericNodeItem::executionStarted()
+{
+    if(_animationExecution == NULL)
+    {
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setStartValue(0.0);
+        animation->setEndValue(1.0);
+        animation->setEasingCurve(QEasingCurve::InOutSine);
+        animation->setDuration(500);
+        connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(setExecutionMarkOpacity(QVariant)));
+        connect(animation, SIGNAL(finished()), SLOT(onExecutionAnimationOver()));
+        animation->start();
+
+        _animationExecution = animation;
+    }
+
+    _executionDuration.clear();
+    _executionError.clear();
+}
+
+void GenericNodeItem::executionProgress(qreal progress)
+{
+    _executionProgress = progress;
+    update();
+}
+
+void GenericNodeItem::executionEnded(const Properties &outputs,
+                                     const Properties &inputs,
+                                     qint64 duration,
+                                     const QString &error)
+{
+    if(_animationExecution != NULL)
+    {
+        delete _animationExecution;
+        _animationExecution = NULL;
+    }
+
+    _executionDuration.clear();
+
+    if(error.isEmpty())
+    {
+        if(duration >= 0)
+        {
+            // The execution was processed correctly
+            if(duration < 1000)
+            {
+                _executionDuration = QString::number(duration) + " ms";
+            }
+            else
+            {
+                _executionDuration = QString::number(duration / 1000.0, 'f', 3) + " s";
+            }
+
+            _widget->onProcessDone(outputs, inputs);
+        }
+    }
+
+    _executionError = error;
+    _executionProgress = -1;
+    _executionMarkOpacity = 0;
+    update();
+}
+
+void GenericNodeItem::nodeInvalid()
+{
+    _executionDuration.clear();
+    _executionError.clear();
+    _widget->onProcessUnavailable();
+    update();
+}
+
+QCursor GenericNodeItem::overrideMouseCursor()
+{
+    if(!_executionError.isEmpty() && _mouseOverBottom)
+    {
+        return Qt::PointingHandCursor;
+    }
+
+    return QCursor();
+}
+
 QRectF GenericNodeItem::boundingRect() const
 {
     QRectF rect = computeBaseRect();
@@ -159,7 +247,9 @@ QRectF GenericNodeItem::boundingRect() const
     return rect;
 }
 
-void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GenericNodeItem::paint(QPainter *painter,
+                            const QStyleOptionGraphicsItem *option,
+                            QWidget *widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -169,12 +259,19 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setBrush(QColor("#efa14c"));
     painter->drawRect(baseRect);
 
+    // Draw the upper title rectangle
     QRectF titleRect = baseRect;
     titleRect.setHeight(titleHeight);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor("#ea8a1f"));
     painter->drawRect(titleRect);
 
+    // Draw the lower status rectangle
+    QRectF bottomRect = titleRect;
+    bottomRect.moveBottom(baseRect.bottom());
+    painter->drawRect(bottomRect);
+
+    // Draw the outer selection frame
     if(option->state.testFlag(QStyle::State_Selected))
     {
         painter->setBrush(Qt::NoBrush);
@@ -185,6 +282,7 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->drawRect(baseRect);
     }
 
+    // Draw the title
     QFont font;
     font.setPixelSize(titleFontSize);
     painter->setFont(font);
@@ -200,6 +298,126 @@ void GenericNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->drawText(QRect(0, 0, baseRect.width(), titleHeight),
                       Qt::AlignCenter,
                       _node->getUserReadableName());
+
+    // Draw the execution mark
+    const qreal markSide = 16;
+    qreal markMargin = (titleHeight - markSide) / 2;
+    if(_executionMarkOpacity > 0)
+    {
+        const int progressWidth = 80;
+        bool displayProgress = _executionProgress > -0.5; // Display a progress or just a mark
+
+        QRectF markRect(0, 0, markSide, markSide);
+
+        if(displayProgress)
+        {
+            markRect.setWidth(progressWidth);
+        }
+
+        markRect.moveRight(baseRect.width() - markMargin);
+        markRect.moveBottom(baseRect.height() - markMargin);
+
+        painter->setOpacity(_executionMarkOpacity);
+        painter->setPen(Qt::NoPen);
+
+        if(displayProgress)
+        {
+            painter->setBrush(QColor(204, 204, 204));
+            painter->drawRect(markRect);
+
+            markRect.setWidth(_executionProgress * progressWidth);
+            painter->setBrush(Qt::white);
+            painter->drawRect(markRect);
+        }
+        else
+        {
+            painter->setBrush(Qt::white);
+            painter->drawEllipse(markRect);
+        }
+
+        painter->setOpacity(1);
+    }
+
+    if(!_executionError.isEmpty())
+    {
+        // Draw the execution error mark
+        QRectF markRect(markMargin, baseRect.height() - markMargin - markSide, markSide, markSide);
+        qreal linesPercent = 0.8;
+
+        if(_mouseOverBottom)
+        {
+            markRect.adjust(-2, -2, 2, 2);
+            linesPercent = 0.9;
+        }
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(231, 76, 60));
+        painter->drawEllipse(markRect);
+
+        painter->setBrush(Qt::NoBrush);
+
+        QPen linesPen;
+        linesPen.setWidthF(_mouseOverBottom ? 3 : 2);
+        linesPen.setCapStyle(Qt::FlatCap);
+        linesPen.setColor(Qt::white);
+        painter->setPen(linesPen);
+
+
+        painter->save();
+
+        painter->translate(markRect.center());
+        painter->rotate(45);
+        painter->drawLine(-linesPercent * markSide / 2, 0, linesPercent * markSide / 2, 0);
+        painter->rotate(90);
+        painter->drawLine(-linesPercent * markSide / 2, 0, linesPercent * markSide / 2, 0);
+
+        painter->restore();
+    }
+    else if(!_executionDuration.isEmpty())
+    {
+        // Draw the execution duration
+        font.setPixelSize(bottomFontSize);
+        painter->setFont(font);
+
+        QRectF durationRect = bottomRect;
+        durationRect.setLeft(6);
+        painter->setPen(widget->palette().text().color());
+        painter->drawText(durationRect, Qt::AlignLeft | Qt::AlignVCenter, _executionDuration);
+    }
+}
+
+void GenericNodeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    bool mouseOverBottom = event->pos().y() > computeBaseRect().height() - titleHeight;
+    if(mouseOverBottom != _mouseOverBottom)
+    {
+        _mouseOverBottom = mouseOverBottom;
+        update();
+    }
+}
+
+void GenericNodeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event)
+
+    if(_mouseOverBottom)
+    {
+        _mouseOverBottom = false;
+        update();
+    }
+}
+
+void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton && _mouseOverBottom && !_executionError.isEmpty())
+    {
+        event->accept();
+        ErrorDisplayDialog::displayError(_executionError);
+    }
+    else
+    {
+        QGraphicsItem::mousePressEvent(event);
+    }
 }
 
 QRectF GenericNodeItem::computeBaseRect() const
@@ -213,7 +431,7 @@ QRectF GenericNodeItem::computeBaseRect() const
     return QRectF(0,
                   0,
                   qMax(widgetWidth, titleWidth),
-                  titleHeight + _widget->sizeHint().height() + 2 * PlugItem::radius);
+                  titleHeight * 2 + _widget->sizeHint().height() + 2 * PlugItem::radius);
 }
 
 void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
@@ -233,7 +451,7 @@ void GenericNodeItem::recomputeSizes()
 {
     QRectF actualBaseRect = computeBaseRect();
     _widget->resize(actualBaseRect.width() - 4 * PlugItem::radius,
-                    actualBaseRect.height() - titleHeight - 2 * PlugItem::radius);
+                    actualBaseRect.height() - titleHeight * 2 - 4 * PlugItem::radius);
 
     foreach(PlugItem *plugItem, _inputPlugs)
     {
@@ -247,4 +465,17 @@ void GenericNodeItem::recomputeSizes()
     }
 
     prepareGeometryChange();
+}
+
+void GenericNodeItem::setExecutionMarkOpacity(const QVariant &value)
+{
+    _executionMarkOpacity = value.toReal();
+    update();
+}
+
+void GenericNodeItem::onExecutionAnimationOver()
+{
+    QAbstractAnimation::Direction direction = _animationExecution->direction();
+    _animationExecution->setDirection(direction == QAbstractAnimation::Forward ? QAbstractAnimation::Backward : QAbstractAnimation::Forward);
+    _animationExecution->start();
 }

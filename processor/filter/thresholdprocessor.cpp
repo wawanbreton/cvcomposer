@@ -24,7 +24,7 @@
 
 ThresholdProcessor::ThresholdProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     QList<QPair<QString, QVariant> > types;
     types << QPair<QString, QVariant>("Binary",           cv::THRESH_BINARY);
@@ -37,7 +37,7 @@ ThresholdProcessor::ThresholdProcessor()
     addInput("threshold",     PlugType::Double, 128.0);
     addInput("maximum value", PlugType::Double, 256.0);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties ThresholdProcessor::processImpl(const Properties &inputs)

@@ -24,6 +24,7 @@
 
 OperatorProcessor::OperatorProcessor()
 {
+    // TODO : use generic types instead of images so that we can pass numeric values
     addInput("input image 1", PlugType::Image);
     addInput("input image 2", PlugType::Image);
 

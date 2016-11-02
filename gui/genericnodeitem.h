@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QGraphicsItem>
 
+#include <QAbstractAnimation>
 #include <QGraphicsEllipseItem>
 #include <QWidget>
 
@@ -28,6 +29,7 @@ class GenericNodeWidget;
 class Node;
 class PlugItem;
 class Plug;
+class Properties;
 
 class GenericNodeItem : public QObject, public QGraphicsItem
 {
@@ -57,12 +59,31 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void load(const QMap<QString, QString> &properties);
 
+        void executionStarted();
+
+        void executionProgress(qreal progress);
+
+        void executionEnded(const Properties &outputs,
+                            const Properties &inputs,
+                            qint64 duration,
+                            const QString &error);
+
+        void nodeInvalid();
+
+        QCursor overrideMouseCursor();
+
     protected:
-        virtual QRectF boundingRect() const;
+        virtual QRectF boundingRect() const override;
 
         virtual void paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
-                           QWidget *widget);
+                           QWidget *widget) override;
+
+        void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+        void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
     private:
         QRectF computeBaseRect() const;
@@ -72,14 +93,25 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void recomputeSizes();
 
+        void setExecutionMarkOpacity(const QVariant &value);
+
+        void onExecutionAnimationOver();
+
     public:
         static const int titleHeight = 24;
         static const int selectionBorderWidth = 3;
         static const int titleFontSize = 18;
+        static const int bottomFontSize = 14;
 
     private:
         Node *_node;
         GenericNodeWidget *_widget;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
+        QAbstractAnimation *_animationExecution;
+        qreal _executionMarkOpacity;
+        QString _executionDuration;
+        QString _executionError;
+        qreal _executionProgress;
+        bool _mouseOverBottom;
 };

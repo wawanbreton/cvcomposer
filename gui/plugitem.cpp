@@ -82,7 +82,7 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->drawEllipse(rect());
     }
 
-    if(_plug->getDefinition().supportsList)
+    if(_plug->getDefinition().listSupport != ProcessorListType::None)
     {
         QPen pen;
         pen.setColor(Qt::white);

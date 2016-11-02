@@ -44,8 +44,16 @@ class ComposerExecutor : public QThread
 
         const Properties &getOutputs() const;
 
+        qint64 getDuration() const;
+
+        const QString &getError() const;
+
+        bool getKeepProcessing() const;
+
     signals:
-        void nodeProcessed(bool success, bool keepProcessing);
+        void executionProgress(qreal progress);
+
+        void nodeProcessed();
 
     protected:
         virtual void run();
@@ -58,5 +66,7 @@ class ComposerExecutor : public QThread
         AbstractProcessor *_processor;
         Properties _inputs;
         Properties _outputs;
-        bool _success;
+        bool _keepProcessing;
+        qint64 _duration;
+        QString _error;
 };

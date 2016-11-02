@@ -80,6 +80,13 @@ void ComposerScene::init()
                     SLOT(onConnectionAdded(const Connection *)));
     connect(_model, SIGNAL(connectionRemoved(const Connection *)),
                     SLOT(onConnectionRemoved(const Connection *)));
+    connect(_scheduler, SIGNAL(executorStarted(const Node*)),
+                        SLOT(onExecutionStarted(const Node*)));
+    connect(_scheduler, SIGNAL(executorProgress(const Node*, qreal)),
+                        SLOT(onExecutionProgress(const Node*, qreal)));
+    connect(_scheduler, SIGNAL(executorEnded(const Node*, Properties, Properties, qint64, QString)),
+                        SLOT(onExecutionEnded(const Node*, Properties, Properties, qint64, QString)));
+    connect(_scheduler, SIGNAL(nodeInvalid(const Node*)), SLOT(onNodeInvalid(const Node*)));
 
     setBackgroundBrush(QColor("#273035"));
 }
@@ -468,6 +475,10 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     _editedNode.initClickPos = event->scenePos();
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
+                else
+                {
+                    QGraphicsScene::mousePressEvent(event);
+                }
 
                 // Select node
                 QPainterPath path;
@@ -493,6 +504,8 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsScene::mouseMoveEvent(event);
+
     QCursor cursor = Qt::ArrowCursor;
 
     if(_editedConnection.item)
@@ -573,12 +586,7 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
-            if(item->type() == QGraphicsProxyWidget::Type)
-            {
-                // Let the parent do its job fully
-                return QGraphicsScene::mouseMoveEvent(event);
-            }
-            else if(item->type() == CustomItems::Plug)
+            if(item->type() == CustomItems::Plug)
             {
                 cursor = Qt::PointingHandCursor;
             }
@@ -587,6 +595,10 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
                 {
                     cursor = Qt::OpenHandCursor;
+                }
+                else
+                {
+                    cursor = ((GenericNodeItem *)item)->overrideMouseCursor();
                 }
             }
         }
@@ -743,4 +755,58 @@ void ComposerScene::onPlugItemPositionChanged()
     {
         qCritical() << "ComposerScene::onPlugItemPositionChanged" << "Sender is not a PlugItem";
     }
+}
+
+void ComposerScene::onExecutionStarted(const Node *node)
+{
+    GenericNodeItem *nodeItem;
+    if((nodeItem = findItem(node)) != NULL)
+    {
+        nodeItem->executionStarted();
+    }
+}
+
+void ComposerScene::onExecutionProgress(const Node *node, qreal progress)
+{
+    GenericNodeItem *nodeItem;
+    if((nodeItem = findItem(node)) != NULL)
+    {
+        nodeItem->executionProgress(progress);
+    }
+}
+
+void ComposerScene::onExecutionEnded(const Node *node,
+                                     const Properties &outputs,
+                                     const Properties &inputs,
+                                     qint64 duration,
+                                     const QString &error)
+{
+    GenericNodeItem *nodeItem;
+    if((nodeItem = findItem(node)) != NULL)
+    {
+        nodeItem->executionEnded(outputs, inputs, duration, error);
+    }
+}
+
+void ComposerScene::onNodeInvalid(const Node *node)
+{
+    GenericNodeItem *nodeItem;
+    if((nodeItem = findItem(node)) != NULL)
+    {
+        nodeItem->nodeInvalid();
+    }
+}
+
+GenericNodeItem *ComposerScene::findItem(const Node *node)
+{
+    for(GenericNodeItem *nodeItem : _nodes)
+    {
+        if(nodeItem->getNode() == node)
+        {
+            return nodeItem;
+        }
+    }
+
+    qCritical() << "No item found for node" << node->getName();
+    return NULL;
 }

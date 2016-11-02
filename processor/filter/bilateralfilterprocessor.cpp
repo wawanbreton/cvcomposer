@@ -26,7 +26,7 @@
 
 BilateralFilterProcessor::BilateralFilterProcessor()
 {
-    addInput("input image", PlugType::Image);
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties diameterProperties;
     diameterProperties.insert("singleStep", 2);
@@ -38,7 +38,7 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
-    addOutput("output image", PlugType::Image);
+    addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 }
 
 Properties BilateralFilterProcessor::processImpl(const Properties &inputs)

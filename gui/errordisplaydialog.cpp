@@ -15,31 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "splitchannelsprocessor.h"
+#include "errordisplaydialog.h"
+#include "ui_errordisplaydialog.h"
 
-#include "global/cvutils.h"
 
-
-SplitChannelsProcessor::SplitChannelsProcessor()
+ErrorDisplayDialog::ErrorDisplayDialog(QWidget *parent) :
+    QDialog(parent),
+    _ui(new Ui::ErrorDisplayDialog)
 {
-    addInput("image", PlugType::Image);
-    addOutput("channels", PlugType::Image, ProcessorListType::Custom);
+    _ui->setupUi(this);
 }
 
-Properties SplitChannelsProcessor::processImpl(const Properties &inputs)
+void ErrorDisplayDialog::displayError(const QString &error)
 {
-    cv::Mat image = inputs["image"].value<cv::Mat>();
-    QList<QVariant> channels;
-
-    for(int channelId = 0 ; channelId < image.channels() ; channelId++)
-    {
-        cv::Mat channel;
-        cv::extractChannel(image, channel, channelId);
-        channels << QVariant::fromValue(channel);
-    }
-
-    Properties outputs;
-    outputs.insert("channels", QVariant::fromValue(channels));
-    return outputs;
+    ErrorDisplayDialog *dialog = new ErrorDisplayDialog(qApp->activeWindow());
+    dialog->_ui->plainTextEdit->setPlainText(error);
+    connect(dialog->_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), dialog, SLOT(deleteLater()));
+    dialog->show();
 }
 
+ErrorDisplayDialog::~ErrorDisplayDialog()
+{
+    delete _ui;
+}
