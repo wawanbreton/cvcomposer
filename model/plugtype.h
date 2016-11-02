@@ -17,51 +17,71 @@
 
 #pragma once
 
+#include <QObject>
+
 #include <QColor>
 
-namespace PlugType
+class PlugType : public QObject
 {
-    typedef enum
-    {
-        Generic,
-        Image,
-        Size,
-        Point,
-        Enumeration,
-        Double,
-        String,
-        Color,
-        Kernel,
-        KernelDefinition,
-        Path,
-        ImagePreview,
-        DockableImageViewer,
-        Rectangle,
-        Circle,
-        Boolean,
-        Contour,
-        Line,
-        Ellipse
-    } Enum;
+    Q_OBJECT
+    Q_ENUMS(Enum)
 
-    typedef enum
-    {
-        Mandatory, // Plug has to be connected, it can't be configured manually
-        Free,      // Plug may be configured manually, or connected
-        ManualOnly // Plug can only be manually configured
-    } Pluggable;
+    public:
+        typedef enum
+        {
+            Image               = 0x00001,
+            Size                = 0x00002,
+            Point               = 0x00004,
+            Enumeration         = 0x00008,
+            Double              = 0x00010,
+            String              = 0x00020,
+            Color               = 0x00040,
+            Kernel              = 0x00080,
+            KernelDefinition    = 0x00100,
+            Path                = 0x00200,
+            ImagePreview        = 0x00400,
+            DockableImageViewer = 0x00800,
+            Rectangle           = 0x01000,
+            Circle              = 0x02000,
+            Boolean             = 0x04000,
+            Contour             = 0x08000,
+            Line                = 0x10000,
+            Ellipse             = 0x20000
+        } Enum;
 
-    Pluggable isInputPluggable(Enum value);
 
-    bool isOutputInternal(Enum value);
+        typedef enum
+        {
+            Mandatory, // Plug has to be connected, it can't be configured manually
+            Free,      // Plug may be configured manually, or connected
+            ManualOnly // Plug can only be manually configured
+        } Pluggable;
 
-    bool isWidgetAlwaysVisible(Enum value);
+        static QColor getColor(Enum value);
 
-    bool isLabelVisible(Enum value);
+        Q_DECLARE_FLAGS(PlugTypes, Enum)
 
-    bool isCompatible(Enum output, Enum input);
+        static Enum flagsToEnum(PlugTypes types);
 
-    bool isInputSavable(Enum value);
+        static QList<PlugType::Enum> getAllValues();
 
-    QColor getColor(Enum value);
-}
+        static PlugType::PlugTypes getAllFlags();
+
+        static QList<Enum> toList(PlugTypes types);
+
+        static PlugType::PlugTypes fromList(const QList<PlugType::Enum> &types);
+
+        static bool isSingleType(PlugTypes types);
+
+        static Pluggable isInputPluggable(PlugTypes inputTypes);
+
+        static bool isOutputInternal(PlugTypes types);
+
+        static bool isWidgetAlwaysVisible(PlugTypes types);
+
+        static bool isLabelVisible(PlugTypes types);
+
+        static bool isInputSavable(PlugTypes inputTypes);
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(PlugType::PlugTypes)

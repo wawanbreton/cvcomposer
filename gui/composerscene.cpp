@@ -161,7 +161,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
             QDomElement plugNode = doc.createElement("plug");
             plugNode.setAttribute("name", plugName);
 
-            if(PlugType::isInputSavable(plug->getDefinition().type))
+            if(PlugType::isInputSavable(plug->getDefinition().types))
             {
                 plugNode.setAttribute("value", plug->save(node->getProperties()[plugName]));
                 hasValue = true;
@@ -409,6 +409,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if(item->type() == CustomItems::Plug)
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
+                PlugType::PlugTypes types = plug->getPlug()->getDefinition().types;
                 Node *nodeInput = _model->findInputPlug(plug->getPlug());
                 Node *nodeOutput = _model->findOutputPlug(plug->getPlug());
                 bool isInput = nodeInput != NULL;
@@ -426,6 +427,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                         if(connection->getInput() == plug->getPlug())
                         {
                             // We have found an existing connection, edit it
+                            _editedConnection.item->copyColorFrom(connectionItem);
                             _editedConnection.item->setOutput(connectionItem->getOutput());
                             _editedConnection.item->setInput(event->scenePos());
                             _editedConnection.plugOutput = connection->getOutput();
@@ -437,6 +439,11 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 }
 
                 // We are not editing an existing connection
+                if(PlugType::isSingleType(types))
+                {
+                    _editedConnection.item->setCurrentType(PlugType::flagsToEnum(types), true);
+                }
+
                 if(isInput)
                 {
                     _editedConnection.item->setOutput(event->scenePos());
@@ -504,15 +511,6 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if(_editedConnection.item)
     {
         bool plugFound = false;
-        PlugType::Enum baseType;
-        if(_editedConnection.fromOutput)
-        {
-            baseType = _editedConnection.plugOutput->getDefinition().type;
-        }
-        else
-        {
-            baseType = _editedConnection.plugInput->getDefinition().type;
-        }
 
         foreach(GenericNodeItem *nodeItem, _nodes)
         {
@@ -524,19 +522,21 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
             foreach(PlugItem *plugItem, plugItems)
             {
-                PlugType::Enum plugType = plugItem->getPlug()->getDefinition().type;
-                bool compatible;
+                PlugType::PlugTypes outputTypes;
+                PlugType::PlugTypes inputTypes;
 
                 if(_editedConnection.fromOutput)
                 {
-                    compatible = PlugType::isCompatible(baseType, plugType);
+                    outputTypes = _editedConnection.plugOutput->getDefinition().types;
+                    inputTypes = plugItem->getPlug()->getDefinition().types;
                 }
                 else
                 {
-                    compatible = PlugType::isCompatible(plugType, baseType);
+                    outputTypes = plugItem->getPlug()->getDefinition().types;
+                    inputTypes = _editedConnection.plugInput->getDefinition().types;
                 }
 
-                if(compatible)
+                if(inputTypes & outputTypes)
                 {
                     QPointF itemPos = plugItem->mapToScene(QPointF(0, 0));
                     qreal distance = (event->scenePos() - itemPos).manhattanLength();
@@ -672,23 +672,40 @@ void ComposerScene::onNodeRemoved(const Node *node)
 
 void ComposerScene::onConnectionAdded(const Connection *connection)
 {
+    PlugType::PlugTypes outputTypes = connection->getOutput()->getDefinition().types;
+    PlugType::PlugTypes inputTypes = connection->getInput()->getDefinition().types;
+    QList<PlugType::Enum> compatibleTypes = PlugType::toList(outputTypes & inputTypes);
+    PlugType::Enum connectionType = compatibleTypes.value(0);
+
     ConnectionItem *connectionItem = new ConnectionItem();
     connectionItem->setConnection(connection);
 
+    if(_editedConnection.item)
+    {
+        connectionItem->copyColorFrom(_editedConnection.item);
+    }
+
+    if(compatibleTypes.count() <= PlugItem::maxMultiTypes)
+    {
+        connectionItem->setCurrentType(connectionType);
+    }
+
     foreach(const GenericNodeItem *nodeView, _nodes)
     {
-        foreach(const PlugItem *plugItem, nodeView->getInputs())
+        foreach(PlugItem *plugItem, nodeView->getInputs())
         {
             if(plugItem->getPlug() == connection->getInput())
             {
+                plugItem->setCurrentType(connectionType, true);
                 connectionItem->setInput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
             }
         }
-        foreach(const PlugItem *plugItem, nodeView->getOutputs())
+        foreach(PlugItem *plugItem, nodeView->getOutputs())
         {
             if(plugItem->getPlug() == connection->getOutput())
             {
+                plugItem->setCurrentType(connectionType, false);
                 connectionItem->setOutput(plugItem->mapToScene(QPointF(0, 0)));
                 break;
             }

@@ -69,7 +69,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
 
     foreach(Plug *plug, _node->getInputs())
     {
-        if(PlugType::isInputPluggable(plug->getDefinition().type) != PlugType::ManualOnly)
+        if(PlugType::isInputPluggable(plug->getDefinition().types) != PlugType::ManualOnly)
         {
             PlugItem *plugItem = new PlugItem(plug, this);
             _inputPlugs << plugItem;
@@ -79,7 +79,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     }
     foreach(Plug *plug, _node->getOutputs())
     {
-        if(!PlugType::isOutputInternal(plug->getDefinition().type))
+        if(!PlugType::isOutputInternal(plug->getDefinition().types))
         {
             PlugItem *plugItem = new PlugItem(plug, this);
             _outputPlugs << plugItem;

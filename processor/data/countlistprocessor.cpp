@@ -22,7 +22,7 @@
 
 CountListProcessor::CountListProcessor()
 {
-    addInput("list", PlugType::Generic, ProcessorListType::Custom);
+    addInput("list", PlugType::getAllFlags(), ProcessorListType::Custom);
     addOutput("count", PlugType::Double);
 }
 

@@ -28,7 +28,9 @@
 DrawShapeProcessor::DrawShapeProcessor()
 {
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
-    addInput("shape", PlugType::Generic, ProcessorListType::Custom);
+    addInput("shape",
+             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse,
+             ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
     Properties thicknessProperties;

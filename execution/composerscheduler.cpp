@@ -138,8 +138,8 @@ void ComposerScheduler::onConnectionRemoved(const Connection *connection)
         const Node *descendantNode = _model->findInputPlug(connection->getInput());
         if(descendantNode)
         {
-            PlugType::Enum inputType = connection->getInput()->getDefinition().type;
-            if(PlugType::isInputPluggable(inputType) == PlugType::Mandatory)
+            PlugType::PlugTypes inputTypes = connection->getInput()->getDefinition().types;
+            if(PlugType::isInputPluggable(inputTypes) == PlugType::Mandatory)
             {
                 // The descendant node is no more valid, and so are all its descendants
                 invalidateFromNode(descendantNode);
@@ -271,7 +271,7 @@ bool ComposerScheduler::allInputsProcessed(const Node *node)
 {
     foreach(Plug *input, node->getInputs())
     {
-        if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::ManualOnly)
+        if(PlugType::isInputPluggable(input->getDefinition().types) == PlugType::ManualOnly)
         {
             // Plug can't be connected, so it is always valid
             continue;
@@ -289,7 +289,7 @@ bool ComposerScheduler::allInputsProcessed(const Node *node)
 
         if(previousNode == NULL)
         {
-            if(PlugType::isInputPluggable(input->getDefinition().type) == PlugType::Mandatory)
+            if(PlugType::isInputPluggable(input->getDefinition().types) == PlugType::Mandatory)
             {
                 // Plug is not connected and it should be
                 return false;

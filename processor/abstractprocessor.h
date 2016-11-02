@@ -46,14 +46,14 @@ class AbstractProcessor : public QObject
         void addInput(const PlugDefinition &definition);
 
         void addInput(const QString &name,
-                      PlugType::Enum type,
+                      PlugType::PlugTypes types,
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties(),
                       ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
                       ProcessorListType::Enum listSupport = ProcessorListType::None);
 
         void addInput(const QString &name,
-                      PlugType::Enum type,
+                      PlugType::PlugTypes types,
                       ProcessorListType::Enum listSupport);
 
         void addEnumerationInput(const QString &name,
@@ -63,7 +63,7 @@ class AbstractProcessor : public QObject
         void addOutput(const PlugDefinition &definition);
 
         void addOutput(const QString &userReadableName,
-                       PlugType::Enum type,
+                       PlugType::PlugTypes types,
                        ProcessorListType::Enum listSupport = ProcessorListType::None);
 
         void listProgress(const QList<QVariant> &list);
@@ -72,7 +72,7 @@ class AbstractProcessor : public QObject
 
     private:
         PlugDefinition makePlug(const QString &name,
-                                PlugType::Enum type,
+                                PlugType::PlugTypes types,
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties(),
                                 ThreeStateBool::Enum labelVisible = ThreeStateBool::None,

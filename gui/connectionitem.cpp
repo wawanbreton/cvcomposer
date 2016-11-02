@@ -17,6 +17,8 @@
 
 #include "connectionitem.h"
 
+#include <QDebug>
+#include <QVariantAnimation>
 #include <QPainter>
 
 #include "gui/plugitem.h"
@@ -33,12 +35,7 @@ ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
     _itemConnectorInput->setBrush(Qt::NoBrush);
     _itemLine->setBrush(Qt::NoBrush);
 
-    QPen pen(QColor("#2ecc71"), 3);
-    pen.setCapStyle(Qt::RoundCap);
-
-    _itemConnectorOutput->setPen(pen);
-    _itemConnectorInput->setPen(pen);
-    _itemLine->setPen(pen);
+    setCurrentType(PlugType::Enum(0), true);
 
     const qreal connectorRadius = PlugItem::radius + _deltaCenter;
     const qreal connectorAngle = 75;
@@ -83,6 +80,31 @@ const Connection *ConnectionItem::getConnection() const
     return _connection;
 }
 
+void ConnectionItem::setCurrentType(PlugType::Enum type, bool immediate)
+{
+    QColor targetColor = type == PlugType::Enum(0) ? Qt::white : PlugType::getColor(type);
+
+    if(immediate)
+    {
+        onColorChanged(targetColor);
+    }
+    else
+    {
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setStartValue(_itemLine->pen().color());
+        animation->setEndValue(targetColor);
+        animation->setDuration(300);
+        animation->setEasingCurve(QEasingCurve::OutCubic);
+        connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(onColorChanged(QVariant)));
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+    }
+}
+
+void ConnectionItem::copyColorFrom(const ConnectionItem *other)
+{
+    onColorChanged(other->_itemLine->pen().color());
+}
+
 void ConnectionItem::updateLine()
 {
     const qreal penWidth = _itemLine->pen().widthF();
@@ -96,4 +118,16 @@ void ConnectionItem::updateLine()
     QPainterPath path(start);
     path.cubicTo(start + bezierControl, end - bezierControl, end);
     _itemLine->setPath(path);
+}
+
+void ConnectionItem::onColorChanged(const QVariant &value)
+{
+    QPen pen;
+    pen.setWidth(3);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(value.value<QColor>());
+
+    _itemConnectorOutput->setPen(pen);
+    _itemConnectorInput->setPen(pen);
+    _itemLine->setPen(pen);
 }

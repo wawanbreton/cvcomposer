@@ -41,88 +41,95 @@ void Plug::signalConnectedTo(const Plug *connectedTo)
 
 QString Plug::save(const QVariant &value) const
 {
-    switch(_definition.type)
+    if(PlugType::isSingleType(_definition.types))
     {
-        case PlugType::Size:
+        switch(PlugType::flagsToEnum(_definition.types))
         {
-            cv::Size size = value.value<cv::Size>();
-            return QString("%1x%2").arg(size.width).arg(size.height);
-        }
-        case PlugType::Point:
-        {
-            cv::Point point = value.value<cv::Point>();
-            return QString("%1:%2").arg(point.x).arg(point.y);
-        }
-        case PlugType::Enumeration:
-        {
-            QList<QPair<QString, QVariant> > values =
-                    getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
-            int index = -1;
-            for(int i = 0 ; i < values.count() ; i++)
+            case PlugType::Size:
             {
-                const QPair<QString, QVariant> &pair = values[i];
-                if(pair.second == value)
+                cv::Size size = value.value<cv::Size>();
+                return QString("%1x%2").arg(size.width).arg(size.height);
+            }
+            case PlugType::Point:
+            {
+                cv::Point point = value.value<cv::Point>();
+                return QString("%1:%2").arg(point.x).arg(point.y);
+            }
+            case PlugType::Enumeration:
+            {
+                QList<QPair<QString, QVariant> > values =
+                        getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
+                int index = -1;
+                for(int i = 0 ; i < values.count() ; i++)
                 {
-                    index = i;
-                    break;
+                    const QPair<QString, QVariant> &pair = values[i];
+                    if(pair.second == value)
+                    {
+                        index = i;
+                        break;
+                    }
                 }
-            }
 
-            return QString::number(index);
-        }
-        case PlugType::Double:
-            return saveDouble(value.toDouble());
-        case PlugType::String:
-        case PlugType::Path:
-            return value.toString();
-        case PlugType::Color:
-        {
-            cv::Scalar color = value.value<cv::Scalar>();
-            QStringList colorParts;
-            for(int i = 0 ; i < 4 ; i++)
-            {
-                colorParts << saveDouble(color[i]);
+                return QString::number(index);
             }
-            return colorParts.join(";");
-        }
-        case PlugType::KernelDefinition:
-        {
-            cv::Mat mat = value.value<cv::Mat>();
-            cv::MatIterator_<double> it;
-            cv::MatIterator_<double> end = mat.end<double>();
-            QList<QStringList> rows;
-            for(int i = 0 ; i < mat.rows ; i++)
+            case PlugType::Double:
+                return saveDouble(value.toDouble());
+            case PlugType::String:
+            case PlugType::Path:
+                return value.toString();
+            case PlugType::Color:
             {
-                rows << QStringList();
+                cv::Scalar color = value.value<cv::Scalar>();
+                QStringList colorParts;
+                for(int i = 0 ; i < 4 ; i++)
+                {
+                    colorParts << saveDouble(color[i]);
+                }
+                return colorParts.join(";");
             }
+            case PlugType::KernelDefinition:
+            {
+                cv::Mat mat = value.value<cv::Mat>();
+                cv::MatIterator_<double> it;
+                cv::MatIterator_<double> end = mat.end<double>();
+                QList<QStringList> rows;
+                for(int i = 0 ; i < mat.rows ; i++)
+                {
+                    rows << QStringList();
+                }
 
-            int count = 0;
-            for(it = mat.begin<double>() ; it != end; it++, count++)
-            {
-                rows[count / mat.cols] << saveDouble(*it);
-            }
+                int count = 0;
+                for(it = mat.begin<double>() ; it != end; it++, count++)
+                {
+                    rows[count / mat.cols] << saveDouble(*it);
+                }
 
-            QStringList rowsStr;
-            for(int i = 0 ; i < mat.rows ; i++)
-            {
-                rowsStr << rows[i].join(";");
+                QStringList rowsStr;
+                for(int i = 0 ; i < mat.rows ; i++)
+                {
+                    rowsStr << rows[i].join(";");
+                }
+                return rowsStr.join("|");
             }
-            return rowsStr.join("|");
+            case PlugType::Boolean:
+                return value.toBool() ? "true" : "false";
+            case PlugType::Image:
+            case PlugType::Kernel:
+            case PlugType::ImagePreview:
+            case PlugType::DockableImageViewer:
+            case PlugType::Rectangle:
+            case PlugType::Circle:
+            case PlugType::Contour:
+            case PlugType::Line:
+            case PlugType::Ellipse:
+                qCritical() << "Plug" << getDefinition().name
+                            << "is not savable because it is of type" << getDefinition().types;
+                break;
         }
-        case PlugType::Boolean:
-            return value.toBool() ? "true" : "false";
-        case PlugType::Image:
-        case PlugType::Kernel:
-        case PlugType::ImagePreview:
-        case PlugType::DockableImageViewer:
-        case PlugType::Rectangle:
-        case PlugType::Circle:
-        case PlugType::Generic:
-        case PlugType::Contour:
-        case PlugType::Line:
-        case PlugType::Ellipse:
-            qCritical() << "Plug::save" << "Type" << getDefinition().type << "is not savable";
-            break;
+    }
+    else
+    {
+        qCritical() << "Plug" << getDefinition().name  << "is not savable because it is mutiple";
     }
 
     return QString();
@@ -130,134 +137,136 @@ QString Plug::save(const QVariant &value) const
 
 QVariant Plug::load(const QString &value) const
 {
-    switch(_definition.type)
+    if(PlugType::isSingleType(_definition.types))
     {
-        case PlugType::Size:
+        switch(PlugType::flagsToEnum(_definition.types))
         {
-            QStringList sizeParts = value.split('x', QString::SkipEmptyParts);
-            if(sizeParts.count() == 2)
+            case PlugType::Size:
             {
-                bool ok1;
-                bool ok2;
-                cv::Size result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
-                if(ok1 && ok2)
+                QStringList sizeParts = value.split('x', QString::SkipEmptyParts);
+                if(sizeParts.count() == 2)
                 {
-                    return QVariant::fromValue(result);
+                    bool ok1;
+                    bool ok2;
+                    cv::Size result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
+                    if(ok1 && ok2)
+                    {
+                        return QVariant::fromValue(result);
+                    }
                 }
+                break;
             }
-            break;
-        }
-        case PlugType::Point:
-        {
-            QStringList sizeParts = value.split(':', QString::SkipEmptyParts);
-            if(sizeParts.count() == 2)
+            case PlugType::Point:
             {
-                bool ok1;
-                bool ok2;
-                cv::Point result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
-                if(ok1 && ok2)
+                QStringList sizeParts = value.split(':', QString::SkipEmptyParts);
+                if(sizeParts.count() == 2)
                 {
-                    return QVariant::fromValue(result);
+                    bool ok1;
+                    bool ok2;
+                    cv::Point result(sizeParts[0].toInt(&ok1), sizeParts[1].toInt(&ok2));
+                    if(ok1 && ok2)
+                    {
+                        return QVariant::fromValue(result);
+                    }
                 }
+                break;
             }
-            break;
-        }
-        case PlugType::Enumeration:
-        {
-            bool ok;
-            int index = value.toInt(&ok);
-            if(ok)
+            case PlugType::Enumeration:
             {
-                QList<QPair<QString, QVariant> > values =
-                        getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
-                if(index >= 0 && index < values.count())
+                bool ok;
+                int index = value.toInt(&ok);
+                if(ok)
                 {
-                    return values[index].second;
+                    QList<QPair<QString, QVariant> > values =
+                            getDefinition().widgetProperties["values"].value<QList<QPair<QString, QVariant> > >();
+                    if(index >= 0 && index < values.count())
+                    {
+                        return values[index].second;
+                    }
+                    return QString::number(index);
                 }
-                return QString::number(index);
+                break;
             }
-            break;
-        }
-        case PlugType::Double:
-        {
-            bool ok;
-            double result = loadDouble(value, &ok);
-            if(ok)
+            case PlugType::Double:
             {
-                return result;
-            }
+                bool ok;
+                double result = loadDouble(value, &ok);
+                if(ok)
+                {
+                    return result;
+                }
 
-            break;
-        }
-        case PlugType::String:
-        case PlugType::Path:
-            return value;
-        case PlugType::Color:
-        {
-            QStringList colorParts = value.split(';', QString::SkipEmptyParts);
-            if(colorParts.count() == 4)
+                break;
+            }
+            case PlugType::String:
+            case PlugType::Path:
+                return value;
+            case PlugType::Color:
             {
-                cv::Scalar scalar;
-                bool ok = true;
-                for(int i = 0 ; i < 4 && ok ; i++)
+                QStringList colorParts = value.split(';', QString::SkipEmptyParts);
+                if(colorParts.count() == 4)
                 {
-                    scalar[i] = loadDouble(colorParts[i], &ok);
+                    cv::Scalar scalar;
+                    bool ok = true;
+                    for(int i = 0 ; i < 4 && ok ; i++)
+                    {
+                        scalar[i] = loadDouble(colorParts[i], &ok);
+                    }
+
+                    if(ok)
+                    {
+                        return QVariant::fromValue(scalar);
+                    }
+                }
+                break;
+            }
+            case PlugType::KernelDefinition:
+            {
+                QStringList rowsStr = value.split('|', QString::SkipEmptyParts);
+                int rows = rowsStr.count();
+                int cols = (value.count(';') / rows) + 1;
+                bool ok = true;
+
+                cv::Mat mat(rows, cols, CV_64FC1);
+                for(int row = 0 ; row < rows && ok ; row++)
+                {
+                    QString rowStr = rowsStr[row];
+                    QStringList rowParts = rowStr.split(';');
+                    if(rowParts.count() == cols)
+                    {
+                        for(int col = 0 ; col < cols && ok ; col++)
+                        {
+                            mat.at<double>(row, col) = loadDouble(rowParts[col], &ok);
+                        }
+                    }
+                    else
+                    {
+                        ok = false;
+                    }
                 }
 
                 if(ok)
                 {
-                    return QVariant::fromValue(scalar);
+                    return QVariant::fromValue(mat);
                 }
+                break;
             }
-            break;
+            case PlugType::Boolean:
+                return QVariant(value).toBool();
+            case PlugType::Image:
+            case PlugType::Kernel:
+            case PlugType::ImagePreview:
+            case PlugType::DockableImageViewer:
+            case PlugType::Rectangle:
+            case PlugType::Circle:
+            case PlugType::Contour:
+            case PlugType::Line:
+            case PlugType::Ellipse:
+                break;
         }
-        case PlugType::KernelDefinition:
-        {
-            QStringList rowsStr = value.split('|', QString::SkipEmptyParts);
-            int rows = rowsStr.count();
-            int cols = (value.count(';') / rows) + 1;
-            bool ok = true;
-
-            cv::Mat mat(rows, cols, CV_64FC1);
-            for(int row = 0 ; row < rows && ok ; row++)
-            {
-                QString rowStr = rowsStr[row];
-                QStringList rowParts = rowStr.split(';');
-                if(rowParts.count() == cols)
-                {
-                    for(int col = 0 ; col < cols && ok ; col++)
-                    {
-                        mat.at<double>(row, col) = loadDouble(rowParts[col], &ok);
-                    }
-                }
-                else
-                {
-                    ok = false;
-                }
-            }
-
-            if(ok)
-            {
-                return QVariant::fromValue(mat);
-            }
-            break;
-        }
-        case PlugType::Boolean:
-            return QVariant(value).toBool();
-        case PlugType::Image:
-        case PlugType::Kernel:
-        case PlugType::ImagePreview:
-        case PlugType::DockableImageViewer:
-        case PlugType::Rectangle:
-        case PlugType::Circle:
-        case PlugType::Contour:
-        case PlugType::Line:
-        case PlugType::Ellipse:
-        case PlugType::Generic:
-            break;
     }
 
-    qWarning() << "Unable to parse" << value << "for type" << getDefinition().type;
+    qWarning() << "Unable to parse" << value << "for plug" << getDefinition().name;
 
     return QVariant();
 }
