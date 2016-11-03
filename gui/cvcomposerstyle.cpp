@@ -209,6 +209,12 @@ QRect CvComposerStyle::subControlRect(QStyle::ComplexControl control,
             return rect;
         }
     }
+    if(subControl == SC_SpinBoxUp || subControl == SC_SpinBoxDown)
+    {
+        work on this
+        QRect rect = QCommonStyle::subControlRect(control, option, subControl, widget);
+        return rect.adjusted(rect.width() - 25, 0, 0, 0);
+    }
 
     return QCommonStyle::subControlRect(control, option, subControl, widget);
 }

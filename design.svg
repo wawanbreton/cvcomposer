@@ -60,9 +60,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.53740115"
-     inkscape:cx="436.81358"
-     inkscape:cy="431.24525"
+     inkscape:zoom="0.75999999"
+     inkscape:cx="277.10519"
+     inkscape:cy="413.43639"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1042,15 +1042,15 @@
          x="431.43719"
          y="649.74823">Constant</tspan></text>
     <rect
-       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:#34495e;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4266"
        width="46.236229"
        height="42.426407"
        x="423.14273"
        y="697.22894" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#34495e;stroke-width:6.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 431.52364,716.81054 13.48512,12.60946 17.338,-22.59195"
+       style="fill:none;fill-rule:evenodd;stroke:#34495e;stroke-width:6.80000019;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 430.70127,715.74146 13.48512,12.60946 17.338,-22.59195"
        id="path4268"
        inkscape:connector-curvature="0" />
   </g>
