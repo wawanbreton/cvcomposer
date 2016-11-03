@@ -82,18 +82,21 @@ void CvComposerStyle::drawPrimitive(QStyle::PrimitiveElement element,
     }
     else if(element == PE_IndicatorCheckBox)
     {
-        QPen pen = QPen(option->palette.alternateBase(), 4);
-        if((option->state & QStyle::State_MouseOver) && !(option->state & QStyle::State_Sunken))
+        painter->fillRect(option->rect, option->palette.base());
+
+        if(option->state & QStyle::State_On)
         {
-            pen = QPen(option->palette.highlight(), 4);
+            QPen pen = QPen(option->palette.alternateBase(), 4);
+            pen.setCapStyle(Qt::SquareCap);
+            pen.setJoinStyle(Qt::MiterJoin);
+            painter->setPen(pen);
+
+            QPainterPath path(QPointF(6, 12));
+            path.lineTo(12, 18);
+            path.lineTo(19, 7);
+            painter->drawPath(path);
         }
 
-        painter->setPen(pen);
-        painter->setBrush(option->palette.base());
-
-        painter->drawRect(option->rect);
-
-        draw check
         return;
     }
 
