@@ -24,6 +24,7 @@ CountNonZeroProcessor::CountNonZeroProcessor()
 {
     addInput("image", PlugType::Image);
 
+    #warning text not displayed
     addOutput("count", PlugType::Double);
 }
 

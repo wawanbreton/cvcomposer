@@ -54,6 +54,11 @@ class CvComposerStyle : public QProxyStyle
                                 const QStyleOption *option = NULL,
                                 const QWidget * widget = NULL) const override;
 
+        QSize sizeFromContents(ContentsType type,
+                               const QStyleOption *option,
+                               const QSize &contentsSize,
+                               const QWidget *widget = NULL) const override;
+
     private:
         static void drawBaseControlFrame(const QStyleOption *option, QPainter *painter);
 

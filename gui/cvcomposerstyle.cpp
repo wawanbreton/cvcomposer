@@ -80,6 +80,22 @@ void CvComposerStyle::drawPrimitive(QStyle::PrimitiveElement element,
         drawBaseControlFrame(option, painter);
         return;
     }
+    else if(element == PE_IndicatorCheckBox)
+    {
+        QPen pen = QPen(option->palette.alternateBase(), 4);
+        if((option->state & QStyle::State_MouseOver) && !(option->state & QStyle::State_Sunken))
+        {
+            pen = QPen(option->palette.highlight(), 4);
+        }
+
+        painter->setPen(pen);
+        painter->setBrush(option->palette.base());
+
+        painter->drawRect(option->rect);
+
+        draw check
+        return;
+    }
 
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
@@ -211,8 +227,26 @@ int CvComposerStyle::pixelMetric(QStyle::PixelMetric metric,
     {
         return 0;
     }
+    else if(metric == PM_IndicatorWidth || metric == PM_IndicatorHeight)
+    {
+        return 25;
+    }
 
     return QCommonStyle::pixelMetric(metric, option, widget);
+}
+
+QSize CvComposerStyle::sizeFromContents(QStyle::ContentsType type,
+                                        const QStyleOption *option,
+                                        const QSize &contentsSize,
+                                        const QWidget *widget) const
+{
+    if(type == CT_CheckBox)
+    {
+        return QSize(pixelMetric(PM_IndicatorWidth, option, widget),
+                     pixelMetric(PM_IndicatorHeight, option, widget));
+    }
+
+    return QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
 }
 
 void CvComposerStyle::drawArrow(QPainter *painter,
