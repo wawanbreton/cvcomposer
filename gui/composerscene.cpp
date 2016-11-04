@@ -647,13 +647,12 @@ void ComposerScene::keyPressEvent(QKeyEvent *keyEvent)
             if(item->type() == CustomItems::Node)
             {
                 _model->removeNode(((GenericNodeItem *)item)->accessNode());
+                return;
             }
         }
     }
-    else
-    {
-        QGraphicsScene::keyPressEvent(keyEvent);
-    }
+
+    QGraphicsScene::keyPressEvent(keyEvent);
 }
 
 void ComposerScene::onNodeRemoved(const Node *node)
