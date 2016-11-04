@@ -17,16 +17,22 @@
 
 #include "imageviewerprocessor.h"
 
+#include <QPixmap>
+
+#include "global/cvutils.h"
+
 
 ImageViewerProcessor::ImageViewerProcessor() :
     AbstractProcessor()
 {
     addInput("image", PlugType::Image);
-    addInput("title", PlugType::DockableImageViewer);
+    addOutput("viewer", PlugType::DockableImageViewer);
 }
 
 Properties ImageViewerProcessor::processImpl(const Properties &inputs)
 {
-    Q_UNUSED(inputs); // We don't process anything, the input image will be displayed as it is
-    return Properties();
+    Properties outputs;
+    cv::Mat inputImage = inputs["image"].value<cv::Mat>();
+    outputs.insert("viewer", QPixmap::fromImage(CvUtils::toQImage(inputImage)));
+    return outputs;
 }
