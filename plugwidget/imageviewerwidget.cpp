@@ -75,5 +75,5 @@ void ImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properti
 {
     AbstractPlugWidget::onNodeProcessed(inputs, outputs);
 
-    _dockWidget->setImage(inputs["image"].value<cv::Mat>());
+    _dockWidget->setImage(outputs["viewer"].value<QPixmap>());
 }

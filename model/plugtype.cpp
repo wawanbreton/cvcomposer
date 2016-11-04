@@ -90,7 +90,12 @@ bool PlugType::isInputSavable(PlugType::PlugTypes inputTypes)
 
 bool PlugType::isOutputInternal(PlugType::PlugTypes types)
 {
-    return isSingleType(types) && flagsToEnum(types) == PlugType::ImagePreview;
+    if(isSingleType(types))
+    {
+        Enum type = flagsToEnum(types);
+        return type == ImagePreview || type == DockableImageViewer;
+    }
+    return false;
 }
 
 QColor PlugType::getColor(PlugType::Enum value)

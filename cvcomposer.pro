@@ -184,9 +184,9 @@ HEADERS  += gui/mainwidget.h \
 
 FORMS    += \
     gui/mainwidget.ui \
-    plugwidget/imagedockwidget.ui \
     gui/editsettingsdialog.ui \
-    gui/errordisplaydialog.ui
+    gui/errordisplaydialog.ui \
+    plugwidget/imageviewerdockwidget.ui
 
 RESOURCES += \
     resources.qrc

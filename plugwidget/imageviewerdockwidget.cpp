@@ -16,7 +16,7 @@
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "imageviewerdockwidget.h"
-#include "ui_imagedockwidget.h"
+#include "ui_imageviewerdockwidget.h"
 
 #include <QDebug>
 
@@ -27,7 +27,7 @@ int ImageViewerDockWidget::_count = 0;
 
 ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
     QDockWidget(parent),
-    _ui(new Ui::ImageDockWidget)
+    _ui(new Ui::ImageViewerDockWidget)
 {
     _ui->setupUi(this);
 
@@ -46,9 +46,8 @@ ImageViewerDockWidget::~ImageViewerDockWidget()
     delete _ui;
 }
 
-void ImageViewerDockWidget::setImage(const cv::Mat &image)
+void ImageViewerDockWidget::setImage(const QPixmap &image)
 {
-    QImage qImage = CvUtils::toQImage(image);
-    _pixmapItem->setPixmap(QPixmap::fromImage(qImage));
-    _ui->graphicsView->setSceneRect(0, 0, qImage.width(), qImage.height());
+    _pixmapItem->setPixmap(image);
+    _ui->graphicsView->setSceneRect(0, 0, image.width(), image.height());
 }
