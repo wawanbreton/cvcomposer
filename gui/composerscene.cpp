@@ -153,7 +153,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
             iterator++;
         }
 
-        for(const Plug *plug : node->getInputs())
+        for(const Plug *plug : (node->getInputs() + node->getOutputs()))
         {
             bool hasValue = false;
             const QString plugName = plug->getDefinition().name;
@@ -168,7 +168,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
             }
 
             QMap<QString, QString> plugWidgetProperties;
-            const AbstractPlugWidget *plugWidget = nodeItem->getInputWidget(plugName);
+            const AbstractPlugWidget *plugWidget = nodeItem->getWidget(plugName);
             if(plugWidget)
             {
                 plugWidgetProperties = plugWidget->save();
@@ -277,6 +277,10 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                     QDomElement propertyElement = nodeProperty.toElement();
                     QString plugName = propertyElement.attribute("name");
                     Plug *plug = item->getNode()->findInput(plugName);
+                    if(plug == Q_NULLPTR)
+                    {
+                        plug = item->getNode()->findOutput(plugName);
+                    }
                     if(plug)
                     {
                         if(propertyElement.hasAttribute("value"))
@@ -304,11 +308,11 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                             }
                         }
 
-                        item->accessInputWidget(plugName)->load(plugWidgetProperties);
+                        item->accessWidget(plugName)->load(plugWidgetProperties);
                     }
                     else
                     {
-                        qWarning() << "No input plug named" << plugName << "on node" << nodeName;
+                        qWarning() << "No plug named" << plugName << "on node" << nodeName;
                     }
                 }
             }

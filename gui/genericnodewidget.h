@@ -45,9 +45,9 @@ class GenericNodeWidget : public QWidget
 
         void setPlugProperty(const QString &name, const QVariant &value);
 
-        const AbstractPlugWidget *getInputWidget(const QString &name) const;
+        const AbstractPlugWidget *getWidget(const QString &name) const;
 
-        AbstractPlugWidget *accessInputWidget(const QString &name);
+        AbstractPlugWidget *accessWidget(const QString &name);
 
     public slots:
         void onProcessDone(const Properties &outputs, const Properties &inputs);

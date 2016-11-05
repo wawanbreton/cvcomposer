@@ -109,14 +109,14 @@ const QList<PlugItem *> &GenericNodeItem::getInputs() const
     return _inputPlugs;
 }
 
-const AbstractPlugWidget *GenericNodeItem::getInputWidget(const QString &name) const
+const AbstractPlugWidget *GenericNodeItem::getWidget(const QString &name) const
 {
-    return _widget->getInputWidget(name);
+    return _widget->getWidget(name);
 }
 
-AbstractPlugWidget *GenericNodeItem::accessInputWidget(const QString &name)
+AbstractPlugWidget *GenericNodeItem::accessWidget(const QString &name)
 {
-    return _widget->accessInputWidget(name);
+    return _widget->accessWidget(name);
 }
 
 const QList<PlugItem *> &GenericNodeItem::getOutputs() const
