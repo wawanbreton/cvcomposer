@@ -47,9 +47,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         const QList<PlugItem *> &getInputs() const;
 
-        const AbstractPlugWidget *getInputWidget(const QString &name) const;
+        const AbstractPlugWidget *getWidget(const QString &name) const;
 
-        AbstractPlugWidget *accessInputWidget(const QString &name);
+        AbstractPlugWidget *accessWidget(const QString &name);
 
         const QList<PlugItem *> &getOutputs() const;
 
