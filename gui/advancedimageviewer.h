@@ -30,6 +30,8 @@ class AdvancedImageViewer : public InteractiveGraphicsView
 
         void setImage(const QPixmap &image);
 
+        QPixmap getImage() const;
+
     private:
         QGraphicsPixmapItem *_pixmapItem;
 };

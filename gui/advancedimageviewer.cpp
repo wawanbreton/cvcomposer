@@ -37,3 +37,8 @@ void AdvancedImageViewer::setImage(const QPixmap &image)
     _pixmapItem->setPixmap(image);
     setSceneRect(0, 0, image.width(), image.height());
 }
+
+QPixmap AdvancedImageViewer::getImage() const
+{
+    return _pixmapItem->pixmap();
+}
