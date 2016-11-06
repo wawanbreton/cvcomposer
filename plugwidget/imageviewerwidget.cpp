@@ -56,7 +56,6 @@ QMap<QString, QString> ImageViewerWidget::save() const
 
     properties.insert("title", _lineEdit->text());
     properties.insert("geometry", QString::fromUtf8(_dockWidget->saveGeometry().toHex()));
-    properties.insert("floating", _dockWidget->isFloating() ? "true" : "false");
 
     // We need to store dock widgets object name so that their state
     // inside the QMainWindow is restored correctly
@@ -70,7 +69,6 @@ void ImageViewerWidget::load(const QMap<QString, QString> &properties)
     _lineEdit->setText(properties["title"]);
     _dockWidget->setObjectName(properties["objectName"]);
     _dockWidget->restoreGeometry(QByteArray::fromHex(properties["geometry"].toUtf8()));
-    _dockWidget->setFloating(properties["floating"] == "true");
 }
 
 void ImageViewerWidget::onNodeProcessed(const Properties &inputs, const Properties &outputs)
