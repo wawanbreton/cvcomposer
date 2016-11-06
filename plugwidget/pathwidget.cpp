@@ -22,6 +22,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
+#include "global/cvutils.h"
+
 
 PathWidget::PathWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
@@ -69,33 +71,10 @@ void PathWidget::onButtonPressed()
     }
     else
     {
-        QStringList allFileFilter;
-        for(int i = 0 ; i < _formats.count() ; i++)
-        {
-            foreach(const QString &format, _formats[i].second)
-            {
-                allFileFilter << ("*." + format);
-            }
-        }
-
-        QStringList filters;
-        filters << "All supported files (" + allFileFilter.join(" ") + ")";
-
-        for(int i = 0 ; i < _formats.count() ; i++)
-        {
-            QStringList extensions;
-            foreach(const QString &format, _formats[i].second)
-            {
-                extensions << ("*." + format);
-            }
-
-            filters << _formats[i].first + " (" + extensions.join(" ") + ")";
-        }
-
         path = QFileDialog::getOpenFileName(QApplication::activeWindow(),
                                             "Select file",
                                             _lineEdit->text(),
-                                            filters.join(";;"));
+                                            CvUtils::makeFilterFromImageFormats(CvUtils::getImageFormats()));
     }
 
     if(not path.isEmpty())

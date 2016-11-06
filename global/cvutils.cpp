@@ -167,3 +167,49 @@ QList<QPair<QString, QVariant> > CvUtils::makeImageLoadFormatsValues()
 
     return valuesTypes;
 }
+
+
+QList<QPair<QString, QStringList> > CvUtils::getImageFormats()
+{
+    QList<QPair<QString, QStringList> > formats;
+
+    formats << qMakePair(QString("JPEG"), QStringList() << "jpeg" << "jpg" << "jpe");
+    formats << qMakePair(QString("Portable network graphics"), QStringList() << "png");
+    formats << qMakePair(QString("TIFF"), QStringList() << "tiff" << "tif");
+    formats << qMakePair(QString("JPEG 2000"), QStringList() << "jp2");
+    formats << qMakePair(QString("Windows Bitmap"), QStringList() << "bmp");
+    formats << qMakePair(QString("OpenEXR"), QStringList() << "exr");
+    formats << qMakePair(QString("Sun raster"), QStringList() << "sr" << "ras");
+    formats << qMakePair(QString("Portable image formats"), QStringList() << "pbm" << "pgm" << "ppm");
+
+    return formats;
+}
+
+
+QString CvUtils::makeFilterFromImageFormats(const QList<QPair<QString, QStringList> > &formats)
+{
+    QStringList allFilesFilter;
+    for(const QPair<QString, QStringList> &format : formats)
+    {
+        for(const QString &extension : format.second)
+        {
+            allFilesFilter << ("*." + extension);
+        }
+    }
+
+    QStringList filters;
+    filters << "All supported files(" + allFilesFilter.join(" ") + ")";
+
+    for(const QPair<QString, QStringList> &format : formats)
+    {
+        QStringList extensions;
+        for(const QString &extension : format.second)
+        {
+            extensions << ("*." + extension);
+        }
+
+        filters << format.first + "(" + extensions.join(" ") + ")";
+    }
+
+    return filters.join(";;");
+}

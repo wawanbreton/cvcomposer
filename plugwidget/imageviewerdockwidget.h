@@ -33,6 +33,9 @@ class ImageViewerDockWidget : public QDockWidget
 
         void setImage(const QPixmap &image);
 
+    private slots:
+        void onSaveImage();
+
     private:
         static int _count;
 

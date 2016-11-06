@@ -19,6 +19,8 @@
 #include "ui_imageviewerdockwidget.h"
 
 #include <QDebug>
+#include <QFileDialog>
+#include <QImageWriter>
 
 #include "global/cvutils.h"
 
@@ -43,4 +45,37 @@ ImageViewerDockWidget::~ImageViewerDockWidget()
 void ImageViewerDockWidget::setImage(const QPixmap &image)
 {
     _ui->graphicsView->setImage(image);
+}
+
+void ImageViewerDockWidget::onSaveImage()
+{
+    QList<QByteArray> supportedFormats = QImageWriter::supportedImageFormats();
+
+    QList<QPair<QString, QStringList> > mergedFormats;
+
+    for(const QPair<QString, QStringList> &format : CvUtils::getImageFormats())
+    {
+        QStringList supportedExtensions;
+        foreach(const QString &extension, format.second)
+        {
+            if(supportedFormats.contains(extension.toUtf8()))
+            {
+                supportedExtensions << extension;
+            }
+        }
+
+        if(!supportedExtensions.isEmpty())
+        {
+            mergedFormats << qMakePair(format.first, supportedExtensions);
+        }
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(QApplication::activeWindow(),
+                                                    "Save file",
+                                                    "",
+                                                    CvUtils::makeFilterFromImageFormats(mergedFormats));
+    if(!fileName.isEmpty())
+    {
+        _ui->graphicsView->getImage().save(fileName);
+    }
 }

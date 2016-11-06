@@ -30,6 +30,10 @@ namespace CvUtils
     QList<QPair<QString, QVariant> > makeLineTypeValues();
 
     QList<QPair<QString, QVariant> > makeImageLoadFormatsValues();
+
+    QList<QPair<QString, QStringList> > getImageFormats();
+
+    QString makeFilterFromImageFormats(const QList<QPair<QString, QStringList> > &formats);
 }
 
 Q_DECLARE_METATYPE(cv::Point)

@@ -28,15 +28,7 @@ ImageFromFileProcessor::ImageFromFileProcessor() :
     AbstractProcessor()
 {
     Properties pathProperties;
-    QList<QPair<QString, QStringList> > formats;
-    formats << qMakePair(QString("JPEG"), QStringList() << "jpeg" << "jpg" << "jpe");
-    formats << qMakePair(QString("Portable network graphics"), QStringList() << "png");
-    formats << qMakePair(QString("TIFF"), QStringList() << "tiff" << "tif");
-    formats << qMakePair(QString("JPEG 2000"), QStringList() << "jp2");
-    formats << qMakePair(QString("Windows Bitmap"), QStringList() << "bmp");
-    formats << qMakePair(QString("OpenEXR"), QStringList() << "exr");
-    formats << qMakePair(QString("Sun raster"), QStringList() << "sr" << "ras");
-    formats << qMakePair(QString("Portable image formats"), QStringList() << "pbm" << "pgm" << "ppm");
+    QList<QPair<QString, QStringList> > formats = CvUtils::getImageFormats();
     pathProperties.insert("formats", QVariant::fromValue(formats));
     addInput("path", PlugType::Path, QVariant(), pathProperties);
 
