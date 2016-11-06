@@ -31,12 +31,6 @@ ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    _ui->graphicsView->setScene(scene);
-
-    _pixmapItem = new QGraphicsPixmapItem();
-    scene->addItem(_pixmapItem);
-
     // Saving and restoring dock widgets properly requires all of them to have a unique object name
     setObjectName(QString("ImageViewerDockWidget%1").arg(_count++));
 }
@@ -48,6 +42,5 @@ ImageViewerDockWidget::~ImageViewerDockWidget()
 
 void ImageViewerDockWidget::setImage(const QPixmap &image)
 {
-    _pixmapItem->setPixmap(image);
-    _ui->graphicsView->setSceneRect(0, 0, image.width(), image.height());
+    _ui->graphicsView->setImage(image);
 }
