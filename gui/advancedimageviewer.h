@@ -17,25 +17,19 @@
 
 #pragma once
 
-#include <QDockWidget>
+#include "gui/interactivegraphicsview.h"
 
-#include <opencv2/core/core.hpp>
+#include <QGraphicsPixmapItem>
 
-namespace Ui { class ImageViewerDockWidget; }
-
-class ImageViewerDockWidget : public QDockWidget
+class AdvancedImageViewer : public InteractiveGraphicsView
 {
     Q_OBJECT
 
     public:
-        explicit ImageViewerDockWidget(QWidget *parent = NULL);
-        ~ImageViewerDockWidget();
+        explicit AdvancedImageViewer(QWidget *parent = Q_NULLPTR);
 
         void setImage(const QPixmap &image);
 
     private:
-        static int _count;
-
-    private:
-        Ui::ImageViewerDockWidget *_ui;
+        QGraphicsPixmapItem *_pixmapItem;
 };
