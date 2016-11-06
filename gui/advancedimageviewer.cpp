@@ -17,6 +17,8 @@
 
 #include "advancedimageviewer.h"
 
+#include <QDebug>
+
 
 AdvancedImageViewer::AdvancedImageViewer(QWidget *parent) :
     InteractiveGraphicsView(parent),
@@ -25,6 +27,9 @@ AdvancedImageViewer::AdvancedImageViewer(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->addItem(_pixmapItem);
     setScene(scene);
+
+    setMinZoom(-2);
+    setMaxZoom(20);
 }
 
 void AdvancedImageViewer::setImage(const QPixmap &image)

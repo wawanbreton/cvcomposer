@@ -25,30 +25,36 @@
 
 InteractiveGraphicsView::InteractiveGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
-    _zoom(0)
+    _zoom(0),
+    _minZoom(1),
+    _maxZoom(10)
 {
     resetZoom();
 }
 
 void InteractiveGraphicsView::zoomIn()
 {
-    if(canZoomIn())
-    {
-        zoom(_zoom + 1);
-    }
+    zoom(_zoom + 1);
 }
 
 void InteractiveGraphicsView::zoomOut()
 {
-    if(canZoomOut())
-    {
-        zoom(_zoom - 1);
-    }
+    zoom(_zoom - 1);
 }
 
 void InteractiveGraphicsView::resetZoom()
 {
     zoom(5);
+}
+
+void InteractiveGraphicsView::setMinZoom(int minZoom)
+{
+    _minZoom = minZoom;
+}
+
+void InteractiveGraphicsView::setMaxZoom(int maxZoom)
+{
+    _maxZoom = maxZoom;
 }
 
 void InteractiveGraphicsView::wheelEvent(QWheelEvent *event)
@@ -58,13 +64,9 @@ void InteractiveGraphicsView::wheelEvent(QWheelEvent *event)
     {
         QGraphicsView::wheelEvent(event);
     }
-    else if(event->delta() > 0)
-    {
-        zoomIn();
-    }
     else
     {
-        zoomOut();
+        zoom(_zoom + event->delta() / 120);
     }
 }
 
@@ -108,18 +110,10 @@ void InteractiveGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool InteractiveGraphicsView::canZoomIn() const
-{
-    return _zoom < 10;
-}
-
-bool InteractiveGraphicsView::canZoomOut() const
-{
-    return _zoom > 1;
-}
-
 void InteractiveGraphicsView::zoom(int scale)
 {
+    scale = qMin(qMax(scale, _minZoom), _maxZoom);
+
     if(scale != _zoom)
     {
         _zoom = scale;

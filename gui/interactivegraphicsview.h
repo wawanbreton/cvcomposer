@@ -32,16 +32,16 @@ class InteractiveGraphicsView : public QGraphicsView
 
         void resetZoom();
 
+        void setMinZoom(int minZoom);
+
+        void setMaxZoom(int maxZoom);
+
     protected:
         virtual void wheelEvent(QWheelEvent *event);
 
         virtual void mousePressEvent(QMouseEvent *event);
 
         virtual void mouseReleaseEvent(QMouseEvent *event);
-
-        virtual bool canZoomIn() const;
-
-        virtual bool canZoomOut() const;
 
     private:
         void zoom(int scale);
@@ -50,4 +50,6 @@ class InteractiveGraphicsView : public QGraphicsView
 
     private:
         int _zoom;
+        int _minZoom;
+        int _maxZoom;
 };
