@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef INTERACTIVEGRAPHICSVIEW_H
-#define INTERACTIVEGRAPHICSVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 
@@ -40,6 +39,10 @@ class InteractiveGraphicsView : public QGraphicsView
 
         virtual void mouseReleaseEvent(QMouseEvent *event);
 
+        virtual bool canZoomIn() const;
+
+        virtual bool canZoomOut() const;
+
     private:
         void zoom(int scale);
 
@@ -48,5 +51,3 @@ class InteractiveGraphicsView : public QGraphicsView
     private:
         int _zoom;
 };
-
-#endif // INTERACTIVEGRAPHICSVIEW_H

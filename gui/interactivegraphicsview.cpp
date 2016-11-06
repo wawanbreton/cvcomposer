@@ -32,12 +32,18 @@ InteractiveGraphicsView::InteractiveGraphicsView(QWidget *parent) :
 
 void InteractiveGraphicsView::zoomIn()
 {
-    zoom(_zoom + 1);
+    if(canZoomIn())
+    {
+        zoom(_zoom + 1);
+    }
 }
 
 void InteractiveGraphicsView::zoomOut()
 {
-    zoom(_zoom - 1);
+    if(canZoomOut())
+    {
+        zoom(_zoom - 1);
+    }
 }
 
 void InteractiveGraphicsView::resetZoom()
@@ -52,9 +58,13 @@ void InteractiveGraphicsView::wheelEvent(QWheelEvent *event)
     {
         QGraphicsView::wheelEvent(event);
     }
+    else if(event->delta() > 0)
+    {
+        zoomIn();
+    }
     else
     {
-        zoom(_zoom + event->delta() / 120);
+        zoomOut();
     }
 }
 
@@ -98,10 +108,18 @@ void InteractiveGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool InteractiveGraphicsView::canZoomIn() const
+{
+    return _zoom < 10;
+}
+
+bool InteractiveGraphicsView::canZoomOut() const
+{
+    return _zoom > 1;
+}
+
 void InteractiveGraphicsView::zoom(int scale)
 {
-    scale = qMax(qMin(scale, 10), 1);
-
     if(scale != _zoom)
     {
         _zoom = scale;
