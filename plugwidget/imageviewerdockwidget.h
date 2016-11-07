@@ -36,6 +36,8 @@ class ImageViewerDockWidget : public QDockWidget
     private slots:
         void onSaveImage();
 
+        void onColorPicked(const QColor &color);
+
     private:
         static int _count;
 

@@ -32,6 +32,17 @@ class AdvancedImageViewer : public InteractiveGraphicsView
 
         QPixmap getImage() const;
 
+    signals:
+        void colorPicked(const QColor &color);
+
+    protected:
+        virtual void mousePressEvent(QMouseEvent *event) override;
+
+        virtual void mouseMoveEvent(QMouseEvent *event) override;
+
+    private:
+        void pickColor(QMouseEvent *event);
+
     private:
         QGraphicsPixmapItem *_pixmapItem;
 };

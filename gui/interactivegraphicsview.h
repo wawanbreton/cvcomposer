@@ -37,11 +37,11 @@ class InteractiveGraphicsView : public QGraphicsView
         void setMaxZoom(int maxZoom);
 
     protected:
-        virtual void wheelEvent(QWheelEvent *event);
+        virtual void wheelEvent(QWheelEvent *event) override;
 
-        virtual void mousePressEvent(QMouseEvent *event);
+        virtual void mousePressEvent(QMouseEvent *event) override;
 
-        virtual void mouseReleaseEvent(QMouseEvent *event);
+        virtual void mouseReleaseEvent(QMouseEvent *event) override;
 
     private:
         void zoom(int scale);
