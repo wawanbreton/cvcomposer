@@ -35,6 +35,15 @@ ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
 
     // Saving and restoring dock widgets properly requires all of them to have a unique object name
     setObjectName(QString("ImageViewerDockWidget%1").arg(_count++));
+
+    connect(_ui->graphicsView, SIGNAL(colorPicked(QColor)), SLOT(onColorPicked(QColor)));
+    onColorPicked(Qt::white);
+
+    QFontMetrics metrics = fontMetrics();
+    int maxColorWidth = metrics.width("888");
+    _ui->labelColorBlue->setFixedWidth(maxColorWidth);
+    _ui->labelColorGreen->setFixedWidth(maxColorWidth);
+    _ui->labelColorRed->setFixedWidth(maxColorWidth);
 }
 
 ImageViewerDockWidget::~ImageViewerDockWidget()
@@ -78,4 +87,24 @@ void ImageViewerDockWidget::onSaveImage()
     {
         _ui->graphicsView->getImage().save(fileName);
     }
+}
+
+void ImageViewerDockWidget::onColorPicked(const QColor &color)
+{
+    // RBG
+    _ui->labelColorBlue->setText(QString::number(color.blue()));
+    _ui->labelColorGreen->setText(QString::number(color.green()));
+    _ui->labelColorRed->setText(QString::number(color.red()));
+
+    // HTML
+    QString htmlColor = "#";
+    htmlColor += QString::number(color.red(), 16).rightJustified(2, '0');
+    htmlColor += QString::number(color.green(), 16).rightJustified(2, '0');
+    htmlColor += QString::number(color.blue(), 16).rightJustified(2, '0');
+    _ui->lineEditColorHexa->setText(htmlColor);
+
+    // Visual
+    QPalette palette = _ui->lineEditColor->palette();
+    palette.setColor(QPalette::Base, color);
+    _ui->lineEditColor->setPalette(palette);
 }

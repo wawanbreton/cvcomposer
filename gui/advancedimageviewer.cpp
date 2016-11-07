@@ -18,6 +18,7 @@
 #include "advancedimageviewer.h"
 
 #include <QDebug>
+#include <QMouseEvent>
 
 
 AdvancedImageViewer::AdvancedImageViewer(QWidget *parent) :
@@ -41,4 +42,36 @@ void AdvancedImageViewer::setImage(const QPixmap &image)
 QPixmap AdvancedImageViewer::getImage() const
 {
     return _pixmapItem->pixmap();
+}
+
+void AdvancedImageViewer::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        pickColor(event);
+    }
+    else
+    {
+        InteractiveGraphicsView::mousePressEvent(event);
+    }
+}
+
+void AdvancedImageViewer::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons().testFlag(Qt::LeftButton))
+    {
+        pickColor(event);
+    }
+    else
+    {
+        InteractiveGraphicsView::mouseMoveEvent(event);
+    }
+}
+
+void AdvancedImageViewer::pickColor(QMouseEvent *event)
+{
+    event->accept();
+    QPointF scenePos = mapToScene(event->pos());
+    QPoint pixel(scenePos.x(), scenePos.y());
+    emit colorPicked(_pixmapItem->pixmap().toImage().pixel(pixel));
 }
