@@ -11,6 +11,8 @@ DisableProgramGroupPage=yes
 OutputBaseFilename=CvComposer-setup
 Compression=lzma
 
+#define HomePath GetEnv('HOMEPATH')
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
@@ -19,20 +21,21 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\release\cvcomposer.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Qt and its dependancies
-Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Core.dll";                DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Gui.dll";                 DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Widgets.dll";             DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Qt\5.7\mingw53_32\bin\Qt5Xml.dll";                 DestDir: "{app}"; Flags: ignoreversion
-source: "C:\Qt\5.7\mingw53_32\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
-source: "C:\Qt\5.7\mingw53_32\plugins\imageformats\qjpeg.dll"; DestDir: "{app}\imageformats"; Flags: ignoreversion
-Source: "c:\qt\5.7\mingw53_32\bin\LIBWINPTHREAD-1.DLL";        DestDir: "{app}"; Flags: ignoreversion
-Source: "c:\qt\5.7\mingw53_32\bin\LIBSTDC++-6.DLL";            DestDir: "{app}"; Flags: ignoreversion
-Source: "c:\qt\5.7\mingw53_32\bin\LIBGCC_S_DW2-1.DLL";         DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Core.dll";                DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Gui.dll";                 DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Widgets.dll";             DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Xml.dll";                 DestDir: "{app}"; Flags: ignoreversion
+source: "C:\Qt\Qt5.7.0-MinGW64\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
+source: "C:\Qt\Qt5.7.0-MinGW64\plugins\imageformats\qjpeg.dll"; DestDir: "{app}\imageformats"; Flags: ignoreversion
+Source: {#HomePath}\Mingw\x86_64-6.2.0-win32-seh-rt_v5-rev1\mingw64\bin\libgcc_s_seh-1.dll; DestDir: "{app}"; Flags: ignoreversion
+Source: {#HomePath}\Mingw\x86_64-6.2.0-win32-seh-rt_v5-rev1\mingw64\bin\libstdc++-6.dll;    DestDir: "{app}"; Flags: ignoreversion
 
 ; OpenCV
-Source: "C:\Program Files\opencv2.4.6\build-mingw\bin\libopencv_core249.dll";    DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Program Files\opencv2.4.6\build-mingw\bin\libopencv_highgui249.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Program Files\opencv2.4.6\build-mingw\bin\libopencv_imgproc249.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_core310.dll";      DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_highgui310.dll";   DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_imgproc310.dll";   DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_imgcodecs310.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_videoio310.dll";   DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{commonprograms}\CvComposer"; Filename: "{app}\cvcomposer.exe"
