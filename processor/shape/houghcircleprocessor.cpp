@@ -58,7 +58,7 @@ HoughCircleProcessor::HoughCircleProcessor()
 Properties HoughCircleProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::vector<cv::Vec3f> circles;
+    std::vector<cv::Vec3f> circles;
 
     cv::HoughCircles(inputImage,
                      circles,
