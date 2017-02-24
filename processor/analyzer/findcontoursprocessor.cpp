@@ -50,7 +50,7 @@ FindContoursProcessor::FindContoursProcessor()
 
 Properties FindContoursProcessor::processImpl(const Properties &inputs)
 {
-    cv::vector<cv::vector<cv::Point> > contours;
+    std::vector<std::vector<cv::Point> > contours;
 
     cv::findContours(inputs["image"].value<cv::Mat>(),
                      contours,
@@ -60,7 +60,7 @@ Properties FindContoursProcessor::processImpl(const Properties &inputs)
 
     QList<QVariant> convertedContours;
 
-    for(const cv::vector<cv::Point> &contour : contours)
+    for(const std::vector<cv::Point> &contour : contours)
     {
         Contour convertedContour;
 

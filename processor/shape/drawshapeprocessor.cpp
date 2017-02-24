@@ -17,6 +17,8 @@
 
 #include "drawshapeprocessor.h"
 
+#include <opencv2/imgproc.hpp>
+
 #include <QDebug>
 
 #include "global/cvutils.h"
