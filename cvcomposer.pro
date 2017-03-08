@@ -19,8 +19,8 @@ win32 {
     LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310
 }
 else {
-    INCLUDEPATH += /usr/include/opencv2/
-    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
+    INCLUDEPATH += /usr/local/include/
+    LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio
 }
 
 
