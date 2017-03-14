@@ -62,14 +62,7 @@ Properties FindContoursProcessor::processImpl(const Properties &inputs)
 
     for(const std::vector<cv::Point> &contour : contours)
     {
-        Contour convertedContour;
-
-        for(const cv::Point &point : contour)
-        {
-            convertedContour << point;
-        }
-
-        convertedContours << QVariant::fromValue(convertedContour);
+        convertedContours << QVariant::fromValue(contour);
     }
 
     Properties outputs;
