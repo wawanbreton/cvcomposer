@@ -45,6 +45,7 @@
 #include "processor/math/averageprocessor.h"
 #include "processor/math/operatorprocessor.h"
 #include "processor/shape/circleprocessor.h"
+#include "processor/shape/convexhullprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/shape/drawtextprocessor.h"
 #include "processor/shape/houghcircleprocessor.h"
@@ -83,7 +84,8 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
 
     QStringList shapes;
     shapes << "Rectangle" << "Line"
-           << "Circle" << "Ellipse" << "HoughCircle"
+           << "Circle" << "Ellipse"
+           << "HoughCircle" << "ConvexHull"
            << "DrawText" << "DrawShape";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
@@ -267,6 +269,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Ellipse")
     {
         return new EllipseProcessor();
+    }
+    else if(rawProcessorName == "ConvexHull")
+    {
+        return new ConvexHullProcessor();
     }
     else
     {
