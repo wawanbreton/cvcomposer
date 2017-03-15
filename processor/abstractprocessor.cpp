@@ -91,6 +91,14 @@ Properties AbstractProcessor::process(const Properties &inputs)
 
     Properties outputs;
 
+    // Compute the expected outputs names
+    QList<QString> expectedOutputNames;
+    for(const PlugDefinition &plug : _outputs)
+    {
+        expectedOutputNames << plug.name;
+    }
+    qSort(expectedOutputNames);
+
     // Do the actual computing
     if(simpleInputListPlug.isEmpty())
     {
@@ -102,37 +110,41 @@ Properties AbstractProcessor::process(const Properties &inputs)
         // Simple list support : iterate on each value of the given list
         Properties singleOutputs;
         QList<QVariant> simpleListValues = listCompliantImputs[simpleInputListPlug].value<QList<QVariant> >();
-        listProgress(simpleListValues);
-        foreach(const QVariant &simpleListValue, simpleListValues)
+        if(simpleListValues.isEmpty())
         {
-            // For each element, extract it and process the computation
-            Properties singleInputs = listCompliantImputs;
-            singleInputs[simpleInputListPlug] = simpleListValue;
-
-            singleOutputs = processImpl(singleInputs);
-
-            // Then add the computed output values to the complete list of outputs
-            for(Properties::const_iterator it = singleOutputs.begin() ; it != singleOutputs.end() ; ++it)
+            // Fill the outputs with empty lists
+            for(const QString &expectedOutputName : expectedOutputNames)
             {
-                QList<QVariant> outputValues = outputs[it.key()].value<QList<QVariant> >();
-                outputValues << it.value();
-                outputs[it.key()] = outputValues;
+                outputs[expectedOutputName] = QList<QVariant>();
             }
-
+        }
+        else
+        {
             listProgress(simpleListValues);
+            foreach(const QVariant &simpleListValue, simpleListValues)
+            {
+                // For each element, extract it and process the computation
+                Properties singleInputs = listCompliantImputs;
+                singleInputs[simpleInputListPlug] = simpleListValue;
+
+                singleOutputs = processImpl(singleInputs);
+
+                // Then add the computed output values to the complete list of outputs
+                for(auto it = singleOutputs.begin() ; it != singleOutputs.end() ; ++it)
+                {
+                    QList<QVariant> outputValues = outputs[it.key()].value<QList<QVariant> >();
+                    outputValues << it.value();
+                    outputs[it.key()] = outputValues;
+                }
+
+                listProgress(simpleListValues);
+            }
         }
     }
 
     // Check that computed outputs match the expected ouputs
     QList<QString> outputNames = outputs.keys();
     qSort(outputNames);
-
-    QList<QString> expectedOutputNames;
-    foreach(const PlugDefinition &plug, _outputs)
-    {
-        expectedOutputNames << plug.name;
-    }
-    qSort(expectedOutputNames);
 
     Q_ASSERT(outputNames == expectedOutputNames);
 
