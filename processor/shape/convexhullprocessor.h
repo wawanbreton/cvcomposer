@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -17,10 +17,13 @@
 
 #pragma once
 
-#include <opencv2/core/core.hpp>
+#include "processor/abstractprocessor.h"
 
-#include <QList>
+class ConvexHullProcessor : public AbstractProcessor
+{
+    public:
+        ConvexHullProcessor();
 
-typedef std::vector<cv::Point> Contour;
-
-Q_DECLARE_METATYPE(Contour);
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};

@@ -17,10 +17,14 @@
 
 #pragma once
 
-#include <opencv2/core/core.hpp>
+#include "processor/abstractprocessor.h"
 
-#include <QList>
+class BoundingRectProcessor : public AbstractProcessor
+{
+    public:
+        BoundingRectProcessor();
 
-typedef std::vector<cv::Point> Contour;
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};
 
-Q_DECLARE_METATYPE(Contour);

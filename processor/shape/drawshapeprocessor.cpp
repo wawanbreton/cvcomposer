@@ -25,13 +25,14 @@
 #include "model/circle.h"
 #include "model/ellipse.h"
 #include "model/line.h"
+#include "model/contour.h"
 
 
 DrawShapeProcessor::DrawShapeProcessor()
 {
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
     addInput("shape",
-             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse,
+             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse | PlugType::Contour,
              ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
@@ -90,6 +91,12 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
                         thickness,
                         lineType,
                         shift);
+        }
+        else if(shape.userType() == qMetaTypeId<Contour>())
+        {
+            std::vector<Contour> contours;
+            contours.push_back(shape.value<Contour>());
+            cv::drawContours(outputImage, contours, -1, color, thickness, lineType);
         }
     }
 

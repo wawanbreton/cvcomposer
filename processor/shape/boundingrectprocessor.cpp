@@ -15,12 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "boundingrectprocessor.h"
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
-#include <QList>
+#include "global/cvutils.h"
+#include "model/contour.h"
 
-typedef std::vector<cv::Point> Contour;
 
-Q_DECLARE_METATYPE(Contour);
+BoundingRectProcessor::BoundingRectProcessor()
+{
+    addInput("contour", PlugType::Contour, ProcessorListType::Simple);
+
+    addOutput("bounding box", PlugType::Rectangle, ProcessorListType::Simple);
+}
+
+Properties BoundingRectProcessor::processImpl(const Properties &inputs)
+{
+    cv::Rect rect = cv::boundingRect(inputs["contour"].value<Contour>());
+
+    Properties outputs;
+    outputs.insert("bounding box", QVariant::fromValue(rect));
+    return outputs;
+}
+

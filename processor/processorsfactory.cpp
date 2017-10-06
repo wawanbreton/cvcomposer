@@ -45,12 +45,14 @@
 #include "processor/math/averageprocessor.h"
 #include "processor/math/operatorprocessor.h"
 #include "processor/shape/circleprocessor.h"
+#include "processor/shape/convexhullprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
 #include "processor/shape/drawtextprocessor.h"
 #include "processor/shape/houghcircleprocessor.h"
 #include "processor/shape/drawshapeprocessor.h"
 #include "processor/shape/lineprocessor.h"
 #include "processor/shape/ellipseprocessor.h"
+#include "processor/shape/boundingrectprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -83,8 +85,10 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
 
     QStringList shapes;
     shapes << "Rectangle" << "Line"
-           << "Circle" << "Ellipse" << "HoughCircle"
-           << "DrawText" << "DrawShape";
+           << "Circle" << "Ellipse"
+           << "HoughCircle" << "ConvexHull"
+           << "DrawText" << "DrawShape"
+           << "BoundingRect";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
@@ -267,6 +271,14 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Ellipse")
     {
         return new EllipseProcessor();
+    }
+    else if(rawProcessorName == "ConvexHull")
+    {
+        return new ConvexHullProcessor();
+    }
+    else if(rawProcessorName == "BoundingRect")
+    {
+        return new BoundingRectProcessor();
     }
     else
     {

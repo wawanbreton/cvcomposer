@@ -97,7 +97,9 @@ SOURCES += main.cpp\
     processor/shape/lineprocessor.cpp \
     processor/shape/ellipseprocessor.cpp \
     gui/errordisplaydialog.cpp \
-    gui/advancedimageviewer.cpp
+    gui/advancedimageviewer.cpp \
+    processor/shape/convexhullprocessor.cpp \
+    processor/shape/boundingrectprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -182,7 +184,9 @@ HEADERS  += gui/mainwidget.h \
     model/ellipse.h \
     processor/processorlisttype.h \
     gui/errordisplaydialog.h \
-    gui/advancedimageviewer.h
+    gui/advancedimageviewer.h \
+    processor/shape/convexhullprocessor.h \
+    processor/shape/boundingrectprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
