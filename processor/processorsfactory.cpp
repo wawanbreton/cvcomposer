@@ -36,6 +36,7 @@
 #include "processor/filter/thresholdprocessor.h"
 #include "processor/filter/sobelprocessor.h"
 #include "processor/filter/laplacianprocessor.h"
+#include "processor/filter/cannyprocessor.h"
 #include "processor/geometry/subimageprocessor.h"
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/geometry/pyramidprocessor.h"
@@ -72,8 +73,9 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
 
     QStringList filters;
     filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
-            << "MorphologyTransformation" << "Threshold" << "Sobel" << "Laplacian" << "CustomFilter"
-            << "AddWeighted" << "ConvertTo";
+            << "MorphologyTransformation" << "Threshold"
+            << "Sobel" << "Laplacian" << "Canny"
+            << "CustomFilter" << "AddWeighted" << "ConvertTo";
     processors << QPair<QString, QStringList>("Filters", filters);
 
     QStringList data;
@@ -284,6 +286,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Pyramid")
     {
         return new PyramidProcessor();
+    }
+    else if(rawProcessorName == "Canny")
+    {
+        return new CannyProcessor();
     }
     else
     {

@@ -100,7 +100,8 @@ SOURCES += main.cpp\
     gui/advancedimageviewer.cpp \
     processor/shape/convexhullprocessor.cpp \
     processor/shape/boundingrectprocessor.cpp \
-    processor/geometry/pyramidprocessor.cpp
+    processor/geometry/pyramidprocessor.cpp \
+    processor/filter/cannyprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -188,7 +189,8 @@ HEADERS  += gui/mainwidget.h \
     gui/advancedimageviewer.h \
     processor/shape/convexhullprocessor.h \
     processor/shape/boundingrectprocessor.h \
-    processor/geometry/pyramidprocessor.h
+    processor/geometry/pyramidprocessor.h \
+    processor/filter/cannyprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \
