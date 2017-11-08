@@ -34,7 +34,7 @@ BlurProcessor::BlurProcessor() :
     sizeProperties.insert("width-singleStep", 2);
     sizeProperties.insert("height-minimum", 1);
     sizeProperties.insert("height-singleStep", 2);
-    addInput("size", PlugType::Size,  QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
+    addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(1, 1)), sizeProperties);
 
     Properties anchorProperties;
     anchorProperties.insert("x-minimum", -1);

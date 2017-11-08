@@ -58,7 +58,7 @@ class AbstractProcessor : public QObject
 
         void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,
-                                 const QVariant &defaultValue);
+                                 const QVariant &defaultValue = QVariant());
 
         void addOutput(const PlugDefinition &definition);
 

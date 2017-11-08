@@ -38,6 +38,7 @@
 #include "processor/filter/laplacianprocessor.h"
 #include "processor/geometry/subimageprocessor.h"
 #include "processor/geometry/makeborderprocessor.h"
+#include "processor/geometry/pyramidprocessor.h"
 #include "processor/input/cameraprocessor.h"
 #include "processor/input/imagefromfileprocessor.h"
 #include "processor/input/imagesfromfolderprocessor.h"
@@ -66,7 +67,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Inputs", inputs);
 
     QStringList geometry;
-    geometry << "SubImage" << "MakeBorder";
+    geometry << "SubImage" << "MakeBorder" << "Pyramid";
     processors << QPair<QString, QStringList>("Geometry", geometry);
 
     QStringList filters;
@@ -279,6 +280,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "BoundingRect")
     {
         return new BoundingRectProcessor();
+    }
+    else if(rawProcessorName == "Pyramid")
+    {
+        return new PyramidProcessor();
     }
     else
     {

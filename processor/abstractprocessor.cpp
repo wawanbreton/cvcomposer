@@ -186,9 +186,11 @@ void AbstractProcessor::addEnumerationInput(const QString &name,
     Properties widgetProperties;
     widgetProperties.insert("values", QVariant::fromValue(values));
 
+    QVariant appliedDefaultValue = defaultValue.isNull() ? values.first().second : defaultValue;
+
     addInput(makePlug(name,
                       PlugType::Enumeration,
-                      defaultValue,
+                      appliedDefaultValue,
                       widgetProperties));
 }
 
