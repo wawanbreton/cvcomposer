@@ -23,6 +23,8 @@
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 
 #include "execution/composerscheduler.h"
 #include "model/composermodel.h"
@@ -32,7 +34,8 @@
 #include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/editsettingsdialog.h"
-#include "processor/processorsfactory.h"
+#include "gui/processorsitemmodel.h"
+#include "gui/processorsmodelfilter.h"
 
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -42,21 +45,21 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    QList<QPair<QString, QStringList> > nodes = ProcessorsFactory::getProcessors();
-    for(const QPair<QString, QStringList> &group : nodes)
-    {
-        QTreeWidgetItem *groupItem = new QTreeWidgetItem(QStringList() << group.first);
-        groupItem->setFlags(groupItem->flags() & ~Qt::ItemIsDragEnabled);
+    _ui->treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    _ui->treeWidget->setDragEnabled(true);
+    _ui->treeWidget->setDragDropMode(QAbstractItemView::DragOnly);
 
-        for(const QString &node : group.second)
-        {
-            QString nodeName = ProcessorsFactory::toUserReadableName(node);
-            QTreeWidgetItem *itemNode = new QTreeWidgetItem(groupItem, QStringList() << nodeName);
-            itemNode->setData(0, Qt::UserRole, node);
-        }
+    QStandardItemModel *modelProcessors = new ProcessorsItemModel(this);
+    QSortFilterProxyModel *filter = new ProcessorsModelFilter(this);
+    filter->setSourceModel(modelProcessors);
+    filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    connect(_ui->lineEditSearch, &QLineEdit::textChanged,
+            filter,              &QSortFilterProxyModel::setFilterFixedString);
+    connect(_ui->lineEditSearch, &QLineEdit::textChanged,
+            _ui->treeWidget,     &QTreeView::expandAll);
+    _ui->treeWidget->setModel(filter);
 
-        _ui->treeWidget->addTopLevelItem(groupItem);
-    }
+    _ui->treeWidget->expandAll();
 
     updateTitle();
 

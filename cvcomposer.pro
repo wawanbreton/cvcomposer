@@ -19,8 +19,8 @@ win32 {
     LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310
 }
 else {
-    INCLUDEPATH += /usr/local/include/opencv3.1.0
-    LIBS += -L/usr/local/lib/opencv3.1.0 -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio
+    INCLUDEPATH += /usr/local/include/
+    LIBS += -L/usr/local/lib/ -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio
 }
 
 
@@ -35,7 +35,6 @@ SOURCES += main.cpp\
     execution/composerscheduler.cpp \
     gui/interactivegraphicsview.cpp \
     gui/genericnodeitem.cpp \
-    gui/nodeslistwidget.cpp \
     model/connection.cpp \
     global/cvutils.cpp \
     plugwidget/imageviewerdockwidget.cpp \
@@ -101,7 +100,9 @@ SOURCES += main.cpp\
     processor/shape/convexhullprocessor.cpp \
     processor/shape/boundingrectprocessor.cpp \
     processor/geometry/pyramidprocessor.cpp \
-    processor/filter/cannyprocessor.cpp
+    processor/filter/cannyprocessor.cpp \
+    gui/processorsitemmodel.cpp \
+    gui/processorsmodelfilter.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -115,7 +116,6 @@ HEADERS  += gui/mainwidget.h \
     model/connection.h \
     gui/interactivegraphicsview.h \
     gui/genericnodeitem.h \
-    gui/nodeslistwidget.h \
     model/plug.h \
     global/cvutils.h \
     plugwidget/imageviewerdockwidget.h \
@@ -190,7 +190,9 @@ HEADERS  += gui/mainwidget.h \
     processor/shape/convexhullprocessor.h \
     processor/shape/boundingrectprocessor.h \
     processor/geometry/pyramidprocessor.h \
-    processor/filter/cannyprocessor.h
+    processor/filter/cannyprocessor.h \
+    gui/processorsitemmodel.h \
+    gui/processorsmodelfilter.h
 
 FORMS    += \
     gui/mainwidget.ui \

@@ -15,20 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NODESLISTWIDGET_H
-#define NODESLISTWIDGET_H
+#pragma once
 
-#include <QTreeWidget>
+#include <QSortFilterProxyModel>
 
-class NodesListWidget : public QTreeWidget
+class ProcessorsModelFilter : public QSortFilterProxyModel
 {
     Q_OBJECT
 
     public:
-        explicit NodesListWidget(QWidget *parent = NULL);
+        explicit ProcessorsModelFilter(QObject *parent = Q_NULLPTR);
 
     protected:
-        virtual QMimeData *mimeData(const QList<QTreeWidgetItem *> items) const;
+        virtual bool filterAcceptsRow(int sourceRow,
+                                      const QModelIndex &sourceParent) const Q_DECL_OVERRIDE;
 };
-
-#endif // NODESLISTWIDGET_H

@@ -15,23 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "nodeslistwidget.h"
+#pragma once
 
-#include <QMimeData>
+#include <QStandardItemModel>
 
-
-NodesListWidget::NodesListWidget(QWidget *parent) :
-    QTreeWidget(parent)
+class ProcessorsItemModel : public QStandardItemModel
 {
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::DragOnly);
-}
+    Q_OBJECT
 
-QMimeData *NodesListWidget::mimeData(const QList<QTreeWidgetItem *> items) const
-{
-    QMimeData *data = new QMimeData();
-    data->setData("application/x-cvcomposerfilter",
-                  items.at(0)->data(0, Qt::UserRole).toString().toUtf8());
-    return data;
-}
+    public:
+        explicit ProcessorsItemModel(QObject *parent = Q_NULLPTR);
+
+        virtual QMimeData *mimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE;
+};

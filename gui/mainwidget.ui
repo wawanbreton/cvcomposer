@@ -6,24 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
+    <width>1232</width>
     <height>768</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
-    <item>
-     <widget class="NodesListWidget" name="treeWidget">
-      <attribute name="headerVisible">
-       <bool>false</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
-     </widget>
-    </item>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="ComposerWidget" name="graphicsView"/>
     </item>
@@ -34,7 +22,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
+     <width>1232</width>
      <height>31</height>
     </rect>
    </property>
@@ -56,6 +44,44 @@
     <addaction name="actionSettings"/>
    </widget>
    <addaction name="menuFile"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="windowTitle">
+    <string>Pr&amp;ocessors</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLineEdit" name="lineEditSearch">
+       <property name="placeholderText">
+        <string>Search</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTreeView" name="treeWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerDefaultSectionSize">
+        <number>0</number>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionSave">
    <property name="text">
@@ -89,7 +115,7 @@
   </action>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
   </action>
  </widget>
@@ -98,11 +124,6 @@
    <class>ComposerWidget</class>
    <extends>QGraphicsView</extends>
    <header>gui/composerwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>NodesListWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>gui/nodeslistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
