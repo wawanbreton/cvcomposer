@@ -20,6 +20,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 ; Main executable
 Source: "..\release\cvcomposer.exe"; DestDir: "{app}"; Flags: ignoreversion
 
+; Haar cascade resources
+Source: "..\haarcascade_*.xml"; DestDir: "{app}"; Flags: ignoreversion
+
 ; Qt and its dependancies
 Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Core.dll";                DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Gui.dll";                 DestDir: "{app}"; Flags: ignoreversion

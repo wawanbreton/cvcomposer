@@ -16,11 +16,11 @@ win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"
     INCLUDEPATH += "C:\Program Files\opencv3.1.0\build-mingw64\include"
     LIBS += -L"C:\Program Files\opencv3.1.0\build-mingw64\lib"
-    LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310
+    LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310 -lopencv_objdetect310
 }
 else {
     INCLUDEPATH += /usr/local/include/
-    LIBS += -L/usr/local/lib/ -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio -lopencv_objdetect
 }
 
 
@@ -103,7 +103,8 @@ SOURCES += main.cpp\
     processor/filter/cannyprocessor.cpp \
     gui/processorsitemmodel.cpp \
     gui/processorsmodelfilter.cpp \
-    processor/shape/houghlineprocessor.cpp
+    processor/shape/houghlineprocessor.cpp \
+    processor/analyzer/haarcascadeprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -194,7 +195,8 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/cannyprocessor.h \
     gui/processorsitemmodel.h \
     gui/processorsmodelfilter.h \
-    processor/shape/houghlineprocessor.h
+    processor/shape/houghlineprocessor.h \
+    processor/analyzer/haarcascadeprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

@@ -186,19 +186,23 @@ QList<QPair<QString, QStringList> > CvUtils::getImageFormats()
 }
 
 
-QString CvUtils::makeFilterFromImageFormats(const QList<QPair<QString, QStringList> > &formats)
+QString CvUtils::makeFilterFromFileFormats(const QList<QPair<QString, QStringList> > &formats)
 {
-    QStringList allFilesFilter;
-    for(const QPair<QString, QStringList> &format : formats)
-    {
-        for(const QString &extension : format.second)
-        {
-            allFilesFilter << ("*." + extension);
-        }
-    }
-
     QStringList filters;
-    filters << "All supported files(" + allFilesFilter.join(" ") + ")";
+
+    if(formats.count() > 1)
+    {
+        QStringList allFilesFilter;
+        for(const QPair<QString, QStringList> &format : formats)
+        {
+            for(const QString &extension : format.second)
+            {
+                allFilesFilter << ("*." + extension);
+            }
+        }
+
+        filters << "All supported files(" + allFilesFilter.join(" ") + ")";
+    }
 
     for(const QPair<QString, QStringList> &format : formats)
     {

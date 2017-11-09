@@ -74,7 +74,7 @@ void PathWidget::onButtonPressed()
         path = QFileDialog::getOpenFileName(QApplication::activeWindow(),
                                             "Select file",
                                             _lineEdit->text(),
-                                            CvUtils::makeFilterFromImageFormats(CvUtils::getImageFormats()));
+                                            CvUtils::makeFilterFromFileFormats(_formats));
     }
 
     if(not path.isEmpty())

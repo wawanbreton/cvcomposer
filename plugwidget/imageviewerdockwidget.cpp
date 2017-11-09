@@ -82,7 +82,7 @@ void ImageViewerDockWidget::onSaveImage()
     QString fileName = QFileDialog::getSaveFileName(QApplication::activeWindow(),
                                                     "Save file",
                                                     "",
-                                                    CvUtils::makeFilterFromImageFormats(mergedFormats));
+                                                    CvUtils::makeFilterFromFileFormats(mergedFormats));
     if(!fileName.isEmpty())
     {
         _ui->graphicsView->getImage().save(fileName);
