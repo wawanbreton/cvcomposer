@@ -29,14 +29,19 @@ PyramidProcessor::PyramidProcessor()
     QList<QPair<QString, QVariant>> typeValues;
     typeValues << QPair<QString, QVariant>("Up", "up");
     typeValues << QPair<QString, QVariant>("Down", "down");
-    addEnumerationInput("type", typeValues);
+    addEnumerationInput("type", typeValues, "down");
+
+    Properties iterationProperties;
+    iterationProperties.insert("decimals", 0);
+    iterationProperties.insert("minimum", 1);
+    addInput("iterations", PlugType::Double, 1, iterationProperties);
 
     Properties sizeProperties;
-    sizeProperties.insert("width-minimum", -1);
+    sizeProperties.insert("width-minimum", 0);
     sizeProperties.insert("width-singleStep", 1);
-    sizeProperties.insert("height-minimum", -1);
+    sizeProperties.insert("height-minimum", 0);
     sizeProperties.insert("height-singleStep", 1);
-    addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(-1, -1)), sizeProperties);
+    addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(0, 0)), sizeProperties);
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
@@ -46,8 +51,9 @@ PyramidProcessor::PyramidProcessor()
 Properties PyramidProcessor::processImpl(const Properties &inputs)
 {
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
-    cv::Mat outputImage;
+    cv::Mat outputImage = inputImage.clone();
     QString method = inputs["type"].toString();
+    int iterations = inputs["iterations"].toInt();
     cv::Size size = inputs["size"].value<cv::Size>();
     if(size.width <= 0 || size.height <= 0)
     {
@@ -55,13 +61,10 @@ Properties PyramidProcessor::processImpl(const Properties &inputs)
     }
     int border = inputs["border"].toInt();
 
-    if(method == "up")
+    auto function = method == "up" ? cv::pyrUp : cv::pyrDown;
+    for(int i = 0 ; i < iterations ; i++)
     {
-        cv::pyrUp(inputImage, outputImage, size, border);
-    }
-    else
-    {
-        cv::pyrDown(inputImage, outputImage, size, border);
+        function(outputImage, outputImage, size, border);
     }
 
     Properties outputs;
