@@ -27,7 +27,7 @@ Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Widgets.dll";             DestDir: "{app}"
 Source: "C:\Qt\Qt5.7.0-MinGW64\bin\Qt5Xml.dll";                 DestDir: "{app}"; Flags: ignoreversion
 source: "C:\Qt\Qt5.7.0-MinGW64\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 source: "C:\Qt\Qt5.7.0-MinGW64\plugins\imageformats\qjpeg.dll"; DestDir: "{app}\imageformats"; Flags: ignoreversion
-Source: "C:\Qt\Qt5.7.0-MinGW64\mingw-deps\libgcc_s_seh-1.dll;"  DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Qt\Qt5.7.0-MinGW64\mingw-deps\libgcc_s_seh-1.dll";  DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Qt\Qt5.7.0-MinGW64\mingw-deps\libstdc++-6.dll";     DestDir: "{app}"; Flags: ignoreversion
 
 ; OpenCV
