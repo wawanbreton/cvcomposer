@@ -30,13 +30,6 @@ HoughCircleProcessor::HoughCircleProcessor()
 {
     addInput("input image", PlugType::Image);
 
-    QList<QPair<QString, QVariant> > methods;
-    methods << QPair<QString, QVariant>("Standard", CV_HOUGH_STANDARD);
-    methods << QPair<QString, QVariant>("Probabilistic", CV_HOUGH_PROBABILISTIC);
-    methods << QPair<QString, QVariant>("Multi scale", CV_HOUGH_MULTI_SCALE);
-    methods << QPair<QString, QVariant>("Gradient", CV_HOUGH_GRADIENT);
-    addEnumerationInput("method", methods, 0);
-
     Properties ratioProperties;
     ratioProperties.insert("decimals", 0);
     ratioProperties.insert("minimum", 1);
@@ -62,7 +55,7 @@ Properties HoughCircleProcessor::processImpl(const Properties &inputs)
 
     cv::HoughCircles(inputImage,
                      circles,
-                     inputs["method"].toInt(),
+                     CV_HOUGH_GRADIENT,
                      inputs["inverse resolution ratio"].toDouble(),
                      inputs["minimum centers distance"].toDouble(),
                      inputs["specific parameter 1"].toDouble(),
