@@ -55,6 +55,7 @@
 #include "processor/shape/lineprocessor.h"
 #include "processor/shape/ellipseprocessor.h"
 #include "processor/shape/boundingrectprocessor.h"
+#include "processor/shape/houghlineprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -89,7 +90,8 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList shapes;
     shapes << "Rectangle" << "Line"
            << "Circle" << "Ellipse"
-           << "HoughCircle" << "ConvexHull"
+           << "HoughCircle" << "HoughLine"
+           << "ConvexHull"
            << "DrawText" << "DrawShape"
            << "BoundingRect";
     processors << QPair<QString, QStringList>("Shapes", shapes);
@@ -290,6 +292,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "Canny")
     {
         return new CannyProcessor();
+    }
+    else if(rawProcessorName == "HoughLine")
+    {
+        return new HoughLineProcessor();
     }
     else
     {

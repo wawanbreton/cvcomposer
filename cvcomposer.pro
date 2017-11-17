@@ -102,7 +102,8 @@ SOURCES += main.cpp\
     processor/geometry/pyramidprocessor.cpp \
     processor/filter/cannyprocessor.cpp \
     gui/processorsitemmodel.cpp \
-    gui/processorsmodelfilter.cpp
+    gui/processorsmodelfilter.cpp \
+    processor/shape/houghlineprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -192,7 +193,8 @@ HEADERS  += gui/mainwidget.h \
     processor/geometry/pyramidprocessor.h \
     processor/filter/cannyprocessor.h \
     gui/processorsitemmodel.h \
-    gui/processorsmodelfilter.h
+    gui/processorsmodelfilter.h \
+    processor/shape/houghlineprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

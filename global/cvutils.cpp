@@ -213,3 +213,9 @@ QString CvUtils::makeFilterFromImageFormats(const QList<QPair<QString, QStringLi
 
     return filters.join(";;");
 }
+
+
+qreal CvUtils::degToRad(qreal valueDeg)
+{
+    return (valueDeg / 180) * M_PI;
+}
