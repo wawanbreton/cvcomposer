@@ -21,6 +21,7 @@
 
 #include <QQueue>
 #include <QMutex>
+#include <QSharedPointer>
 
 #include <opencv2/core/core.hpp>
 
@@ -34,9 +35,12 @@ class ComposerExecutor : public QThread
     Q_OBJECT
 
     public:
-        explicit ComposerExecutor(QObject *parent = NULL);
+        explicit ComposerExecutor(const Node *node,
+                                  const Properties &inputs,
+                                  const QSharedPointer<AbstractProcessor> &processor,
+                                  QObject *parent = NULL);
 
-        void process(const Node *node, const Properties &inputs);
+        void process();
 
         const Node *getNode();
 
@@ -62,11 +66,11 @@ class ComposerExecutor : public QThread
         void onFinished();
 
     private:
-        const Node *_node;
-        AbstractProcessor *_processor;
-        Properties _inputs;
+        const Node *_node{Q_NULLPTR};
+        const QSharedPointer<AbstractProcessor> _processor;
+        const Properties _inputs;
         Properties _outputs;
-        bool _keepProcessing;
-        qint64 _duration;
+        bool _keepProcessing{false};
+        qint64 _duration{0};
         QString _error;
 };

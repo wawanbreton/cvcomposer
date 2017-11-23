@@ -24,6 +24,7 @@
 
 #include <QMap>
 #include <QQueue>
+#include <QSharedPointer>
 
 #include "global/properties.h"
 #include "execution/executorsettings.h"
@@ -66,7 +67,7 @@ class ComposerScheduler : public QObject
         void nodeInvalid(const Node *node);
 
     private slots:
-        void onNodeAdded(const Node *node);
+        void onNodeAdded(const Node *node, bool processNow = true);
 
         void onNodeRemoved(const Node *node);
 
@@ -107,6 +108,7 @@ class ComposerScheduler : public QObject
         QList<ComposerExecutor *> _oldExecutors;
         QList<const Node *> _keepProcessingNodes;
         const ComposerModel *_model;
+        QMap<const Node *, QSharedPointer<AbstractProcessor>> _processors;
         QMap<const Node *, Properties> _processedNodes;
         bool _end;
 };

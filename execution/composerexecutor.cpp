@@ -26,28 +26,28 @@
 #include "processor/processorsfactory.h"
 
 
-ComposerExecutor::ComposerExecutor(QObject *parent) :
+ComposerExecutor::ComposerExecutor(const Node *node,
+                                   const Properties &inputs,
+                                   const QSharedPointer<AbstractProcessor> &processor,
+                                   QObject *parent) :
     QThread(parent),
-    _node(NULL),
-    _processor(NULL),
-    _inputs(),
+    _node(node),
+    _processor(processor),
+    _inputs(inputs),
     _outputs(),
-    _keepProcessing(false),
-    _duration(0),
     _error()
 {
     connect(this, SIGNAL(finished()), SLOT(onFinished()));
 }
 
-void ComposerExecutor::process(const Node *node, const Properties &inputs)
+void ComposerExecutor::process()
 {
-    _node = node;
-    _processor = ProcessorsFactory::createProcessor(node->getName());
-    connect(_processor, SIGNAL(progress(qreal)), SIGNAL(executionProgress(qreal)));
-    _inputs = inputs;
-    start();
+    connect(_processor.data(), &AbstractProcessor::progress,
+            this,              &ComposerExecutor::executionProgress);
 
     qDebug() << "start   " << this << _node->getUserReadableName();
+
+    start();
 }
 
 const Node *ComposerExecutor::getNode()
@@ -104,8 +104,6 @@ void ComposerExecutor::onFinished()
     qDebug() << "finished" << this << _error;
 
     _keepProcessing = _processor->getRealTimeProcessing();
-
-    delete _processor;
 
     // Send the signal when we are fully finished
     emit nodeProcessed();

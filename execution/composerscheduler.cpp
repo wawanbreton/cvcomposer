@@ -20,10 +20,11 @@
 #include <QDebug>
 #include <QTimer>
 
+#include "execution/composerexecutor.h"
 #include "model/composermodel.h"
 #include "model/connection.h"
 #include "model/node.h"
-#include "composerexecutor.h"
+#include "processor/processorsfactory.h"
 
 
 ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent) :
@@ -51,7 +52,7 @@ void ComposerScheduler::start()
 
     for(const Node *node : _model->getNodes())
     {
-        onNodeAdded(node);
+        onNodeAdded(node, false);
     }
 
     processNexts();
@@ -88,11 +89,14 @@ const ExecutorSettings &ComposerScheduler::getSettings() const
     return _settings;
 }
 
-void ComposerScheduler::onNodeAdded(const Node *node)
+void ComposerScheduler::onNodeAdded(const Node *node, bool processNow)
 {
+    AbstractProcessor *processor = ProcessorsFactory::createProcessor(node->getName());
+    _processors[node] = QSharedPointer<AbstractProcessor>(processor);
+
     connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
 
-    if(allInputsProcessed(node))
+    if(processNow && allInputsProcessed(node))
     {
         // If the node only has free plugs, process it ASAP
         processNexts();
@@ -107,8 +111,11 @@ void ComposerScheduler::onNodeRemoved(const Node *node)
     // Untag the node as needeing a reprocess
     _keepProcessingNodes.removeAll(node);
 
-    // Removed the cached data for this node
+    // Remove the cached data for this node
     _processedNodes.remove(node);
+
+    // Remove the pointer to the processor, which will delete now or later
+    _processors.remove(node);
 }
 
 void ComposerScheduler::onNodePropertyChanged()
@@ -395,11 +402,14 @@ void ComposerScheduler::processNexts()
                 Properties inputs;
                 makeInputs(node, inputs);
 
-                ComposerExecutor *executor = new ComposerExecutor(this);
+                ComposerExecutor *executor = new ComposerExecutor(node,
+                                                                  inputs,
+                                                                  _processors[node],
+                                                                  this);
                 connect(executor, SIGNAL(nodeProcessed()), executor, SLOT(deleteLater()));
                 connect(executor, SIGNAL(nodeProcessed()), SLOT(onNodeProcessed()));
                 connect(executor, SIGNAL(executionProgress(qreal)), SLOT(onProgress(qreal)));
-                executor->process(node, inputs);
+                executor->process();
 
                 nodeAddedForProcessing = true;
 
