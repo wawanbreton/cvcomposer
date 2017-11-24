@@ -19,26 +19,24 @@
 
 #include "global/cvutils.h"
 
-cv::VideoCapture *CameraProcessor::_camera = NULL;
-
 
 CameraProcessor::CameraProcessor()
 {
     addOutput("image", PlugType::Image);
 }
 
-bool CameraProcessor::getRealTimeProcessing() const
-{
-    return true;
-}
-
-void CameraProcessor::cleanup()
+CameraProcessor::~CameraProcessor()
 {
     if(_camera)
     {
         delete _camera;
-        _camera = NULL;
+        _camera = Q_NULLPTR;
     }
+}
+
+bool CameraProcessor::getRealTimeProcessing() const
+{
+    return true;
 }
 
 Properties CameraProcessor::processImpl(const Properties &inputs)
@@ -47,7 +45,10 @@ Properties CameraProcessor::processImpl(const Properties &inputs)
 
     cv::Mat outputImage;
 
-    if(_camera == NULL)
+    // Use a QMutexLocker in case of OpenCV exception
+    QMutexLocker locker(&accessMutex());
+
+    if(!_camera)
     {
         _camera = new cv::VideoCapture(0);
     }
@@ -56,6 +57,8 @@ Properties CameraProcessor::processImpl(const Properties &inputs)
     {
         _camera->retrieve(outputImage);
     }
+
+    locker.unlock();
 
     Properties properties;
     properties.insert("image", QVariant::fromValue(outputImage));

@@ -26,13 +26,13 @@ class CameraProcessor : public AbstractProcessor
     public:
         CameraProcessor();
 
-        virtual bool getRealTimeProcessing() const override;
+        ~CameraProcessor();
 
-        static void cleanup();
+        virtual bool getRealTimeProcessing() const override;
 
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
 
     private:
-        static cv::VideoCapture *_camera;
+        cv::VideoCapture *_camera{Q_NULLPTR};
 };

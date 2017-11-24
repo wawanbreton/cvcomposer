@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include <QMutex>
+
 #include <opencv2/core/core.hpp>
 
 #include "global/properties.h"
@@ -70,6 +72,8 @@ class AbstractProcessor : public QObject
 
         virtual Properties processImpl(const Properties &inputs) = 0;
 
+        QMutex &accessMutex() { return _mutex; }
+
     private:
         PlugDefinition makePlug(const QString &name,
                                 PlugType::PlugTypes types,
@@ -82,4 +86,5 @@ class AbstractProcessor : public QObject
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
         int _listProgress;
+        QMutex _mutex;
 };
