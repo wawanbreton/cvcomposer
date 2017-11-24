@@ -18,7 +18,6 @@
 #include "haarcascadeprocessor.h"
 
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -51,6 +50,15 @@ HaarCascadeProcessor::HaarCascadeProcessor()
     addOutput("objects", PlugType::Rectangle, ProcessorListType::Custom);
 }
 
+HaarCascadeProcessor::~HaarCascadeProcessor()
+{
+    if(_classifier)
+    {
+        delete _classifier;
+        _classifier = Q_NULLPTR;
+    }
+}
+
 Properties HaarCascadeProcessor::processImpl(const Properties &inputs)
 {
     QString classifierFile;
@@ -70,14 +78,24 @@ Properties HaarCascadeProcessor::processImpl(const Properties &inputs)
         cv::cvtColor(inputImage, inputImage, cv::COLOR_BGR2GRAY);
     }
 
-    QElapsedTimer timer;
-    timer.start();
+    // Use a QMutexLocker in case of OpenCV exception
+    QMutexLocker locker(&accessMutex());
 
-    cv::CascadeClassifier classifier(classifierFile.toStdString());
-    cv::CascadeClassifier classifier2 = classifier;
+    if(classifierFile != _currentClassifier)
+    {
+        if(_classifier)
+        {
+            delete _classifier;
+        }
+
+        _classifier = new cv::CascadeClassifier(classifierFile.toStdString());
+        _currentClassifier = classifierFile;
+    }
 
     std::vector<cv::Rect> objects;
-    classifier.detectMultiScale(inputImage, objects);
+    _classifier->detectMultiScale(inputImage, objects);
+
+    locker.unlock();
 
     QList<QVariant> objectsConverted;
     for(const cv::Rect &object : objects)

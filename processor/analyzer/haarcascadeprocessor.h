@@ -19,12 +19,20 @@
 
 #include "processor/abstractprocessor.h"
 
+#include <opencv2/objdetect/objdetect.hpp>
+
 class HaarCascadeProcessor : public AbstractProcessor
 {
     public:
         HaarCascadeProcessor();
 
+        ~HaarCascadeProcessor();
+
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
+
+    private:
+        QString _currentClassifier;
+        cv::CascadeClassifier *_classifier{Q_NULLPTR};
 };
 
