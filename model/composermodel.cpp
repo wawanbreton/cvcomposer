@@ -171,8 +171,8 @@ void ComposerModel::addConnection(Plug *output, Plug *input)
             connection->getInput()->signalConnectedTo(NULL);
             connection->getOutput()->signalConnectedTo(NULL);
             iterator.remove();
-            delete connection;
             emit connectionRemoved(connection);
+            delete connection;
         }
     }
 
