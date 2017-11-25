@@ -22,6 +22,7 @@
 #include "processor/analyzer/discretefouriertransformprocessor.h"
 #include "processor/analyzer/findcontoursprocessor.h"
 #include "processor/analyzer/haarcascadeprocessor.h"
+#include "processor/analyzer/mixtureofgaussian2processor.h"
 #include "processor/data/kernelprocessor.h"
 #include "processor/data/sublistprocessor.h"
 #include "processor/data/countlistprocessor.h"
@@ -98,7 +99,8 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
-    analyzers << "DiscreteFourierTransform" << "FindContours" << "HaarCascade";
+    analyzers << "DiscreteFourierTransform" << "FindContours" << "HaarCascade"
+              << "MixtureOfGaussian2";
     processors << QPair<QString, QStringList>("Analyzers", analyzers);
 
     QStringList viewers;
@@ -301,6 +303,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "HaarCascade")
     {
         return new HaarCascadeProcessor();
+    }
+    else if(rawProcessorName == "MixtureOfGaussian2")
+    {
+        return new MixtureOfGaussian2Processor();
     }
     else
     {

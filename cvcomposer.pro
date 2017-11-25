@@ -17,7 +17,7 @@ win32 {
     LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310 -lopencv_objdetect310
 }
 else {
-    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio -lopencv_objdetect
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio -lopencv_objdetect -lopencv_video
 }
 
 
@@ -101,7 +101,8 @@ SOURCES += main.cpp\
     gui/processorsitemmodel.cpp \
     gui/processorsmodelfilter.cpp \
     processor/shape/houghlineprocessor.cpp \
-    processor/analyzer/haarcascadeprocessor.cpp
+    processor/analyzer/haarcascadeprocessor.cpp \
+    processor/analyzer/mixtureofgaussian2processor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -193,7 +194,8 @@ HEADERS  += gui/mainwidget.h \
     gui/processorsitemmodel.h \
     gui/processorsmodelfilter.h \
     processor/shape/houghlineprocessor.h \
-    processor/analyzer/haarcascadeprocessor.h
+    processor/analyzer/haarcascadeprocessor.h \
+    processor/analyzer/mixtureofgaussian2processor.h
 
 FORMS    += \
     gui/mainwidget.ui \
