@@ -114,11 +114,13 @@ ComposerScheduler *ComposerScene::accessScheduler()
 GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
 {
     Node *node = new Node(nodeName, ProcessorsFactory::toUserReadableName(nodeName));
-    _model->addNode(node);
 
     GenericNodeItem *item = new GenericNodeItem(node);
     addItem(item);
     _nodes << item;
+
+    // Give the node to the model only now so that we are ready to receive events
+    _model->addNode(node);
 
     foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
     {
