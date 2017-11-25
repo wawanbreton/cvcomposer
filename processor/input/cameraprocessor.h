@@ -28,7 +28,7 @@ class CameraProcessor : public AbstractProcessor
 
         ~CameraProcessor();
 
-        virtual bool getRealTimeProcessing() const override;
+        virtual bool getKeepProcessing() const override;
 
     protected:
         virtual Properties processImpl(const Properties &inputs) override;

@@ -152,7 +152,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
     return outputs;
 }
 
-bool AbstractProcessor::getRealTimeProcessing() const
+bool AbstractProcessor::getKeepProcessing() const
 {
     return false;
 }

@@ -39,7 +39,7 @@ class AbstractProcessor : public QObject
 
         Properties process(const Properties &inputs);
 
-        virtual bool getRealTimeProcessing() const;
+        virtual bool getKeepProcessing() const;
 
     signals:
         void progress(qreal value);

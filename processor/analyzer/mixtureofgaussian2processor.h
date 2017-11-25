@@ -32,4 +32,3 @@ class MixtureOfGaussian2Processor : public AbstractProcessor
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> _mog;
 };
-

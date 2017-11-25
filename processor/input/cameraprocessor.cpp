@@ -34,9 +34,9 @@ CameraProcessor::~CameraProcessor()
     }
 }
 
-bool CameraProcessor::getRealTimeProcessing() const
+bool CameraProcessor::getKeepProcessing() const
 {
-    return true;
+    return _camera && _camera->isOpened();
 }
 
 Properties CameraProcessor::processImpl(const Properties &inputs)

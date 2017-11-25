@@ -50,36 +50,6 @@ void ComposerExecutor::process()
     start();
 }
 
-const Node *ComposerExecutor::getNode()
-{
-    return _node;
-}
-
-const Properties &ComposerExecutor::getInputs() const
-{
-    return _inputs;
-}
-
-const Properties &ComposerExecutor::getOutputs() const
-{
-    return _outputs;
-}
-
-qint64 ComposerExecutor::getDuration() const
-{
-    return _duration;
-}
-
-const QString &ComposerExecutor::getError() const
-{
-    return _error;
-}
-
-bool ComposerExecutor::getKeepProcessing() const
-{
-    return _keepProcessing;
-}
-
 void ComposerExecutor::run()
 {
     QElapsedTimer timer;
@@ -102,8 +72,6 @@ void ComposerExecutor::run()
 void ComposerExecutor::onFinished()
 {
     qDebug() << "finished" << this << _error;
-
-    _keepProcessing = _processor->getRealTimeProcessing();
 
     // Send the signal when we are fully finished
     emit nodeProcessed();

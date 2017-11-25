@@ -42,17 +42,15 @@ class ComposerExecutor : public QThread
 
         void process();
 
-        const Node *getNode();
+        const Node *getNode() { return _node; }
 
-        const Properties &getInputs() const;
+        const Properties &getInputs() const { return _inputs; }
 
-        const Properties &getOutputs() const;
+        const Properties &getOutputs() const { return _outputs; }
 
-        qint64 getDuration() const;
+        qint64 getDuration() const { return _duration; }
 
-        const QString &getError() const;
-
-        bool getKeepProcessing() const;
+        const QString &getError() const { return _error; }
 
     signals:
         void executionProgress(qreal progress);
@@ -70,7 +68,6 @@ class ComposerExecutor : public QThread
         const QSharedPointer<AbstractProcessor> _processor;
         const Properties _inputs;
         Properties _outputs;
-        bool _keepProcessing{false};
         qint64 _duration{0};
         QString _error;
 };

@@ -29,9 +29,6 @@
 
 ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent) :
     QObject(parent),
-    _currentExecutors(),
-    _oldExecutors(),
-    _keepProcessingNodes(),
     _model(model),
     _end(false)
 {
@@ -107,9 +104,6 @@ void ComposerScheduler::onNodeRemoved(const Node *node)
 {
     // Invalidate potential executors currently running for this node
     cancelExecutors(node);
-
-    // Untag the node as needeing a reprocess
-    _keepProcessingNodes.removeAll(node);
 
     // Remove the cached data for this node
     _processedNodes.remove(node);
@@ -218,11 +212,6 @@ void ComposerScheduler::onNodeProcessed()
             if(current)
             {
                 // The executor is still awaited
-                if(executor->getKeepProcessing())
-                {
-                    _keepProcessingNodes << executor->getNode();
-                }
-
                 emit executorEnded(executor->getNode(),
                                    executor->getOutputs(),
                                    executor->getInputs(),
@@ -427,11 +416,13 @@ void ComposerScheduler::processNexts()
             if(_currentExecutors.count() == 0)
             {
                 // And no executor is running => we are globally over
-                foreach(const Node *node, _keepProcessingNodes)
+                for(auto iterator = _processors.begin() ; iterator != _processors.end() ; ++iterator)
                 {
-                    reProcessFromNode(node);
+                    if(iterator.value()->getKeepProcessing())
+                    {
+                        reProcessFromNode(iterator.key());
+                    }
                 }
-                _keepProcessingNodes.clear();
             }
 
             return;

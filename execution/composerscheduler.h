@@ -106,8 +106,7 @@ class ComposerScheduler : public QObject
         ExecutorSettings _settings;
         QList<ComposerExecutor *> _currentExecutors;
         QList<ComposerExecutor *> _oldExecutors;
-        QList<const Node *> _keepProcessingNodes;
-        const ComposerModel *_model;
+        const ComposerModel *_model{Q_NULLPTR};
         QMap<const Node *, QSharedPointer<AbstractProcessor>> _processors;
         QMap<const Node *, Properties> _processedNodes;
         bool _end;
