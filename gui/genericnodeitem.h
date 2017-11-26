@@ -122,5 +122,4 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         qreal _executionProgress{-1};
         bool _mouseOverBottom{false};
         bool _mouseOverHelp{false};
-        QList<QPair<QString, QString>> _helpMessages;
 };

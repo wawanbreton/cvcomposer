@@ -53,6 +53,8 @@ class Node : public QObject
 
         const Properties &getProperties() const;
 
+        const QList<QPair<QString, QString>> &getHelpMessages() const { return _helpMessages; }
+
     public slots:
         void setProperty(const QString &name, const QVariant &value);
 
@@ -65,4 +67,5 @@ class Node : public QObject
         QList<Plug *> _inputs;
         QList<Plug *> _outputs;
         Properties _properties;
+        QList<QPair<QString, QString>> _helpMessages;
 };

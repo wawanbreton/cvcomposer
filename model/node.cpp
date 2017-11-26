@@ -49,6 +49,8 @@ Node::Node(const QString &name,
             _properties.insert(output.name, output.defaultValue);
         }
 
+        _helpMessages = processor->getHelpMessages();
+
         delete processor;
     }
 }

@@ -27,13 +27,19 @@
 
 ImagesFromFolderProcessor::ImagesFromFolderProcessor()
 {
+    // Inputs
     Properties pathProperties;
     pathProperties.insert("folder", true);
     addInput("path", PlugType::Path, QVariant(), pathProperties);
 
     addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), CV_LOAD_IMAGE_COLOR);
 
+    // Outputs
     addOutput("images", PlugType::Image, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("imread", CvUtils::makeUrl({"d4", "da8", "group__imgcodecs"}, "ga288b8b3da0892bd651fce07b3bbd3a56"));
+    addHelpMessage("tutorial", CvUtils::makeUrl({"db", "d64", "tutorial_load_save_image"}));
 }
 
 Properties ImagesFromFolderProcessor::processImpl(const Properties &inputs)

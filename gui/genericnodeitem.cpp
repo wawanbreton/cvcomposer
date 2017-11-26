@@ -80,9 +80,6 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
         }
     }
 
-    _helpMessages.append({"toto", "http://www.google.fr"});
-    _helpMessages.append({"tata", "http://www.google.com"});
-
     recomputeSizes();
 }
 
@@ -226,7 +223,7 @@ void GenericNodeItem::nodeInvalid()
 
 QCursor GenericNodeItem::overrideMouseCursor(const QPointF &mousePos)
 {
-    if((!_helpMessages.isEmpty() && _mouseOverHelp) ||
+    if((!_node->getHelpMessages().isEmpty() && _mouseOverHelp) ||
        (!_executionError.isEmpty() && _mouseOverBottom))
     {
         return Qt::PointingHandCursor;
@@ -242,7 +239,7 @@ QCursor GenericNodeItem::overrideMouseCursor(const QPointF &mousePos)
 bool GenericNodeItem::startDragging(const QPointF &mousePos)
 {
     return mousePos.y() < titleHeight &&
-           (_helpMessages.isEmpty() ||
+           (_node->getHelpMessages().isEmpty() ||
             mousePos.x() < computeBaseRect().right() - 2 * markMargin - markSide);
 }
 
@@ -392,7 +389,7 @@ void GenericNodeItem::paint(QPainter *painter,
         painter->drawText(durationRect, Qt::AlignLeft | Qt::AlignVCenter, _executionDuration);
     }
 
-    if(!_helpMessages.isEmpty())
+    if(!_node->getHelpMessages().isEmpty())
     {
         // Draw the help button
         QRectF helpRect(baseRect.right() - markMargin - markSide,
@@ -455,13 +452,13 @@ void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             event->accept();
             ErrorDisplayDialog::displayError(_executionError);
         }
-        else if(_mouseOverHelp && !_helpMessages.isEmpty())
+        else if(_mouseOverHelp && !_node->getHelpMessages().isEmpty())
         {
             event->accept();
 
             QMenu *menu = new QMenu();
 
-            for(const QPair<QString, QString> &helpMessage : _helpMessages)
+            for(const QPair<QString, QString> &helpMessage : _node->getHelpMessages())
             {
                 menu->addAction(helpMessage.first);
             }
@@ -488,7 +485,7 @@ QRectF GenericNodeItem::computeBaseRect() const
     QFontMetrics metrics(titleFont);
     int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width();
     titleWidth += 2 * PlugItem::radius;
-    if(!_helpMessages.isEmpty())
+    if(!_node->getHelpMessages().isEmpty())
     {
         titleWidth += (2 * markMargin + markSide) * 2;
     }
@@ -547,7 +544,7 @@ void GenericNodeItem::onExecutionAnimationOver()
 
 void GenericNodeItem::onHelpMenuActionTriggered(QAction *action)
 {
-    for(const QPair<QString, QString> &helpMessage : _helpMessages)
+    for(const QPair<QString, QString> &helpMessage : _node->getHelpMessages())
     {
         if(helpMessage.first == action->text())
         {

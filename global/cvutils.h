@@ -36,6 +36,8 @@ namespace CvUtils
     qreal degToRad(qreal valueDeg);
 
     QString makeFilterFromFileFormats(const QList<QPair<QString, QStringList>> &formats);
+
+    QString makeUrl(const QStringList &parts, const QString &tag = "");
 }
 
 Q_DECLARE_METATYPE(cv::Point)
