@@ -24,6 +24,7 @@
 
 DrawTextProcessor::DrawTextProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image);
 
     // TODO : manage multiple texts with multiples positions
@@ -61,7 +62,14 @@ DrawTextProcessor::DrawTextProcessor()
     originValues << QPair<QString, QVariant>("Bottom-left", true);
     addEnumerationInput("origin", originValues, false);
 
+    // Outputs
     addOutput("output image", PlugType::Image);
+
+    // Help
+    addHelpMessage("putText",
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga5126f47f883d730f633d74f07456c576"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"dc", "da5", "tutorial_py_drawing_functions"}));
 }
 
 Properties DrawTextProcessor::processImpl(const Properties &inputs)

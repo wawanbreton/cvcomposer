@@ -22,8 +22,15 @@
 
 SplitChannelsProcessor::SplitChannelsProcessor()
 {
+    // Inputs
     addInput("image", PlugType::Image);
+
+    //Outputs
     addOutput("channels", PlugType::Image, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("extractChannel",
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gacc6158574aa1f0281878c955bcf35642"));
 }
 
 Properties SplitChannelsProcessor::processImpl(const Properties &inputs)

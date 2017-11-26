@@ -50,9 +50,12 @@ PyramidProcessor::PyramidProcessor()
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 
     // Help
-    addHelpMessage("pyrUp", CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gada75b59bdaaca411ed6fee10085eb784"));
-    addHelpMessage("pyrDown", CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaf9bba239dfca11654cb7f50f889fc2ff"));
-    addHelpMessage("tutorial", CvUtils::makeUrl({"d4", "d1f", "tutorial_pyramids"}));
+    addHelpMessage("pyrUp",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gada75b59bdaaca411ed6fee10085eb784"));
+    addHelpMessage("pyrDown",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaf9bba239dfca11654cb7f50f889fc2ff"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d1f", "tutorial_pyramids"}));
 }
 
 Properties PyramidProcessor::processImpl(const Properties &inputs)

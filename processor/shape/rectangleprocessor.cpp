@@ -22,6 +22,7 @@
 
 RectangleProcessor::RectangleProcessor()
 {
+    // Inputs
     addInput("position", PlugType::Point, QVariant::fromValue(cv::Point(0, 0)));
 
     QList<QPair<QString, QVariant> > anchorValues;
@@ -34,7 +35,11 @@ RectangleProcessor::RectangleProcessor()
 
     addInput("size", PlugType::Size, QVariant::fromValue(cv::Size(10, 10)));
 
+    // Outputs
     addOutput("rectangle", PlugType::Rectangle);
+
+    // Help
+    addHelpMessage("Rect", CvUtils::makeUrl({"d2", "d44", "classcv_1_1Rect__"}));
 }
 
 Properties RectangleProcessor::processImpl(const Properties &inputs)

@@ -26,7 +26,10 @@
 
 AverageProcessor::AverageProcessor()
 {
+    // Inputs
     addInput("input images", PlugType::Image, ProcessorListType::Custom);
+
+    // Outputs
     addOutput("output image", PlugType::Image);
 }
 

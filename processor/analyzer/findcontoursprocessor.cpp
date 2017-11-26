@@ -27,6 +27,7 @@
 
 FindContoursProcessor::FindContoursProcessor()
 {
+    // Inputs
     addInput("image", PlugType::Image);
 
     QList<QPair<QString, QVariant> > modes;
@@ -45,7 +46,15 @@ FindContoursProcessor::FindContoursProcessor()
 
     addInput("offset", PlugType::Point);
 
+    // Outputs
     addOutput("contours", PlugType::Contour, ProcessorListType::Custom);
+
+
+    // Help
+    addHelpMessage("findContours",
+                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga17ed9f5d79ae97bd4c7cf18403e1689a"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"df", "d0d", "tutorial_find_contours"}));
 }
 
 Properties FindContoursProcessor::processImpl(const Properties &inputs)

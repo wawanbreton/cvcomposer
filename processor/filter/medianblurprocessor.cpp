@@ -25,6 +25,7 @@
 MedianBlurProcessor::MedianBlurProcessor() :
     AbstractProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties sizeProperties;
@@ -32,7 +33,14 @@ MedianBlurProcessor::MedianBlurProcessor() :
     sizeProperties.insert("decimals", 0);
     addInput("size", PlugType::Double,  1.0, sizeProperties);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("medianBlur",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga564869aa33e58769b4469101aac458f9"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
 }
 
 Properties MedianBlurProcessor::processImpl(const Properties &inputs)

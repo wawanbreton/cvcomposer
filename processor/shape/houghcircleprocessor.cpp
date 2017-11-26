@@ -28,6 +28,7 @@
 
 HoughCircleProcessor::HoughCircleProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image);
 
     Properties ratioProperties;
@@ -45,7 +46,14 @@ HoughCircleProcessor::HoughCircleProcessor()
     addInput("minimum radius", PlugType::Double, 0, radiusProperties);
     addInput("maximum radius", PlugType::Double, 0, radiusProperties);
 
+    // Outputs
     addOutput("circles", PlugType::Circle, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("HoughCircles",
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga47849c3be0d0406ad3ca45db65a25d2d"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d70", "tutorial_hough_circle"}));
 }
 
 Properties HoughCircleProcessor::processImpl(const Properties &inputs)

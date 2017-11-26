@@ -24,6 +24,7 @@
 
 SobelProcessor::SobelProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     QList<QPair<QString, QVariant> > methods;
@@ -49,7 +50,16 @@ SobelProcessor::SobelProcessor()
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("Sobel",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gacea54f142e81b6758cb6f375ce782c8d"));
+    addHelpMessage("Scharr",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaa13106761eedf14798f37aa2d60404c9"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d2", "d2c", "tutorial_sobel_derivatives"}));
 }
 
 Properties SobelProcessor::processImpl(const Properties &inputs)

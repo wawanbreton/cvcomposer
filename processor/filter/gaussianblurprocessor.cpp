@@ -27,6 +27,7 @@
 GaussianBlurProcessor::GaussianBlurProcessor() :
     AbstractProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties sizeProperties;
@@ -41,7 +42,14 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("GaussianBlur",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaabe8c836e97159a9193fb0b11ac52cf1"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
 }
 
 Properties GaussianBlurProcessor::processImpl(const Properties &inputs)

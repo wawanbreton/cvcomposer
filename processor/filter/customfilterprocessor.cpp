@@ -24,6 +24,7 @@
 
 CustomFilterProcessor::CustomFilterProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     addInput("kernel", PlugType::Kernel);
@@ -47,7 +48,14 @@ CustomFilterProcessor::CustomFilterProcessor()
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("filter2D",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga27c049795ce870216ddfb366086b5a04"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "dbd", "tutorial_filter_2d"}));
 }
 
 Properties CustomFilterProcessor::processImpl(const Properties &inputs)

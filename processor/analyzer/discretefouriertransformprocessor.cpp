@@ -26,8 +26,17 @@ using namespace cv;
 
 DiscreteFourierTransformProcessor::DiscreteFourierTransformProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
+
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("dft",
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gadd6cf9baf2b8b704a11b5f04aaf4f39d"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d8", "d01", "tutorial_discrete_fourier_transform"}));
 }
 
 Properties DiscreteFourierTransformProcessor::processImpl(const Properties &inputs)

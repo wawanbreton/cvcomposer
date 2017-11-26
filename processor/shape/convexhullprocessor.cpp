@@ -25,10 +25,18 @@
 
 ConvexHullProcessor::ConvexHullProcessor()
 {
+    // Inputs
     addInput("contour", PlugType::Contour, ProcessorListType::Simple);
     addInput("clockwise", PlugType::Boolean);
 
+    // Outputs
     addOutput("hull", PlugType::Contour, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("convexHull",
+                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga014b28e56cb8854c0de4a211cb2be656"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d7", "d1d", "tutorial_hull"}));
 }
 
 Properties ConvexHullProcessor::processImpl(const Properties &inputs)

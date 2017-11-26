@@ -24,6 +24,7 @@
 
 CannyProcessor::CannyProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     addInput("threshold 1", PlugType::Double, 64.0);
@@ -36,7 +37,14 @@ CannyProcessor::CannyProcessor()
 
     addInput("L2gradient", PlugType::Boolean);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("Canny",
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga04723e007ed888ddf11d9ba04e2232de"));
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"da", "d22", "tutorial_py_canny"}));
 }
 
 Properties CannyProcessor::processImpl(const Properties &inputs)
