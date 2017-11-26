@@ -17,13 +17,20 @@
 
 #include "composerwidget.h"
 
+#include <QVBoxLayout>
+
 #include "composerscene.h"
+#include "model/composermodel.h"
+#include "model/node.h"
 
 
 ComposerWidget::ComposerWidget(QWidget *parent) :
-    InteractiveGraphicsView(parent)
+    InteractiveGraphicsView(parent),
+    _helpLabel(new QLabel(this))
 {
-    setScene(new ComposerScene(this));
+    ComposerScene *scene = new ComposerScene(this);
+    setScene(scene);
+
     setSceneRect(-2000, -2000, 4000, 4000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -31,6 +38,24 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     setRenderHint(QPainter::Antialiasing, true);
     setOptimizationFlag(QGraphicsView::DontSavePainterState, true);
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
+    // Help label, to disapper as soon as the users has understood what to do
+    _helpLabel->setText("Drag & Drop processors here to start composing");
+    _helpLabel->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
+    QFont bigFont;
+    bigFont.setPointSize(18);
+    _helpLabel->setFont(bigFont);
+    _helpLabel->setAlignment(Qt::AlignCenter);
+
+    QPalette palette;
+    palette.setColor(QPalette::Text, Qt::white);
+    _helpLabel->setPalette(palette);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(_helpLabel);
+
+    connect(scene->getModel(), &ComposerModel::nodeAdded, _helpLabel, &QLabel::hide);
 }
 
 void ComposerWidget::replaceScene(QGraphicsScene *newScene)
@@ -40,4 +65,6 @@ void ComposerWidget::replaceScene(QGraphicsScene *newScene)
 
     newScene->setParent(this);
     setScene(newScene);
+
+    _helpLabel->hide();
 }

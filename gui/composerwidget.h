@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERWIDGET_H
-#define COMPOSERWIDGET_H
+#pragma once
 
 #include "interactivegraphicsview.h"
 
 #include <QGraphicsScene>
+#include <QLabel>
 
 class ComposerWidget : public InteractiveGraphicsView
 {
@@ -30,6 +30,7 @@ class ComposerWidget : public InteractiveGraphicsView
         explicit ComposerWidget(QWidget *parent = NULL);
 
         void replaceScene(QGraphicsScene *scene);
-};
 
-#endif // COMPOSERWIDGET_H
+    private:
+        QLabel *_helpLabel{Q_NULLPTR};
+};

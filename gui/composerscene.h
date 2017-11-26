@@ -52,6 +52,8 @@ class ComposerScene : public QGraphicsScene
 
         GenericNodeItem *addNode(const QString &nodeName);
 
+        const ComposerModel *getModel() const { return _model; }
+
         void save(QDomDocument &doc, QMainWindow *mainWindow) const;
 
         void end();
