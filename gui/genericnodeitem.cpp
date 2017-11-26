@@ -18,10 +18,12 @@
 #include "genericnodeitem.h"
 
 #include <QDebug>
+#include <QDesktopServices>
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QTimer>
 #include <QLayout>
+#include <QMenu>
 #include <QFontMetrics>
 #include <QStyleOptionGraphicsItem>
 #include <QVariantAnimation>
@@ -40,15 +42,7 @@
 GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
-    _widget(new GenericNodeWidget()),
-    _inputPlugs(),
-    _outputPlugs(),
-    _animationExecution(NULL),
-    _executionMarkOpacity(0),
-    _executionDuration(),
-    _executionError(),
-    _executionProgress(-1),
-    _mouseOverBottom(false)
+    _widget(new GenericNodeWidget())
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -67,7 +61,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     proxy->setWidget(_widget);
     proxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
 
-    foreach(Plug *plug, _node->getInputs())
+    for(Plug *plug : _node->getInputs())
     {
         if(PlugType::isInputPluggable(plug->getDefinition().types) != PlugType::ManualOnly)
         {
@@ -77,7 +71,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
                           SLOT(onPlugConnectionChanged(const Plug*)));
         }
     }
-    foreach(Plug *plug, _node->getOutputs())
+    for(Plug *plug : _node->getOutputs())
     {
         if(!PlugType::isOutputInternal(plug->getDefinition().types))
         {
@@ -85,6 +79,9 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
             _outputPlugs << plugItem;
         }
     }
+
+    _helpMessages.append({"toto", "http://www.google.fr"});
+    _helpMessages.append({"tata", "http://www.google.com"});
 
     recomputeSizes();
 }
@@ -227,14 +224,26 @@ void GenericNodeItem::nodeInvalid()
     update();
 }
 
-QCursor GenericNodeItem::overrideMouseCursor()
+QCursor GenericNodeItem::overrideMouseCursor(const QPointF &mousePos)
 {
-    if(!_executionError.isEmpty() && _mouseOverBottom)
+    if((!_helpMessages.isEmpty() && _mouseOverHelp) ||
+       (!_executionError.isEmpty() && _mouseOverBottom))
     {
         return Qt::PointingHandCursor;
     }
+    else if(mousePos.y() < titleHeight)
+    {
+        return Qt::OpenHandCursor;
+    }
 
     return QCursor();
+}
+
+bool GenericNodeItem::startDragging(const QPointF &mousePos)
+{
+    return mousePos.y() < titleHeight &&
+           (_helpMessages.isEmpty() ||
+            mousePos.x() < computeBaseRect().right() - 2 * markMargin - markSide);
 }
 
 QRectF GenericNodeItem::boundingRect() const
@@ -300,8 +309,6 @@ void GenericNodeItem::paint(QPainter *painter,
                       _node->getUserReadableName());
 
     // Draw the execution mark
-    const qreal markSide = 16;
-    qreal markMargin = (titleHeight - markSide) / 2;
     if(_executionMarkOpacity > 0)
     {
         const int progressWidth = 80;
@@ -346,7 +353,7 @@ void GenericNodeItem::paint(QPainter *painter,
 
         if(_mouseOverBottom)
         {
-            markRect.adjust(-2, -2, 2, 2);
+            markRect.adjust(-markExtraSide, -markExtraSide, markExtraSide, markExtraSide);
             linesPercent = 0.9;
         }
 
@@ -384,14 +391,44 @@ void GenericNodeItem::paint(QPainter *painter,
         painter->setPen(widget->palette().text().color());
         painter->drawText(durationRect, Qt::AlignLeft | Qt::AlignVCenter, _executionDuration);
     }
+
+    if(!_helpMessages.isEmpty())
+    {
+        // Draw the help button
+        QRectF helpRect(baseRect.right() - markMargin - markSide,
+                        baseRect.top() + markMargin,
+                        markSide,
+                        markSide);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(52, 152, 219));
+
+        if(_mouseOverHelp)
+        {
+            helpRect.adjust(-markExtraSide, -markExtraSide, markExtraSide, markExtraSide);
+        }
+        painter->drawEllipse(helpRect);
+
+        painter->setPen(Qt::white);
+        painter->drawText(helpRect, Qt::AlignCenter, "?");
+    }
 }
 
 void GenericNodeItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    bool mouseOverBottom = event->pos().y() > computeBaseRect().height() - titleHeight;
+    QRectF baseRect = computeBaseRect();
+
+    bool mouseOverBottom = event->pos().y() > baseRect.height() - titleHeight;
     if(mouseOverBottom != _mouseOverBottom)
     {
         _mouseOverBottom = mouseOverBottom;
+        update();
+    }
+
+    bool mouseOverHelp = event->pos().y() < titleHeight &&
+                         event->pos().x() > (baseRect.width() - 2 * markMargin - markSide);
+    if(mouseOverHelp != _mouseOverHelp)
+    {
+        _mouseOverHelp = mouseOverHelp;
         update();
     }
 }
@@ -400,21 +437,43 @@ void GenericNodeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     Q_UNUSED(event)
 
-    if(_mouseOverBottom)
+    if(_mouseOverBottom || _mouseOverHelp)
     {
-        _mouseOverBottom = false;
         update();
     }
+
+    _mouseOverBottom = false;
+    _mouseOverHelp = false;
 }
 
 void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton && _mouseOverBottom && !_executionError.isEmpty())
+    if(event->button() == Qt::LeftButton)
     {
-        event->accept();
-        ErrorDisplayDialog::displayError(_executionError);
+        if(_mouseOverBottom && !_executionError.isEmpty())
+        {
+            event->accept();
+            ErrorDisplayDialog::displayError(_executionError);
+        }
+        else if(_mouseOverHelp && !_helpMessages.isEmpty())
+        {
+            event->accept();
+
+            QMenu *menu = new QMenu();
+
+            for(const QPair<QString, QString> &helpMessage : _helpMessages)
+            {
+                menu->addAction(helpMessage.first);
+            }
+
+            connect(menu, &QMenu::triggered, this, &GenericNodeItem::onHelpMenuActionTriggered);
+            connect(menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater);
+
+            menu->popup(event->screenPos());
+        }
     }
-    else
+
+    if(!event->isAccepted())
     {
         QGraphicsItem::mousePressEvent(event);
     }
@@ -423,10 +482,16 @@ void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 QRectF GenericNodeItem::computeBaseRect() const
 {
     int widgetWidth = _widget->sizeHint().width() + 4 * PlugItem::radius;
+
     QFont titleFont;
     titleFont.setPixelSize(titleFontSize);
     QFontMetrics metrics(titleFont);
-    int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width() + 2 * PlugItem::radius;
+    int titleWidth = metrics.boundingRect(_node->getUserReadableName()).width();
+    titleWidth += 2 * PlugItem::radius;
+    if(!_helpMessages.isEmpty())
+    {
+        titleWidth += (2 * markMargin + markSide) * 2;
+    }
 
     return QRectF(0,
                   0,
@@ -478,4 +543,18 @@ void GenericNodeItem::onExecutionAnimationOver()
     QAbstractAnimation::Direction direction = _animationExecution->direction();
     _animationExecution->setDirection(direction == QAbstractAnimation::Forward ? QAbstractAnimation::Backward : QAbstractAnimation::Forward);
     _animationExecution->start();
+}
+
+void GenericNodeItem::onHelpMenuActionTriggered(QAction *action)
+{
+    for(const QPair<QString, QString> &helpMessage : _helpMessages)
+    {
+        if(helpMessage.first == action->text())
+        {
+            QDesktopServices::openUrl(helpMessage.second);
+            return;
+        }
+    }
+
+    qCritical() << "action text" << action->text() << "not found ?!";
 }
