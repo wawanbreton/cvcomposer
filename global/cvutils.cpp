@@ -218,12 +218,6 @@ QString CvUtils::makeFilterFromFileFormats(const QList<QPair<QString, QStringLis
     return filters.join(";;");
 }
 
-
-qreal CvUtils::degToRad(qreal valueDeg)
-{
-    return (valueDeg / 180) * M_PI;
-}
-
 QString CvUtils::makeUrl(const QStringList &parts, const QString &tag)
 {
     QString url = "https://docs.opencv.org/3.1.0/";

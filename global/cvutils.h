@@ -33,8 +33,6 @@ namespace CvUtils
 
     QList<QPair<QString, QStringList>> getImageFormats();
 
-    qreal degToRad(qreal valueDeg);
-
     QString makeFilterFromFileFormats(const QList<QPair<QString, QStringList>> &formats);
 
     QString makeUrl(const QStringList &parts, const QString &tag = "");

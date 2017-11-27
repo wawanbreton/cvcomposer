@@ -20,6 +20,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <QDebug>
+#include <QtMath>
 
 #include "global/cvutils.h"
 #include "model/line.h"
@@ -82,12 +83,12 @@ Properties HoughLineProcessor::processImpl(const Properties &inputs)
     cv::HoughLines(inputImage,
                    lines,
                    inputs["distance resolution"].toDouble(),
-                   CvUtils::degToRad(inputs["angle resolution"].toDouble()),
+                   qDegreesToRadians(inputs["angle resolution"].toDouble()),
                    inputs["threshold"].toInt(),
                    inputs["multi-scale angle"].toInt(),
                    inputs["multi-scale distance"].toInt(),
-                   CvUtils::degToRad(inputs["min angle"].toDouble()),
-                   CvUtils::degToRad(inputs["max angle"].toDouble()));
+                   qDegreesToRadians(inputs["min angle"].toDouble()),
+                   qDegreesToRadians(inputs["max angle"].toDouble()));
 
     Properties outputs;
 
