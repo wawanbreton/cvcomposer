@@ -464,9 +464,9 @@ void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
 
             connect(menu, &QMenu::triggered, this, &GenericNodeItem::onHelpMenuActionTriggered);
-            connect(menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater);
 
             menu->popup(event->screenPos());
+            // Menu seems to delete itself, no need to do it
         }
     }
 
