@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -17,17 +17,26 @@
 
 #pragma once
 
-#include "model/plugtype.h"
-#include "global/properties.h"
-#include "global/threestatebool.h"
-#include "processor/processorlisttype.h"
+#include <QDialog>
 
-typedef struct PlugDefinitionStruct
+#include "model/plugdefinition.h"
+
+namespace Ui { class PlugTypesHelpDialog; }
+
+class PlugTypesHelpDialog : public QDialog
 {
-    QString name;
-    PlugType::PlugTypes types;
-    Properties widgetProperties;
-    QVariant defaultValue;
-    ThreeStateBool::Enum labelVisible{ThreeStateBool::None};
-    ProcessorListType::Enum listSupport{ProcessorListType::None};
-} PlugDefinition;
+    Q_OBJECT
+
+    public:
+        explicit PlugTypesHelpDialog(QWidget *parent = Q_NULLPTR);
+
+        ~PlugTypesHelpDialog();
+
+    private:
+        void addPlugTypeHelp(const PlugDefinition &plugDef, const QString &text);
+
+        void addSpacer();
+
+    private:
+        Ui::PlugTypesHelpDialog *_ui;
+};

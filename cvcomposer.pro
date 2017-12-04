@@ -102,7 +102,8 @@ SOURCES += main.cpp\
     gui/processorsmodelfilter.cpp \
     processor/shape/houghlineprocessor.cpp \
     processor/analyzer/haarcascadeprocessor.cpp \
-    processor/analyzer/mixtureofgaussian2processor.cpp
+    processor/analyzer/mixtureofgaussian2processor.cpp \
+    gui/plugtypeshelpdialog.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -197,13 +198,15 @@ HEADERS  += gui/mainwidget.h \
     processor/analyzer/haarcascadeprocessor.h \
     processor/analyzer/mixtureofgaussian2processor.h \
     processor/helpmessagetype.h \
-    processor/helpmessage.h
+    processor/helpmessage.h \
+    gui/plugtypeshelpdialog.h
 
 FORMS    += \
     gui/mainwidget.ui \
     gui/editsettingsdialog.ui \
     gui/errordisplaydialog.ui \
-    plugwidget/imageviewerdockwidget.ui
+    plugwidget/imageviewerdockwidget.ui \
+    gui/plugtypeshelpdialog.ui
 
 RESOURCES += \
     resources.qrc

@@ -35,6 +35,7 @@
 #include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/editsettingsdialog.h"
+#include "gui/plugtypeshelpdialog.h"
 #include "gui/processorsitemmodel.h"
 #include "gui/processorsmodelfilter.h"
 
@@ -236,7 +237,9 @@ void MainWidget::onSettingsAccepted()
 
 void MainWidget::onDisplayPlugTypesHelp()
 {
-
+    PlugTypesHelpDialog *dialog = new PlugTypesHelpDialog(this);
+    connect(dialog, &PlugTypesHelpDialog::finished, dialog, &PlugTypesHelpDialog::deleteLater);
+    dialog->show();
 }
 
 void MainWidget::onDisplayLicence()
