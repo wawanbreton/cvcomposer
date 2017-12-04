@@ -112,6 +112,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
     private:
         Node *_node{Q_NULLPTR};
+        QGraphicsProxyWidget *_widgetProxy{Q_NULLPTR};
         GenericNodeWidget *_widget{Q_NULLPTR};
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;

@@ -78,7 +78,6 @@ SOURCES += main.cpp\
     processor/viewer/imageviewerprocessor.cpp \
     plugwidget/imageviewerwidget.cpp \
     processor/math/countnonzeroprocessor.cpp \
-    gui/boundedgraphicsproxywidget.cpp \
     processor/shape/circleprocessor.cpp \
     processor/shape/houghcircleprocessor.cpp \
     processor/data/sublistprocessor.cpp \
@@ -166,7 +165,6 @@ HEADERS  += gui/mainwidget.h \
     processor/viewer/imageviewerprocessor.h \
     plugwidget/imageviewerwidget.h \
     processor/math/countnonzeroprocessor.h \
-    gui/boundedgraphicsproxywidget.h \
     model/circle.h \
     processor/shape/circleprocessor.h \
     processor/shape/houghcircleprocessor.h \

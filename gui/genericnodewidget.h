@@ -70,7 +70,7 @@ class GenericNodeWidget : public QWidget
     private:
         AbstractPlugWidget *makePlugWidget(const PlugDefinition &plug);
 
-        void makeLabelText(const PlugWidget &widget, bool plugged);
+        void makeLabelText(const PlugWidget &widget);
 
     private slots:
         void onWidgetValueChanged(const QString &propertyName);

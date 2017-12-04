@@ -75,7 +75,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             {
                 widget.label = new QLabel(this);
                 widget.label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                makeLabelText(widget, true);
+                makeLabelText(widget);
 
                 widget.widget = NULL;
 
@@ -112,7 +112,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
             {
                 widget.label = new QLabel(this);
                 widget.label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-                makeLabelText(widget, false);
+                makeLabelText(widget);
                 hasLabel = true;
             }
 
@@ -219,7 +219,6 @@ void GenericNodeWidget::setInputPlugged(const QString &inputName, bool plugged)
         widget.widget->setVisible(PlugType::isWidgetAlwaysVisible(widget.definition.types) ||
                                   not plugged);
     }
-    makeLabelText(widget, plugged);
 }
 
 void GenericNodeWidget::setPlugProperty(const QString &name, const QVariant &value)
@@ -338,27 +337,22 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
         {
             widget->setValue(plug.defaultValue);
         }
+
+        QSizePolicy sizePolicy = widget->sizePolicy();
+        sizePolicy.setRetainSizeWhenHidden(true);
+        widget->setSizePolicy(sizePolicy);
     }
 
     return widget;
 }
 
-void GenericNodeWidget::makeLabelText(const PlugWidget &widget, bool plugged)
+void GenericNodeWidget::makeLabelText(const PlugWidget &widget)
 {
     if(widget.label)
     {
         QString text = widget.definition.name;
         text = text[0].toUpper() + text.mid(1);
-
-        if((plugged || PlugType::isInputPluggable(widget.definition.types) == PlugType::Mandatory) &&
-           not PlugType::isWidgetAlwaysVisible(widget.definition.types))
-        {
-            widget.label->setText(text);
-        }
-        else
-        {
-            widget.label->setText(text + " :");
-        }
+        widget.label->setText(text);
     }
 }
 

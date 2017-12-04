@@ -31,7 +31,6 @@
 
 #include "model/node.h"
 #include "global/properties.h"
-#include "gui/boundedgraphicsproxywidget.h"
 #include "gui/customitems.h"
 #include "gui/errordisplaydialog.h"
 #include "gui/plugitem.h"
@@ -57,9 +56,9 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
             node,    SLOT(setProperty(QString,QVariant)));
 
-    QGraphicsProxyWidget *proxy = new BoundedGraphicsProxyWidget(this);
-    proxy->setWidget(_widget);
-    proxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
+    _widgetProxy = new QGraphicsProxyWidget(this);
+    _widgetProxy->setWidget(_widget);
+    _widgetProxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
 
     for(Plug *plug : _node->getInputs())
     {
@@ -526,8 +525,16 @@ void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
 void GenericNodeItem::recomputeSizes()
 {
     QRectF actualBaseRect = computeBaseRect();
-    _widget->resize(actualBaseRect.width() - 4 * PlugItem::radius,
-                    actualBaseRect.height() - titleHeight * 2 - 4 * PlugItem::radius);
+
+    int widgetWidth = actualBaseRect.width() - 4 * PlugItem::radius;
+    int widgetHeight = actualBaseRect.height() - titleHeight * 2 - 4 * PlugItem::radius;
+
+    QRectF proxyGeometry = _widgetProxy->geometry();
+    proxyGeometry.setWidth(widgetWidth);
+    proxyGeometry.setHeight(widgetHeight);
+    _widgetProxy->setGeometry(proxyGeometry);
+
+    _widget->resize(widgetWidth, widgetHeight);
 
     foreach(PlugItem *plugItem, _inputPlugs)
     {
