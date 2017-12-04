@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>Ubuntu-R.ttf</file>
+        <file>resources/Ubuntu-R.ttf</file>
+        <file>resources/book.svg</file>
+        <file>resources/brackets.svg</file>
+        <file>resources/class.svg</file>
     </qresource>
 </RCC>

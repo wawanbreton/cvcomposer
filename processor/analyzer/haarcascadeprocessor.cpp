@@ -53,9 +53,11 @@ HaarCascadeProcessor::HaarCascadeProcessor()
 
     // Help
     addHelpMessage("CascadeClassifier",
-                   CvUtils::makeUrl({"d1", "de5", "classcv_1_1CascadeClassifier"}));
+                   CvUtils::makeUrl({"d1", "de5", "classcv_1_1CascadeClassifier"}),
+                   HelpMessageType::Class);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"db", "d28", "tutorial_cascade_classifier"}));
+                   CvUtils::makeUrl({"db", "d28", "tutorial_cascade_classifier"}),
+                   HelpMessageType::Tutorial);
 }
 
 HaarCascadeProcessor::~HaarCascadeProcessor()

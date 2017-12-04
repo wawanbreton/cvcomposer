@@ -39,7 +39,9 @@ RectangleProcessor::RectangleProcessor()
     addOutput("rectangle", PlugType::Rectangle);
 
     // Help
-    addHelpMessage("Rect", CvUtils::makeUrl({"d2", "d44", "classcv_1_1Rect__"}));
+    addHelpMessage("Rect",
+                   CvUtils::makeUrl({"d2", "d44", "classcv_1_1Rect__"}),
+                   HelpMessageType::Class);
 }
 
 Properties RectangleProcessor::processImpl(const Properties &inputs)

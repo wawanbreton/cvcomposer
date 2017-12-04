@@ -42,9 +42,11 @@ CannyProcessor::CannyProcessor()
 
     // Help
     addHelpMessage("Canny",
-                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga04723e007ed888ddf11d9ba04e2232de"));
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga04723e007ed888ddf11d9ba04e2232de"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"da", "d22", "tutorial_py_canny"}));
+                   CvUtils::makeUrl({"da", "d22", "tutorial_py_canny"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties CannyProcessor::processImpl(const Properties &inputs)

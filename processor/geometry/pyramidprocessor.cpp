@@ -51,11 +51,14 @@ PyramidProcessor::PyramidProcessor()
 
     // Help
     addHelpMessage("pyrUp",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gada75b59bdaaca411ed6fee10085eb784"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gada75b59bdaaca411ed6fee10085eb784"),
+                   HelpMessageType::Function);
     addHelpMessage("pyrDown",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaf9bba239dfca11654cb7f50f889fc2ff"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaf9bba239dfca11654cb7f50f889fc2ff"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d1f", "tutorial_pyramids"}));
+                   CvUtils::makeUrl({"d4", "d1f", "tutorial_pyramids"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties PyramidProcessor::processImpl(const Properties &inputs)

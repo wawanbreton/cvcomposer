@@ -70,9 +70,11 @@ HoughLineProcessor::HoughLineProcessor()
 
     // Help
     addHelpMessage("HoughLines",
-                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga46b4e588934f6c8dfd509cc6e0e4545a"));
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga46b4e588934f6c8dfd509cc6e0e4545a"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d6", "d10", "tutorial_py_houghlines"}));
+                   CvUtils::makeUrl({"d6", "d10", "tutorial_py_houghlines"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties HoughLineProcessor::processImpl(const Properties &inputs)

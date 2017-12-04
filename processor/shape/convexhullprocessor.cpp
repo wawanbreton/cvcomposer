@@ -34,9 +34,11 @@ ConvexHullProcessor::ConvexHullProcessor()
 
     // Help
     addHelpMessage("convexHull",
-                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga014b28e56cb8854c0de4a211cb2be656"));
+                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga014b28e56cb8854c0de4a211cb2be656"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d7", "d1d", "tutorial_hull"}));
+                   CvUtils::makeUrl({"d7", "d1d", "tutorial_hull"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties ConvexHullProcessor::processImpl(const Properties &inputs)

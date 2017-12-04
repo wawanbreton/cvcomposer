@@ -30,7 +30,8 @@ SplitChannelsProcessor::SplitChannelsProcessor()
 
     // Help
     addHelpMessage("extractChannel",
-                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gacc6158574aa1f0281878c955bcf35642"));
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gacc6158574aa1f0281878c955bcf35642"),
+                   HelpMessageType::Function);
 }
 
 Properties SplitChannelsProcessor::processImpl(const Properties &inputs)

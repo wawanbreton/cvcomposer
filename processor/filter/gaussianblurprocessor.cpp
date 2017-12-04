@@ -47,9 +47,11 @@ GaussianBlurProcessor::GaussianBlurProcessor() :
 
     // Help
     addHelpMessage("GaussianBlur",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaabe8c836e97159a9193fb0b11ac52cf1"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaabe8c836e97159a9193fb0b11ac52cf1"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties GaussianBlurProcessor::processImpl(const Properties &inputs)

@@ -186,10 +186,21 @@ void AbstractProcessor::addEnumerationInput(const QString &name,
     Properties widgetProperties;
     widgetProperties.insert("values", QVariant::fromValue(values));
 
-    addInput(makePlug(name,
-                      PlugType::Enumeration,
-                      defaultValue.isNull() ? values.first().second : defaultValue,
-                      widgetProperties));
+    QVariant usedDefaultValue;
+    if(!defaultValue.isNull())
+    {
+        usedDefaultValue = defaultValue;
+    }
+    else if(!values.isEmpty())
+    {
+        usedDefaultValue = values.first().second;
+    }
+    else
+    {
+        qCritical() << "Unable to find a suitable default value for input" << name;
+    }
+
+    addInput(makePlug(name, PlugType::Enumeration, usedDefaultValue, widgetProperties));
 }
 
 void AbstractProcessor::addOutput(const PlugDefinition &definition)

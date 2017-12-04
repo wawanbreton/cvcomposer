@@ -31,7 +31,9 @@ LineProcessor::LineProcessor()
     addOutput("line", PlugType::Line);
 
     // Help
-    addHelpMessage("Point", CvUtils::makeUrl({"db", "d4e", "classcv_1_1Point__"}));
+    addHelpMessage("Point",
+                   CvUtils::makeUrl({"db", "d4e", "classcv_1_1Point__"}),
+                   HelpMessageType::Class);
 }
 
 Properties LineProcessor::processImpl(const Properties &inputs)

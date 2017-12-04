@@ -55,11 +55,14 @@ SobelProcessor::SobelProcessor()
 
     // Help
     addHelpMessage("Sobel",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gacea54f142e81b6758cb6f375ce782c8d"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gacea54f142e81b6758cb6f375ce782c8d"),
+                   HelpMessageType::Function);
     addHelpMessage("Scharr",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaa13106761eedf14798f37aa2d60404c9"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaa13106761eedf14798f37aa2d60404c9"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d2", "d2c", "tutorial_sobel_derivatives"}));
+                   CvUtils::makeUrl({"d2", "d2c", "tutorial_sobel_derivatives"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties SobelProcessor::processImpl(const Properties &inputs)

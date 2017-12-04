@@ -42,7 +42,8 @@ OperatorProcessor::OperatorProcessor()
 
     // Help
     addHelpMessage("absdiff",
-                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "ga6fef31bc8c4071cbc114a758a2b79c14"));
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "ga6fef31bc8c4071cbc114a758a2b79c14"),
+                   HelpMessageType::Function);
 }
 
 Properties OperatorProcessor::processImpl(const Properties &inputs)

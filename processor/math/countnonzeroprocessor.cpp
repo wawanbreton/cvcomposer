@@ -30,7 +30,8 @@ CountNonZeroProcessor::CountNonZeroProcessor()
 
     // Help
     addHelpMessage("countNonZero",
-                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gaa4b89393263bb4d604e0fe5986723914"));
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gaa4b89393263bb4d604e0fe5986723914"),
+                   HelpMessageType::Function);
 }
 
 Properties CountNonZeroProcessor::processImpl(const Properties &inputs)

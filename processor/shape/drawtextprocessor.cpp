@@ -67,9 +67,11 @@ DrawTextProcessor::DrawTextProcessor()
 
     // Help
     addHelpMessage("putText",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga5126f47f883d730f633d74f07456c576"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga5126f47f883d730f633d74f07456c576"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"dc", "da5", "tutorial_py_drawing_functions"}));
+                   CvUtils::makeUrl({"dc", "da5", "tutorial_py_drawing_functions"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties DrawTextProcessor::processImpl(const Properties &inputs)

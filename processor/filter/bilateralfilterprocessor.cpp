@@ -44,9 +44,11 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 
     // Help
     addHelpMessage("bilateralFilter",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga9d7064d478c95d60003cf839430737ed"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga9d7064d478c95d60003cf839430737ed"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties BilateralFilterProcessor::processImpl(const Properties &inputs)

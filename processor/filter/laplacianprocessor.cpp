@@ -48,9 +48,11 @@ LaplacianProcessor::LaplacianProcessor()
 
     // Help
     addHelpMessage("Laplacian",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gad78703e4c8fe703d479c1860d76429e6"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gad78703e4c8fe703d479c1860d76429e6"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d5", "db5", "tutorial_laplace_operator"}));
+                   CvUtils::makeUrl({"d5", "db5", "tutorial_laplace_operator"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties LaplacianProcessor::processImpl(const Properties &inputs)

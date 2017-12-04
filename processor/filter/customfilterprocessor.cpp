@@ -53,9 +53,11 @@ CustomFilterProcessor::CustomFilterProcessor()
 
     // Help
     addHelpMessage("filter2D",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga27c049795ce870216ddfb366086b5a04"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga27c049795ce870216ddfb366086b5a04"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "dbd", "tutorial_filter_2d"}));
+                   CvUtils::makeUrl({"d4", "dbd", "tutorial_filter_2d"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties CustomFilterProcessor::processImpl(const Properties &inputs)

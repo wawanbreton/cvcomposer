@@ -90,9 +90,11 @@ MixtureOfGaussian2Processor::MixtureOfGaussian2Processor()
 
     // Help
     addHelpMessage("BackgroundSubtractorMOG2",
-                   CvUtils::makeUrl({"d7", "d7b", "classcv_1_1BackgroundSubtractorMOG2"}));
+                   CvUtils::makeUrl({"d7", "d7b", "classcv_1_1BackgroundSubtractorMOG2"}),
+                   HelpMessageType::Class);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d1", "dc5", "tutorial_background_subtraction"}));
+                   CvUtils::makeUrl({"d1", "dc5", "tutorial_background_subtraction"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties MixtureOfGaussian2Processor::processImpl(const Properties &inputs)

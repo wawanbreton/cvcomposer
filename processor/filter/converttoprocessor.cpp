@@ -39,7 +39,8 @@ ConvertToProcessor::ConvertToProcessor()
 
     // Help
     addHelpMessage("convertTo",
-                   CvUtils::makeUrl({"d3", "d63", "classcv_1_1Mat"}, "a3f356665bb0ca452e7d7723ccac9a810"));
+                   CvUtils::makeUrl({"d3", "d63", "classcv_1_1Mat"}, "a3f356665bb0ca452e7d7723ccac9a810"),
+                   HelpMessageType::Function);
 }
 
 Properties ConvertToProcessor::processImpl(const Properties &inputs)

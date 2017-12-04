@@ -26,7 +26,9 @@ CameraProcessor::CameraProcessor()
     addOutput("image", PlugType::Image);
 
     // Help
-    addHelpMessage("VideoCapture", CvUtils::makeUrl({"d8", "dfe", "classcv_1_1VideoCapture"}));
+    addHelpMessage("VideoCapture",
+                   CvUtils::makeUrl({"d8", "dfe", "classcv_1_1VideoCapture"}),
+                   HelpMessageType::Class);
 }
 
 CameraProcessor::~CameraProcessor()

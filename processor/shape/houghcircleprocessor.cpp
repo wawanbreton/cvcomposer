@@ -51,9 +51,11 @@ HoughCircleProcessor::HoughCircleProcessor()
 
     // Help
     addHelpMessage("HoughCircles",
-                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga47849c3be0d0406ad3ca45db65a25d2d"));
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga47849c3be0d0406ad3ca45db65a25d2d"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d70", "tutorial_hough_circle"}));
+                   CvUtils::makeUrl({"d4", "d70", "tutorial_hough_circle"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties HoughCircleProcessor::processImpl(const Properties &inputs)

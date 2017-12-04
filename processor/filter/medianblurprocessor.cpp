@@ -38,9 +38,11 @@ MedianBlurProcessor::MedianBlurProcessor() :
 
     // Help
     addHelpMessage("medianBlur",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga564869aa33e58769b4469101aac458f9"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga564869aa33e58769b4469101aac458f9"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties MedianBlurProcessor::processImpl(const Properties &inputs)

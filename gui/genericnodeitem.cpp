@@ -458,9 +458,23 @@ void GenericNodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
             QMenu *menu = new QMenu();
 
-            for(const QPair<QString, QString> &helpMessage : _node->getHelpMessages())
+            for(const HelpMessage &helpMessage : _node->getHelpMessages())
             {
-                menu->addAction(helpMessage.first);
+                QIcon icon;
+                switch(helpMessage.type)
+                {
+                    case HelpMessageType::Function:
+                        icon = QIcon(":/resources/brackets.svg");
+                        break;
+                    case HelpMessageType::Class:
+                        icon = QIcon(":/resources/class.svg");
+                        break;
+                    case HelpMessageType::Tutorial:
+                        icon = QIcon(":/resources/book.svg");
+                        break;
+                }
+
+                menu->addAction(icon, helpMessage.text);
             }
 
             connect(menu, &QMenu::triggered, this, &GenericNodeItem::onHelpMenuActionTriggered);
@@ -544,11 +558,11 @@ void GenericNodeItem::onExecutionAnimationOver()
 
 void GenericNodeItem::onHelpMenuActionTriggered(QAction *action)
 {
-    for(const QPair<QString, QString> &helpMessage : _node->getHelpMessages())
+    for(const HelpMessage &helpMessage : _node->getHelpMessages())
     {
-        if(helpMessage.first == action->text())
+        if(helpMessage.text == action->text())
         {
-            QDesktopServices::openUrl(helpMessage.second);
+            QDesktopServices::openUrl(helpMessage.url);
             return;
         }
     }

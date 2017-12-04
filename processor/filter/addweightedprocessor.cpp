@@ -44,9 +44,11 @@ AddWeightedProcessor::AddWeightedProcessor()
 
     // Help
     addHelpMessage("addWeighted",
-                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gafafb2513349db3bcff51f54ee5592a19"));
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "gafafb2513349db3bcff51f54ee5592a19"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d5", "dc4", "tutorial_adding_images"}));
+                   CvUtils::makeUrl({"d5", "dc4", "tutorial_adding_images"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties AddWeightedProcessor::processImpl(const Properties &inputs)

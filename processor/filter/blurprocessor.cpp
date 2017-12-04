@@ -49,9 +49,11 @@ BlurProcessor::BlurProcessor() :
 
     // Help
     addHelpMessage("blur",
-                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga8c45db9afe636703801b0b2e440fce37"));
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga8c45db9afe636703801b0b2e440fce37"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}));
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties BlurProcessor::processImpl(const Properties &inputs)

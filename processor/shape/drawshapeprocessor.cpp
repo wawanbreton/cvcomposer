@@ -52,17 +52,23 @@ DrawShapeProcessor::DrawShapeProcessor()
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
 
     addHelpMessage("circle",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "gaf10604b069374903dbd0f0488cb43670"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "gaf10604b069374903dbd0f0488cb43670"),
+                   HelpMessageType::Function);
     addHelpMessage("rectangle",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga346ac30b5c74e9b5137576c9ee9e0e8c"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga346ac30b5c74e9b5137576c9ee9e0e8c"),
+                   HelpMessageType::Function);
     addHelpMessage("line",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga7078a9fae8c7e7d13d24dac2520ae4a2"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga7078a9fae8c7e7d13d24dac2520ae4a2"),
+                   HelpMessageType::Function);
     addHelpMessage("ellipse",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga28b2267d35786f5f890ca167236cbc69"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga28b2267d35786f5f890ca167236cbc69"),
+                   HelpMessageType::Function);
     addHelpMessage("drawContours",
-                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga746c0625f1781f1ffc9056259103edbc"));
+                   CvUtils::makeUrl({"d6", "d6e", "group__imgproc__draw"}, "ga746c0625f1781f1ffc9056259103edbc"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"dc", "da5", "tutorial_py_drawing_functions"}));
+                   CvUtils::makeUrl({"dc", "da5", "tutorial_py_drawing_functions"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties DrawShapeProcessor::processImpl(const Properties &inputs)

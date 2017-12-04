@@ -52,9 +52,11 @@ FindContoursProcessor::FindContoursProcessor()
 
     // Help
     addHelpMessage("findContours",
-                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga17ed9f5d79ae97bd4c7cf18403e1689a"));
+                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "ga17ed9f5d79ae97bd4c7cf18403e1689a"),
+                   HelpMessageType::Function);
     addHelpMessage("tutorial",
-                   CvUtils::makeUrl({"df", "d0d", "tutorial_find_contours"}));
+                   CvUtils::makeUrl({"df", "d0d", "tutorial_find_contours"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties FindContoursProcessor::processImpl(const Properties &inputs)
