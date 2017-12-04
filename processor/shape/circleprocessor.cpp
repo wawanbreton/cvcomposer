@@ -24,12 +24,14 @@
 
 CircleProcessor::CircleProcessor()
 {
+    // Inputs
     addInput("center", PlugType::Point);
 
     Properties radiusProperties;
     radiusProperties.insert("decimals", 0);
     addInput("radius", PlugType::Double, CvConstants::defaultShapeSide / 2, radiusProperties);
 
+    // Outputs
     addOutput("circle", PlugType::Circle);
 }
 

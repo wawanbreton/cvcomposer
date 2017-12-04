@@ -20,6 +20,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <QDebug>
+#include <QtMath>
 
 #include "global/cvutils.h"
 #include "model/line.h"
@@ -27,6 +28,7 @@
 
 HoughLineProcessor::HoughLineProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image);
 
     Properties distanceProperties;
@@ -63,7 +65,16 @@ HoughLineProcessor::HoughLineProcessor()
     addInput("min angle", PlugType::Double, 0, minMaxProperties);
     addInput("max angle", PlugType::Double, 180, minMaxProperties);
 
+    // Outputs
     addOutput("lines", PlugType::Line, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("HoughLines",
+                   CvUtils::makeUrl({"dd", "d1a", "group__imgproc__feature"}, "ga46b4e588934f6c8dfd509cc6e0e4545a"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d6", "d10", "tutorial_py_houghlines"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties HoughLineProcessor::processImpl(const Properties &inputs)
@@ -74,12 +85,12 @@ Properties HoughLineProcessor::processImpl(const Properties &inputs)
     cv::HoughLines(inputImage,
                    lines,
                    inputs["distance resolution"].toDouble(),
-                   CvUtils::degToRad(inputs["angle resolution"].toDouble()),
+                   qDegreesToRadians(inputs["angle resolution"].toDouble()),
                    inputs["threshold"].toInt(),
                    inputs["multi-scale angle"].toInt(),
                    inputs["multi-scale distance"].toInt(),
-                   CvUtils::degToRad(inputs["min angle"].toDouble()),
-                   CvUtils::degToRad(inputs["max angle"].toDouble()));
+                   qDegreesToRadians(inputs["min angle"].toDouble()),
+                   qDegreesToRadians(inputs["max angle"].toDouble()));
 
     Properties outputs;
 

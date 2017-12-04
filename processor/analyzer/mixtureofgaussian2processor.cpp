@@ -24,6 +24,7 @@
 
 MixtureOfGaussian2Processor::MixtureOfGaussian2Processor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Custom);
 
     // General properties
@@ -84,8 +85,16 @@ MixtureOfGaussian2Processor::MixtureOfGaussian2Processor()
     addInput("variance threshold", PlugType::Double, 16, varianceProperties);
     addInput("variance threshold gen.", PlugType::Double, 9, varianceProperties);
 
-
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("BackgroundSubtractorMOG2",
+                   CvUtils::makeUrl({"d7", "d7b", "classcv_1_1BackgroundSubtractorMOG2"}),
+                   HelpMessageType::Class);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d1", "dc5", "tutorial_background_subtraction"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties MixtureOfGaussian2Processor::processImpl(const Properties &inputs)

@@ -24,6 +24,7 @@
 
 MakeBorderProcessor::MakeBorderProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties marginsProperties;
@@ -37,7 +38,16 @@ MakeBorderProcessor::MakeBorderProcessor()
 
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(0)));
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("copyMakeBorder",
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "ga2ac1049c2c3dd25c2b41bffe17658a36"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"dc", "da3", "tutorial_copyMakeBorder"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties MakeBorderProcessor::processImpl(const Properties &inputs)

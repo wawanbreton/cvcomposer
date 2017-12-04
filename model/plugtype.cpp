@@ -29,12 +29,13 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
     {
         switch(flagsToEnum(inputTypes))
         {
+            case PlugType::Double:
+                return Free;
             case PlugType::Size:
             case PlugType::Point:
             case PlugType::Enumeration:
             case PlugType::Path:
             case PlugType::KernelDefinition:
-            case PlugType::Double:
             case PlugType::String:
             case PlugType::Color:
             case PlugType::DockableImageViewer:
@@ -135,6 +136,50 @@ QColor PlugType::getColor(PlugType::Enum value)
     return Qt::white;
 }
 
+QString PlugType::toString(PlugType::Enum value)
+{
+    switch(value)
+    {
+        case PlugType::Size:
+            return "Size";
+        case PlugType::Point:
+            return "Point";
+        case PlugType::Enumeration:
+            return "Enumeration";
+        case PlugType::Path:
+            return "Path";
+        case PlugType::KernelDefinition:
+            return "Size";
+        case PlugType::Double:
+            return "Numeric value";
+        case PlugType::String:
+            return "Text";
+        case PlugType::Color:
+            return "Color";
+        case PlugType::DockableImageViewer:
+            return "Dockable image viewer";
+        case PlugType::Boolean:
+            return "Yes/No";
+        case PlugType::Image:
+            return "Image";
+        case PlugType::Kernel:
+            return "Kernel";
+        case PlugType::ImagePreview:
+            return "Image preview";
+        case PlugType::Rectangle:
+            return "Rectangle";
+        case PlugType::Circle:
+            return "Circle";
+        case PlugType::Contour:
+            return "Contour";
+        case PlugType::Line:
+            return "Line";
+        case PlugType::Ellipse:
+            return "Ellipse";
+    }
+
+    return "";
+}
 
 bool PlugType::isSingleType(PlugTypes types)
 {

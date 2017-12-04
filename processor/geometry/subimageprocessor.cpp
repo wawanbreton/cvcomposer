@@ -22,12 +22,19 @@
 
 SubImageProcessor::SubImageProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     // TODO : multiples rectangles
     addInput("rectangle", PlugType::Rectangle);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("Mat constructor with ROI",
+                   CvUtils::makeUrl({"d3", "d63", "classcv_1_1Mat"}, "aa7ec97373406215f2d4bc72cc1d27036"),
+                   HelpMessageType::Function);
 }
 
 Properties SubImageProcessor::processImpl(const Properties &inputs)

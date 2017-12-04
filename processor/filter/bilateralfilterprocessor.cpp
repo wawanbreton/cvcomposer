@@ -26,6 +26,7 @@
 
 BilateralFilterProcessor::BilateralFilterProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties diameterProperties;
@@ -38,7 +39,16 @@ BilateralFilterProcessor::BilateralFilterProcessor()
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("bilateralFilter",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga9d7064d478c95d60003cf839430737ed"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties BilateralFilterProcessor::processImpl(const Properties &inputs)

@@ -25,9 +25,19 @@
 
 BoundingRectProcessor::BoundingRectProcessor()
 {
+    // Inputs
     addInput("contour", PlugType::Contour, ProcessorListType::Simple);
 
+    // Outputs
     addOutput("bounding box", PlugType::Rectangle, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("boundingRect",
+                   CvUtils::makeUrl({"d3", "dc0", "group__imgproc__shape"}, "gacb413ddce8e48ff3ca61ed7cf626a366"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"da", "d0c", "tutorial_bounding_rects_circles"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties BoundingRectProcessor::processImpl(const Properties &inputs)

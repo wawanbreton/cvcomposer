@@ -28,6 +28,6 @@ typedef struct PlugDefinitionStruct
     PlugType::PlugTypes types;
     Properties widgetProperties;
     QVariant defaultValue;
-    ThreeStateBool::Enum labelVisible;
-    ProcessorListType::Enum listSupport;
+    ThreeStateBool::Enum labelVisible{ThreeStateBool::None};
+    ProcessorListType::Enum listSupport{ProcessorListType::None};
 } PlugDefinition;

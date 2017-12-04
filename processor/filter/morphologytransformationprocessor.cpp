@@ -24,6 +24,7 @@
 
 MorphologyTransformationProcessor::MorphologyTransformationProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     QList<QPair<QString, QVariant> > operators;
@@ -63,7 +64,25 @@ MorphologyTransformationProcessor::MorphologyTransformationProcessor()
              PlugType::Color,
              QVariant::fromValue(cv::morphologyDefaultBorderValue()));
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("morphologyEx",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga67493776e3ad1a3df63883829375201f"),
+                   HelpMessageType::Function);
+    addHelpMessage("getStructuringElement",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gac342a1bb6eabf6f55c803b09268e36dc"),
+                   HelpMessageType::Function);
+    addHelpMessage("erode",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "gaeb1e0c1033e3f6b891a25d0511362aeb"),
+                   HelpMessageType::Function);
+    addHelpMessage("dilate",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga4ff0f3318642c4f469d0e11f242f3b6c"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d9", "d61" ,"tutorial_py_morphological_ops"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties MorphologyTransformationProcessor::processImpl(const Properties &inputs)

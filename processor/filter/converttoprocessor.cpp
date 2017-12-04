@@ -23,6 +23,7 @@
 
 ConvertToProcessor::ConvertToProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties alphaProperties;
@@ -33,7 +34,13 @@ ConvertToProcessor::ConvertToProcessor()
     betaProperties.insert("minimum", -CvConstants::defaultDoubleMax);
     addInput("beta", PlugType::Double, 0.0, betaProperties);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("convertTo",
+                   CvUtils::makeUrl({"d3", "d63", "classcv_1_1Mat"}, "a3f356665bb0ca452e7d7723ccac9a810"),
+                   HelpMessageType::Function);
 }
 
 Properties ConvertToProcessor::processImpl(const Properties &inputs)

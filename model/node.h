@@ -21,6 +21,7 @@
 
 #include "global/properties.h"
 #include "model/plugdefinition.h"
+#include "processor/helpmessage.h"
 
 #include <opencv2/core/core.hpp>
 
@@ -53,6 +54,8 @@ class Node : public QObject
 
         const Properties &getProperties() const;
 
+        const QList<HelpMessage> &getHelpMessages() const { return _helpMessages; }
+
     public slots:
         void setProperty(const QString &name, const QVariant &value);
 
@@ -65,4 +68,5 @@ class Node : public QObject
         QList<Plug *> _inputs;
         QList<Plug *> _outputs;
         Properties _properties;
+        QList<HelpMessage> _helpMessages;
 };

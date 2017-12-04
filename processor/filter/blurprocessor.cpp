@@ -27,6 +27,7 @@
 BlurProcessor::BlurProcessor() :
     AbstractProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     Properties sizeProperties;
@@ -43,7 +44,16 @@ BlurProcessor::BlurProcessor() :
 
     addEnumerationInput("border", CvUtils::makeBlurBorderValues(), cv::BORDER_DEFAULT);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    // Help
+    addHelpMessage("blur",
+                   CvUtils::makeUrl({"d4", "d86", "group__imgproc__filter"}, "ga8c45db9afe636703801b0b2e440fce37"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d4", "d13", "tutorial_py_filtering"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties BlurProcessor::processImpl(const Properties &inputs)

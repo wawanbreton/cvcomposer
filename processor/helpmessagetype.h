@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -17,12 +17,12 @@
 
 #pragma once
 
-#include <QGraphicsProxyWidget>
-
-class BoundedGraphicsProxyWidget : public QGraphicsProxyWidget
+namespace HelpMessageType
 {
-    public:
-        BoundedGraphicsProxyWidget(QGraphicsItem *parent = Q_NULLPTR);
-
-        virtual QRectF boundingRect() const;
-};
+    typedef enum
+    {
+        Function, /*< OpenCV raw function */
+        Class,    /*< Complete class */
+        Tutorial  /*< Detailed tutorial with examples */
+    } Enum;
+}

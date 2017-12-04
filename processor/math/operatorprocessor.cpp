@@ -24,6 +24,7 @@
 
 OperatorProcessor::OperatorProcessor()
 {
+    // Inputs
     // TODO : use generic types instead of images so that we can pass numeric values
     addInput("input image 1", PlugType::Image);
     addInput("input image 2", PlugType::Image);
@@ -36,7 +37,13 @@ OperatorProcessor::OperatorProcessor()
     operators << QPair<QString, QVariant>("Divide", 5);
     addEnumerationInput("operator", operators, 1);
 
+    // Outputs
     addOutput("image", PlugType::Image);
+
+    // Help
+    addHelpMessage("absdiff",
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "ga6fef31bc8c4071cbc114a758a2b79c14"),
+                   HelpMessageType::Function);
 }
 
 Properties OperatorProcessor::processImpl(const Properties &inputs)
@@ -46,6 +53,7 @@ Properties OperatorProcessor::processImpl(const Properties &inputs)
     int operatorId = inputs["operator"].toInt();
     cv::Mat outputImage;
 
+    // TODO use the functions instead of operators, and allow proving masks
     switch(operatorId)
     {
         case 1:

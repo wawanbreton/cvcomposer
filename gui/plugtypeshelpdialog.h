@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -17,20 +17,26 @@
 
 #pragma once
 
-#include "interactivegraphicsview.h"
+#include <QDialog>
 
-#include <QGraphicsScene>
-#include <QLabel>
+#include "model/plugdefinition.h"
 
-class ComposerWidget : public InteractiveGraphicsView
+namespace Ui { class PlugTypesHelpDialog; }
+
+class PlugTypesHelpDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        explicit ComposerWidget(QWidget *parent = NULL);
+        explicit PlugTypesHelpDialog(QWidget *parent = Q_NULLPTR);
 
-        void replaceScene(QGraphicsScene *scene);
+        ~PlugTypesHelpDialog();
 
     private:
-        QLabel *_helpLabel{Q_NULLPTR};
+        void addPlugTypeHelp(const PlugDefinition &plugDef, const QString &text);
+
+        void addSpacer();
+
+    private:
+        Ui::PlugTypesHelpDialog *_ui;
 };

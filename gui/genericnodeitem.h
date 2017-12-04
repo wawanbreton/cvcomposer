@@ -70,7 +70,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void nodeInvalid();
 
-        QCursor overrideMouseCursor();
+        QCursor overrideMouseCursor(const QPointF &mousePos);
+
+        bool startDragging(const QPointF &mousePos);
 
     protected:
         virtual QRectF boundingRect() const override;
@@ -97,21 +99,28 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         void onExecutionAnimationOver();
 
+        void onHelpMenuActionTriggered(QAction *action);
+
     public:
         static const int titleHeight = 24;
         static const int selectionBorderWidth = 3;
         static const int titleFontSize = 18;
         static const int bottomFontSize = 14;
+        static constexpr qreal markSide = 16;
+        static constexpr qreal markMargin = (titleHeight - markSide) / 2;
+        static const int markExtraSide = 2;
 
     private:
-        Node *_node;
-        GenericNodeWidget *_widget;
+        Node *_node{Q_NULLPTR};
+        QGraphicsProxyWidget *_widgetProxy{Q_NULLPTR};
+        GenericNodeWidget *_widget{Q_NULLPTR};
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
-        QAbstractAnimation *_animationExecution;
-        qreal _executionMarkOpacity;
+        QAbstractAnimation *_animationExecution{Q_NULLPTR};
+        qreal _executionMarkOpacity{0.0};
         QString _executionDuration;
         QString _executionError;
-        qreal _executionProgress;
-        bool _mouseOverBottom;
+        qreal _executionProgress{-1};
+        bool _mouseOverBottom{false};
+        bool _mouseOverHelp{false};
 };

@@ -12,9 +12,9 @@ QMAKE_CXXFLAGS = -std=c++11
 
 win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"
-    INCLUDEPATH += "C:\Program Files\opencv3.1.0\build-mingw64\include"
-    LIBS += -L"C:\Program Files\opencv3.1.0\build-mingw64\lib"
-    LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310 -lopencv_objdetect310
+    INCLUDEPATH += "C:\Users\10013618\Downloads\opencv\build\include"
+    LIBS += -L"C:\Users\10013618\Downloads\opencv\sources\build\lib"
+    LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310 -lopencv_objdetect310  -lopencv_video310
 }
 else {
     LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio -lopencv_objdetect -lopencv_video
@@ -78,7 +78,6 @@ SOURCES += main.cpp\
     processor/viewer/imageviewerprocessor.cpp \
     plugwidget/imageviewerwidget.cpp \
     processor/math/countnonzeroprocessor.cpp \
-    gui/boundedgraphicsproxywidget.cpp \
     processor/shape/circleprocessor.cpp \
     processor/shape/houghcircleprocessor.cpp \
     processor/data/sublistprocessor.cpp \
@@ -102,7 +101,8 @@ SOURCES += main.cpp\
     gui/processorsmodelfilter.cpp \
     processor/shape/houghlineprocessor.cpp \
     processor/analyzer/haarcascadeprocessor.cpp \
-    processor/analyzer/mixtureofgaussian2processor.cpp
+    processor/analyzer/mixtureofgaussian2processor.cpp \
+    gui/plugtypeshelpdialog.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -165,7 +165,6 @@ HEADERS  += gui/mainwidget.h \
     processor/viewer/imageviewerprocessor.h \
     plugwidget/imageviewerwidget.h \
     processor/math/countnonzeroprocessor.h \
-    gui/boundedgraphicsproxywidget.h \
     model/circle.h \
     processor/shape/circleprocessor.h \
     processor/shape/houghcircleprocessor.h \
@@ -195,13 +194,17 @@ HEADERS  += gui/mainwidget.h \
     gui/processorsmodelfilter.h \
     processor/shape/houghlineprocessor.h \
     processor/analyzer/haarcascadeprocessor.h \
-    processor/analyzer/mixtureofgaussian2processor.h
+    processor/analyzer/mixtureofgaussian2processor.h \
+    processor/helpmessagetype.h \
+    processor/helpmessage.h \
+    gui/plugtypeshelpdialog.h
 
 FORMS    += \
     gui/mainwidget.ui \
     gui/editsettingsdialog.ui \
     gui/errordisplaydialog.ui \
-    plugwidget/imageviewerdockwidget.ui
+    plugwidget/imageviewerdockwidget.ui \
+    gui/plugtypeshelpdialog.ui
 
 RESOURCES += \
     resources.qrc

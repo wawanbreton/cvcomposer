@@ -47,6 +47,16 @@ class MainWidget : public QMainWindow
 
         void onSettingsAccepted();
 
+        void onDisplayPlugTypesHelp();
+
+        void onDisplayLicence();
+
+        void onAboutQt();
+
+        void onAboutOpenCV();
+
+        void onDisplayCredits();
+
     private:
         void updateTitle();
 

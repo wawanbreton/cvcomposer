@@ -24,6 +24,7 @@
 
 EllipseProcessor::EllipseProcessor()
 {
+    // Inputs
     addInput("center", PlugType::Point);
     addInput("axes",
              PlugType::Size,
@@ -36,6 +37,7 @@ EllipseProcessor::EllipseProcessor()
     addInput("start angle", PlugType::Double, 0, anglesProperties);
     addInput("end angle", PlugType::Double, 360, anglesProperties);
 
+    // Outputs
     addOutput("ellipse", PlugType::Ellipse);
 }
 

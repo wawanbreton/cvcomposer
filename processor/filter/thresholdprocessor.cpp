@@ -24,6 +24,7 @@
 
 ThresholdProcessor::ThresholdProcessor()
 {
+    // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
     QList<QPair<QString, QVariant> > types;
@@ -37,7 +38,16 @@ ThresholdProcessor::ThresholdProcessor()
     addInput("threshold",     PlugType::Double, 128.0);
     addInput("maximum value", PlugType::Double, 256.0);
 
+    // Outputs
     addOutput("output image", PlugType::Image, ProcessorListType::Simple);
+
+    //Help
+    addHelpMessage("threshold",
+                   CvUtils::makeUrl({"d7", "d1b", "group__imgproc__misc"}, "gae8a4a146d1ca78c626a53577199e9c57"),
+                   HelpMessageType::Function);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"d7", "d4d", "tutorial_py_thresholding"}),
+                   HelpMessageType::Tutorial);
 }
 
 Properties ThresholdProcessor::processImpl(const Properties &inputs)

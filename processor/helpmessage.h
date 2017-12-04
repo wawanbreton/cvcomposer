@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -17,20 +17,13 @@
 
 #pragma once
 
-#include "interactivegraphicsview.h"
+#include <QString>
 
-#include <QGraphicsScene>
-#include <QLabel>
+#include "processor/helpmessagetype.h"
 
-class ComposerWidget : public InteractiveGraphicsView
+typedef struct
 {
-    Q_OBJECT
-
-    public:
-        explicit ComposerWidget(QWidget *parent = NULL);
-
-        void replaceScene(QGraphicsScene *scene);
-
-    private:
-        QLabel *_helpLabel{Q_NULLPTR};
-};
+    QString text;
+    QString url;
+    HelpMessageType::Enum type;
+} HelpMessage;

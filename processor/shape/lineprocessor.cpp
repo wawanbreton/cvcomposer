@@ -23,10 +23,17 @@
 
 LineProcessor::LineProcessor()
 {
+    // Inputs
     addInput("point 1", PlugType::Point);
     addInput("point 2", PlugType::Point);
 
+    // Outputs
     addOutput("line", PlugType::Line);
+
+    // Help
+    addHelpMessage("Point",
+                   CvUtils::makeUrl({"db", "d4e", "classcv_1_1Point__"}),
+                   HelpMessageType::Class);
 }
 
 Properties LineProcessor::processImpl(const Properties &inputs)

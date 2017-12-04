@@ -25,6 +25,7 @@
 
 #include "global/properties.h"
 #include "model/plugdefinition.h"
+#include "processor/helpmessage.h"
 
 class AbstractProcessor : public QObject
 {
@@ -40,6 +41,8 @@ class AbstractProcessor : public QObject
         Properties process(const Properties &inputs);
 
         virtual bool getKeepProcessing() const;
+
+        const QList<HelpMessage> &getHelpMessages() const { return _helpMessages; }
 
     signals:
         void progress(qreal value);
@@ -68,6 +71,9 @@ class AbstractProcessor : public QObject
                        PlugType::PlugTypes types,
                        ProcessorListType::Enum listSupport = ProcessorListType::None);
 
+        void addHelpMessage(const QString &text, const QString &url, HelpMessageType::Enum type)
+        { _helpMessages.append({text, url, type}); }
+
         void listProgress(const QList<QVariant> &list);
 
         virtual Properties processImpl(const Properties &inputs) = 0;
@@ -85,6 +91,7 @@ class AbstractProcessor : public QObject
     private:
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
+        QList<HelpMessage> _helpMessages;
         int _listProgress;
         QMutex _mutex;
 };

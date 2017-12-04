@@ -473,11 +473,14 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             else if(item->type() == CustomItems::Node)
             {
-                if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
+                const QPointF relativePos = item->mapFromScene(event->scenePos());
+                GenericNodeItem *nodeItem = static_cast<GenericNodeItem *>(item);
+
+                if(nodeItem->startDragging(relativePos))
                 {
                     // Mouse pressed over title : start dragging it
                     event->widget()->setCursor(Qt::ClosedHandCursor);
-                    _editedNode.item = static_cast<GenericNodeItem *>(item);
+                    _editedNode.item = nodeItem;
                     _editedNode.initClickPos = event->scenePos();
                     _editedNode.initNodePose = _editedNode.item->pos();
                 }
@@ -598,14 +601,8 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
             else if(item->type() == CustomItems::Node)
             {
-                if(item->mapFromScene(event->scenePos()).y() < GenericNodeItem::titleHeight)
-                {
-                    cursor = Qt::OpenHandCursor;
-                }
-                else
-                {
-                    cursor = ((GenericNodeItem *)item)->overrideMouseCursor();
-                }
+                QPointF relativePos = item->mapFromScene(event->scenePos());
+                cursor = ((GenericNodeItem *)item)->overrideMouseCursor(relativePos);
             }
         }
     }

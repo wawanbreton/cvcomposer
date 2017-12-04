@@ -59,6 +59,8 @@ class PlugType : public QObject
 
         static QColor getColor(Enum value);
 
+        static QString toString(Enum value);
+
         Q_DECLARE_FLAGS(PlugTypes, Enum)
 
         static Enum flagsToEnum(PlugTypes types);

@@ -20,6 +20,7 @@
 
 #include <QCloseEvent>
 #include <QDebug>
+#include <QDesktopServices>
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -34,6 +35,7 @@
 #include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/editsettingsdialog.h"
+#include "gui/plugtypeshelpdialog.h"
 #include "gui/processorsitemmodel.h"
 #include "gui/processorsmodelfilter.h"
 
@@ -65,11 +67,16 @@ MainWidget::MainWidget(QWidget *parent) :
 
     updateRecents();
 
-    connect(_ui->actionNew,      SIGNAL(triggered()), SLOT(onNew()));
-    connect(_ui->actionSave,     SIGNAL(triggered()), SLOT(onSave()));
-    connect(_ui->actionSaveAs,   SIGNAL(triggered()), SLOT(onSave()));
-    connect(_ui->actionLoad,     SIGNAL(triggered()), SLOT(onLoad()));
-    connect(_ui->actionSettings, SIGNAL(triggered()), SLOT(onDisplaySettings()));
+    connect(_ui->actionNew,         &QAction::triggered, this, &MainWidget::onNew);
+    connect(_ui->actionSave,        &QAction::triggered, this, &MainWidget::onSave);
+    connect(_ui->actionSaveAs,      &QAction::triggered, this, &MainWidget::onSave);
+    connect(_ui->actionLoad,        &QAction::triggered, this, &MainWidget::onLoad);
+    connect(_ui->actionSettings,    &QAction::triggered, this, &MainWidget::onDisplaySettings);
+    connect(_ui->actionPlugTypes,   &QAction::triggered, this, &MainWidget::onDisplayPlugTypesHelp);
+    connect(_ui->actionLicense,     &QAction::triggered, this, &MainWidget::onDisplayLicence);
+    connect(_ui->actionAboutQt,     &QAction::triggered, this, &MainWidget::onAboutQt);
+    connect(_ui->actionAboutOpenCV, &QAction::triggered, this, &MainWidget::onAboutOpenCV);
+    connect(_ui->actionCredits,     &QAction::triggered, this, &MainWidget::onDisplayCredits);
 
     // Do not quit automatically, we are going to decide
     qApp->setQuitOnLastWindowClosed(false);
@@ -226,6 +233,37 @@ void MainWidget::onSettingsAccepted()
     {
         qCritical() << "Sender is not an EditSettingsDialog instance";
     }
+}
+
+void MainWidget::onDisplayPlugTypesHelp()
+{
+    PlugTypesHelpDialog *dialog = new PlugTypesHelpDialog(this);
+    connect(dialog, &PlugTypesHelpDialog::finished, dialog, &PlugTypesHelpDialog::deleteLater);
+    dialog->show();
+}
+
+void MainWidget::onDisplayLicence()
+{
+    QFile file(":/resources/licence.html");
+    file.open(QIODevice::ReadOnly);
+    QMessageBox::about(this, "Licence", QString::fromUtf8(file.readAll()));
+}
+
+void MainWidget::onAboutQt()
+{
+    QMessageBox::aboutQt(this);
+}
+
+void MainWidget::onAboutOpenCV()
+{
+    QDesktopServices::openUrl(QUrl("https://www.opencv.org/about.html"));
+}
+
+void MainWidget::onDisplayCredits()
+{
+    QFile file(":/resources/credits.html");
+    file.open(QIODevice::ReadOnly);
+    QMessageBox::about(this, "Credits", QString::fromUtf8(file.readAll()));
 }
 
 void MainWidget::updateTitle()

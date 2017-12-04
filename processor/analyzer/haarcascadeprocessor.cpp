@@ -29,6 +29,7 @@
 
 HaarCascadeProcessor::HaarCascadeProcessor()
 {
+    // Inputs
     addInput("image", PlugType::Image);
 
     QList<QPair<QString, QVariant>> basicClassifiers;
@@ -47,7 +48,16 @@ HaarCascadeProcessor::HaarCascadeProcessor()
     pathProperties.insert("formats", QVariant::fromValue(formats));
     addInput("custom classifier", PlugType::Path, QVariant(), pathProperties);
 
+    // Outputs
     addOutput("objects", PlugType::Rectangle, ProcessorListType::Custom);
+
+    // Help
+    addHelpMessage("CascadeClassifier",
+                   CvUtils::makeUrl({"d1", "de5", "classcv_1_1CascadeClassifier"}),
+                   HelpMessageType::Class);
+    addHelpMessage("tutorial",
+                   CvUtils::makeUrl({"db", "d28", "tutorial_cascade_classifier"}),
+                   HelpMessageType::Tutorial);
 }
 
 HaarCascadeProcessor::~HaarCascadeProcessor()
