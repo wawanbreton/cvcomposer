@@ -39,6 +39,8 @@ Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_highgui310.dll
 Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_imgproc310.dll";   DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_imgcodecs310.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_videoio310.dll";   DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_objdetect310.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_video310.dll";     DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{commonprograms}\CvComposer"; Filename: "{app}\cvcomposer.exe"
