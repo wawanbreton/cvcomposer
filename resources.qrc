@@ -4,5 +4,7 @@
         <file>resources/book.svg</file>
         <file>resources/brackets.svg</file>
         <file>resources/class.svg</file>
+        <file>resources/credits.html</file>
+        <file>resources/licence.html</file>
     </qresource>
 </RCC>
