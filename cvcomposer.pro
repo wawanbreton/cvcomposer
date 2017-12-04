@@ -12,8 +12,8 @@ QMAKE_CXXFLAGS = -std=c++11
 
 win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"
-    INCLUDEPATH += "C:\Users\10013618\Downloads\opencv\build\include"
-    LIBS += -L"C:\Users\10013618\Downloads\opencv\sources\build\lib"
+    INCLUDEPATH += "C:/Program Files/opencv3.1.0/build-mingw64/include"
+    LIBS += -L"C:/Program Files/opencv3.1.0/build-mingw64/lib"
     LIBS += -lopencv_core310 -lopencv_imgproc310 -lopencv_highgui310 -lopencv_imgcodecs310 -lopencv_videoio310 -lopencv_objdetect310  -lopencv_video310
 }
 else {
