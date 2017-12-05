@@ -10,6 +10,9 @@ DefaultDirName={pf}\CvComposer
 DisableProgramGroupPage=yes
 OutputBaseFilename=CvComposer-setup
 Compression=lzma
+PrivilegesRequired=lowest
+ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode=x64
 
 #define HomePath GetEnv('HOMEPATH')
 
