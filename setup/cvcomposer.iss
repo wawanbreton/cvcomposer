@@ -1,12 +1,13 @@
 
 [Setup]
-; NOTE: The value of AppId uniquely identifies this application.
-; Do not use the same AppId value in installers for other applications.
-; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
+#define AppBin "cvcomposer.exe"
+#define AppName "CvComposer"
+#define AppVersion "1.2"
 AppId={{051E987E-CDAA-49CB-A5EF-014FDEBAF6FE}}
-AppName=CvComposer
-AppVersion=0.1
-DefaultDirName={pf}\CvComposer
+AppName={#AppName}
+VersionInfoVersion={#AppVersion}
+AppVerName={#AppName} - v{#AppVersion}     
+DefaultDirName={userpf}\{#AppName}
 DisableProgramGroupPage=yes
 OutputBaseFilename=CvComposer-setup
 Compression=lzma
@@ -14,14 +15,10 @@ PrivilegesRequired=lowest
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
-#define HomePath GetEnv('HOMEPATH')
-
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 ; Main executable
-Source: "..\release\cvcomposer.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\release\{#AppBin}"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Haar cascade resources
 Source: "..\haarcascade_*.xml"; DestDir: "{app}"; Flags: ignoreversion
@@ -46,9 +43,12 @@ Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_objdetect310.d
 Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_video310.dll";     DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Program Files\opencv3.1.0\build-mingw64\bin\libopencv_ml310.dll";        DestDir: "{app}"; Flags: ignoreversion
 
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
 [Icons]
-Name: "{commonprograms}\CvComposer"; Filename: "{app}\cvcomposer.exe"
-Name: "{commondesktop}\CvComposer";  Filename: "{app}\cvcomposer.exe"; Tasks: desktopicon
+Name: "{group}\{#AppName}";        Filename: "{app}\{#AppBin}"; Comment: "{#AppName} {#AppVersion}"
+Name: "{userdesktop}\{#AppName}";  Filename: "{app}\{#AppBin}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\cvcomposer.exe"; Description: "{cm:LaunchProgram,CvComposer}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppBin}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags: nowait postinstall skipifsilent
