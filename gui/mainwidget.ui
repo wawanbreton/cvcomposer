@@ -59,7 +59,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="windowTitle">
-    <string>Pr&amp;ocessors</string>
+    <string>Processors</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
