@@ -15,10 +15,10 @@ if [ ! -d "$folder" ]; then
   mkdir $folder
 fi
 
-license=`cat license`
+licence=`cat licence`
 
 ############################### HEADER ###############################
-echo "$license
+echo "$licence
 
 #pragma once
 
@@ -35,7 +35,7 @@ class ${1}Processor : public AbstractProcessor
 " > $folder/${lower}processor.h
 
 ################################# CPP ################################
-echo "$license
+echo "$licence
 
 #include \"${lower}processor.h\"
 
