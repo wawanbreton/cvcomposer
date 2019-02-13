@@ -58,6 +58,7 @@
 #include "processor/shape/ellipseprocessor.h"
 #include "processor/shape/boundingrectprocessor.h"
 #include "processor/shape/houghlineprocessor.h"
+#include "processor/shape/houghlineprobaprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -92,7 +93,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList shapes;
     shapes << "Rectangle" << "Line"
            << "Circle" << "Ellipse"
-           << "HoughCircle" << "HoughLine"
+           << "HoughCircle" << "HoughLine" << "HoughLineProba"
            << "ConvexHull"
            << "DrawText" << "DrawShape"
            << "BoundingRect";
@@ -119,6 +120,10 @@ QString ProcessorsFactory::toUserReadableName(const QString &name)
     else if(name == "ConvertTo")
     {
         return "Scale";
+    }
+    else if(name == "HoughLineProba")
+    {
+        return "Hough line probabilistic";
     }
     else
     {
@@ -299,6 +304,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "HoughLine")
     {
         return new HoughLineProcessor();
+    }
+    else if(rawProcessorName == "HoughLineProba")
+    {
+        return new HoughLineProbaProcessor();
     }
     else if(rawProcessorName == "HaarCascade")
     {

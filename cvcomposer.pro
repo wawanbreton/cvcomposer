@@ -100,6 +100,7 @@ SOURCES += main.cpp\
     gui/processorsitemmodel.cpp \
     gui/processorsmodelfilter.cpp \
     processor/shape/houghlineprocessor.cpp \
+    processor/shape/houghlineprobaprocessor.cpp \
     processor/analyzer/haarcascadeprocessor.cpp \
     processor/analyzer/mixtureofgaussian2processor.cpp \
     gui/plugtypeshelpdialog.cpp
@@ -193,6 +194,7 @@ HEADERS  += gui/mainwidget.h \
     gui/processorsitemmodel.h \
     gui/processorsmodelfilter.h \
     processor/shape/houghlineprocessor.h \
+    processor/shape/houghlineprobaprocessor.h \
     processor/analyzer/haarcascadeprocessor.h \
     processor/analyzer/mixtureofgaussian2processor.h \
     processor/helpmessagetype.h \
