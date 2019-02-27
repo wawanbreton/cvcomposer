@@ -22,11 +22,29 @@
 
 ApplyRoiProcessor::ApplyRoiProcessor()
 {
+    // Inputs
+    addInput("input image", PlugType::Image, ProcessorListType::Simple);
+    addInput("roi", PlugType::Image);
+
+    // Outputs
+    addOutput("output image", PlugType::Image);
+
+    // Help
+    addHelpMessage("Mat::copyTo",
+                   CvUtils::makeUrl({"d3", "d63", "classcv_1_1Mat"}, "ab931fe25e359c1fe727e526aa5693ea9"),
+                   HelpMessageType::Function);
 }
 
 Properties ApplyRoiProcessor::processImpl(const Properties &inputs)
 {
+    cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
+    cv::Mat roi = inputs["roi"].value<cv::Mat>();
+    cv::Mat outputImage;
+
+    inputImage.copyTo(outputImage, roi);
+
     Properties outputs;
+    outputs.insert("output image", QVariant::fromValue(outputImage));
     return outputs;
 }
 

@@ -28,8 +28,10 @@
 #include "processor/data/countlistprocessor.h"
 #include "processor/data/splitchannelsprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
+#include "processor/filter/applyroiprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
+#include "processor/filter/convertcolorprocessor.h"
 #include "processor/filter/converttoprocessor.h"
 #include "processor/filter/customfilterprocessor.h"
 #include "processor/filter/gaussianblurprocessor.h"
@@ -75,12 +77,16 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     geometry << "SubImage" << "MakeBorder" << "Pyramid";
     processors << QPair<QString, QStringList>("Geometry", geometry);
 
-    QStringList filters;
-    filters << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
-            << "MorphologyTransformation" << "Threshold"
-            << "Sobel" << "Laplacian" << "Canny"
-            << "CustomFilter" << "AddWeighted" << "ConvertTo";
-    processors << QPair<QString, QStringList>("Filters", filters);
+    QStringList processing;
+    processing << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
+               << "MorphologyTransformation" << "Threshold"
+               << "CustomFilter" << "AddWeighted" << "ConvertTo"
+               << "ConvertColor" << "ApplyRoi";
+    processors << QPair<QString, QStringList>("Processing", processing);
+
+    QStringList edges;
+    edges << "Sobel" << "Laplacian" << "Canny";
+    processors << QPair<QString, QStringList>("Edges", edges);
 
     QStringList data;
     data << "Kernel" << "SubList" << "CountList" << "SplitChannels";
@@ -93,16 +99,19 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList shapes;
     shapes << "Rectangle" << "Line"
            << "Circle" << "Ellipse"
-           << "HoughCircle" << "HoughLine" << "HoughLineProba"
            << "ConvexHull"
            << "DrawText" << "DrawShape"
            << "BoundingRect";
     processors << QPair<QString, QStringList>("Shapes", shapes);
 
     QStringList analyzers;
-    analyzers << "DiscreteFourierTransform" << "FindContours" << "HaarCascade"
-              << "MixtureOfGaussian2";
+    analyzers << "DiscreteFourierTransform" << "MixtureOfGaussian2";
     processors << QPair<QString, QStringList>("Analyzers", analyzers);
+
+    QStringList detection;
+    detection << "FindContours" << "HaarCascade"
+              << "HoughCircle" << "HoughLine" << "HoughLineProba";
+    processors << QPair<QString, QStringList>("Objects detection", detection);
 
     QStringList viewers;
     viewers << "DataViewer" << "ImageViewer";
@@ -316,6 +325,14 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "MixtureOfGaussian2")
     {
         return new MixtureOfGaussian2Processor();
+    }
+    else if(rawProcessorName == "ConvertColor")
+    {
+        return new ConvertColorProcessor();
+    }
+    else if(rawProcessorName == "ApplyRoi")
+    {
+        return new ApplyRoiProcessor();
     }
     else
     {

@@ -103,7 +103,9 @@ SOURCES += main.cpp\
     processor/shape/houghlineprobaprocessor.cpp \
     processor/analyzer/haarcascadeprocessor.cpp \
     processor/analyzer/mixtureofgaussian2processor.cpp \
-    gui/plugtypeshelpdialog.cpp
+    gui/plugtypeshelpdialog.cpp \
+    processor/filter/convertcolorprocessor.cpp \
+    processor/filter/applyroiprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
     gui/composerwidget.h \
@@ -199,7 +201,9 @@ HEADERS  += gui/mainwidget.h \
     processor/analyzer/mixtureofgaussian2processor.h \
     processor/helpmessagetype.h \
     processor/helpmessage.h \
-    gui/plugtypeshelpdialog.h
+    gui/plugtypeshelpdialog.h \
+    processor/filter/convertcolorprocessor.h \
+    processor/filter/applyroiprocessor.h
 
 FORMS    += \
     gui/mainwidget.ui \

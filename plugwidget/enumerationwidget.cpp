@@ -42,7 +42,14 @@ EnumerationWidget::EnumerationWidget(const Properties &properties, QWidget *pare
             auto values = iterator.value().value<QList<QPair<QString, QVariant> > >();
             for(int i = 0 ; i < values.count() ; i++)
             {
-                _comboBox->addItem(values[i].first, values[i].second);
+                if(values[i].first.isEmpty() || values[i].second.isNull())
+                {
+                    _comboBox->insertSeparator(i);
+                }
+                else
+                {
+                    _comboBox->addItem(values[i].first, values[i].second);
+                }
             }
         }
         else

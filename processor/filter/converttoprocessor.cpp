@@ -28,6 +28,7 @@ ConvertToProcessor::ConvertToProcessor()
 
     Properties alphaProperties;
     alphaProperties.insert("singleStep", 0.1);
+    alphaProperties.insert("minimum", -CvConstants::defaultDoubleMax);
     addInput("alpha", PlugType::Double, 1.0, alphaProperties);
 
     Properties betaProperties;

@@ -310,7 +310,11 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                             }
                         }
 
-                        item->accessWidget(plugName)->load(plugWidgetProperties);
+                        AbstractPlugWidget *widget = item->accessWidget(plugName);
+                        if(widget)
+                        {
+                            item->accessWidget(plugName)->load(plugWidgetProperties);
+                        }
                     }
                     else
                     {

@@ -1,4 +1,4 @@
-// Copyright 2017 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2019 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -26,5 +26,9 @@ class ConvertColorProcessor : public AbstractProcessor
 
     protected:
         virtual Properties processImpl(const Properties &inputs) override;
-};
 
+    private:
+        QPair<QString, QVariant> makeConversionType(const QString &rawString,
+                                                    int value,
+                                                    const QString &help = "");
+};

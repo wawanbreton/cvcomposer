@@ -35,4 +35,5 @@ class CameraProcessor : public AbstractProcessor
 
     private:
         cv::VideoCapture *_camera{Q_NULLPTR};
+        int _cameraIndex{-1};
 };

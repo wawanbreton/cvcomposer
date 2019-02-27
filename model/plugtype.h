@@ -46,7 +46,8 @@ class PlugType : public QObject
             Boolean             = 0x04000,
             Contour             = 0x08000,
             Line                = 0x10000,
-            Ellipse             = 0x20000
+            Ellipse             = 0x20000,
+            RotatedRectangle    = 0x40000,
         } Enum;
 
 

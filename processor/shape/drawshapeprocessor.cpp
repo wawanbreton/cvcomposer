@@ -33,7 +33,7 @@ DrawShapeProcessor::DrawShapeProcessor()
     // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
     addInput("shape",
-             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse | PlugType::Contour,
+             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse | PlugType::Contour | PlugType::RotatedRectangle,
              ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
@@ -118,6 +118,18 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
             std::vector<Contour> contours;
             contours.push_back(shape.value<Contour>());
             cv::drawContours(outputImage, contours, -1, color, thickness, lineType);
+        }
+        else if(shape.userType() == qMetaTypeId<cv::RotatedRect>())
+        {
+            cv::RotatedRect rect = shape.value<cv::RotatedRect>();
+
+            cv::Point2f points[4];
+            rect.points(points);
+
+            for(int i = 0 ; i < 4 ; ++i)
+            {
+                cv::line(outputImage, points[i], points[(i + 1) % 4], color, thickness, lineType, shift);
+            }
         }
     }
 

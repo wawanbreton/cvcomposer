@@ -22,6 +22,11 @@
 
 CameraProcessor::CameraProcessor()
 {
+    // Inputs
+    Properties indexProperties;
+    indexProperties.insert("decimals", 0);
+    addInput("index", PlugType::Double, 0, indexProperties);
+
     // Outputs
     addOutput("image", PlugType::Image);
 
@@ -47,16 +52,23 @@ bool CameraProcessor::getKeepProcessing() const
 
 Properties CameraProcessor::processImpl(const Properties &inputs)
 {
-    Q_UNUSED(inputs);
+    int index = inputs["index"].toInt();
 
     cv::Mat outputImage;
 
     // Use a QMutexLocker in case of OpenCV exception
     QMutexLocker locker(&accessMutex());
 
+    if(_camera && _cameraIndex != index)
+    {
+        delete _camera;
+        _camera = Q_NULLPTR;
+    }
+
     if(!_camera)
     {
-        _camera = new cv::VideoCapture(0);
+        _camera = new cv::VideoCapture(index);
+        _cameraIndex = index;
     }
 
     if(_camera->isOpened() && _camera->grab())
