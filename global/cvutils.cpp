@@ -20,7 +20,7 @@
 #include <QDebug>
 
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 
 QImage CvUtils::toQImage(const cv::Mat &mat)
@@ -91,6 +91,12 @@ QImage CvUtils::toQImage(const cv::Mat &mat)
             image = QImage((const uchar*)mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
             image = image.rgbSwapped();
         }
+        else if(mat.type() == CV_16UC1) // 16-bits unsigned, 1 channel (grayscale)
+        {
+            cv::Mat tmp;
+            mat.convertTo(tmp, CV_8UC1, 1.0 / 256.0);
+            return toQImage(tmp);
+        }
         else if(mat.type() == CV_32FC1) // 32-bits float, 1 channel (grayscale)
         {
             image = QImage(mat.cols, mat.rows, QImage::Format_RGB32);
@@ -151,7 +157,7 @@ QList<QPair<QString, QVariant> > CvUtils::makeLineTypeValues()
     QList<QPair<QString, QVariant> > lineTypeValues;
     lineTypeValues << QPair<QString, QVariant>("8-connected", 8);
     lineTypeValues << QPair<QString, QVariant>("4-connected", 4);
-    lineTypeValues << QPair<QString, QVariant>("Antialiased", CV_AA);
+    lineTypeValues << QPair<QString, QVariant>("Antialiased", cv::LINE_AA);
 
     return lineTypeValues;
 }
@@ -159,11 +165,11 @@ QList<QPair<QString, QVariant> > CvUtils::makeLineTypeValues()
 QList<QPair<QString, QVariant> > CvUtils::makeImageLoadFormatsValues()
 {
     QList<QPair<QString, QVariant> > valuesTypes;
-    valuesTypes << QPair<QString, QVariant>("Unchanged", CV_LOAD_IMAGE_UNCHANGED);
-    valuesTypes << QPair<QString, QVariant>("Grayscale", CV_LOAD_IMAGE_GRAYSCALE);
-    valuesTypes << QPair<QString, QVariant>("Color",     CV_LOAD_IMAGE_COLOR);
-    valuesTypes << QPair<QString, QVariant>("Any depth", CV_LOAD_IMAGE_ANYDEPTH);
-    valuesTypes << QPair<QString, QVariant>("Any color", CV_LOAD_IMAGE_ANYCOLOR);
+    valuesTypes << QPair<QString, QVariant>("Unchanged", cv::IMREAD_UNCHANGED);
+    valuesTypes << QPair<QString, QVariant>("Grayscale", cv::IMREAD_GRAYSCALE);
+    valuesTypes << QPair<QString, QVariant>("Color",     cv::IMREAD_COLOR);
+    valuesTypes << QPair<QString, QVariant>("Any depth", cv::IMREAD_ANYDEPTH);
+    valuesTypes << QPair<QString, QVariant>("Any color", cv::IMREAD_ANYCOLOR);
 
     return valuesTypes;
 }
