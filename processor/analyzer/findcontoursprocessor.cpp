@@ -31,18 +31,18 @@ FindContoursProcessor::FindContoursProcessor()
     addInput("image", PlugType::Image);
 
     QList<QPair<QString, QVariant> > modes;
-    modes << QPair<QString, QVariant>("External", CV_RETR_EXTERNAL);
-    modes << QPair<QString, QVariant>("List", CV_RETR_LIST);
-    modes << QPair<QString, QVariant>("Connected components", CV_RETR_CCOMP);
-    modes << QPair<QString, QVariant>("Tree", CV_RETR_TREE);
-    addEnumerationInput("mode", modes, CV_RETR_EXTERNAL);
+    modes << QPair<QString, QVariant>("External", cv::RETR_EXTERNAL);
+    modes << QPair<QString, QVariant>("List", cv::RETR_LIST);
+    modes << QPair<QString, QVariant>("Connected components", cv::RETR_CCOMP);
+    modes << QPair<QString, QVariant>("Tree", cv::RETR_TREE);
+    addEnumerationInput("mode", modes, cv::RETR_EXTERNAL);
 
     QList<QPair<QString, QVariant> > methods;
-    methods << QPair<QString, QVariant>("None", CV_CHAIN_APPROX_NONE);
-    methods << QPair<QString, QVariant>("Simple", CV_CHAIN_APPROX_SIMPLE);
-    methods << QPair<QString, QVariant>("Teh-Chin L1", CV_CHAIN_APPROX_TC89_L1);
-    methods << QPair<QString, QVariant>("Teh-Chin KCOS", CV_CHAIN_APPROX_TC89_KCOS);
-    addEnumerationInput("approximation", methods, CV_CHAIN_APPROX_NONE);
+    methods << QPair<QString, QVariant>("None", cv::CHAIN_APPROX_NONE);
+    methods << QPair<QString, QVariant>("Simple", cv::CHAIN_APPROX_SIMPLE);
+    methods << QPair<QString, QVariant>("Teh-Chin L1", cv::CHAIN_APPROX_TC89_L1);
+    methods << QPair<QString, QVariant>("Teh-Chin KCOS", cv::CHAIN_APPROX_TC89_KCOS);
+    addEnumerationInput("approximation", methods, cv::CHAIN_APPROX_NONE);
 
     addInput("offset", PlugType::Point);
 

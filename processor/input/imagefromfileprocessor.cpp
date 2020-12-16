@@ -17,7 +17,7 @@
 
 #include "imagefromfileprocessor.h"
 
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #include <QDebug>
 
@@ -33,7 +33,7 @@ ImageFromFileProcessor::ImageFromFileProcessor() :
     pathProperties.insert("formats", QVariant::fromValue(formats));
     addInput("path", PlugType::Path, QVariant(), pathProperties);
 
-    addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), CV_LOAD_IMAGE_COLOR);
+    addEnumerationInput("mode", CvUtils::makeImageLoadFormatsValues(), cv::IMREAD_COLOR);
 
     // Outputs
     addOutput("image", PlugType::Image);

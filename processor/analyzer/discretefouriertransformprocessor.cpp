@@ -90,7 +90,7 @@ Properties DiscreteFourierTransformProcessor::processImpl(const Properties &inpu
     quadrant2.copyTo(quadrant1);
     tmp.copyTo(quadrant2);
 
-    normalize(magnitudeImage, magnitudeImage, 0, 1, CV_MINMAX);
+    normalize(magnitudeImage, magnitudeImage, 0, 1, cv::NORM_MINMAX);
 
     Properties properties;
     properties.insert("output image", QVariant::fromValue(magnitudeImage));

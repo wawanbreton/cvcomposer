@@ -65,7 +65,7 @@ Properties HoughCircleProcessor::processImpl(const Properties &inputs)
 
     cv::HoughCircles(inputImage,
                      circles,
-                     CV_HOUGH_GRADIENT,
+                     cv::HOUGH_GRADIENT,
                      inputs["inverse resolution ratio"].toDouble(),
                      inputs["minimum centers distance"].toDouble(),
                      inputs["specific parameter 1"].toDouble(),
