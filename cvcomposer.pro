@@ -37,6 +37,7 @@ SOURCES += main.cpp\
     global/cvutils.cpp \
     plugwidget/imageviewerdockwidget.cpp \
     processor/abstractprocessor.cpp \
+    processor/data/applycolormapprocessor.cpp \
     processor/filter/blurprocessor.cpp \
     processor/input/imagefromfileprocessor.cpp \
     processor/filter/gaussianblurprocessor.cpp \
@@ -124,6 +125,7 @@ HEADERS  += gui/mainwidget.h \
     global/cvutils.h \
     plugwidget/imageviewerdockwidget.h \
     processor/abstractprocessor.h \
+    processor/data/applycolormapprocessor.h \
     processor/filter/blurprocessor.h \
     processor/input/imagefromfileprocessor.h \
     global/properties.h \

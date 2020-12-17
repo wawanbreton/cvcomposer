@@ -23,6 +23,7 @@
 #include "processor/analyzer/findcontoursprocessor.h"
 #include "processor/analyzer/haarcascadeprocessor.h"
 #include "processor/analyzer/mixtureofgaussian2processor.h"
+#include "processor/data/applycolormapprocessor.h"
 #include "processor/data/kernelprocessor.h"
 #include "processor/data/sublistprocessor.h"
 #include "processor/data/countlistprocessor.h"
@@ -89,7 +90,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Edges", edges);
 
     QStringList data;
-    data << "Kernel" << "SubList" << "CountList" << "SplitChannels";
+    data << "Kernel" << "SubList" << "CountList" << "SplitChannels" << "ApplyColorMap";
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
@@ -333,6 +334,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "ApplyRoi")
     {
         return new ApplyRoiProcessor();
+    }
+    else if(rawProcessorName == "ApplyColorMap")
+    {
+        return new ApplyColorMapProcessor();
     }
     else
     {
