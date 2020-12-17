@@ -26,6 +26,18 @@ ConvertToProcessor::ConvertToProcessor()
     // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
 
+    QList<QPair<QString, QVariant> > colorMaps;
+    colorMaps << QPair<QString, QVariant>("Unchanged", -1);
+    colorMaps << QPair<QString, QVariant>("8bit unsigned",  CV_8U);
+    colorMaps << QPair<QString, QVariant>("8bit signed",    CV_8S);
+    colorMaps << QPair<QString, QVariant>("16bit unsigned", CV_16U);
+    colorMaps << QPair<QString, QVariant>("16bit signed",   CV_16S);
+    colorMaps << QPair<QString, QVariant>("16bit float",    CV_16F);
+    colorMaps << QPair<QString, QVariant>("32bit signed",   CV_32S);
+    colorMaps << QPair<QString, QVariant>("32bit float",    CV_32F);
+    colorMaps << QPair<QString, QVariant>("64bit float",    CV_64F);
+    addEnumerationInput("output type", colorMaps);
+
     Properties alphaProperties;
     alphaProperties.insert("singleStep", 0.1);
     alphaProperties.insert("minimum", -CvConstants::defaultDoubleMax);
@@ -49,7 +61,7 @@ Properties ConvertToProcessor::processImpl(const Properties &inputs)
     cv::Mat inputImage = inputs["input image"].value<cv::Mat>();
     cv::Mat outputImage;
     inputImage.convertTo(outputImage,
-                         -1,
+                         inputs["output type"].toInt(),
                          inputs["alpha"].toDouble(),
                          inputs["beta"].toDouble());
 

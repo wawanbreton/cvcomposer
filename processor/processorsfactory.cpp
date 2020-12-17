@@ -127,10 +127,6 @@ QString ProcessorsFactory::toUserReadableName(const QString &name)
     {
         return "Advanced image viewer";
     }
-    else if(name == "ConvertTo")
-    {
-        return "Scale";
-    }
     else if(name == "HoughLineProba")
     {
         return "Hough line probabilistic";
