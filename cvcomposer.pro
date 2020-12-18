@@ -39,6 +39,7 @@ SOURCES += main.cpp\
     processor/abstractprocessor.cpp \
     processor/data/applycolormapprocessor.cpp \
     processor/filter/blurprocessor.cpp \
+    processor/filter/floodfillprocessor.cpp \
     processor/input/imagefromfileprocessor.cpp \
     processor/filter/gaussianblurprocessor.cpp \
     processor/filter/medianblurprocessor.cpp \
@@ -127,6 +128,7 @@ HEADERS  += gui/mainwidget.h \
     processor/abstractprocessor.h \
     processor/data/applycolormapprocessor.h \
     processor/filter/blurprocessor.h \
+    processor/filter/floodfillprocessor.h \
     processor/input/imagefromfileprocessor.h \
     global/properties.h \
     processor/filter/gaussianblurprocessor.h \

@@ -32,16 +32,17 @@
 #include "processor/filter/applyroiprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
+#include "processor/filter/cannyprocessor.h"
 #include "processor/filter/convertcolorprocessor.h"
 #include "processor/filter/converttoprocessor.h"
 #include "processor/filter/customfilterprocessor.h"
+#include "processor/filter/floodfillprocessor.h"
 #include "processor/filter/gaussianblurprocessor.h"
+#include "processor/filter/laplacianprocessor.h"
 #include "processor/filter/medianblurprocessor.h"
 #include "processor/filter/morphologytransformationprocessor.h"
 #include "processor/filter/thresholdprocessor.h"
 #include "processor/filter/sobelprocessor.h"
-#include "processor/filter/laplacianprocessor.h"
-#include "processor/filter/cannyprocessor.h"
 #include "processor/geometry/subimageprocessor.h"
 #include "processor/geometry/makeborderprocessor.h"
 #include "processor/geometry/pyramidprocessor.h"
@@ -82,7 +83,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processing << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
                << "MorphologyTransformation" << "Threshold"
                << "CustomFilter" << "AddWeighted" << "ConvertTo"
-               << "ConvertColor" << "ApplyRoi";
+               << "ConvertColor" << "ApplyRoi" << "FloodFill";
     processors << QPair<QString, QStringList>("Processing", processing);
 
     QStringList edges;
@@ -334,6 +335,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "ApplyColorMap")
     {
         return new ApplyColorMapProcessor();
+    }
+    else if(rawProcessorName == "FloodFill")
+    {
+        return new FloodFillProcessor();
     }
     else
     {
