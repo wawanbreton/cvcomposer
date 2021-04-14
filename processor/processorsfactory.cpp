@@ -28,6 +28,7 @@
 #include "processor/data/sublistprocessor.h"
 #include "processor/data/countlistprocessor.h"
 #include "processor/data/splitchannelsprocessor.h"
+#include "processor/filter/absolutedifferenceprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
 #include "processor/filter/applyroiprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
@@ -82,7 +83,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList processing;
     processing << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
                << "MorphologyTransformation" << "Threshold"
-               << "CustomFilter" << "AddWeighted" << "ConvertTo"
+               << "CustomFilter" << "AddWeighted" << "AbsoluteDifference" << "ConvertTo"
                << "ConvertColor" << "ApplyRoi" << "FloodFill";
     processors << QPair<QString, QStringList>("Processing", processing);
 
@@ -339,6 +340,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "FloodFill")
     {
         return new FloodFillProcessor();
+    }
+    else if(rawProcessorName == "AbsoluteDifference")
+    {
+        return new AbsoluteDifferenceProcessor();
     }
     else
     {

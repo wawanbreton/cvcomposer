@@ -38,6 +38,7 @@ SOURCES += main.cpp\
     plugwidget/imageviewerdockwidget.cpp \
     processor/abstractprocessor.cpp \
     processor/data/applycolormapprocessor.cpp \
+    processor/filter/absolutedifferenceprocessor.cpp \
     processor/filter/blurprocessor.cpp \
     processor/filter/floodfillprocessor.cpp \
     processor/input/imagefromfileprocessor.cpp \
@@ -127,6 +128,7 @@ HEADERS  += gui/mainwidget.h \
     plugwidget/imageviewerdockwidget.h \
     processor/abstractprocessor.h \
     processor/data/applycolormapprocessor.h \
+    processor/filter/absolutedifferenceprocessor.h \
     processor/filter/blurprocessor.h \
     processor/filter/floodfillprocessor.h \
     processor/input/imagefromfileprocessor.h \
