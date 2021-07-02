@@ -39,6 +39,7 @@
 #include "processor/filter/customfilterprocessor.h"
 #include "processor/filter/floodfillprocessor.h"
 #include "processor/filter/gaussianblurprocessor.h"
+#include "processor/filter/inrangeprocessor.h"
 #include "processor/filter/laplacianprocessor.h"
 #include "processor/filter/medianblurprocessor.h"
 #include "processor/filter/morphologytransformationprocessor.h"
@@ -84,7 +85,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processing << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
                << "MorphologyTransformation" << "Threshold"
                << "CustomFilter" << "AddWeighted" << "AbsoluteDifference" << "ConvertTo"
-               << "ConvertColor" << "ApplyRoi" << "FloodFill";
+               << "ConvertColor" << "ApplyRoi" << "FloodFill" << "InRange";
     processors << QPair<QString, QStringList>("Processing", processing);
 
     QStringList edges;
@@ -344,6 +345,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "AbsoluteDifference")
     {
         return new AbsoluteDifferenceProcessor();
+    }
+    else if(rawProcessorName == "InRange")
+    {
+        return new InRangeProcessor();
     }
     else
     {

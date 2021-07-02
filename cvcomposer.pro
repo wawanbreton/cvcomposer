@@ -41,6 +41,7 @@ SOURCES += main.cpp\
     processor/filter/absolutedifferenceprocessor.cpp \
     processor/filter/blurprocessor.cpp \
     processor/filter/floodfillprocessor.cpp \
+    processor/filter/inrangeprocessor.cpp \
     processor/input/imagefromfileprocessor.cpp \
     processor/filter/gaussianblurprocessor.cpp \
     processor/filter/medianblurprocessor.cpp \
@@ -131,6 +132,7 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/absolutedifferenceprocessor.h \
     processor/filter/blurprocessor.h \
     processor/filter/floodfillprocessor.h \
+    processor/filter/inrangeprocessor.h \
     processor/input/imagefromfileprocessor.h \
     global/properties.h \
     processor/filter/gaussianblurprocessor.h \
