@@ -30,6 +30,7 @@
 #include "processor/data/splitchannelsprocessor.h"
 #include "processor/filter/absolutedifferenceprocessor.h"
 #include "processor/filter/addweightedprocessor.h"
+#include "processor/filter/adaptativethresholdprocessor.h"
 #include "processor/filter/applyroiprocessor.h"
 #include "processor/filter/bilateralfilterprocessor.h"
 #include "processor/filter/blurprocessor.h"
@@ -83,7 +84,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
 
     QStringList processing;
     processing << "Blur" << "GaussianBlur" << "MedianBlur" << "BilateralFilter"
-               << "MorphologyTransformation" << "Threshold"
+               << "MorphologyTransformation" << "Threshold" << "AdaptativeThreshold"
                << "CustomFilter" << "AddWeighted" << "AbsoluteDifference" << "ConvertTo"
                << "ConvertColor" << "ApplyRoi" << "FloodFill" << "InRange";
     processors << QPair<QString, QStringList>("Processing", processing);
@@ -349,6 +350,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "InRange")
     {
         return new InRangeProcessor();
+    }
+    else if(rawProcessorName == "AdaptativeThreshold")
+    {
+        return new AdaptativeThresholdProcessor();
     }
     else
     {

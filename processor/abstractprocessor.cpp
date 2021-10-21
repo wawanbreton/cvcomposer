@@ -180,7 +180,7 @@ void AbstractProcessor::addInput(const QString &name,
 }
 
 void AbstractProcessor::addEnumerationInput(const QString &name,
-                                            const QList<QPair<QString, QVariant> > &values,
+                                            const QList<QPair<QString, QVariant>> &values,
                                             const QVariant &defaultValue)
 {
     Properties widgetProperties;

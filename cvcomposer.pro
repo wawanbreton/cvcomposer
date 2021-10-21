@@ -39,6 +39,7 @@ SOURCES += main.cpp\
     processor/abstractprocessor.cpp \
     processor/data/applycolormapprocessor.cpp \
     processor/filter/absolutedifferenceprocessor.cpp \
+    processor/filter/adaptativethresholdprocessor.cpp \
     processor/filter/blurprocessor.cpp \
     processor/filter/floodfillprocessor.cpp \
     processor/filter/inrangeprocessor.cpp \
@@ -130,6 +131,7 @@ HEADERS  += gui/mainwidget.h \
     processor/abstractprocessor.h \
     processor/data/applycolormapprocessor.h \
     processor/filter/absolutedifferenceprocessor.h \
+    processor/filter/adaptativethresholdprocessor.h \
     processor/filter/blurprocessor.h \
     processor/filter/floodfillprocessor.h \
     processor/filter/inrangeprocessor.h \
