@@ -67,6 +67,7 @@
 #include "processor/shape/houghlineprocessor.h"
 #include "processor/shape/houghlineprobaprocessor.h"
 #include "processor/shape/fitellipseprocessor.h"
+#include "processor/shape/minenclosingtriangleprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -105,7 +106,7 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     QStringList shapes;
     shapes << "Rectangle" << "Line"
            << "Circle" << "Ellipse"
-           << "ConvexHull" << "FitEllipse"
+           << "ConvexHull" << "FitEllipse" << "MinEnclosingTriangle"
            << "DrawText" << "DrawShape"
            << "BoundingRect";
     processors << QPair<QString, QStringList>("Shapes", shapes);
@@ -359,6 +360,10 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "FitEllipse")
     {
         return new FitEllipseProcessor();
+    }
+    else if(rawProcessorName == "MinEnclosingTriangle")
+    {
+        return new MinEnclosingTriangleProcessor();
     }
     else
     {

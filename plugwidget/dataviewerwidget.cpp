@@ -51,6 +51,16 @@ void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Propertie
         _text = _text.arg(rect.width);
         _text = _text.arg(rect.height);
     }
+    else if(output.userType() == qMetaTypeId<cv::RotatedRect>())
+    {
+        cv::RotatedRect rect = output.value<cv::RotatedRect>();
+        _text = QString("cx: %1\ncy: %2\nw: %3\nh: %4\nang: %5");
+        _text = _text.arg(rect.center.x);
+        _text = _text.arg(rect.center.y);
+        _text = _text.arg(rect.size.width);
+        _text = _text.arg(rect.size.height);
+        _text = _text.arg(rect.angle);
+    }
     else if(output.type() == QVariant::Int)
     {
         _text = QString::number(output.toInt());

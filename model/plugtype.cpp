@@ -50,6 +50,7 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
             case PlugType::Line:
             case PlugType::Ellipse:
             case PlugType::RotatedRectangle:
+            case PlugType::Triangle:
                 return Mandatory;
         }
     }
@@ -122,6 +123,8 @@ QColor PlugType::getColor(PlugType::Enum value)
             return QColor(255, 79, 70);
         case PlugType::RotatedRectangle:
             return QColor(69, 33, 85);
+        case PlugType::Triangle:
+            return QColor(255, 170, 255);
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
@@ -181,6 +184,8 @@ QString PlugType::toString(PlugType::Enum value)
             return "Ellipse";
         case PlugType::RotatedRectangle:
             return "Rotated rectangle";
+        case PlugType::Triangle:
+            return "Triangle";
     }
 
     return "";

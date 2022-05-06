@@ -26,6 +26,7 @@
 #include "model/ellipse.h"
 #include "model/line.h"
 #include "model/contour.h"
+#include "model/triangle.h"
 
 
 DrawShapeProcessor::DrawShapeProcessor()
@@ -33,7 +34,13 @@ DrawShapeProcessor::DrawShapeProcessor()
     // Inputs
     addInput("input image", PlugType::Image, ProcessorListType::Simple);
     addInput("shape",
-             PlugType::Circle | PlugType::Rectangle | PlugType::Line | PlugType::Ellipse | PlugType::Contour | PlugType::RotatedRectangle,
+             PlugType::Circle |
+             PlugType::Rectangle |
+             PlugType::Line |
+             PlugType::Ellipse |
+             PlugType::Contour |
+             PlugType::RotatedRectangle |
+             PlugType::Triangle,
              ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
@@ -130,6 +137,14 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
             {
                 cv::line(outputImage, points[i], points[(i + 1) % 4], color, thickness, lineType, shift);
             }
+        }
+        else if(shape.userType() == qMetaTypeId<Triangle>())
+        {
+            Triangle triangle = shape.value<Triangle>();
+
+            cv::line(outputImage, triangle.p1, triangle.p2, color, thickness, lineType, shift);
+            cv::line(outputImage, triangle.p2, triangle.p3, color, thickness, lineType, shift);
+            cv::line(outputImage, triangle.p3, triangle.p1, color, thickness, lineType, shift);
         }
     }
 

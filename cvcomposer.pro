@@ -68,6 +68,7 @@ SOURCES += main.cpp\
     model/node.cpp \
     processor/analyzer/discretefouriertransformprocessor.cpp \
     processor/shape/fitellipseprocessor.cpp \
+    processor/shape/minenclosingtriangleprocessor.cpp \
     processor/shape/rectangleprocessor.cpp \
     processor/geometry/subimageprocessor.cpp \
     processor/geometry/makeborderprocessor.cpp \
@@ -128,6 +129,7 @@ HEADERS  += gui/mainwidget.h \
     gui/genericnodeitem.h \
     model/plug.h \
     global/cvutils.h \
+    model/triangle.h \
     plugwidget/imageviewerdockwidget.h \
     processor/abstractprocessor.h \
     processor/data/applycolormapprocessor.h \
@@ -162,6 +164,7 @@ HEADERS  += gui/mainwidget.h \
     model/node.h \
     processor/analyzer/discretefouriertransformprocessor.h \
     processor/shape/fitellipseprocessor.h \
+    processor/shape/minenclosingtriangleprocessor.h \
     processor/shape/rectangleprocessor.h \
     processor/geometry/subimageprocessor.h \
     processor/geometry/makeborderprocessor.h \

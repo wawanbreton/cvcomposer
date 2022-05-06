@@ -48,6 +48,7 @@ class PlugType : public QObject
             Line                = 0x10000,
             Ellipse             = 0x20000,
             RotatedRectangle    = 0x40000,
+            Triangle            = 0x80000,
         } Enum;
 
 
