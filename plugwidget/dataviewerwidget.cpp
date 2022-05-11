@@ -65,6 +65,10 @@ void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Propertie
     {
         _text = QString::number(output.toInt());
     }
+    else if(output.type() == QVariant::Double)
+    {
+        _text = QString::number(output.toDouble());
+    }
     #warning TBD display kernel
 
     update();

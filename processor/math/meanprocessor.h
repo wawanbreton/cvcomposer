@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include <QMetaType>
+#include "processor/abstractprocessor.h"
 
-#include <opencv2/core/core.hpp>
-
-typedef struct
+class MeanProcessor : public AbstractProcessor
 {
-    cv::Point2f point;
-    double angle;
-} Line;
+    public:
+        MeanProcessor();
 
-Q_DECLARE_METATYPE(Line);
+    protected:
+        virtual Properties processImpl(const Properties &inputs) override;
+};
+

@@ -24,9 +24,10 @@
 #include "global/cvutils.h"
 #include "model/circle.h"
 #include "model/ellipse.h"
-#include "model/line.h"
+#include "model/segment.h"
 #include "model/contour.h"
 #include "model/triangle.h"
+#include "model/line.h"
 
 
 DrawShapeProcessor::DrawShapeProcessor()
@@ -36,11 +37,12 @@ DrawShapeProcessor::DrawShapeProcessor()
     addInput("shape",
              PlugType::Circle |
              PlugType::Rectangle |
-             PlugType::Line |
+             PlugType::Segment |
              PlugType::Ellipse |
              PlugType::Contour |
              PlugType::RotatedRectangle |
-             PlugType::Triangle,
+             PlugType::Triangle |
+             PlugType::Line,
              ProcessorListType::Custom);
     addInput("color", PlugType::Color, QVariant::fromValue(cv::Scalar(255, 255, 255, 255)));
 
@@ -101,9 +103,9 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
             cv::Rect rect = shape.value<cv::Rect>();
             cv::rectangle(outputImage, rect, color, thickness, lineType, shift);
         }
-        else if(shape.userType() == qMetaTypeId<Line>())
+        else if(shape.userType() == qMetaTypeId<Segment>())
         {
-            Line line = shape.value<Line>();
+            Segment line = shape.value<Segment>();
             cv::line(outputImage, line.point1, line.point2, color, thickness, lineType, shift);
         }
         else if(shape.userType() == qMetaTypeId<Ellipse>())
@@ -145,6 +147,19 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
             cv::line(outputImage, triangle.p1, triangle.p2, color, thickness, lineType, shift);
             cv::line(outputImage, triangle.p2, triangle.p3, color, thickness, lineType, shift);
             cv::line(outputImage, triangle.p3, triangle.p1, color, thickness, lineType, shift);
+        }
+        else if(shape.userType() == qMetaTypeId<Line>())
+        {
+            Line line = shape.value<Line>();
+
+            cv::Point2f direction;
+            direction.x = std::cos(line.angle);
+            direction.y = std::sin(line.angle);
+
+            double expand = std::max(inputImage.rows, inputImage.cols) * 4;
+            direction *= expand;
+
+            cv::line(outputImage, line.point + direction, line.point - direction, color, thickness, lineType, shift);
         }
     }
 

@@ -314,7 +314,7 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
             case PlugType::Rectangle:
             case PlugType::Circle:
             case PlugType::Contour:
-            case PlugType::Line:
+            case PlugType::Segment:
             case PlugType::Ellipse:
             case PlugType::RotatedRectangle:
             case PlugType::Triangle:

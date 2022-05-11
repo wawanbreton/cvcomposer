@@ -22,7 +22,7 @@
 #include <QtMath>
 
 #include "global/cvutils.h"
-#include "model/line.h"
+#include "model/segment.h"
 
 
 HoughLineProbaProcessor::HoughLineProbaProcessor()
@@ -57,7 +57,7 @@ HoughLineProbaProcessor::HoughLineProbaProcessor()
     addInput("max gap",    PlugType::Double, 0, minMaxProperties);
 
     // Outputs
-    addOutput("lines", PlugType::Line, ProcessorListType::Custom);
+    addOutput("lines", PlugType::Segment, ProcessorListType::Custom);
 
     // Help
     addHelpMessage("HoughLinesP",
@@ -87,7 +87,7 @@ Properties HoughLineProbaProcessor::processImpl(const Properties &inputs)
 
     for(const cv::Vec4f &linePoints : lines)
     {
-        Line line;
+        Segment line;
         line.point1.x = linePoints[0];
         line.point1.y = linePoints[1];
         line.point2.x = linePoints[2];

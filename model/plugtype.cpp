@@ -47,10 +47,11 @@ PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
             case PlugType::Rectangle:
             case PlugType::Circle:
             case PlugType::Contour:
-            case PlugType::Line:
+            case PlugType::Segment:
             case PlugType::Ellipse:
             case PlugType::RotatedRectangle:
             case PlugType::Triangle:
+            case PlugType::Line:
                 return Mandatory;
         }
     }
@@ -117,7 +118,7 @@ QColor PlugType::getColor(PlugType::Enum value)
             return QColor(85, 110, 134);
         case PlugType::Contour:
             return QColor(241, 196, 15);
-        case PlugType::Line:
+        case PlugType::Segment:
             return QColor(156, 80, 6);
         case PlugType::Ellipse:
             return QColor(255, 79, 70);
@@ -125,6 +126,8 @@ QColor PlugType::getColor(PlugType::Enum value)
             return QColor(69, 33, 85);
         case PlugType::Triangle:
             return QColor(255, 170, 255);
+        case PlugType::Line:
+            return QColor(49, 191, 182);
         case PlugType::Size:
         case PlugType::Point:
         case PlugType::Enumeration:
@@ -178,14 +181,16 @@ QString PlugType::toString(PlugType::Enum value)
             return "Circle";
         case PlugType::Contour:
             return "Contour";
-        case PlugType::Line:
-            return "Line";
+        case PlugType::Segment:
+            return "Segment";
         case PlugType::Ellipse:
             return "Ellipse";
         case PlugType::RotatedRectangle:
             return "Rotated rectangle";
         case PlugType::Triangle:
             return "Triangle";
+        case PlugType::Line:
+            return "Line";
     }
 
     return "";

@@ -109,18 +109,9 @@ Properties HoughLineProcessor::processImpl(const Properties &inputs)
         lineCenter.x = rho * deltaVector.y;
         lineCenter.y = rho * -deltaVector.x;
 
-        double expand = qMax(inputImage.rows, inputImage.cols) * 2;
-        deltaVector.x *= expand;
-        deltaVector.y *= expand;
-
-        cv::Point2f p1 = lineCenter + deltaVector;
-        cv::Point2f p2 = lineCenter - deltaVector;
-
         Line line;
-        line.point1.x = qRound(p1.x);
-        line.point1.y = qRound(p1.y);
-        line.point2.x = qRound(p2.x);
-        line.point2.y = qRound(p2.y);
+        line.point = lineCenter;
+        line.angle = theta - M_PI_2;
 
         outputLines << QVariant::fromValue(line);
     }

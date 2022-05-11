@@ -120,7 +120,7 @@ QString Plug::save(const QVariant &value) const
             case PlugType::Rectangle:
             case PlugType::Circle:
             case PlugType::Contour:
-            case PlugType::Line:
+            case PlugType::Segment:
             case PlugType::Ellipse:
             case PlugType::RotatedRectangle:
             case PlugType::Triangle:
@@ -262,7 +262,7 @@ QVariant Plug::load(const QString &value) const
             case PlugType::Rectangle:
             case PlugType::Circle:
             case PlugType::Contour:
-            case PlugType::Line:
+            case PlugType::Segment:
             case PlugType::Ellipse:
             case PlugType::RotatedRectangle:
             case PlugType::Triangle:

@@ -55,6 +55,7 @@
 #include "processor/math/countnonzeroprocessor.h"
 #include "processor/math/averageprocessor.h"
 #include "processor/math/operatorprocessor.h"
+#include "processor/math/meanprocessor.h"
 #include "processor/shape/circleprocessor.h"
 #include "processor/shape/convexhullprocessor.h"
 #include "processor/shape/rectangleprocessor.h"
@@ -68,6 +69,7 @@
 #include "processor/shape/houghlineprobaprocessor.h"
 #include "processor/shape/fitellipseprocessor.h"
 #include "processor/shape/minenclosingtriangleprocessor.h"
+#include "processor/shape/fitlineprocessor.h"
 #include "processor/viewer/imageviewerprocessor.h"
 #include "processor/viewer/dataviewerprocessor.h"
 
@@ -100,13 +102,14 @@ QList<QPair<QString, QStringList> > ProcessorsFactory::getProcessors()
     processors << QPair<QString, QStringList>("Data", data);
 
     QStringList math;
-    math << "CountNonZero" << "Average" << "Operator";
+    math << "CountNonZero" << "Average" << "Operator" << "Mean";
     processors << QPair<QString, QStringList>("Math", math);
 
     QStringList shapes;
     shapes << "Rectangle" << "Line"
            << "Circle" << "Ellipse"
-           << "ConvexHull" << "FitEllipse" << "MinEnclosingTriangle"
+           << "ConvexHull" << "FitEllipse" << "FitLine"
+           << "MinEnclosingTriangle"
            << "DrawText" << "DrawShape"
            << "BoundingRect";
     processors << QPair<QString, QStringList>("Shapes", shapes);
@@ -364,6 +367,14 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else if(rawProcessorName == "MinEnclosingTriangle")
     {
         return new MinEnclosingTriangleProcessor();
+    }
+    else if(rawProcessorName == "Mean")
+    {
+        return new MeanProcessor();
+    }
+    else if(rawProcessorName == "FitLine")
+    {
+        return new FitLineProcessor();
     }
     else
     {

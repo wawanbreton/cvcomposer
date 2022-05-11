@@ -67,7 +67,9 @@ SOURCES += main.cpp\
     processor/filter/customfilterprocessor.cpp \
     model/node.cpp \
     processor/analyzer/discretefouriertransformprocessor.cpp \
+    processor/math/meanprocessor.cpp \
     processor/shape/fitellipseprocessor.cpp \
+    processor/shape/fitlineprocessor.cpp \
     processor/shape/minenclosingtriangleprocessor.cpp \
     processor/shape/rectangleprocessor.cpp \
     processor/geometry/subimageprocessor.cpp \
@@ -127,8 +129,10 @@ HEADERS  += gui/mainwidget.h \
     model/connection.h \
     gui/interactivegraphicsview.h \
     gui/genericnodeitem.h \
+    model/line.h \
     model/plug.h \
     global/cvutils.h \
+    model/segment.h \
     model/triangle.h \
     plugwidget/imageviewerdockwidget.h \
     processor/abstractprocessor.h \
@@ -163,7 +167,9 @@ HEADERS  += gui/mainwidget.h \
     processor/filter/customfilterprocessor.h \
     model/node.h \
     processor/analyzer/discretefouriertransformprocessor.h \
+    processor/math/meanprocessor.h \
     processor/shape/fitellipseprocessor.h \
+    processor/shape/fitlineprocessor.h \
     processor/shape/minenclosingtriangleprocessor.h \
     processor/shape/rectangleprocessor.h \
     processor/geometry/subimageprocessor.h \
@@ -198,7 +204,6 @@ HEADERS  += gui/mainwidget.h \
     processor/data/splitchannelsprocessor.h \
     plugwidget/pathwidget.h \
     processor/shape/drawshapeprocessor.h \
-    model/line.h \
     processor/shape/lineprocessor.h \
     processor/shape/ellipseprocessor.h \
     model/ellipse.h \

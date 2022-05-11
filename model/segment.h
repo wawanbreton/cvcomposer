@@ -1,4 +1,4 @@
-// Copyright 2022 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -23,8 +23,8 @@
 
 typedef struct
 {
-    cv::Point2f point;
-    double angle;
-} Line;
+    cv::Point point1;
+    cv::Point point2;
+} Segment;
 
-Q_DECLARE_METATYPE(Line);
+Q_DECLARE_METATYPE(Segment);

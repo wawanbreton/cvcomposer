@@ -1,4 +1,4 @@
-// Copyright 2016 Erwan MATHIEU <wawanbreton@gmail.com>
+// Copyright 2022 Erwan MATHIEU <wawanbreton@gmail.com>
 //
 // This file is part of CvComposer.
 //
@@ -15,35 +15,39 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "lineprocessor.h"
+#include "meanprocessor.h"
 
 #include "global/cvutils.h"
-#include "model/segment.h"
 
 
-LineProcessor::LineProcessor()
+MeanProcessor::MeanProcessor()
 {
     // Inputs
-    addInput("point 1", PlugType::Point);
-    addInput("point 2", PlugType::Point);
+    addInput("image", PlugType::Image, ProcessorListType::None);
 
     // Outputs
-    addOutput("line", PlugType::Segment);
+    addOutput("mean", PlugType::Double, ProcessorListType::Custom);
 
     // Help
-    addHelpMessage("Point",
-                   CvUtils::makeUrl({"db", "d4e", "classcv_1_1Point__"}),
-                   HelpMessageType::Class);
+    addHelpMessage("mean",
+                   CvUtils::makeUrl({"d2", "de8", "group__core__array"}, "ga191389f8a0e58180bb13a727782cd461"),
+                   HelpMessageType::Function);
 }
 
-Properties LineProcessor::processImpl(const Properties &inputs)
+Properties MeanProcessor::processImpl(const Properties &inputs)
 {
-    Segment line;
-    line.point1 = inputs["point 1"].value<cv::Point>();
-    line.point2 = inputs["point 2"].value<cv::Point>();
-
     Properties outputs;
-    outputs.insert("line", QVariant::fromValue(line));
+
+    cv::Mat image = inputs["image"].value<cv::Mat>();
+    cv::Scalar mean = cv::mean(image);
+
+    QList<QVariant> means;
+    for(int i = 0 ; i < image.channels() ; ++i)
+    {
+        means.append(mean[i]);
+    }
+
+    outputs.insert("mean", means);
     return outputs;
 }
 
