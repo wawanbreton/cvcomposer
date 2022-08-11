@@ -145,7 +145,7 @@ QVariant Plug::load(const QString &value) const
         {
             case PlugType::Size:
             {
-                QStringList sizeParts = value.split('x', QString::SkipEmptyParts);
+                QStringList sizeParts = value.split('x', Qt::SkipEmptyParts);
                 if(sizeParts.count() == 2)
                 {
                     bool ok1;
@@ -160,7 +160,7 @@ QVariant Plug::load(const QString &value) const
             }
             case PlugType::Point:
             {
-                QStringList sizeParts = value.split(':', QString::SkipEmptyParts);
+                QStringList sizeParts = value.split(':', Qt::SkipEmptyParts);
                 if(sizeParts.count() == 2)
                 {
                     bool ok1;
@@ -205,7 +205,7 @@ QVariant Plug::load(const QString &value) const
                 return value;
             case PlugType::Color:
             {
-                QStringList colorParts = value.split(';', QString::SkipEmptyParts);
+                QStringList colorParts = value.split(';', Qt::SkipEmptyParts);
                 if(colorParts.count() == 4)
                 {
                     cv::Scalar scalar;
@@ -224,7 +224,7 @@ QVariant Plug::load(const QString &value) const
             }
             case PlugType::KernelDefinition:
             {
-                QStringList rowsStr = value.split('|', QString::SkipEmptyParts);
+                QStringList rowsStr = value.split('|', Qt::SkipEmptyParts);
                 int rows = rowsStr.count();
                 int cols = (value.count(';') / rows) + 1;
                 bool ok = true;

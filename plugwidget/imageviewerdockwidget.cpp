@@ -40,7 +40,7 @@ ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
     onColorPicked(Qt::white);
 
     QFontMetrics metrics = fontMetrics();
-    int maxColorWidth = metrics.width("888");
+    int maxColorWidth = metrics.horizontalAdvance("888");
     _ui->labelColorBlue->setFixedWidth(maxColorWidth);
     _ui->labelColorGreen->setFixedWidth(maxColorWidth);
     _ui->labelColorRed->setFixedWidth(maxColorWidth);

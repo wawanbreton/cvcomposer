@@ -59,14 +59,14 @@ void InteractiveGraphicsView::setMaxZoom(int maxZoom)
 
 void InteractiveGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    QGraphicsItem *item = itemAt(event->pos());
+    QGraphicsItem *item = itemAt(event->position().toPoint());
     if(item && item->type() == QGraphicsProxyWidget::Type)
     {
         QGraphicsView::wheelEvent(event);
     }
     else
     {
-        zoom(_zoom + event->delta() / 120);
+        zoom(_zoom + event->angleDelta().y() / 120);
     }
 }
 

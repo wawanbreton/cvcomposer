@@ -138,7 +138,7 @@ QMap<QString, QString> GenericNodeItem::save() const
 void GenericNodeItem::load(const QMap<QString, QString> &properties)
 {
     QString pos = properties["pos"];
-    QStringList posParts = pos.split(':', QString::SkipEmptyParts);
+    QStringList posParts = pos.split(':', Qt::SkipEmptyParts);
     if(posParts.count() == 2)
     {
         setPos(posParts[0].toDouble(), posParts[1].toDouble());

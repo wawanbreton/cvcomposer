@@ -41,7 +41,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
 {
     // Check that given inputs match the expected inputs and check whether an input supports list
     QList<QString> inputNames = inputs.keys();
-    qSort(inputNames);
+    std::sort(inputNames.begin(), inputNames.end());
 
     Properties listCompliantImputs;
     QList<QString> expectedInputNames;
@@ -85,7 +85,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
         }
     }
 
-    qSort(expectedInputNames);
+    std::sort(expectedInputNames.begin(), expectedInputNames.end());
 
     Q_ASSERT(inputNames == expectedInputNames);
 
@@ -97,7 +97,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
     {
         expectedOutputNames << plug.name;
     }
-    qSort(expectedOutputNames);
+    std::sort(expectedOutputNames.begin(), expectedOutputNames.end());
 
     // Do the actual computing
     if(simpleInputListPlug.isEmpty())
@@ -144,7 +144,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
 
     // Check that computed outputs match the expected ouputs
     QList<QString> outputNames = outputs.keys();
-    qSort(outputNames);
+    std::sort(outputNames.begin(), outputNames.end());
 
     Q_ASSERT(outputNames == expectedOutputNames);
 

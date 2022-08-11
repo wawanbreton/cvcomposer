@@ -32,7 +32,7 @@ bool ProcessorsModelFilter::filterAcceptsRow(int sourceRow, const QModelIndex &s
         // No parent : this is a group item, display it only if it has some displayed children
         QModelIndex currentIndex = sourceModel()->index(sourceRow, 0);
         bool atLeastOneChildDisplayed = false;
-        QModelIndex child = currentIndex.child(0, 0);
+        QModelIndex child = sourceModel()->index(0, 0, currentIndex);
         while(child.isValid())
         {
             if(filterAcceptsRow(child.row(), currentIndex))
@@ -41,7 +41,7 @@ bool ProcessorsModelFilter::filterAcceptsRow(int sourceRow, const QModelIndex &s
                 break;
             }
 
-            child = currentIndex.child(child.row() + 1, 0);
+            child = sourceModel()->index(child.row() + 1, 0, currentIndex);
         }
 
         return atLeastOneChildDisplayed;
