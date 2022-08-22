@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef DOUBLEWIDGET_H
-#define DOUBLEWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -42,5 +41,3 @@ class DoubleWidget : public AbstractPlugWidget
     private:
         QDoubleSpinBox *_spinBox;
 };
-
-#endif // DOUBLEWIDGET_H

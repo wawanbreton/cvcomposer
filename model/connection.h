@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#pragma once
 
 #include <QObject>
 
@@ -37,5 +36,3 @@ class Connection : public QObject
         Plug *_output;
         Plug *_input;
 };
-
-#endif // CONNECTION_H

@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COLORWIDGET_H
-#define COLORWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -44,5 +43,3 @@ class ColorWidget : public AbstractPlugWidget
     private:
         QLineEdit *_lineEdit;
 };
-
-#endif // COLORWIDGET_H

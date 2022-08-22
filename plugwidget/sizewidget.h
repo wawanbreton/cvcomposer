@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SIZEWIDGET_H
-#define SIZEWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -44,5 +43,3 @@ class SizeWidget : public AbstractPlugWidget
         QSpinBox *_spinBoxWidth;
         QSpinBox *_spinBoxHeight;
 };
-
-#endif // SIZEWIDGET_H

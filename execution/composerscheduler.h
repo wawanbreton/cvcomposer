@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMPOSERSCHEDULER_H
-#define COMPOSERSCHEDULER_H
+#pragma once
 
 #include <QObject>
 
@@ -114,5 +113,3 @@ class ComposerScheduler : public QObject
         QMap<const Node *, Properties> _processedNodes;
         bool _end;
 };
-
-#endif // COMPOSERSCHEDULER_H

@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ABSTRACTPLUGWIDGET_H
-#define ABSTRACTPLUGWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -48,5 +47,3 @@ class AbstractPlugWidget : public QWidget
     protected:
         explicit AbstractPlugWidget(QWidget *parent = NULL);
 };
-
-#endif // ABSTRACTPLUGWIDGET_H

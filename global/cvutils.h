@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CVUTILS_H
-#define CVUTILS_H
+#pragma once
 
 #include <QImage>
 #include <QMetaType>
@@ -45,5 +44,3 @@ Q_DECLARE_METATYPE(cv::Rect)
 Q_DECLARE_METATYPE(cv::Mat)
 Q_DECLARE_METATYPE(cv::Scalar)
 Q_DECLARE_METATYPE(cv::RotatedRect)
-
-#endif // CVUTILS_H

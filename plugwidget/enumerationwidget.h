@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ENUMERATIONWIDGET_H
-#define ENUMERATIONWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -43,5 +42,3 @@ class EnumerationWidget : public AbstractPlugWidget
     private:
         QComboBox *_comboBox;
 };
-
-#endif // ENUMERATIONWIDGET_H

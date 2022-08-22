@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLUG_H
-#define PLUG_H
+#pragma once
 
 #include <QObject>
 
@@ -48,7 +47,3 @@ class Plug : public QObject
     private:
         const PlugDefinition _definition;
 };
-
-
-#endif // PLUG_H
-

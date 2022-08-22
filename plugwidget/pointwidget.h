@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef POINTWIDGET_H
-#define POINTWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -44,5 +43,3 @@ class PointWidget : public AbstractPlugWidget
         QSpinBox *_spinBoxX;
         QSpinBox *_spinBoxY;
 };
-
-#endif // POINTWIDGET_H

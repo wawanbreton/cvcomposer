@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef CUSTOMITEMS_H
-#define CUSTOMITEMS_H
+#pragma once
 
 #include <QGraphicsItem>
 
@@ -28,6 +27,3 @@ namespace CustomItems
         Node = QGraphicsItem::UserType + 2
     } Enum;
 }
-
-#endif // CUSTOMITEMS_H
-

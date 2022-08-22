@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef STRINGWIDGET_H
-#define STRINGWIDGET_H
+#pragma once
 
 #include "plugwidget/abstractplugwidget.h"
 
@@ -42,5 +41,3 @@ class StringWidget : public AbstractPlugWidget
     private:
         QLineEdit *_lineEdit;
 };
-
-#endif // STRINGWIDGET_H

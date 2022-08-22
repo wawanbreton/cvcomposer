@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CvComposer.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GenericNodeWidget_H
-#define GenericNodeWidget_H
+#pragma once
 
 #include <QWidget>
 
@@ -79,5 +78,3 @@ class GenericNodeWidget : public QWidget
         QMap<QString, PlugWidget> _widgets;
         QSignalMapper *_widgetsMapper;
 };
-
-#endif // GenericNodeWidget_H

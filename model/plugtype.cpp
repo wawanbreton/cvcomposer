@@ -20,8 +20,6 @@
 #include <QDebug>
 #include <QMetaEnum>
 
-#include "global/cvutils.h"
-
 
 PlugType::Pluggable PlugType::isInputPluggable(PlugType::PlugTypes inputTypes)
 {

@@ -61,11 +61,11 @@ void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Propertie
         _text = _text.arg(rect.size.height);
         _text = _text.arg(rect.angle);
     }
-    else if(output.type() == QVariant::Int)
+    else if(output.typeId() == QMetaType::Int)
     {
         _text = QString::number(output.toInt());
     }
-    else if(output.type() == QVariant::Double)
+    else if(output.typeId() == QMetaType::Double)
     {
         _text = QString::number(output.toDouble());
     }
