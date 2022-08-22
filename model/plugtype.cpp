@@ -198,7 +198,7 @@ QString PlugType::toString(PlugType::Enum value)
 
 bool PlugType::isSingleType(PlugTypes types)
 {
-    return (types & (types - 1)) == 0;
+    return (types & (static_cast<int>(types) - 1)) == 0;
 }
 
 

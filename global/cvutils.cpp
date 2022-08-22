@@ -18,6 +18,7 @@
 #include "global/cvutils.h"
 
 #include <QDebug>
+#include <QVariant>
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>

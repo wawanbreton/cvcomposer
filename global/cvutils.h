@@ -19,6 +19,7 @@
 #define CVUTILS_H
 
 #include <QImage>
+#include <QMetaType>
 #include <opencv2/core/core.hpp>
 
 namespace CvUtils
