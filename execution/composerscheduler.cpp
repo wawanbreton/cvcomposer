@@ -40,12 +40,10 @@ ComposerScheduler::ComposerScheduler(const ComposerModel *model, QObject *parent
 
 void ComposerScheduler::start()
 {
-    connect(_model, SIGNAL(nodeAdded(const Node*)), SLOT(onNodeAdded(const Node*)));
-    connect(_model, SIGNAL(nodeRemoved(const Node*)), SLOT(onNodeRemoved(const Node*)));
-    connect(_model, SIGNAL(connectionAdded(const Connection*)),
-                    SLOT(onConnectionAdded(const Connection*)));
-    connect(_model, SIGNAL(connectionRemoved(const Connection*)),
-                    SLOT(onConnectionRemoved(const Connection*)));
+    connect(_model, &ComposerModel::nodeAdded, this, qOverload<const Node *>(&ComposerScheduler::onNodeAdded));
+    connect(_model, &ComposerModel::nodeRemoved, this, &ComposerScheduler::onNodeRemoved);
+    connect(_model, &ComposerModel::connectionAdded, this, &ComposerScheduler::onConnectionAdded);
+    connect(_model, &ComposerModel::connectionRemoved, this, &ComposerScheduler::onConnectionRemoved);
 
     for(const Node *node : _model->getNodes())
     {
@@ -60,7 +58,7 @@ void ComposerScheduler::end()
     if(_currentExecutors.isEmpty() && _oldExecutors.isEmpty())
     {
         // There is no executor being processed, exit asap
-        QTimer::singleShot(0, this, SIGNAL(ended()));
+        QTimer::singleShot(0, this, &ComposerScheduler::ended);
     }
     else
     {
@@ -91,7 +89,7 @@ void ComposerScheduler::onNodeAdded(const Node *node, bool processNow)
     AbstractProcessor *processor = ProcessorsFactory::createProcessor(node->getName());
     _processors[node] = QSharedPointer<AbstractProcessor>(processor);
 
-    connect(node, SIGNAL(propertyChanged(QString,QVariant)), SLOT(onNodePropertyChanged()));
+    connect(node, &Node::propertyChanged, this, &ComposerScheduler::onNodePropertyChanged);
 
     if(processNow && allInputsProcessed(node))
     {
@@ -395,9 +393,9 @@ void ComposerScheduler::processNexts()
                                                                   inputs,
                                                                   _processors[node],
                                                                   this);
-                connect(executor, SIGNAL(nodeProcessed()), executor, SLOT(deleteLater()));
-                connect(executor, SIGNAL(nodeProcessed()), SLOT(onNodeProcessed()));
-                connect(executor, SIGNAL(executionProgress(qreal)), SLOT(onProgress(qreal)));
+                connect(executor, &ComposerExecutor::nodeProcessed, executor, &ComposerExecutor::deleteLater);
+                connect(executor, &ComposerExecutor::nodeProcessed, this, &ComposerScheduler::onNodeProcessed);
+                connect(executor, &ComposerExecutor::executionProgress, this, &ComposerScheduler::onProgress);
                 executor->process();
 
                 nodeAddedForProcessing = true;
@@ -486,7 +484,7 @@ void ComposerScheduler::cancelExecutor(ComposerExecutor *executor)
         _oldExecutors << executor;
 
         // Disconnect progress signal we may keep receiving
-        disconnect(executor, SIGNAL(executionProgress(qreal)), this, SLOT(onProgress(qreal)));
+        disconnect(executor, &ComposerExecutor::executionProgress, this, &ComposerScheduler::onProgress);
 
         // Signal that the executor is aborted
         emit executorEnded(executor->getNode(), Properties(), Properties(), -1, "");

@@ -19,8 +19,9 @@
 
 #include "interactivegraphicsview.h"
 
-#include <QGraphicsScene>
 #include <QLabel>
+
+class ComposerScene;
 
 class ComposerWidget : public InteractiveGraphicsView
 {
@@ -29,7 +30,7 @@ class ComposerWidget : public InteractiveGraphicsView
     public:
         explicit ComposerWidget(QWidget *parent = NULL);
 
-        void replaceScene(QGraphicsScene *scene);
+        void replaceScene(ComposerScene *scene);
 
     private:
         QLabel *_helpLabel{Q_NULLPTR};

@@ -66,8 +66,11 @@ class ComposerScheduler : public QObject
 
         void nodeInvalid(const Node *node);
 
-    private slots:
-        void onNodeAdded(const Node *node, bool processNow = true);
+    private:
+        void onNodeAdded(const Node *node, bool processNow);
+
+        void onNodeAdded(const Node *node)
+        { onNodeAdded(node, true); }
 
         void onNodeRemoved(const Node *node);
 

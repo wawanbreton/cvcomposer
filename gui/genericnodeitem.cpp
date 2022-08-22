@@ -51,10 +51,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_NoBackground, true);
 
-    connect(_widget, SIGNAL(sizeHintChanged()),
-                     SLOT(recomputeSizes()));
-    connect(_widget, SIGNAL(propertyChanged(QString,QVariant)),
-            node,    SLOT(setProperty(QString,QVariant)));
+    connect(_widget, &GenericNodeWidget::sizeHintChanged, this, &GenericNodeItem::recomputeSizes);
+    connect(_widget, &GenericNodeWidget::propertyChanged, _node, &Node::setProperty);
 
     _widgetProxy = new QGraphicsProxyWidget(this);
     _widgetProxy->setWidget(_widget);
@@ -66,8 +64,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
         {
             PlugItem *plugItem = new PlugItem(plug, this);
             _inputPlugs << plugItem;
-            connect(plug, SIGNAL(connectionChanged(const Plug*)),
-                          SLOT(onPlugConnectionChanged(const Plug*)));
+            connect(plug, &Plug::connectionChanged, this, &GenericNodeItem::onPlugConnectionChanged);
         }
     }
     for(Plug *plug : _node->getOutputs())
@@ -158,8 +155,8 @@ void GenericNodeItem::executionStarted()
         animation->setEndValue(1.0);
         animation->setEasingCurve(QEasingCurve::InOutSine);
         animation->setDuration(500);
-        connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(setExecutionMarkOpacity(QVariant)));
-        connect(animation, SIGNAL(finished()), SLOT(onExecutionAnimationOver()));
+        connect(animation, &QVariantAnimation::valueChanged, this, &GenericNodeItem::setExecutionMarkOpacity);
+        connect(animation, &QVariantAnimation::finished,     this, &GenericNodeItem::onExecutionAnimationOver);
         animation->start();
 
         _animationExecution = animation;

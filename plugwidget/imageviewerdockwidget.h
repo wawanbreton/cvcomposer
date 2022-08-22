@@ -33,7 +33,7 @@ class ImageViewerDockWidget : public QDockWidget
 
         void setImage(const QPixmap &image);
 
-    private slots:
+    private:
         void onSaveImage();
 
         void onColorPicked(const QColor &color);

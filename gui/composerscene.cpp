@@ -74,19 +74,13 @@ void ComposerScene::init()
 
     _editedNode.item = NULL;
 
-    connect(_model, SIGNAL(nodeRemoved(const Node*)),
-                    SLOT(onNodeRemoved(const Node*)));
-    connect(_model, SIGNAL(connectionAdded(const Connection *)),
-                    SLOT(onConnectionAdded(const Connection *)));
-    connect(_model, SIGNAL(connectionRemoved(const Connection *)),
-                    SLOT(onConnectionRemoved(const Connection *)));
-    connect(_scheduler, SIGNAL(executorStarted(const Node*)),
-                        SLOT(onExecutionStarted(const Node*)));
-    connect(_scheduler, SIGNAL(executorProgress(const Node*, qreal)),
-                        SLOT(onExecutionProgress(const Node*, qreal)));
-    connect(_scheduler, SIGNAL(executorEnded(const Node*, Properties, Properties, qint64, QString)),
-                        SLOT(onExecutionEnded(const Node*, Properties, Properties, qint64, QString)));
-    connect(_scheduler, SIGNAL(nodeInvalid(const Node*)), SLOT(onNodeInvalid(const Node*)));
+    connect(_model, &ComposerModel::nodeRemoved,       this, &ComposerScene::onNodeRemoved);
+    connect(_model, &ComposerModel::connectionAdded,   this, &ComposerScene::onConnectionAdded);
+    connect(_model, &ComposerModel::connectionRemoved, this, &ComposerScene::onConnectionRemoved);
+    connect(_scheduler, &ComposerScheduler::executorStarted,  this, &ComposerScene::onExecutionStarted);
+    connect(_scheduler, &ComposerScheduler::executorProgress, this, &ComposerScene::onExecutionProgress);
+    connect(_scheduler, &ComposerScheduler::executorEnded,    this, &ComposerScene::onExecutionEnded);
+    connect(_scheduler, &ComposerScheduler::nodeInvalid,      this, &ComposerScene::onNodeInvalid);
 
     setBackgroundBrush(QColor("#273035"));
 }
@@ -124,7 +118,7 @@ GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
 
     foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
     {
-        connect(plugItem, SIGNAL(positionChanged()), SLOT(onPlugItemPositionChanged()));
+        connect(plugItem, &PlugItem::positionChanged, this, &ComposerScene::onPlugItemPositionChanged);
     }
 
     return item;
@@ -244,7 +238,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
 
 void ComposerScene::end()
 {
-    connect(_scheduler, SIGNAL(ended()), SIGNAL(ended()));
+    connect(_scheduler, &ComposerScheduler::ended, this, &ComposerScene::ended);
     _scheduler->end();
 }
 

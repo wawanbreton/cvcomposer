@@ -29,7 +29,7 @@ BooleanWidget::BooleanWidget(QWidget *parent) :
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_checkBox);
 
-    connect(_checkBox, SIGNAL(toggled(bool)), SIGNAL(valueChanged()));
+    connect(_checkBox, &QCheckBox::toggled, this, &BooleanWidget::valueChanged);
 }
 
 QVariant BooleanWidget::getValue() const

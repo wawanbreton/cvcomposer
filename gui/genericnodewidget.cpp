@@ -44,7 +44,7 @@ GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
     _widgets(),
     _widgetsMapper(new QSignalMapper(this))
 {
-    connect(_widgetsMapper, SIGNAL(mapped(QString)), SLOT(onWidgetValueChanged(QString)));
+    connect(_widgetsMapper, &QSignalMapper::mappedString, this, &GenericNodeWidget::onWidgetValueChanged);
 }
 
 void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
@@ -334,8 +334,8 @@ AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug
     if(widget)
     {
         _widgetsMapper->setMapping(widget, plug.name);
-        connect(widget, SIGNAL(valueChanged()), _widgetsMapper, SLOT(map()));
-        connect(widget, SIGNAL(sizeHintChanged()), SLOT(onPlugSizeHintChanged()));
+        connect(widget, &AbstractPlugWidget::valueChanged, _widgetsMapper, qOverload<>(&QSignalMapper::map));
+        connect(widget, &AbstractPlugWidget::sizeHintChanged, this, &GenericNodeWidget::onPlugSizeHintChanged);
         if(not plug.defaultValue.isNull())
         {
             widget->setValue(plug.defaultValue);

@@ -50,7 +50,6 @@ class ConnectionItem : public QObject, public QGraphicsItemGroup
     private:
         void updateLine();
 
-    private slots:
         void onColorChanged(const QVariant &value);
 
     private:

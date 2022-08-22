@@ -60,7 +60,7 @@ class ComposerExecutor : public QThread
     protected:
         virtual void run();
 
-    private slots:
+    private:
         void onFinished();
 
     private:

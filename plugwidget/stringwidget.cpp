@@ -29,7 +29,7 @@ StringWidget::StringWidget(const Properties &properties, QWidget *parent) :
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_lineEdit);
 
-    connect(_lineEdit,  SIGNAL(textChanged(QString)), SIGNAL(valueChanged()));
+    connect(_lineEdit, &QLineEdit::textChanged, this, &StringWidget::valueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {

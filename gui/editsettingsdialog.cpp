@@ -28,6 +28,14 @@ EditSettingsDialog::EditSettingsDialog(QWidget *parent) :
 {
     _ui->setupUi(this);
 
+    connect(_ui->buttonBox, &QDialogButtonBox::accepted, this, &EditSettingsDialog::accept);
+    connect(_ui->buttonBox, &QDialogButtonBox::rejected, this, &EditSettingsDialog::reject);
+    connect(_ui->checkBoxMultiThreading, &QCheckBox::toggled, _ui->radioButtonOptimalThreads, &QRadioButton::setEnabled);
+    connect(_ui->checkBoxMultiThreading, &QCheckBox::toggled, _ui->radioButtonFixedThreads,   &QRadioButton::setEnabled);
+    connect(_ui->checkBoxMultiThreading, &QCheckBox::toggled, _ui->labelOptimalThreads,       &QLabel::setEnabled);
+    connect(_ui->checkBoxMultiThreading, &QCheckBox::toggled, _ui->labelFixedThreads,         &QLabel::setEnabled);
+    connect(_ui->checkBoxMultiThreading, &QCheckBox::toggled, _ui->spinBoxFixedThreads,       &QSpinBox::setEnabled);
+
     _ui->labelCache->installEventFilter(this);
     _ui->labelMultiThreading->installEventFilter(this);
     _ui->labelOptimalThreads->installEventFilter(this);

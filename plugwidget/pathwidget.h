@@ -40,7 +40,7 @@ class PathWidget : public AbstractPlugWidget
 
         virtual void setValue(const QVariant &value) override;
 
-    private slots:
+    private:
         void onButtonPressed();
 
     private:

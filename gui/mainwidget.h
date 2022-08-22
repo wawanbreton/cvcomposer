@@ -34,7 +34,7 @@ class MainWidget : public QMainWindow
     protected:
         virtual void closeEvent(QCloseEvent *event);
 
-    private slots:
+    private:
         void onNew();
 
         void onSave();

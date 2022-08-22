@@ -26,7 +26,6 @@ class DataViewerWidget : public AbstractPlugWidget
     public:
         explicit DataViewerWidget(QWidget *parent = NULL);
 
-    public slots:
         void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     protected:

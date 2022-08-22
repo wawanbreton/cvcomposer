@@ -267,24 +267,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>ImageViewerDockWidget</receiver>
-   <slot>onSaveImage()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>547</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>109</x>
-     <y>558</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>onSaveImage()</slot>
  </slots>

@@ -95,7 +95,7 @@ void MainWidget::closeEvent(QCloseEvent *event)
     if(scene)
     {
         // The window will be closed right now, but the application may be exited a bit later
-        connect(scene, SIGNAL(ended()), qApp, SLOT(quit()));
+        connect(scene, &ComposerScene::ended, qApp, &QCoreApplication::quit);
         scene->end();
     }
     else
@@ -208,8 +208,8 @@ void MainWidget::onDisplaySettings()
         qCritical() << "Scene is not a ComposerScene instance";
     }
 
-    connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
-    connect(dialog, SIGNAL(accepted()), SLOT(onSettingsAccepted()));
+    connect(dialog, &EditSettingsDialog::finished, dialog, &EditSettingsDialog::deleteLater);
+    connect(dialog, &EditSettingsDialog::accepted, this,   &MainWidget::onSettingsAccepted);
 
     dialog->show();
 }
@@ -295,7 +295,7 @@ void MainWidget::updateRecents(const QSettings &settings)
     bool hasRecents = false;
     foreach(const QString &recent, settings.value("recent_files").toStringList())
     {
-        _ui->menuRecents->addAction(recent, this, SLOT(onLoadRecent()));
+        _ui->menuRecents->addAction(recent, this, &MainWidget::onLoadRecent);
         hasRecents = true;
     }
 

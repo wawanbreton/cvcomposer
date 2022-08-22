@@ -58,10 +58,14 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     connect(scene->getModel(), &ComposerModel::nodeAdded, _helpLabel, &QLabel::hide);
 }
 
-void ComposerWidget::replaceScene(QGraphicsScene *newScene)
+void ComposerWidget::replaceScene(ComposerScene *newScene)
 {
     // Let the current scene end its processings before it is destroyed
-    connect(scene(), SIGNAL(ended()), scene(), SLOT(deleteLater()));
+    ComposerScene *composerScene = qobject_cast<ComposerScene *>(scene());
+    if(composerScene)
+    {
+        connect(composerScene, &ComposerScene::ended, composerScene, &ComposerScene::deleteLater);
+    }
 
     newScene->setParent(this);
     setScene(newScene);

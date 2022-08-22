@@ -33,7 +33,7 @@ EnumerationWidget::EnumerationWidget(const Properties &properties, QWidget *pare
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_comboBox);
 
-    connect(_comboBox,  SIGNAL(currentIndexChanged(int)), SIGNAL(valueChanged()));
+    connect(_comboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &EnumerationWidget::valueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {

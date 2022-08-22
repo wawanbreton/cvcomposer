@@ -43,8 +43,8 @@ PointWidget::PointWidget(const Properties &properties, QWidget *parent) :
     layout->addWidget(label);
     layout->addWidget(_spinBoxY);
 
-    connect(_spinBoxX, SIGNAL(valueChanged(int)), SIGNAL(valueChanged()));
-    connect(_spinBoxY, SIGNAL(valueChanged(int)), SIGNAL(valueChanged()));
+    connect(_spinBoxX, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::valueChanged);
+    connect(_spinBoxY, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::valueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {

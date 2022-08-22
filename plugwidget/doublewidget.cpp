@@ -33,7 +33,7 @@ DoubleWidget::DoubleWidget(const Properties &properties, QWidget *parent) :
 
     _spinBox->setMaximum(CvConstants::defaultDoubleMax);
 
-    connect(_spinBox,  SIGNAL(valueChanged(double)), SIGNAL(valueChanged()));
+    connect(_spinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &DoubleWidget::valueChanged);
 
     properties.applyTo(_spinBox);
 }

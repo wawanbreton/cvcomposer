@@ -36,7 +36,6 @@ class ImageViewerWidget : public AbstractPlugWidget
 
         virtual void load(const QMap<QString, QString> &properties);
 
-    public slots:
         virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     private:

@@ -113,7 +113,7 @@ void PlugItem::setCurrentType(PlugType::Enum type, bool input)
     animation->setEndValue(nextAngle);
     animation->setDuration(1000);
     animation->setEasingCurve(QEasingCurve::OutElastic);
-    connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(onCurrentAngleChanged(QVariant)));
+    connect(animation, &QVariantAnimation::valueChanged, this, &PlugItem::onCurrentAngleChanged);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 

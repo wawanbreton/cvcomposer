@@ -90,7 +90,6 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     private:
         QRectF computeBaseRect() const;
 
-    private slots:
         void onPlugConnectionChanged(const Plug *connectedTo);
 
         void recomputeSizes();

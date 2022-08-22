@@ -49,7 +49,6 @@ class GenericNodeWidget : public QWidget
 
         AbstractPlugWidget *accessWidget(const QString &name);
 
-    public slots:
         void onProcessDone(const Properties &outputs, const Properties &inputs);
 
         void onProcessUnavailable();
@@ -72,7 +71,6 @@ class GenericNodeWidget : public QWidget
 
         void makeLabelText(const PlugWidget &widget);
 
-    private slots:
         void onWidgetValueChanged(const QString &propertyName);
 
         void onPlugSizeHintChanged();

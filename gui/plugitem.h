@@ -45,7 +45,7 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
     protected:
         virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
-    private slots:
+    private:
         void onCurrentAngleChanged(const QVariant &value);
 
     public:

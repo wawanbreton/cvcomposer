@@ -38,8 +38,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
     QString title = "Title";
 
     _lineEdit->setText(title);
-    connect(_lineEdit,   SIGNAL(textChanged(QString)),
-            _dockWidget, SLOT(setWindowTitle(QString)));
+    connect(_lineEdit, &QLineEdit::textChanged, _dockWidget, &ImageViewerWidget::setWindowTitle);
 
     _dockWidget->show();
     _dockWidget->setWindowTitle(title);

@@ -37,7 +37,7 @@ ComposerExecutor::ComposerExecutor(const Node *node,
     _outputs(),
     _error()
 {
-    connect(this, SIGNAL(finished()), SLOT(onFinished()));
+    connect(this, &ComposerExecutor::finished, this, &ComposerExecutor::onFinished);
 }
 
 void ComposerExecutor::process()

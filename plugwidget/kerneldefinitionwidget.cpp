@@ -46,7 +46,7 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
     sizeProperties.insert("height-minimum", 1);
     sizeProperties.insert("height-maximum", 10);
     _sizeWidget = new SizeWidget(sizeProperties, this);
-    connect(_sizeWidget, SIGNAL(valueChanged()), SLOT(onSizeChanged()));
+    connect(_sizeWidget, &SizeWidget::valueChanged, this, &KernelDefinitionWidget::onSizeChanged);
     _layout->addRow("Size :", _sizeWidget);
 
     Properties symmetryProperties;
@@ -59,7 +59,7 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
     symmetryProperties.insert("values", QVariant::fromValue(symmetryValues));
     _symmetryWidget = new EnumerationWidget(symmetryProperties, this);
     _symmetryWidget->setValue(Both);
-    connect(_symmetryWidget, SIGNAL(valueChanged()), SLOT(onSymmetryChanged()));
+    connect(_symmetryWidget, &EnumerationWidget::valueChanged, this, &KernelDefinitionWidget::onSymmetryChanged);
     _layout->addRow("Symmetry :", _symmetryWidget);
 
     _table->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -78,8 +78,7 @@ KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWi
 
     DoubleItemDelegate *delegate = new DoubleItemDelegate(properties, this);
     _table->setItemDelegate(delegate);
-    connect(delegate, SIGNAL(valueChanged(QModelIndex, double)),
-                      SLOT(onCellEdited(QModelIndex, double)));
+    connect(delegate, &DoubleItemDelegate::valueChanged, this, &KernelDefinitionWidget::onCellEdited);
 
     _layout->addRow("Definition :", _table);
 }

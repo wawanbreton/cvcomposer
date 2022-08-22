@@ -61,7 +61,6 @@ class KernelDefinitionWidget : public AbstractPlugWidget
 
         void updateCellColors();
 
-    private slots:
         void onSizeChanged();
 
         void onSymmetryChanged();

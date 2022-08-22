@@ -47,7 +47,7 @@ class DoubleItemDelegate : public QStyledItemDelegate
     signals:
         void valueChanged(const QModelIndex &editedItem, double value);
 
-    private slots:
+    private:
         void onValueChanged(double value);
 
     private:

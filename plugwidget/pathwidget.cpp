@@ -45,8 +45,8 @@ PathWidget::PathWidget(const Properties &properties, QWidget *parent) :
     layout->addWidget(buttonBrowse);
     layout->setStretch(0, 1);
 
-    connect(_lineEdit,    SIGNAL(editingFinished()), SIGNAL(valueChanged()));
-    connect(buttonBrowse, SIGNAL(clicked(bool)),     SLOT(onButtonPressed()));
+    connect(_lineEdit,    &QLineEdit::editingFinished, this, &PathWidget::valueChanged);
+    connect(buttonBrowse, &QPushButton::clicked,       this, &PathWidget::onButtonPressed);
 }
 
 QVariant PathWidget::getValue() const

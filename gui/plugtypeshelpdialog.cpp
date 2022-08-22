@@ -31,6 +31,9 @@ PlugTypesHelpDialog::PlugTypesHelpDialog(QWidget *parent) :
 {
     _ui->setupUi(this);
 
+    connect(_ui->buttonBox, &QDialogButtonBox::accepted, this, &PlugTypesHelpDialog::accept);
+    connect(_ui->buttonBox, &QDialogButtonBox::rejected, this, &PlugTypesHelpDialog::reject);
+
     // Standard plugs
     for(PlugType::Enum type : PlugType::getAllValues())
     {

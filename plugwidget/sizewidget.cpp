@@ -43,8 +43,8 @@ SizeWidget::SizeWidget(const Properties &properties, QWidget *parent) :
     layout->addWidget(label);
     layout->addWidget(_spinBoxHeight);
 
-    connect(_spinBoxWidth,  SIGNAL(valueChanged(int)), SIGNAL(valueChanged()));
-    connect(_spinBoxHeight, SIGNAL(valueChanged(int)), SIGNAL(valueChanged()));
+    connect(_spinBoxWidth,  qOverload<int>(&QSpinBox::valueChanged), this, &SizeWidget::valueChanged);
+    connect(_spinBoxHeight, qOverload<int>(&QSpinBox::valueChanged), this, &SizeWidget::valueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {

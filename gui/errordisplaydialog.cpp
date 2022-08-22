@@ -18,19 +18,24 @@
 #include "errordisplaydialog.h"
 #include "ui_errordisplaydialog.h"
 
+#include <QAbstractButton>
+
 
 ErrorDisplayDialog::ErrorDisplayDialog(QWidget *parent) :
     QDialog(parent),
     _ui(new Ui::ErrorDisplayDialog)
 {
     _ui->setupUi(this);
+
+    connect(_ui->buttonBox, &QDialogButtonBox::accepted, this, &ErrorDisplayDialog::accept);
+    connect(_ui->buttonBox, &QDialogButtonBox::rejected, this, &ErrorDisplayDialog::reject);
 }
 
 void ErrorDisplayDialog::displayError(const QString &error)
 {
     ErrorDisplayDialog *dialog = new ErrorDisplayDialog(qApp->activeWindow());
     dialog->_ui->plainTextEdit->setPlainText(error);
-    connect(dialog->_ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), dialog, SLOT(deleteLater()));
+    connect(dialog->_ui->buttonBox, &QDialogButtonBox::clicked, dialog, &ErrorDisplayDialog::deleteLater);
     dialog->show();
 }
 

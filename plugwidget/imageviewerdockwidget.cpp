@@ -33,10 +33,12 @@ ImageViewerDockWidget::ImageViewerDockWidget(QWidget *parent) :
 {
     _ui->setupUi(this);
 
+    connect(_ui->pushButton, &QPushButton::clicked, this, &ImageViewerDockWidget::onSaveImage);
+
     // Saving and restoring dock widgets properly requires all of them to have a unique object name
     setObjectName(QString("ImageViewerDockWidget%1").arg(_count++));
 
-    connect(_ui->graphicsView, SIGNAL(colorPicked(QColor)), SLOT(onColorPicked(QColor)));
+    connect(_ui->graphicsView, &AdvancedImageViewer::colorPicked, this, &ImageViewerDockWidget::onColorPicked);
     onColorPicked(Qt::white);
 
     QFontMetrics metrics = fontMetrics();

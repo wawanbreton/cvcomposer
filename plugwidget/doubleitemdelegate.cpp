@@ -42,7 +42,7 @@ QWidget *DoubleItemDelegate::createEditor(QWidget *parent,
     editor->setProperty("index", QVariant::fromValue(index));
     _properties.applyTo(editor);
 
-    connect(editor, SIGNAL(valueChanged(double)), SLOT(onValueChanged(double)));
+    connect(editor, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &DoubleItemDelegate::onValueChanged);
 
     return editor;
 }

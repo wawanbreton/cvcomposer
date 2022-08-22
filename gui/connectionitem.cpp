@@ -95,7 +95,7 @@ void ConnectionItem::setCurrentType(PlugType::Enum type, bool immediate)
         animation->setEndValue(targetColor);
         animation->setDuration(300);
         animation->setEasingCurve(QEasingCurve::OutCubic);
-        connect(animation, SIGNAL(valueChanged(QVariant)), SLOT(onColorChanged(QVariant)));
+        connect(animation, &QVariantAnimation::valueChanged, this, &ConnectionItem::onColorChanged);
         animation->start(QAbstractAnimation::DeleteWhenStopped);
     }
 }

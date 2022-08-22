@@ -76,7 +76,7 @@ class ComposerScene : public QGraphicsScene
 
         virtual void keyPressEvent(QKeyEvent *keyEvent);
 
-    private slots:
+    private:
         void onNodeRemoved(const Node *node);
 
         void onConnectionAdded(const Connection *connection);
@@ -97,7 +97,6 @@ class ComposerScene : public QGraphicsScene
 
         void onNodeInvalid(const Node *node);
 
-    private:
         void init();
 
         void load(const QDomDocument &doc, QMainWindow *mainWindow);

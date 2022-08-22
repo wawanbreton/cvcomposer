@@ -56,7 +56,6 @@ class Node : public QObject
 
         const QList<HelpMessage> &getHelpMessages() const { return _helpMessages; }
 
-    public slots:
         void setProperty(const QString &name, const QVariant &value);
 
     signals:
