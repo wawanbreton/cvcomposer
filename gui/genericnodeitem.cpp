@@ -49,7 +49,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
 
     _widget->setPlugs(node->getInputs(), node->getOutputs());
     _widget->setAutoFillBackground(false);
-    _widget->setAttribute(Qt::WA_NoBackground, true);
+    _widget->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     connect(_widget, &GenericNodeWidget::sizeHintChanged, this, &GenericNodeItem::recomputeSizes);
     connect(_widget, &GenericNodeWidget::propertyChanged, _node, &Node::setProperty);
