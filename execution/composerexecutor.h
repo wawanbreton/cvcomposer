@@ -37,8 +37,8 @@ class ComposerExecutor : public QThread
     public:
         explicit ComposerExecutor(const Node *node,
                                   const Properties &inputs,
-                                  const QSharedPointer<AbstractProcessor> &processor,
-                                  QObject *parent = NULL);
+                                  const QSharedPointer<AbstractProcessor> processor,
+                                  QObject *parent = nullptr);
 
         void process();
 
@@ -64,7 +64,7 @@ class ComposerExecutor : public QThread
         void onFinished();
 
     private:
-        const Node *_node{Q_NULLPTR};
+        const Node *const _node;
         const QSharedPointer<AbstractProcessor> _processor;
         const Properties _inputs;
         Properties _outputs;

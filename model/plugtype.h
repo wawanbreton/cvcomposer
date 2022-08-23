@@ -27,7 +27,7 @@ class PlugType : public QObject
     Q_ENUMS(Enum)
 
     public:
-        typedef enum
+        enum Enum
         {
             Image               = 0x000001,
             Size                = 0x000002,
@@ -50,15 +50,15 @@ class PlugType : public QObject
             RotatedRectangle    = 0x040000,
             Triangle            = 0x080000,
             Line                = 0x100000
-        } Enum;
+        };
 
 
-        typedef enum
+        enum Pluggable
         {
             Mandatory, // Plug has to be connected, it can't be configured manually
             Free,      // Plug may be configured manually, or connected
             ManualOnly // Plug can only be manually configured
-        } Pluggable;
+        };
 
         static QColor getColor(Enum value);
 

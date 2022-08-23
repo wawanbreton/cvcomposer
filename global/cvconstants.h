@@ -19,7 +19,7 @@
 
 namespace CvConstants
 {
-    const int defaultDoubleDecimals = 2;
-    const double defaultDoubleMax = 9999;
-    const int defaultShapeSide = 10;
+    constexpr int defaultDoubleDecimals = 2;
+    constexpr double defaultDoubleMax = 9999;
+    constexpr int defaultShapeSide = 10;
 }

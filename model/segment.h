@@ -21,10 +21,10 @@
 
 #include <opencv2/core/core.hpp>
 
-typedef struct
+struct Segment
 {
     cv::Point point1;
     cv::Point point2;
-} Segment;
+};
 
 Q_DECLARE_METATYPE(Segment);

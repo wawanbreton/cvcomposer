@@ -34,7 +34,7 @@ class PathWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit PathWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit PathWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
@@ -44,7 +44,7 @@ class PathWidget : public AbstractPlugWidget
         void onButtonPressed();
 
     private:
-        QLineEdit *_lineEdit;
-        bool _folder;
-        QList<QPair<QString, QStringList> > _formats;
+        QLineEdit *const _lineEdit;
+        const bool _folder;
+        const QList<QPair<QString, QStringList>> _formats;
 };

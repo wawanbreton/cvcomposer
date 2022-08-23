@@ -28,12 +28,12 @@ class RectangleProcessor : public AbstractProcessor
         virtual Properties processImpl(const Properties &inputs) override;
 
     private:
-        typedef enum
+        enum Anchor
         {
             TopLeft,
             TopRight,
             BottomLeft,
             BottomRight,
             Center
-        } Anchor;
+        };
 };

@@ -19,11 +19,8 @@
 
 #include <QGraphicsItem>
 
-namespace CustomItems
+enum class CustomItems
 {
-    typedef enum
-    {
-        Plug = QGraphicsItem::UserType + 1,
-        Node = QGraphicsItem::UserType + 2
-    } Enum;
-}
+    Plug = QGraphicsItem::UserType + 1,
+    Node = QGraphicsItem::UserType + 2
+};

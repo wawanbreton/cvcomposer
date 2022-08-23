@@ -67,7 +67,7 @@ void ImageViewerDockWidget::onSaveImage()
     for(const QPair<QString, QStringList> &format : CvUtils::getImageFormats())
     {
         QStringList supportedExtensions;
-        foreach(const QString &extension, format.second)
+        for(const QString &extension : format.second)
         {
             if(supportedFormats.contains(extension.toUtf8()))
             {

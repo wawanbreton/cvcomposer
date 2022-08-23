@@ -28,7 +28,7 @@ class ImageViewerWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit ImageViewerWidget(QWidget *parent = NULL);
+        explicit ImageViewerWidget(QWidget *parent = nullptr);
 
         virtual ~ImageViewerWidget();
 
@@ -39,6 +39,6 @@ class ImageViewerWidget : public AbstractPlugWidget
         virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     private:
-        QLineEdit *_lineEdit;
-        ImageViewerDockWidget *_dockWidget;
+        QLineEdit *const _lineEdit;
+        ImageViewerDockWidget *const _dockWidget;
 };

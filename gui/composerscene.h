@@ -36,11 +36,11 @@ class ComposerScene : public QGraphicsScene
 {
     Q_OBJECT
     public:
-        explicit ComposerScene(QObject *parent = NULL);
+        explicit ComposerScene(QObject *parent = nullptr);
 
         explicit ComposerScene(const QDomDocument &doc,
                                QMainWindow *mainWindow,
-                               QObject *parent = NULL);
+                               QObject *parent = nullptr);
 
         const QList<GenericNodeItem *> &getNodes() const;
 
@@ -104,21 +104,21 @@ class ComposerScene : public QGraphicsScene
         GenericNodeItem *findItem(const Node *node);
 
     private:
-        typedef struct
+        struct EditedConnection
         {
             ConnectionItem *item;
             bool fromOutput;
             Plug *plugInput;
             Plug *plugOutput;
             Node *baseNode;
-        } EditedConnection;
+        };
 
-        typedef struct
+        struct EditedNode
         {
             GenericNodeItem *item;
             QPointF initClickPos;
             QPointF initNodePose;
-        } EditedNode;
+        };
 
     private:
         ComposerModel *_model;

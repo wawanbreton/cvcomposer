@@ -26,9 +26,7 @@
 
 
 ComposerModel::ComposerModel(QObject *parent) :
-    QObject(parent),
-    _nodes(),
-    _connections()
+    QObject(parent)
 {
 }
 
@@ -44,7 +42,7 @@ QList<const Node *> ComposerModel::getNodes() const
 {
     QList<const Node *> nodes;
 
-    foreach(const Node *node, _nodes)
+    for(const Node *node : _nodes)
     {
         nodes << node;
     }
@@ -54,7 +52,7 @@ QList<const Node *> ComposerModel::getNodes() const
 
 void ComposerModel::removeNode(Node *node)
 {
-    foreach(Connection *connection, _connections)
+    for(Connection *connection : _connections)
     {
         if(node->getInputs().contains(connection->getInput()) ||
            node->getOutputs().contains(connection->getOutput()))
@@ -86,7 +84,7 @@ Node *ComposerModel::findOutputPlug(const Plug *plug) const
 
 Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutputs) const
 {
-    foreach(Node *node, _nodes)
+    for(Node *node : _nodes)
     {
         if(fromInputs && node->hasInput(plug))
         {
@@ -98,12 +96,12 @@ Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutput
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
 {
-    foreach(const Connection *connection, _connections)
+    for(const Connection *connection : _connections)
     {
         if(connection->getInput() == input)
         {
@@ -111,14 +109,14 @@ const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 QSet<const Node *> ComposerModel::findDirectDescendantNodes(const Plug *output) const
 {
     QSet<const Node *> nodes;
 
-    foreach(const Connection *connection, _connections)
+    for(const Connection *connection : _connections)
     {
         if(connection->getOutput() == output)
         {
@@ -168,8 +166,8 @@ void ComposerModel::addConnection(Plug *output, Plug *input)
         if(iterator.value()->getInput() == input)
         {
             Connection *connection = iterator.value();
-            connection->getInput()->signalConnectedTo(NULL);
-            connection->getOutput()->signalConnectedTo(NULL);
+            connection->getInput()->signalConnectedTo(nullptr);
+            connection->getOutput()->signalConnectedTo(nullptr);
             iterator.remove();
             emit connectionRemoved(connection);
             delete connection;
@@ -187,8 +185,8 @@ void ComposerModel::removeConnection(const Connection *connection)
 {
     if(_connections.removeAll((Connection *)connection))
     {
-        connection->getInput()->signalConnectedTo(NULL);
-        connection->getOutput()->signalConnectedTo(NULL);
+        connection->getInput()->signalConnectedTo(nullptr);
+        connection->getOutput()->signalConnectedTo(nullptr);
         emit connectionRemoved(connection);
         delete connection;
     }

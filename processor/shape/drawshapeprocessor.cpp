@@ -91,7 +91,7 @@ Properties DrawShapeProcessor::processImpl(const Properties &inputs)
 
     cv::Mat outputImage = inputImage.clone();
 
-    foreach(const QVariant &shape, shapes)
+    for(const QVariant &shape : shapes)
     {
         if(shape.userType() == qMetaTypeId<Circle>())
         {

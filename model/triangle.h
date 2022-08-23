@@ -21,11 +21,11 @@
 
 #include <QMetaType>
 
-typedef struct
+struct Triangle
 {
     cv::Point2f p1;
     cv::Point2f p2;
     cv::Point2f p3;
-} Triangle;
+};
 
 Q_DECLARE_METATYPE(Triangle)

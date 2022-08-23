@@ -26,7 +26,7 @@ class AdvancedImageViewer : public InteractiveGraphicsView
     Q_OBJECT
 
     public:
-        explicit AdvancedImageViewer(QWidget *parent = Q_NULLPTR);
+        explicit AdvancedImageViewer(QWidget *parent = nullptr);
 
         void setImage(const QPixmap &image);
 
@@ -44,5 +44,5 @@ class AdvancedImageViewer : public InteractiveGraphicsView
         void pickColor(QMouseEvent *event);
 
     private:
-        QGraphicsPixmapItem *_pixmapItem;
+        QGraphicsPixmapItem *const _pixmapItem;
 };

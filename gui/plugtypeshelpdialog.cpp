@@ -90,7 +90,7 @@ void PlugTypesHelpDialog::addPlugTypeHelp(const PlugDefinition &plugDef, const Q
 
     PlugItem item(&plug);
     painter.translate(PlugItem::radius, PlugItem::radius);
-    item.paint(&painter, Q_NULLPTR);
+    item.paint(&painter, nullptr);
 
     painter.end();
 

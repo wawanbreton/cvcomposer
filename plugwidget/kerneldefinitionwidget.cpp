@@ -34,8 +34,6 @@
 KernelDefinitionWidget::KernelDefinitionWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
     _table(new QTableWidget(this)),
-    _sizeWidget(NULL),
-    _symmetryWidget(NULL),
     _layout(new QFormLayout(this))
 {
     _layout->setContentsMargins(0, 0, 0, 0);
@@ -215,7 +213,7 @@ void KernelDefinitionWidget::onSizeChanged()
     {
         for(int col = 0 ; col < size.width ; col++)
         {
-            if(_table->item(row, col) == NULL)
+            if(!_table->item(row, col))
             {
                 QTableWidgetItem *item = new QTableWidgetItem();
                 item->setData(Qt::DisplayRole, 1.0);
@@ -294,7 +292,7 @@ void KernelDefinitionWidget::onCellEdited(const QModelIndex &index, double value
     }
 
     QTableWidgetItem *editedItem = _table->item(index.row(), index.column());
-    foreach(QTableWidgetItem *item, symmetricItems)
+    for(QTableWidgetItem *item : symmetricItems)
     {
         if(item && item != editedItem)
         {

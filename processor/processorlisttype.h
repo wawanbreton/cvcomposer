@@ -17,12 +17,9 @@
 
 #pragma once
 
-namespace ProcessorListType
+enum class ProcessorListType
 {
-    typedef enum
-    {
-        None,   /*< No list support */
-        Simple, /*< Simple list support : values are given one by one */
-        Custom  /*< Custom list support : values are given as is */
-    } Enum;
-}
+    None,   /*< No list support */
+    Simple, /*< Simple list support : values are given one by one */
+    Custom  /*< Custom list support : values are given as is */
+};

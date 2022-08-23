@@ -21,6 +21,6 @@
 
 #include <QList>
 
-typedef std::vector<cv::Point> Contour;
+using Contour = std::vector<cv::Point>;
 
 Q_DECLARE_METATYPE(Contour);

@@ -41,7 +41,6 @@
 
 GenericNodeWidget::GenericNodeWidget(QWidget *parent) :
     QWidget(parent),
-    _widgets(),
     _widgetsMapper(new QSignalMapper(this))
 {
     connect(_widgetsMapper, &QSignalMapper::mappedString, this, &GenericNodeWidget::onWidgetValueChanged);
@@ -58,14 +57,14 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         QVBoxLayout *outputsLayout = new QVBoxLayout();
         outputsLayout->setContentsMargins(0, 0, 0, 0);
 
-        foreach(const Plug *output, outputs)
+        for(const Plug *output : outputs)
         {
             PlugWidget widget;
             widget.definition = output->getDefinition();
 
             if(PlugType::isOutputInternal(widget.definition.types))
             {
-                widget.label = NULL;
+                widget.label = nullptr;
 
                 widget.widget = makePlugWidget(widget.definition);
 
@@ -77,7 +76,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
                 widget.label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 makeLabelText(widget);
 
-                widget.widget = NULL;
+                widget.widget = nullptr;
 
                 outputsLayout->addWidget(widget.label);
             }
@@ -95,12 +94,12 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         bool hasWidget = false;
 
         // Iterate once to create the widgets
-        foreach(const Plug *input, inputs)
+        for(const Plug *input : inputs)
         {
             PlugWidget widget;
             widget.definition = input->getDefinition();
 
-            widget.label = NULL;
+            widget.label = nullptr;
 
             bool labelVisible = PlugType::isLabelVisible(widget.definition.types);
             if(widget.definition.labelVisible != ThreeStateBool::None)
@@ -116,7 +115,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
                 hasLabel = true;
             }
 
-            widget.widget = NULL;
+            widget.widget = nullptr;
             if(PlugType::isInputPluggable(widget.definition.types) != PlugType::Mandatory ||
                PlugType::isWidgetAlwaysVisible(widget.definition.types))
             {
@@ -128,12 +127,12 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         }
 
         // Now we know whether we have labels and/or widget, so we can create the appropriate layout
-        QLayout *inputsLayout = NULL;
+        QLayout *inputsLayout = nullptr;
         if(hasLabel && hasWidget)
         {
             QFormLayout *formLayout = new QFormLayout();
 
-            foreach(const Plug *input, inputs)
+            for(const Plug *input : inputs)
             {
                 PlugWidget &widget = _widgets[input->getDefinition().name];
                 formLayout->addRow(widget.label, widget.widget);
@@ -145,7 +144,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         {
             QVBoxLayout *vboxLayout = new QVBoxLayout();
 
-            foreach(const Plug *input, inputs)
+            for(const Plug *input : inputs)
             {
                 PlugWidget &widget = _widgets[input->getDefinition().name];
                 if(widget.widget)
@@ -160,7 +159,7 @@ void GenericNodeWidget::setPlugs(const QList<Plug*> &inputs,
         {
             QVBoxLayout *vboxLayout = new QVBoxLayout();
 
-            foreach(const Plug *input, inputs)
+            for(const Plug *input : inputs)
             {
                 PlugWidget &widget = _widgets[input->getDefinition().name];
                 if(widget.label)
@@ -188,7 +187,7 @@ int GenericNodeWidget::getPlugPosY(const QString &plugName)
     if(iterator != _widgets.end())
     {
         QRect rect;
-        if(iterator.value().label == NULL && iterator.value().widget == NULL)
+        if(!iterator.value().label && !iterator.value().widget)
         {
             return height() / 2;
         }
@@ -238,7 +237,7 @@ const AbstractPlugWidget *GenericNodeWidget::getWidget(const QString &name) cons
         return iterator.value().widget;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 AbstractPlugWidget *GenericNodeWidget::accessWidget(const QString &name)
@@ -248,7 +247,7 @@ AbstractPlugWidget *GenericNodeWidget::accessWidget(const QString &name)
 
 void GenericNodeWidget::onProcessDone(const Properties &outputs, const Properties &inputs)
 {
-    foreach(const PlugWidget &widget, _widgets)
+    for(const PlugWidget &widget : _widgets)
     {
         if(widget.widget)
         {
@@ -259,7 +258,7 @@ void GenericNodeWidget::onProcessDone(const Properties &outputs, const Propertie
 
 void GenericNodeWidget::onProcessUnavailable()
 {
-    foreach(const PlugWidget &widget, _widgets)
+    for(const PlugWidget &widget : _widgets)
     {
         if(widget.widget)
         {
@@ -270,7 +269,7 @@ void GenericNodeWidget::onProcessUnavailable()
 
 AbstractPlugWidget *GenericNodeWidget::makePlugWidget(const PlugDefinition &plug)
 {
-    AbstractPlugWidget *widget = NULL;
+    AbstractPlugWidget *widget = nullptr;
 
     if(PlugType::isSingleType(plug.types))
     {

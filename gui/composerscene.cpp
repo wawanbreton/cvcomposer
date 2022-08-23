@@ -68,11 +68,11 @@ ComposerScene::ComposerScene(const QDomDocument &doc, QMainWindow *mainWindow, Q
 
 void ComposerScene::init()
 {
-    _editedConnection.item = NULL;
-    _editedConnection.plugInput = NULL;
-    _editedConnection.plugOutput = NULL;
+    _editedConnection.item = nullptr;
+    _editedConnection.plugInput = nullptr;
+    _editedConnection.plugOutput = nullptr;
 
-    _editedNode.item = NULL;
+    _editedNode.item = nullptr;
 
     connect(_model, &ComposerModel::nodeRemoved,       this, &ComposerScene::onNodeRemoved);
     connect(_model, &ComposerModel::connectionAdded,   this, &ComposerScene::onConnectionAdded);
@@ -116,7 +116,7 @@ GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
     // Give the node to the model only now so that we are ready to receive events
     _model->addNode(node);
 
-    foreach(PlugItem *plugItem, item->getInputs() + item->getOutputs())
+    for(PlugItem *plugItem : item->getInputs() + item->getOutputs())
     {
         connect(plugItem, &PlugItem::positionChanged, this, &ComposerScene::onPlugItemPositionChanged);
     }
@@ -273,7 +273,7 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                     QDomElement propertyElement = nodeProperty.toElement();
                     QString plugName = propertyElement.attribute("name");
                     Plug *plug = item->getNode()->findInput(plugName);
-                    if(plug == Q_NULLPTR)
+                    if(!plug)
                     {
                         plug = item->getNode()->findOutput(plugName);
                     }
@@ -335,11 +335,11 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
                 Plug *plugOutput = iteratorOutput.value()->findOutput(outputName);
                 Plug *plugInput = iteratorInput.value()->findInput(inputName);
 
-                if(plugOutput == NULL)
+                if(!plugOutput)
                 {
                     qWarning() << "Unable to find output named" << outputName << "on node" << outputId;
                 }
-                else if(plugInput == NULL)
+                else if(!plugInput)
                 {
                     qWarning() << "Unable to find input named" << inputName << "on node" << inputId;
                 }
@@ -410,14 +410,14 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 // Let the parent do its job fully but disable multi-selection
                 return QGraphicsScene::mousePressEvent(event);
             }
-            else if(item->type() == CustomItems::Plug)
+            else if(item->type() == static_cast<int>(CustomItems::Plug))
             {
                 PlugItem *plug = static_cast<PlugItem *>(item);
                 PlugType::PlugTypes types = plug->getPlug()->getDefinition().types;
                 Node *nodeInput = _model->findInputPlug(plug->getPlug());
                 Node *nodeOutput = _model->findOutputPlug(plug->getPlug());
-                bool isInput = nodeInput != NULL;
-                bool isOutput = nodeOutput != NULL;
+                bool isInput = nodeInput != nullptr;
+                bool isOutput = nodeOutput != nullptr;
 
                 _editedConnection.item = new ConnectionItem();
                 addItem(_editedConnection.item);
@@ -425,7 +425,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 // When editing an input node, edit its actual connection if there is one
                 if(isInput)
                 {
-                    foreach(ConnectionItem *connectionItem, _connections)
+                    for(ConnectionItem *connectionItem : _connections)
                     {
                         const Connection *connection = connectionItem->getConnection();
                         if(connection->getInput() == plug->getPlug())
@@ -469,7 +469,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                     qCritical("Selected plug not found in node inputs/outputs");
                 }
             }
-            else if(item->type() == CustomItems::Node)
+            else if(item->type() == static_cast<int>(CustomItems::Node))
             {
                 const QPointF relativePos = item->mapFromScene(event->scenePos());
                 GenericNodeItem *nodeItem = static_cast<GenericNodeItem *>(item);
@@ -493,7 +493,7 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 setSelectionArea(path);
 
                 // Move node on top
-                foreach(GenericNodeItem *node, _nodes)
+                for(GenericNodeItem *node : _nodes)
                 {
                     if(node != item)
                     {
@@ -519,7 +519,7 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         bool plugFound = false;
 
-        foreach(GenericNodeItem *nodeItem, _nodes)
+        for(GenericNodeItem *nodeItem : _nodes)
         {
             if(nodeItem->getNode() == _editedConnection.baseNode)
             {
@@ -527,7 +527,7 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
 
             const QList<PlugItem *> &plugItems = _editedConnection.fromOutput ? nodeItem->getInputs() : nodeItem->getOutputs();
-            foreach(PlugItem *plugItem, plugItems)
+            for(PlugItem *plugItem : plugItems)
             {
                 PlugType::PlugTypes outputTypes;
                 PlugType::PlugTypes inputTypes;
@@ -572,12 +572,12 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             if(_editedConnection.fromOutput)
             {
                 _editedConnection.item->setInput(event->scenePos());
-                _editedConnection.plugInput = NULL;
+                _editedConnection.plugInput = nullptr;
             }
             else
             {
                 _editedConnection.item->setOutput(event->scenePos());
-                _editedConnection.plugOutput = NULL;
+                _editedConnection.plugOutput = nullptr;
             }
         }
     }
@@ -593,11 +593,11 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem *item = itemAt(event->scenePos(), QTransform());
         if(item)
         {
-            if(item->type() == CustomItems::Plug)
+            if(item->type() == static_cast<int>(CustomItems::Plug))
             {
                 cursor = Qt::PointingHandCursor;
             }
-            else if(item->type() == CustomItems::Node)
+            else if(item->type() == static_cast<int>(CustomItems::Node))
             {
                 QPointF relativePos = item->mapFromScene(event->scenePos());
                 cursor = ((GenericNodeItem *)item)->overrideMouseCursor(relativePos);
@@ -623,13 +623,13 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         removeItem(_editedConnection.item);
         delete _editedConnection.item;
 
-        _editedConnection.item = NULL;
-        _editedConnection.plugInput = NULL;
-        _editedConnection.plugOutput = NULL;
+        _editedConnection.item = nullptr;
+        _editedConnection.plugInput = nullptr;
+        _editedConnection.plugOutput = nullptr;
     }
     else if(_editedNode.item)
     {
-        _editedNode.item = NULL;
+        _editedNode.item = nullptr;
         event->widget()->setCursor(Qt::OpenHandCursor);
     }
     else
@@ -643,9 +643,9 @@ void ComposerScene::keyPressEvent(QKeyEvent *keyEvent)
 {
     if(keyEvent->key() == Qt::Key_Backspace || keyEvent->key() == Qt::Key_Delete)
     {
-        foreach(QGraphicsItem *item, selectedItems())
+        for(QGraphicsItem *item : selectedItems())
         {
-            if(item->type() == CustomItems::Node)
+            if(item->type() == static_cast<int>(CustomItems::Node))
             {
                 _model->removeNode(((GenericNodeItem *)item)->accessNode());
                 return;
@@ -658,7 +658,7 @@ void ComposerScene::keyPressEvent(QKeyEvent *keyEvent)
 
 void ComposerScene::onNodeRemoved(const Node *node)
 {
-    foreach(GenericNodeItem *nodeItem, _nodes)
+    for(GenericNodeItem *nodeItem : _nodes)
     {
         if(nodeItem->getNode() == node)
         {
@@ -690,9 +690,9 @@ void ComposerScene::onConnectionAdded(const Connection *connection)
         connectionItem->setCurrentType(connectionType);
     }
 
-    foreach(const GenericNodeItem *nodeView, _nodes)
+    for(const GenericNodeItem *nodeView : _nodes)
     {
-        foreach(PlugItem *plugItem, nodeView->getInputs())
+        for(PlugItem *plugItem : nodeView->getInputs())
         {
             if(plugItem->getPlug() == connection->getInput())
             {
@@ -701,7 +701,7 @@ void ComposerScene::onConnectionAdded(const Connection *connection)
                 break;
             }
         }
-        foreach(PlugItem *plugItem, nodeView->getOutputs())
+        for(PlugItem *plugItem : nodeView->getOutputs())
         {
             if(plugItem->getPlug() == connection->getOutput())
             {
@@ -718,7 +718,7 @@ void ComposerScene::onConnectionAdded(const Connection *connection)
 
 void ComposerScene::onConnectionRemoved(const Connection *connection)
 {
-    foreach(ConnectionItem *connectionItem, _connections)
+    for(ConnectionItem *connectionItem : _connections)
     {
         if(connectionItem->getConnection() == connection)
         {
@@ -737,7 +737,7 @@ void ComposerScene::onPlugItemPositionChanged()
     if(plugItem)
     {
         const Plug *plug = plugItem->getPlug();
-        foreach(ConnectionItem *connectionItem, _connections)
+        for(ConnectionItem *connectionItem : _connections)
         {
             const Connection *connection = connectionItem->getConnection();
 
@@ -760,7 +760,7 @@ void ComposerScene::onPlugItemPositionChanged()
 void ComposerScene::onExecutionStarted(const Node *node)
 {
     GenericNodeItem *nodeItem;
-    if((nodeItem = findItem(node)) != NULL)
+    if((nodeItem = findItem(node)) != nullptr)
     {
         nodeItem->executionStarted();
     }
@@ -769,7 +769,7 @@ void ComposerScene::onExecutionStarted(const Node *node)
 void ComposerScene::onExecutionProgress(const Node *node, qreal progress)
 {
     GenericNodeItem *nodeItem;
-    if((nodeItem = findItem(node)) != NULL)
+    if((nodeItem = findItem(node)) != nullptr)
     {
         nodeItem->executionProgress(progress);
     }
@@ -782,7 +782,7 @@ void ComposerScene::onExecutionEnded(const Node *node,
                                      const QString &error)
 {
     GenericNodeItem *nodeItem;
-    if((nodeItem = findItem(node)) != NULL)
+    if((nodeItem = findItem(node)) != nullptr)
     {
         nodeItem->executionEnded(outputs, inputs, duration, error);
     }
@@ -791,7 +791,7 @@ void ComposerScene::onExecutionEnded(const Node *node,
 void ComposerScene::onNodeInvalid(const Node *node)
 {
     GenericNodeItem *nodeItem;
-    if((nodeItem = findItem(node)) != NULL)
+    if((nodeItem = findItem(node)) != nullptr)
     {
         nodeItem->nodeInvalid();
     }
@@ -808,5 +808,5 @@ GenericNodeItem *ComposerScene::findItem(const Node *node)
     }
 
     qCritical() << "No item found for node" << node->getName();
-    return NULL;
+    return nullptr;
 }

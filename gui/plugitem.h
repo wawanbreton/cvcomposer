@@ -27,7 +27,7 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
     Q_OBJECT
 
     public:
-        PlugItem(Plug *plug, QGraphicsItem *parent = NULL);
+        PlugItem(Plug *plug, QGraphicsItem *parent = nullptr);
 
         virtual int type() const;
 
@@ -35,7 +35,7 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
 
         virtual void paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
-                           QWidget *widget = Q_NULLPTR);
+                           QWidget *widget = nullptr);
 
         void setCurrentType(PlugType::Enum type, bool input);
 
@@ -49,11 +49,11 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
         void onCurrentAngleChanged(const QVariant &value);
 
     public:
-        static const int radius = 10;
-        static const int magnetRadius = 20;
-        static const int maxMultiTypes = 8;
+        static constexpr int radius = 10;
+        static constexpr int magnetRadius = 20;
+        static constexpr int maxMultiTypes = 8;
 
     private:
-        Plug *_plug;
+        Plug *const _plug;
         qreal _currentAngle;
 };

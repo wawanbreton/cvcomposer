@@ -34,6 +34,6 @@ class CameraProcessor : public AbstractProcessor
         virtual Properties processImpl(const Properties &inputs) override;
 
     private:
-        cv::VideoCapture *_camera{Q_NULLPTR};
+        cv::VideoCapture *_camera{nullptr};
         int _cameraIndex{-1};
 };

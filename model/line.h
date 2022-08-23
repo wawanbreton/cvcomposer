@@ -21,10 +21,10 @@
 
 #include <opencv2/core/core.hpp>
 
-typedef struct
+struct Line
 {
     cv::Point2f point;
     double angle;
-} Line;
+};
 
 Q_DECLARE_METATYPE(Line);

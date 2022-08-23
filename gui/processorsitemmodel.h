@@ -24,7 +24,7 @@ class ProcessorsItemModel : public QStandardItemModel
     Q_OBJECT
 
     public:
-        explicit ProcessorsItemModel(QObject *parent = Q_NULLPTR);
+        explicit ProcessorsItemModel(QObject *parent = nullptr);
 
         virtual QMimeData *mimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE;
 };

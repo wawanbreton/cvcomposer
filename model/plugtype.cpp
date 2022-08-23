@@ -224,7 +224,7 @@ QList<PlugType::Enum> PlugType::getAllValues()
 QList<PlugType::Enum> PlugType::toList(PlugTypes types)
 {
     QList<PlugType::Enum> result;
-    foreach(PlugType::Enum type, PlugType::getAllValues())
+    for(PlugType::Enum type : PlugType::getAllValues())
     {
         if(types.testFlag(type))
         {
@@ -237,7 +237,7 @@ QList<PlugType::Enum> PlugType::toList(PlugTypes types)
 PlugType::PlugTypes PlugType::fromList(const QList<PlugType::Enum> &types)
 {
     PlugType::PlugTypes result;
-    foreach(const PlugType::Enum &type, types)
+    for(const PlugType::Enum &type : types)
     {
         result |= type;
     }

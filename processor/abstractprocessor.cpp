@@ -20,10 +20,7 @@
 #include <QDebug>
 
 
-AbstractProcessor::AbstractProcessor() :
-    _inputs(),
-    _outputs(),
-    _listProgress(0)
+AbstractProcessor::AbstractProcessor()
 {
 }
 
@@ -46,7 +43,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
     Properties listCompliantImputs;
     QList<QString> expectedInputNames;
     QString simpleInputListPlug;
-    foreach(const PlugDefinition &plug, _inputs)
+    for(const PlugDefinition &plug : _inputs)
     {
         expectedInputNames << plug.name;
 
@@ -121,7 +118,7 @@ Properties AbstractProcessor::process(const Properties &inputs)
         else
         {
             listProgress(simpleListValues);
-            foreach(const QVariant &simpleListValue, simpleListValues)
+            for(const QVariant &simpleListValue : simpleListValues)
             {
                 // For each element, extract it and process the computation
                 Properties singleInputs = listCompliantImputs;
@@ -166,15 +163,15 @@ void AbstractProcessor::addInput(const QString &name,
                                  PlugType::PlugTypes types,
                                  const QVariant &defaultValue,
                                  const Properties &widgetProperties,
-                                 ThreeStateBool::Enum labelVisible,
-                                 ProcessorListType::Enum listSupport)
+                                 ThreeStateBool labelVisible,
+                                 ProcessorListType listSupport)
 {
     addInput(makePlug(name, types, defaultValue, widgetProperties, labelVisible, listSupport));
 }
 
 void AbstractProcessor::addInput(const QString &name,
                                  PlugType::PlugTypes types,
-                                 ProcessorListType::Enum listSupport)
+                                 ProcessorListType listSupport)
 {
     addInput(name, types, QVariant(), Properties(), ThreeStateBool::None, listSupport);
 }
@@ -210,7 +207,7 @@ void AbstractProcessor::addOutput(const PlugDefinition &definition)
 
 void AbstractProcessor::addOutput(const QString &userReadableName,
                                   PlugType::PlugTypes types,
-                                  ProcessorListType::Enum listSupport)
+                                  ProcessorListType listSupport)
 {
     addOutput(makePlug(userReadableName,
                        types,
@@ -232,8 +229,8 @@ PlugDefinition AbstractProcessor::makePlug(const QString &name,
                                            PlugType::PlugTypes types,
                                            const QVariant &defaultValue,
                                            const Properties &widgetProperties,
-                                           ThreeStateBool::Enum labelVisible,
-                                           ProcessorListType::Enum listSupport)
+                                           ThreeStateBool labelVisible,
+                                           ProcessorListType listSupport)
 {
     PlugDefinition plug;
     plug.name = name;

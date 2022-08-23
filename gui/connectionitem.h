@@ -31,7 +31,7 @@ class ConnectionItem : public QObject, public QGraphicsItemGroup
     Q_OBJECT
 
     public:
-        ConnectionItem(QGraphicsItem *parent = NULL);
+        ConnectionItem(QGraphicsItem *parent = nullptr);
 
         QPointF getOutput() const;
 
@@ -56,8 +56,8 @@ class ConnectionItem : public QObject, public QGraphicsItemGroup
         static const int _deltaCenter = 3;
 
     private:
-        const Connection *_connection;
-        QGraphicsPathItem *_itemConnectorOutput;
-        QGraphicsPathItem *_itemConnectorInput;
-        QGraphicsPathItem *_itemLine;
+        const Connection *_connection{nullptr};
+        QGraphicsPathItem *const _itemConnectorOutput;
+        QGraphicsPathItem *const _itemConnectorInput;
+        QGraphicsPathItem *const _itemLine;
 };

@@ -293,7 +293,7 @@ void MainWidget::updateRecents(const QSettings &settings)
     _ui->menuRecents->clear();
 
     bool hasRecents = false;
-    foreach(const QString &recent, settings.value("recent_files").toStringList())
+    for(const QString &recent : settings.value("recent_files").toStringList())
     {
         _ui->menuRecents->addAction(recent, this, &MainWidget::onLoadRecent);
         hasRecents = true;

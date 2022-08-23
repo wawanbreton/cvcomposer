@@ -17,12 +17,9 @@
 
 #pragma once
 
-namespace HelpMessageType
+enum class HelpMessageType
 {
-    typedef enum
-    {
-        Function, /*< OpenCV raw function */
-        Class,    /*< Complete class */
-        Tutorial  /*< Detailed tutorial with examples */
-    } Enum;
-}
+    Function, /*< OpenCV raw function */
+    Class,    /*< Complete class */
+    Tutorial  /*< Detailed tutorial with examples */
+};

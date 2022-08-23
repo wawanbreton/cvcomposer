@@ -25,5 +25,5 @@ class ImageFromFileProcessor : public AbstractProcessor
         ImageFromFileProcessor();
 
     protected:
-        Properties processImpl(const Properties &inputs) override;
+        virtual Properties processImpl(const Properties &inputs) override;
 };

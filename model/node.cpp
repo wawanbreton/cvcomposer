@@ -31,19 +31,17 @@ Node::Node(const QString &name,
                          QObject *parent) :
     QObject(parent),
     _name(name),
-    _userReadableName(userReadableName),
-    _inputs(),
-    _outputs()
+    _userReadableName(userReadableName)
 {
     AbstractProcessor *processor = ProcessorsFactory::createProcessor(name);
     if(processor)
     {
-        foreach(const PlugDefinition input, processor->getInputs())
+        for(const PlugDefinition input : processor->getInputs())
         {
             _inputs << new Plug(input, this);
             _properties.insert(input.name, input.defaultValue);
         }
-        foreach(const PlugDefinition output, processor->getOutputs())
+        for(const PlugDefinition output : processor->getOutputs())
         {
             _outputs << new Plug(output, this);
             _properties.insert(output.name, output.defaultValue);
@@ -85,7 +83,7 @@ Plug *Node::findInput(const QString &name) const
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const QList<Plug *> &Node::getOutputs() const
@@ -108,7 +106,7 @@ Plug *Node::findOutput(const QString &name) const
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const Properties &Node::getProperties() const

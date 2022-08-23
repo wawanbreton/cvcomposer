@@ -37,7 +37,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     Q_INTERFACES(QGraphicsItem)
 
     public:
-        GenericNodeItem(Node *node, QGraphicsItem *parent = NULL);
+        GenericNodeItem(Node *node, QGraphicsItem *parent = nullptr);
 
         virtual int type() const;
 
@@ -101,21 +101,21 @@ class GenericNodeItem : public QObject, public QGraphicsItem
         void onHelpMenuActionTriggered(QAction *action);
 
     public:
-        static const int titleHeight = 24;
-        static const int selectionBorderWidth = 3;
-        static const int titleFontSize = 18;
-        static const int bottomFontSize = 14;
+        static constexpr int titleHeight = 24;
+        static constexpr int selectionBorderWidth = 3;
+        static constexpr int titleFontSize = 18;
+        static constexpr int bottomFontSize = 14;
         static constexpr qreal markSide = 16;
         static constexpr qreal markMargin = (titleHeight - markSide) / 2;
-        static const int markExtraSide = 2;
+        static constexpr int markExtraSide = 2;
 
     private:
-        Node *_node{Q_NULLPTR};
-        QGraphicsProxyWidget *_widgetProxy{Q_NULLPTR};
-        GenericNodeWidget *_widget{Q_NULLPTR};
+        Node *const _node;
+        GenericNodeWidget *const _widget;
+        QGraphicsProxyWidget *const _widgetProxy;
         QList<PlugItem *> _inputPlugs;
         QList<PlugItem *> _outputPlugs;
-        QAbstractAnimation *_animationExecution{Q_NULLPTR};
+        QAbstractAnimation *_animationExecution{nullptr};
         qreal _executionMarkOpacity{0.0};
         QString _executionDuration;
         QString _executionError;

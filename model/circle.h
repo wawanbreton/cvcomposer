@@ -21,10 +21,10 @@
 
 #include <opencv2/core/core.hpp>
 
-typedef struct
+struct Circle
 {
     cv::Point2f center;
     float radius;
-} Circle;
+};
 
 Q_DECLARE_METATYPE(Circle);

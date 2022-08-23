@@ -33,13 +33,13 @@ class SizeWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit SizeWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit SizeWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
         virtual void setValue(const QVariant &value) override;
 
     private:
-        QSpinBox *_spinBoxWidth;
-        QSpinBox *_spinBoxHeight;
+        QSpinBox *const _spinBoxWidth;
+        QSpinBox *const _spinBoxHeight;
 };

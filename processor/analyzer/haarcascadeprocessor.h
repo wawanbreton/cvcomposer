@@ -33,6 +33,6 @@ class HaarCascadeProcessor : public AbstractProcessor
 
     private:
         QString _currentClassifier;
-        cv::CascadeClassifier *_classifier{Q_NULLPTR};
+        cv::CascadeClassifier *_classifier{nullptr};
 };
 

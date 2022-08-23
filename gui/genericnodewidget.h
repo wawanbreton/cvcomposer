@@ -34,7 +34,7 @@ class GenericNodeWidget : public QWidget
     Q_OBJECT
 
     public:
-        explicit GenericNodeWidget(QWidget *parent = NULL);
+        explicit GenericNodeWidget(QWidget *parent = nullptr);
 
         void setPlugs(const QList<Plug *> &inputs, const QList<Plug *> &outputs);
 
@@ -58,12 +58,12 @@ class GenericNodeWidget : public QWidget
         void sizeHintChanged();
 
     private:
-        typedef struct
+        struct PlugWidget
         {
             QLabel *label;
             AbstractPlugWidget *widget;
             PlugDefinition definition;
-        } PlugWidget;
+        };
 
     private:
         AbstractPlugWidget *makePlugWidget(const PlugDefinition &plug);
@@ -76,5 +76,5 @@ class GenericNodeWidget : public QWidget
 
     private:
         QMap<QString, PlugWidget> _widgets;
-        QSignalMapper *_widgetsMapper;
+        QSignalMapper *const _widgetsMapper;
 };

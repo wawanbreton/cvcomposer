@@ -26,7 +26,6 @@
 
 ConnectionItem::ConnectionItem(QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
-    _connection(NULL),
     _itemConnectorOutput(new QGraphicsPathItem(this)),
     _itemConnectorInput(new QGraphicsPathItem(this)),
     _itemLine(new QGraphicsPathItem(this))

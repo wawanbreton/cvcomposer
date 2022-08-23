@@ -23,12 +23,11 @@
 
 #include "model/node.h"
 #include "processor/abstractprocessor.h"
-#include "processor/processorsfactory.h"
 
 
 ComposerExecutor::ComposerExecutor(const Node *node,
                                    const Properties &inputs,
-                                   const QSharedPointer<AbstractProcessor> &processor,
+                                   const QSharedPointer<AbstractProcessor> processor,
                                    QObject *parent) :
     QThread(parent),
     _node(node),

@@ -32,12 +32,12 @@ class DoubleWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit DoubleWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit DoubleWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
         virtual void setValue(const QVariant &value) override;
 
     private:
-        QDoubleSpinBox *_spinBox;
+        QDoubleSpinBox *const _spinBox;
 };

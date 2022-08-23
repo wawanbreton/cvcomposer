@@ -21,9 +21,9 @@
 
 #include "processor/helpmessagetype.h"
 
-typedef struct
+struct HelpMessage
 {
     QString text;
     QString url;
-    HelpMessageType::Enum type;
-} HelpMessage;
+    HelpMessageType type;
+};

@@ -31,7 +31,7 @@ class ErrorDisplayDialog : public QDialog
         ~ErrorDisplayDialog();
 
     private:
-        explicit ErrorDisplayDialog(QWidget *parent = NULL);
+        explicit ErrorDisplayDialog(QWidget *parent = nullptr);
 
     private:
         Ui::ErrorDisplayDialog *_ui;

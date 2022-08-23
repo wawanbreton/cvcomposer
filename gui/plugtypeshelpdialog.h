@@ -28,7 +28,7 @@ class PlugTypesHelpDialog : public QDialog
     Q_OBJECT
 
     public:
-        explicit PlugTypesHelpDialog(QWidget *parent = Q_NULLPTR);
+        explicit PlugTypesHelpDialog(QWidget *parent = nullptr);
 
         ~PlugTypesHelpDialog();
 

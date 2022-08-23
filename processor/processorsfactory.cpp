@@ -146,7 +146,7 @@ QString ProcessorsFactory::toUserReadableName(const QString &name)
 
         result += name.at(0); // Take first upper char, unmodified
 
-        foreach(const QChar &aChar, name.mid(1))
+        for(const QChar &aChar : name.mid(1))
         {
             if(aChar.isUpper())
             {
@@ -379,6 +379,6 @@ AbstractProcessor *ProcessorsFactory::createProcessor(const QString &rawProcesso
     else
     {
         qCritical() << "Unknown processor type" << rawProcessorName;
-        return NULL;
+        return nullptr;
     }
 }

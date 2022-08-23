@@ -28,7 +28,7 @@ class EditSettingsDialog : public QDialog
     Q_OBJECT
 
     public:
-        explicit EditSettingsDialog(QWidget *parent = 0);
+        explicit EditSettingsDialog(QWidget *parent = nullptr);
         ~EditSettingsDialog();
 
         ExecutorSettings getSettings() const;

@@ -65,7 +65,7 @@ HaarCascadeProcessor::~HaarCascadeProcessor()
     if(_classifier)
     {
         delete _classifier;
-        _classifier = Q_NULLPTR;
+        _classifier = nullptr;
     }
 }
 

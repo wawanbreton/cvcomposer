@@ -24,7 +24,7 @@ class ProcessorsModelFilter : public QSortFilterProxyModel
     Q_OBJECT
 
     public:
-        explicit ProcessorsModelFilter(QObject *parent = Q_NULLPTR);
+        explicit ProcessorsModelFilter(QObject *parent = nullptr);
 
     protected:
         virtual bool filterAcceptsRow(int sourceRow,

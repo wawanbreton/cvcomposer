@@ -26,7 +26,7 @@ class DoubleItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
     public:
-        explicit DoubleItemDelegate(const Properties &properties, QObject *parent = NULL);
+        explicit DoubleItemDelegate(const Properties &properties, QObject *parent = nullptr);
 
         virtual QWidget *createEditor(QWidget *parent,
                                       const QStyleOptionViewItem &option,

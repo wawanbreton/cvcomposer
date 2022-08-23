@@ -17,12 +17,9 @@
 
 #pragma once
 
-namespace ThreeStateBool
+enum class ThreeStateBool
 {
-    typedef enum
-    {
-        False,
-        True,
-        None
-    } Enum;
-}
+    False,
+    True,
+    None
+};

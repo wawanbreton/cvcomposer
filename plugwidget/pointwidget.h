@@ -33,13 +33,13 @@ class PointWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit PointWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit PointWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
         virtual void setValue(const QVariant &value) override;
 
     private:
-        QSpinBox *_spinBoxX;
-        QSpinBox *_spinBoxY;
+        QSpinBox *const _spinBoxX;
+        QSpinBox *const _spinBoxY;
 };

@@ -32,7 +32,7 @@ class StringWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit StringWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit StringWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 

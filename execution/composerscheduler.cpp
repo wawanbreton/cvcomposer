@@ -263,7 +263,7 @@ void ComposerScheduler::onProgress(qreal progress)
 
 bool ComposerScheduler::allInputsProcessed(const Node *node)
 {
-    foreach(Plug *input, node->getInputs())
+    for(Plug *input : node->getInputs())
     {
         if(PlugType::isInputPluggable(input->getDefinition().types) == PlugType::ManualOnly)
         {
@@ -275,13 +275,13 @@ bool ComposerScheduler::allInputsProcessed(const Node *node)
         const Connection *connection = _model->findConnectionToInput(input);
 
         // We have found the connection, now find the previous node
-        Node *previousNode = NULL;
+        Node *previousNode = nullptr;
         if(connection)
         {
             previousNode = _model->findOutputPlug(connection->getOutput());
         }
 
-        if(previousNode == NULL)
+        if(!previousNode)
         {
             if(PlugType::isInputPluggable(input->getDefinition().types) == PlugType::Mandatory)
             {
@@ -305,7 +305,7 @@ bool ComposerScheduler::allInputsProcessed(const Node *node)
 
 void ComposerScheduler::makeInputs(const Node *node, Properties &inputs)
 {
-    foreach(Plug *plug, node->getInputs())
+    for(Plug *plug : node->getInputs())
     {
         QString plugName = plug->getDefinition().name;
 

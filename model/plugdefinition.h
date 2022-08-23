@@ -22,12 +22,12 @@
 #include "global/threestatebool.h"
 #include "processor/processorlisttype.h"
 
-typedef struct PlugDefinitionStruct
+struct PlugDefinition
 {
     QString name;
     PlugType::PlugTypes types;
     Properties widgetProperties;
     QVariant defaultValue;
-    ThreeStateBool::Enum labelVisible{ThreeStateBool::None};
-    ProcessorListType::Enum listSupport{ProcessorListType::None};
-} PlugDefinition;
+    ThreeStateBool labelVisible{ThreeStateBool::None};
+    ProcessorListType listSupport{ProcessorListType::None};
+};

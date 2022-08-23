@@ -45,5 +45,5 @@ class AbstractPlugWidget : public QWidget
         void sizeHintChanged();
 
     protected:
-        explicit AbstractPlugWidget(QWidget *parent = NULL);
+        explicit AbstractPlugWidget(QWidget *parent = nullptr);
 };

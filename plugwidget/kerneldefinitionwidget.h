@@ -34,7 +34,7 @@ class KernelDefinitionWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit KernelDefinitionWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit KernelDefinitionWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QSize sizeHint() const override;
 
@@ -47,14 +47,14 @@ class KernelDefinitionWidget : public AbstractPlugWidget
         virtual void load(const QMap<QString, QString> &properties) override;
 
     private:
-        typedef enum
+        enum Symmetry
         {
             None,
             Horizontal,
             Vertical,
             Both,
             Center
-        } Symmetry;
+        };
 
     private:
         QSize tableSizeHint() const;
@@ -68,8 +68,8 @@ class KernelDefinitionWidget : public AbstractPlugWidget
         void onCellEdited(const QModelIndex &index, double value);
 
     private:
-        QTableWidget *_table;
-        SizeWidget *_sizeWidget;
-        EnumerationWidget *_symmetryWidget;
-        QFormLayout *_layout;
+        QTableWidget *const _table;
+        SizeWidget *_sizeWidget{nullptr};
+        EnumerationWidget *_symmetryWidget{nullptr};
+        QFormLayout *const _layout;
 };

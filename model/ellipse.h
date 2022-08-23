@@ -21,13 +21,13 @@
 
 #include <QMetaType>
 
-typedef struct
+struct Ellipse
 {
     cv::Point center;
     cv::Size axes;
     double angle;
     double startAngle;
     double endAngle;
-} Ellipse;
+};
 
 Q_DECLARE_METATYPE(Ellipse)

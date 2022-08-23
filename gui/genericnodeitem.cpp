@@ -41,7 +41,8 @@
 GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     QGraphicsItem(parent),
     _node(node),
-    _widget(new GenericNodeWidget())
+    _widget(new GenericNodeWidget()),
+    _widgetProxy(new QGraphicsProxyWidget(this))
 {
     setFlag(QGraphicsItem::ItemClipsToShape, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -54,7 +55,6 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     connect(_widget, &GenericNodeWidget::sizeHintChanged, this, &GenericNodeItem::recomputeSizes);
     connect(_widget, &GenericNodeWidget::propertyChanged, _node, &Node::setProperty);
 
-    _widgetProxy = new QGraphicsProxyWidget(this);
     _widgetProxy->setWidget(_widget);
     _widgetProxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);
 
@@ -81,7 +81,7 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
 
 int GenericNodeItem::type() const
 {
-    return CustomItems::Node;
+    return static_cast<int>(CustomItems::Node);
 }
 
 const Node *GenericNodeItem::getNode() const
@@ -148,7 +148,7 @@ void GenericNodeItem::load(const QMap<QString, QString> &properties)
 
 void GenericNodeItem::executionStarted()
 {
-    if(_animationExecution == NULL)
+    if(!_animationExecution)
     {
         QVariantAnimation *animation = new QVariantAnimation(this);
         animation->setStartValue(0.0);
@@ -177,11 +177,8 @@ void GenericNodeItem::executionEnded(const Properties &outputs,
                                      qint64 duration,
                                      const QString &error)
 {
-    if(_animationExecution != NULL)
-    {
-        delete _animationExecution;
-        _animationExecution = NULL;
-    }
+    delete _animationExecution;
+    _animationExecution = nullptr;
 
     _executionDuration.clear();
 
@@ -511,7 +508,7 @@ void GenericNodeItem::onPlugConnectionChanged(const Plug *connectedTo)
     Plug *plug = qobject_cast<Plug *>(sender());
     if(plug)
     {
-        _widget->setInputPlugged(plug->getDefinition().name, connectedTo != NULL);
+        _widget->setInputPlugged(plug->getDefinition().name, connectedTo);
     }
     else
     {
@@ -533,12 +530,12 @@ void GenericNodeItem::recomputeSizes()
 
     _widget->resize(widgetWidth, widgetHeight);
 
-    foreach(PlugItem *plugItem, _inputPlugs)
+    for(PlugItem *plugItem : _inputPlugs)
     {
         plugItem->setPos(QPointF(actualBaseRect.left(),
                                  _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));
     }
-    foreach(PlugItem *plugItem, _outputPlugs)
+    for(PlugItem *plugItem : _outputPlugs)
     {
         plugItem->setPos(QPointF(actualBaseRect.right(),
                                  _widget->y() + _widget->getPlugPosY(plugItem->getPlug()->getDefinition().name)));

@@ -28,10 +28,10 @@ class ComposerWidget : public InteractiveGraphicsView
     Q_OBJECT
 
     public:
-        explicit ComposerWidget(QWidget *parent = NULL);
+        explicit ComposerWidget(QWidget *parent = nullptr);
 
         void replaceScene(ComposerScene *scene);
 
     private:
-        QLabel *_helpLabel{Q_NULLPTR};
+        QLabel *const _helpLabel;
 };

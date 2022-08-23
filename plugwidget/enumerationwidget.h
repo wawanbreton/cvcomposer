@@ -33,12 +33,12 @@ class EnumerationWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit EnumerationWidget(const Properties &properties, QWidget *parent = NULL);
+        explicit EnumerationWidget(const Properties &properties, QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
         virtual void setValue(const QVariant &value) override;
 
     private:
-        QComboBox *_comboBox;
+        QComboBox *const _comboBox;
 };

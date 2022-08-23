@@ -41,7 +41,7 @@ CameraProcessor::~CameraProcessor()
     if(_camera)
     {
         delete _camera;
-        _camera = Q_NULLPTR;
+        _camera = nullptr;
     }
 }
 
@@ -62,7 +62,7 @@ Properties CameraProcessor::processImpl(const Properties &inputs)
     if(_camera && _cameraIndex != index)
     {
         delete _camera;
-        _camera = Q_NULLPTR;
+        _camera = nullptr;
     }
 
     if(!_camera)

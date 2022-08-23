@@ -28,7 +28,7 @@ class ImageViewerDockWidget : public QDockWidget
     Q_OBJECT
 
     public:
-        explicit ImageViewerDockWidget(QWidget *parent = NULL);
+        explicit ImageViewerDockWidget(QWidget *parent = nullptr);
         ~ImageViewerDockWidget();
 
         void setImage(const QPixmap &image);

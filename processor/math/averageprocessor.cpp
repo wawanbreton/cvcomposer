@@ -40,7 +40,7 @@ Properties AverageProcessor::processImpl(const Properties &inputs)
     int baseFormat = -1;
     int workFormat = -1;
 
-    foreach(const QVariant &input, inputs["input images"].value<QList<QVariant>>())
+    for(const QVariant &input : inputs["input images"].value<QList<QVariant>>())
     {
         cv::Mat image = input.value<cv::Mat>();
 

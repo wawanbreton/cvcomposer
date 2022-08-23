@@ -19,10 +19,10 @@
 
 #include <QtGlobal>
 
-typedef struct
+struct ExecutorSettings
 {
     bool cacheData;
     bool useMultiThreading;
     bool useOptimalThreadsCount;
     quint16 fixedThreadsCount;
-} ExecutorSettings;
+};

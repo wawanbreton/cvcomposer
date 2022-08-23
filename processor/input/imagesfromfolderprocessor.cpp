@@ -51,7 +51,7 @@ Properties ImagesFromFolderProcessor::processImpl(const Properties &inputs)
     QList<QVariant> images;
 
     QDir dir(inputs["path"].toString());
-    foreach(const QFileInfo &file, dir.entryInfoList(QDir::Files | QDir::Readable))
+    for(const QFileInfo &file : dir.entryInfoList(QDir::Files | QDir::Readable))
     {
         cv::Mat image = cv::imread(file.absoluteFilePath().toStdString(), inputs["mode"].toInt());
         if(image.rows > 0 && image.cols > 0)

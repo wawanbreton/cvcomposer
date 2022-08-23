@@ -54,12 +54,12 @@ class AbstractProcessor : public QObject
                       PlugType::PlugTypes types,
                       const QVariant &defaultValue = QVariant(),
                       const Properties &widgetProperties = Properties(),
-                      ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
-                      ProcessorListType::Enum listSupport = ProcessorListType::None);
+                      ThreeStateBool labelVisible = ThreeStateBool::None,
+                      ProcessorListType listSupport = ProcessorListType::None);
 
         void addInput(const QString &name,
                       PlugType::PlugTypes types,
-                      ProcessorListType::Enum listSupport);
+                      ProcessorListType listSupport);
 
         void addEnumerationInput(const QString &name,
                                  const QList<QPair<QString, QVariant> > &values,
@@ -69,9 +69,9 @@ class AbstractProcessor : public QObject
 
         void addOutput(const QString &userReadableName,
                        PlugType::PlugTypes types,
-                       ProcessorListType::Enum listSupport = ProcessorListType::None);
+                       ProcessorListType listSupport = ProcessorListType::None);
 
-        void addHelpMessage(const QString &text, const QString &url, HelpMessageType::Enum type)
+        void addHelpMessage(const QString &text, const QString &url, HelpMessageType type)
         { _helpMessages.append({text, url, type}); }
 
         void listProgress(const QList<QVariant> &list);
@@ -85,13 +85,13 @@ class AbstractProcessor : public QObject
                                 PlugType::PlugTypes types,
                                 const QVariant &defaultValue = QVariant(),
                                 const Properties &widgetProperties = Properties(),
-                                ThreeStateBool::Enum labelVisible = ThreeStateBool::None,
-                                ProcessorListType::Enum listSupport = ProcessorListType::None);
+                                ThreeStateBool labelVisible = ThreeStateBool::None,
+                                ProcessorListType listSupport = ProcessorListType::None);
 
     private:
         QList<PlugDefinition> _inputs;
         QList<PlugDefinition> _outputs;
         QList<HelpMessage> _helpMessages;
-        int _listProgress;
+        int _listProgress{0};
         QMutex _mutex;
 };

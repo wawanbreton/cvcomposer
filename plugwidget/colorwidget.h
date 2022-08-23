@@ -26,7 +26,7 @@ class ColorWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit ColorWidget(QWidget *parent = NULL);
+        explicit ColorWidget(QWidget *parent = nullptr);
 
         virtual QVariant getValue() const override;
 
@@ -41,5 +41,5 @@ class ColorWidget : public AbstractPlugWidget
         void setColor(const QColor &color);
 
     private:
-        QLineEdit *_lineEdit;
+        QLineEdit *const _lineEdit;
 };

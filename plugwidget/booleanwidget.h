@@ -26,12 +26,12 @@ class BooleanWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit BooleanWidget(QWidget *parent = NULL);
+        explicit BooleanWidget(QWidget *parent = nullptr);
 
         virtual QVariant getValue() const;
 
         virtual void setValue(const QVariant &value);
 
     private:
-        QCheckBox *_checkBox;
+        QCheckBox *const _checkBox;
 };

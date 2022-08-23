@@ -26,7 +26,7 @@ class Plug : public QObject
     Q_OBJECT
 
     public:
-        explicit Plug(const PlugDefinition &definition, QObject *parent = NULL);
+        explicit Plug(const PlugDefinition &definition, QObject *parent = nullptr);
 
         const PlugDefinition &getDefinition() const;
 

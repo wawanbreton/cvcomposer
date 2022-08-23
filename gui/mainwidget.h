@@ -28,7 +28,7 @@ class MainWidget : public QMainWindow
     Q_OBJECT
 
     public:
-        explicit MainWidget(QWidget *parent = 0);
+        explicit MainWidget(QWidget *parent = nullptr);
         ~MainWidget();
 
     protected:

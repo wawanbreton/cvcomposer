@@ -40,7 +40,7 @@ class ComposerScheduler : public QObject
     Q_OBJECT
 
     public:
-        explicit ComposerScheduler(const ComposerModel *model, QObject *parent = NULL);
+        explicit ComposerScheduler(const ComposerModel *model, QObject *parent = nullptr);
 
         void start();
 
@@ -108,7 +108,7 @@ class ComposerScheduler : public QObject
         ExecutorSettings _settings;
         QList<ComposerExecutor *> _currentExecutors;
         QList<ComposerExecutor *> _oldExecutors;
-        const ComposerModel *_model{Q_NULLPTR};
+        const ComposerModel *const _model;
         QMap<const Node *, QSharedPointer<AbstractProcessor>> _processors;
         QMap<const Node *, Properties> _processedNodes;
         bool _end;

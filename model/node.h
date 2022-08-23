@@ -20,7 +20,6 @@
 #include <QObject>
 
 #include "global/properties.h"
-#include "model/plugdefinition.h"
 #include "processor/helpmessage.h"
 
 #include <opencv2/core/core.hpp>
@@ -34,7 +33,7 @@ class Node : public QObject
     public:
         explicit Node(const QString &name,
                       const QString &userReadableName,
-                      QObject *parent = NULL);
+                      QObject *parent = nullptr);
 
         const QString &getName() const;
 

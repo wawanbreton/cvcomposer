@@ -34,7 +34,7 @@ class ComposerModel : public QObject
     Q_OBJECT
 
     public:
-        explicit ComposerModel(QObject *parent = NULL);
+        explicit ComposerModel(QObject *parent = nullptr);
 
         void addNode(Node *node);
 

@@ -42,7 +42,7 @@ PlugItem::PlugItem(Plug *plug, QGraphicsItem *parent) :
 
 int PlugItem::type() const
 {
-    return CustomItems::Plug;
+    return static_cast<int>(CustomItems::Plug);
 }
 
 Plug *PlugItem::getPlug() const
@@ -66,7 +66,7 @@ void PlugItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
         qreal delta = 360 / types.count();
         int count = 0;
-        foreach(const PlugType::Enum type, types)
+        for(const PlugType::Enum type : types)
         {
             painter->setBrush(PlugType::getColor(type));
             painter->drawPie(rect(), count * delta * 16, delta * 16);

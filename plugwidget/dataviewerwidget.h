@@ -24,7 +24,7 @@ class DataViewerWidget : public AbstractPlugWidget
     Q_OBJECT
 
     public:
-        explicit DataViewerWidget(QWidget *parent = NULL);
+        explicit DataViewerWidget(QWidget *parent = nullptr);
 
         void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 

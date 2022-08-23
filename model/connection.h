@@ -26,13 +26,13 @@ class Connection : public QObject
     Q_OBJECT
 
     public:
-        Connection(Plug *output, Plug *input, QObject *parent = NULL);
+        Connection(Plug *output, Plug *input, QObject *parent = nullptr);
 
         Plug *getOutput() const;
 
         Plug *getInput() const;
 
     private:
-        Plug *_output;
-        Plug *_input;
+        Plug *const _output;
+        Plug *const _input;
 };
