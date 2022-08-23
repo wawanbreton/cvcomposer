@@ -28,10 +28,6 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
     InteractiveGraphicsView(parent),
     _helpLabel(new QLabel(this))
 {
-    ComposerScene *scene = new ComposerScene(this);
-    setScene(scene);
-
-    setSceneRect(-3000, -3000, 6000, 6000);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMouseTracking(true);
@@ -54,8 +50,6 @@ ComposerWidget::ComposerWidget(QWidget *parent) :
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(_helpLabel);
-
-    connect(scene->getModel(), &ComposerModel::nodeAdded, _helpLabel, &QLabel::hide);
 }
 
 void ComposerWidget::replaceScene(ComposerScene *newScene)
@@ -70,5 +64,16 @@ void ComposerWidget::replaceScene(ComposerScene *newScene)
     newScene->setParent(this);
     setScene(newScene);
 
-    _helpLabel->hide();
+    auto model = newScene->getModel();
+    if(model->getNodes().empty())
+    {
+        _helpLabel->show();
+        connect(model, &ComposerModel::nodeAdded, _helpLabel, &QLabel::hide);
+    }
+    else
+    {
+        _helpLabel->hide();
+    }
+
+    setSceneRect(-3000, -3000, 6000, 6000);
 }

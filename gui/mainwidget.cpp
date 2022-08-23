@@ -28,11 +28,6 @@
 #include <QStandardItemModel>
 
 #include "execution/composerscheduler.h"
-#include "model/composermodel.h"
-#include "model/connection.h"
-#include "model/node.h"
-#include "gui/genericnodeitem.h"
-#include "gui/connectionitem.h"
 #include "gui/composerscene.h"
 #include "gui/editsettingsdialog.h"
 #include "gui/plugtypeshelpdialog.h"
@@ -43,7 +38,8 @@
 MainWidget::MainWidget(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWidget),
-    _currentFilePath()
+    _currentFilePath(),
+    _commandsStack(new QUndoStack(this))
 {
     _ui->setupUi(this);
 
@@ -78,8 +74,18 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(_ui->actionAboutOpenCV, &QAction::triggered, this, &MainWidget::onAboutOpenCV);
     connect(_ui->actionCredits,     &QAction::triggered, this, &MainWidget::onDisplayCredits);
 
+    QAction *undoAction = _commandsStack->createUndoAction(this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    _ui->menuEdit->addAction(undoAction);
+
+    QAction *redoAction = _commandsStack->createRedoAction(this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    _ui->menuEdit->addAction(redoAction);
+
     // Do not quit automatically, we are going to decide
     qApp->setQuitOnLastWindowClosed(false);
+
+    onNew();
 }
 
 MainWidget::~MainWidget()
@@ -107,7 +113,9 @@ void MainWidget::closeEvent(QCloseEvent *event)
 
 void MainWidget::onNew()
 {
-    _ui->graphicsView->replaceScene(new ComposerScene(this));
+    _ui->graphicsView->replaceScene(new ComposerScene(_commandsStack, this));
+
+    _commandsStack->clear();
 
     _currentFilePath.clear();
 
@@ -168,7 +176,9 @@ void MainWidget::loadFile(const QString &filePath)
         int errorLine, errorColumn;
         if(doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
         {
-            _ui->graphicsView->replaceScene(new ComposerScene(doc, this));
+            _ui->graphicsView->replaceScene(new ComposerScene(doc, this, _commandsStack));
+
+            _commandsStack->clear();
 
             _currentFilePath = filePath;
             updateTitle();

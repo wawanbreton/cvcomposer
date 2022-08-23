@@ -26,6 +26,7 @@ else {
 
 
 SOURCES += main.cpp\
+    gui/command/movenodecommand.cpp \
         gui/mainwidget.cpp \
     gui/composerwidget.cpp \
     gui/composerscene.cpp \
@@ -121,6 +122,8 @@ SOURCES += main.cpp\
     processor/filter/applyroiprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
+    gui/command/commandid.h \
+    gui/command/movenodecommand.h \
     gui/composerwidget.h \
     gui/composerscene.h \
     gui/plugitem.h \

@@ -99,6 +99,19 @@ Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutput
     return nullptr;
 }
 
+Node *ComposerModel::findNode(const QUuid &uid) const
+{
+    for(Node *node : _nodes)
+    {
+        if(node->getUid() == uid)
+        {
+            return node;
+        }
+    }
+
+    return nullptr;
+}
+
 const Connection *ComposerModel::findConnectionToInput(const Plug *input) const
 {
     for(const Connection *connection : _connections)

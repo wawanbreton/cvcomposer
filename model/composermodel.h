@@ -50,6 +50,8 @@ class ComposerModel : public QObject
                        bool fromInputs = true,
                        bool fromOutputs = true) const;
 
+        Node *findNode(const QUuid &uid) const;
+
         const Connection *findConnectionToInput(const Plug *input) const;
 
         QSet<const Node *> findDirectDescendantNodes(const Plug *output) const;

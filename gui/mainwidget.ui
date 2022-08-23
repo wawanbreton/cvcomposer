@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>1232</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -54,7 +54,13 @@
     <addaction name="actionAboutOpenCV"/>
     <addaction name="actionCredits"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
@@ -88,7 +94,7 @@
         <bool>false</bool>
        </attribute>
        <attribute name="headerDefaultSectionSize">
-        <number>0</number>
+        <number>60</number>
        </attribute>
       </widget>
      </item>

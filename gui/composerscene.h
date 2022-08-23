@@ -22,6 +22,7 @@
 #include <QDomDocument>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMainWindow>
+#include <QUndoStack>
 
 #include "model/plug.h"
 
@@ -36,13 +37,16 @@ class ComposerScene : public QGraphicsScene
 {
     Q_OBJECT
     public:
-        explicit ComposerScene(QObject *parent = nullptr);
+        explicit ComposerScene(QUndoStack *commandsStack, QObject *parent = nullptr);
 
         explicit ComposerScene(const QDomDocument &doc,
                                QMainWindow *mainWindow,
+                               QUndoStack *commandsStack,
                                QObject *parent = nullptr);
 
         const QList<GenericNodeItem *> &getNodes() const;
+
+        GenericNodeItem *findNode(const QUuid &uid) const;
 
         const QList<ConnectionItem *> &getConnections() const;
 
@@ -50,7 +54,7 @@ class ComposerScene : public QGraphicsScene
 
         ComposerScheduler *accessScheduler();
 
-        GenericNodeItem *addNode(const QString &nodeName);
+        GenericNodeItem *addNode(const QString &nodeName, const QUuid &uid);
 
         const ComposerModel *getModel() const { return _model; }
 
@@ -103,6 +107,8 @@ class ComposerScene : public QGraphicsScene
 
         GenericNodeItem *findItem(const Node *node);
 
+        QUuid loadUid(const QDomElement &node, const QString &attributePrefix = "");
+
     private:
         struct EditedConnection
         {
@@ -121,8 +127,9 @@ class ComposerScene : public QGraphicsScene
         };
 
     private:
-        ComposerModel *_model;
-        ComposerScheduler *_scheduler;
+        QUndoStack *const _commandsStack;
+        ComposerModel *const _model;
+        ComposerScheduler *const _scheduler;
         EditedConnection _editedConnection;
         EditedNode _editedNode;
         QList<ConnectionItem *> _connections;

@@ -30,6 +30,7 @@
 #include "model/connection.h"
 #include "model/node.h"
 #include "processor/processorsfactory.h"
+#include "gui/command/movenodecommand.h"
 #include "gui/genericnodeitem.h"
 #include "gui/customitems.h"
 #include "gui/connectionitem.h"
@@ -38,8 +39,9 @@
 #include "global/parser.h"
 
 
-ComposerScene::ComposerScene(QObject *parent) :
+ComposerScene::ComposerScene(QUndoStack *commandsStack, QObject *parent) :
     QGraphicsScene(parent),
+    _commandsStack(commandsStack),
     _model(new ComposerModel(this)),
     _scheduler(new ComposerScheduler(_model, this)),
     _editedConnection(),
@@ -51,8 +53,12 @@ ComposerScene::ComposerScene(QObject *parent) :
     _scheduler->start();
 }
 
-ComposerScene::ComposerScene(const QDomDocument &doc, QMainWindow *mainWindow, QObject *parent) :
+ComposerScene::ComposerScene(const QDomDocument &doc,
+                             QMainWindow *mainWindow,
+                             QUndoStack *commandsStack,
+                             QObject *parent) :
     QGraphicsScene(parent),
+    _commandsStack(commandsStack),
     _model(new ComposerModel(this)),
     _scheduler(new ComposerScheduler(_model, this)),
     _editedConnection(),
@@ -90,6 +96,19 @@ const QList<GenericNodeItem *> &ComposerScene::getNodes() const
     return _nodes;
 }
 
+GenericNodeItem *ComposerScene::findNode(const QUuid &uid) const
+{
+    for(GenericNodeItem *item : _nodes)
+    {
+        if(item->getNode()->getUid() == uid)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
+}
+
 const QList<ConnectionItem *> &ComposerScene::getConnections() const
 {
     return _connections;
@@ -105,9 +124,9 @@ ComposerScheduler *ComposerScene::accessScheduler()
     return _scheduler;
 }
 
-GenericNodeItem *ComposerScene::addNode(const QString &nodeName)
+GenericNodeItem *ComposerScene::addNode(const QString &nodeName, const QUuid &uid)
 {
-    Node *node = new Node(nodeName, ProcessorsFactory::toUserReadableName(nodeName));
+    Node *node = new Node(nodeName, ProcessorsFactory::toUserReadableName(nodeName), uid);
 
     GenericNodeItem *item = new GenericNodeItem(node);
     addItem(item);
@@ -135,7 +154,7 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
 
         QDomElement nodeElement = doc.createElement("node");
         nodeElement.setAttribute("name", node->getName());
-        nodeElement.setAttribute("id", QString::number(quint64(node)));
+        nodeElement.setAttribute("uid", node->getUid().toString());
 
         QMap<QString, QString> nodeItemProperties = nodeItem->save();
         auto iterator = nodeItemProperties.constBegin();
@@ -203,9 +222,9 @@ void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
         if(outputNode && inputNode)
         {
             QDomElement connectionElement = doc.createElement("connection");
-            connectionElement.setAttribute("output_id", QString::number(quint64(outputNode)));
+            connectionElement.setAttribute("output_uid", outputNode->getUid().toString());
             connectionElement.setAttribute("output_plug", outputPlug->getDefinition().name);
-            connectionElement.setAttribute("input_id", QString::number(quint64(inputNode)));
+            connectionElement.setAttribute("input_uid", inputNode->getUid().toString());
             connectionElement.setAttribute("input_plug", inputPlug->getDefinition().name);
             rootNode.appendChild(connectionElement);
         }
@@ -246,15 +265,14 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
 {
     QDomNode mainNode = doc.namedItem(QCoreApplication::applicationName().toLower());
     QDomNodeList childrenNodes = mainNode.childNodes();
-    QMap<quint64, Node *> loadedNodes;
     for(int i = 0 ; i < childrenNodes.count() ; i++)
     {
         QDomElement childNode = childrenNodes.at(i).toElement();
         if(childNode.nodeName() == "node")
         {
             QString nodeName = childNode.attribute("name");
-            GenericNodeItem *item = addNode(nodeName);
-            loadedNodes.insert(childNode.attribute("id").toULongLong(), item->accessNode());
+            QUuid uid = loadUid(childNode);
+            GenericNodeItem *item = addNode(nodeName, uid);
 
             QDomNodeList nodeProperties = childNode.childNodes();
             QMap<QString, QString> nodeItemProperties;
@@ -321,19 +339,19 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
         }
         else if(childNode.nodeName() == "connection")
         {
-            quint64 outputId = childNode.attribute("output_id").toULongLong();
-            quint64 inputId = childNode.attribute("input_id").toULongLong();
+            QUuid outputId = loadUid(childNode, "output_");
+            QUuid inputId = loadUid(childNode, "input_");
 
-            auto iteratorOutput = loadedNodes.find(outputId);
-            auto iteratorInput = loadedNodes.find(inputId);
+            auto outputNode = _model->findNode(outputId);
+            auto inputNode = _model->findNode(inputId);
 
-            if(iteratorOutput != loadedNodes.end() && iteratorInput != loadedNodes.end())
+            if(inputNode && outputNode)
             {
                 QString outputName = childNode.attribute("output_plug");
                 QString inputName = childNode.attribute("input_plug");
 
-                Plug *plugOutput = iteratorOutput.value()->findOutput(outputName);
-                Plug *plugInput = iteratorInput.value()->findInput(inputName);
+                Plug *plugOutput = outputNode->findOutput(outputName);
+                Plug *plugInput = inputNode->findInput(inputName);
 
                 if(!plugOutput)
                 {
@@ -390,8 +408,8 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
     {
         event->acceptProposedAction();
 
-        GenericNodeItem *item =
-                addNode(QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter")));
+        GenericNodeItem *item = addNode(QString::fromUtf8(event->mimeData()->data("application/x-cvcomposerfilter")),
+                                        QUuid::createUuid());
         item->setPos(event->scenePos());
     }
 }
@@ -585,7 +603,9 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         cursor = Qt::ClosedHandCursor;
 
-        _editedNode.item->setPos(_editedNode.initNodePose + (event->scenePos() - _editedNode.initClickPos));
+        QPointF sourcePos = _editedNode.item->pos();
+        QPointF targetPos(_editedNode.initNodePose + (event->scenePos() - _editedNode.initClickPos));
+        _commandsStack->push(new MoveNodeCommand(this, _editedNode.item->getNode()->getUid(), sourcePos, targetPos));
     }
     else
     {
@@ -809,4 +829,20 @@ GenericNodeItem *ComposerScene::findItem(const Node *node)
 
     qCritical() << "No item found for node" << node->getName();
     return nullptr;
+}
+
+QUuid ComposerScene::loadUid(const QDomElement &node, const QString &attributePrefix)
+{
+    QUuid uid = QUuid(node.attribute(QString("%1uid").arg(attributePrefix)));
+    if(uid.isNull())
+    {
+        // Retro-compatibility with old format
+        quint64 oldId = node.attribute(QString("%1id").arg(attributePrefix)).toULongLong();
+        uid = QUuid(static_cast<quint32>(oldId >> 32),
+                    static_cast<quint16>(oldId >> 16),
+                    static_cast<quint16>(oldId),
+                    0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    return uid;
 }
