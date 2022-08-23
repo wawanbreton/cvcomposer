@@ -32,11 +32,11 @@ class ImageViewerWidget : public AbstractPlugWidget
 
         virtual ~ImageViewerWidget();
 
-        virtual QMap<QString, QString> save() const;
+        virtual QMap<QString, QString> save() const override;
 
-        virtual void load(const QMap<QString, QString> &properties);
+        virtual void load(const QMap<QString, QString> &properties) override;
 
-        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+        virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs) override;
 
     private:
         QLineEdit *const _lineEdit;

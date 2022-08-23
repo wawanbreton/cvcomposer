@@ -62,19 +62,19 @@ class ComposerScene : public QGraphicsScene
         void ended();
 
     protected:
-        virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
+        virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
 
-        virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+        virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
-        virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
+        virtual void dropEvent(QGraphicsSceneDragDropEvent *event) override;
 
-        virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+        virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
-        virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+        virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
-        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-        virtual void keyPressEvent(QKeyEvent *keyEvent);
+        virtual void keyPressEvent(QKeyEvent *keyEvent) override;
 
     private:
         void onNodeRemoved(const Node *node);

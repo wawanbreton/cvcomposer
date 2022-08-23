@@ -36,7 +36,7 @@ class EditSettingsDialog : public QDialog
         void setSettings(const ExecutorSettings &settings);
 
     protected:
-        virtual bool eventFilter(QObject *receiver, QEvent *event);
+        virtual bool eventFilter(QObject *receiver, QEvent *event) override;
 
     private:
         Ui::EditSettingsDialog *_ui;

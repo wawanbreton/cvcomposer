@@ -25,5 +25,5 @@ class MorphologyTransformationProcessor : public AbstractProcessor
         MorphologyTransformationProcessor();
 
     protected:
-        virtual Properties processImpl(const Properties &inputs);
+        virtual Properties processImpl(const Properties &inputs) override;
 };

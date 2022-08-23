@@ -9,6 +9,9 @@ QT += core gui xml widgets
 TARGET = cvcomposer
 TEMPLATE = app
 QMAKE_CXXFLAGS = -std=c++2a
+QMAKE_CXXFLAGS += -Werror=return-type
+QMAKE_CXXFLAGS += -Werror=shadow
+QMAKE_CXXFLAGS += -Wsuggest-override
 
 win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"

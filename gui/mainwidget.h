@@ -32,7 +32,7 @@ class MainWidget : public QMainWindow
         ~MainWidget();
 
     protected:
-        virtual void closeEvent(QCloseEvent *event);
+        virtual void closeEvent(QCloseEvent *event) override;
 
     private:
         void onNew();

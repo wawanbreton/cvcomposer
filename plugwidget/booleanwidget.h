@@ -28,9 +28,9 @@ class BooleanWidget : public AbstractPlugWidget
     public:
         explicit BooleanWidget(QWidget *parent = nullptr);
 
-        virtual QVariant getValue() const;
+        virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value);
+        virtual void setValue(const QVariant &value) override;
 
     private:
         QCheckBox *const _checkBox;

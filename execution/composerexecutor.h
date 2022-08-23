@@ -58,7 +58,7 @@ class ComposerExecutor : public QThread
         void nodeProcessed();
 
     protected:
-        virtual void run();
+        virtual void run() override;
 
     private:
         void onFinished();

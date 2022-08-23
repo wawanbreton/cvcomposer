@@ -25,5 +25,5 @@ class ImageViewerProcessor : public AbstractProcessor
         ImageViewerProcessor();
 
     protected:
-        virtual Properties processImpl(const Properties &inputs);
+        virtual Properties processImpl(const Properties &inputs) override;
 };

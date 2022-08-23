@@ -26,10 +26,10 @@ class DataViewerWidget : public AbstractPlugWidget
     public:
         explicit DataViewerWidget(QWidget *parent = nullptr);
 
-        void onNodeProcessed(const Properties &inputs, const Properties &outputs);
+        void onNodeProcessed(const Properties &inputs, const Properties &outputs) override;
 
     protected:
-        virtual void paintEvent(QPaintEvent *event);
+        virtual void paintEvent(QPaintEvent *event) override;
 
     private:
         QPixmap _image;

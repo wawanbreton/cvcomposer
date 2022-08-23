@@ -39,7 +39,7 @@ class GenericNodeItem : public QObject, public QGraphicsItem
     public:
         GenericNodeItem(Node *node, QGraphicsItem *parent = nullptr);
 
-        virtual int type() const;
+        virtual int type() const override;
 
         const Node *getNode() const;
 

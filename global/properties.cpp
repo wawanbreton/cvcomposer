@@ -20,8 +20,8 @@
 
 void Properties::applyTo(QObject *object) const
 {
-    for(auto iterator = begin() ; iterator != end() ; iterator++)
+    for(auto propertiesIterator = begin() ; propertiesIterator != end() ; propertiesIterator++)
     {
-        object->setProperty(iterator.key().toUtf8(), iterator.value());
+        object->setProperty(propertiesIterator.key().toUtf8(), propertiesIterator.value());
     }
 }

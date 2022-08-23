@@ -135,9 +135,9 @@ void KernelDefinitionWidget::setValue(const QVariant &value)
         rowPointer = mat.ptr<double>(row);
         for(int col = 0 ; col < mat.cols ; col++)
         {
-            double value = rowPointer[col];
+            double cellValue = rowPointer[col];
             QTableWidgetItem *item = new QTableWidgetItem();
-            item->setData(Qt::DisplayRole, value);
+            item->setData(Qt::DisplayRole, cellValue);
             _table->setItem(row, col, item);
         }
     }

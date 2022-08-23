@@ -29,13 +29,13 @@ class PlugItem : public QObject, public QGraphicsEllipseItem
     public:
         PlugItem(Plug *plug, QGraphicsItem *parent = nullptr);
 
-        virtual int type() const;
+        virtual int type() const override;
 
         Plug *getPlug() const;
 
         virtual void paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
-                           QWidget *widget = nullptr);
+                           QWidget *widget = nullptr) override;
 
         void setCurrentType(PlugType::Enum type, bool input);
 
