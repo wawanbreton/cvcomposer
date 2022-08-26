@@ -50,6 +50,18 @@ QList<const Node *> ComposerModel::getNodes() const
     return nodes;
 }
 
+QList<const Connection *> ComposerModel::getConnections() const
+{
+    QList<const Connection *> connections;
+
+    for(const Connection *connection : _connections)
+    {
+        connections << connection;
+    }
+
+    return connections;
+}
+
 void ComposerModel::removeNode(Node *node)
 {
     for(Connection *connection : _connections)
@@ -57,7 +69,8 @@ void ComposerModel::removeNode(Node *node)
         if(node->getInputs().contains(connection->getInput()) ||
            node->getOutputs().contains(connection->getOutput()))
         {
-            removeConnection(connection);
+            qCritical() << "Node has connections, unable to remove";
+            return;
         }
     }
 
@@ -91,6 +104,19 @@ Node *ComposerModel::findPlug(const Plug *plug, bool fromInputs, bool fromOutput
             return node;
         }
         if(fromOutputs && node->hasOutput(plug))
+        {
+            return node;
+        }
+    }
+
+    return nullptr;
+}
+
+Node *ComposerModel::findNode(const QUuid &uid) const
+{
+    for(Node *node : _nodes)
+    {
+        if(node->getUid() == uid)
         {
             return node;
         }
@@ -157,28 +183,24 @@ QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node, bool inc
 
 void ComposerModel::addConnection(Plug *output, Plug *input)
 {
-    #warning Do appropriate checks
-
-    QMutableListIterator<Connection *> iterator(_connections);
-    while(iterator.hasNext())
-    {
-        iterator.next();
-        if(iterator.value()->getInput() == input)
-        {
-            Connection *connection = iterator.value();
-            connection->getInput()->signalConnectedTo(nullptr);
-            connection->getOutput()->signalConnectedTo(nullptr);
-            iterator.remove();
-            emit connectionRemoved(connection);
-            delete connection;
-        }
-    }
-
     Connection *connection = new Connection(output, input, this);
     _connections << connection;
     input->signalConnectedTo(output);
     output->signalConnectedTo(input);
     emit connectionAdded(connection);
+}
+
+const Connection *ComposerModel::findConnection(Plug *output, Plug *input)
+{
+    for(auto connection : _connections)
+    {
+        if((!output || connection->getOutput() == output) && (!input || connection->getInput() == input))
+        {
+            return connection;
+        }
+    }
+
+    return nullptr;
 }
 
 void ComposerModel::removeConnection(const Connection *connection)

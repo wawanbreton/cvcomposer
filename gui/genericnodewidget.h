@@ -53,7 +53,7 @@ class GenericNodeWidget : public QWidget
         void onProcessUnavailable();
 
     signals:
-        void propertyChanged(const QString &name, const QVariant &value);
+        void plugValueChanged(const QString &name, const QVariant &value);
 
         void sizeHintChanged();
 

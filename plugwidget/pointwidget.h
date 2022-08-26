@@ -37,7 +37,7 @@ class PointWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value) override;
+        virtual void setValueImpl(const QVariant &value) override;
 
     private:
         QSpinBox *const _spinBoxX;

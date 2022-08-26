@@ -26,6 +26,12 @@ AbstractPlugWidget::AbstractPlugWidget(QWidget *parent) :
 {
 }
 
+void AbstractPlugWidget::setValueImpl(const QVariant &value)
+{
+    Q_UNUSED(value)
+    qCritical() << "AbstractPlugWidget::setValueImpl" << "This method should not be called";
+}
+
 QVariant AbstractPlugWidget::getValue() const
 {
     qCritical() << "AbstractPlugWidget::getValue" << "This method should not be called";
@@ -34,8 +40,9 @@ QVariant AbstractPlugWidget::getValue() const
 
 void AbstractPlugWidget::setValue(const QVariant &value)
 {
-    Q_UNUSED(value)
-    qCritical() << "AbstractPlugWidget::setValue" << "This method should not be called";
+    _settingValue = true;
+    setValueImpl(value);
+    _settingValue = false;
 }
 
 QMap<QString, QString> AbstractPlugWidget::save() const
@@ -55,4 +62,12 @@ void AbstractPlugWidget::onNodeProcessed(const Properties &inputs, const Propert
     Q_UNUSED(inputs)
     Q_UNUSED(outputs)
     // Default is nothing to do
+}
+
+void AbstractPlugWidget::onGuiValueChanged()
+{
+    if(!_settingValue)
+    {
+        emit valueChanged();
+    }
 }

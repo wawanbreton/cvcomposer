@@ -12,6 +12,7 @@ QMAKE_CXXFLAGS = -std=c++2a
 QMAKE_CXXFLAGS += -Werror=return-type
 QMAKE_CXXFLAGS += -Werror=shadow
 QMAKE_CXXFLAGS += -Wsuggest-override
+QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion
 
 win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"
@@ -26,6 +27,11 @@ else {
 
 
 SOURCES += main.cpp\
+    gui/command/createnodecommand.cpp \
+    gui/command/editconnectioncommand.cpp \
+    gui/command/editvaluecommand.cpp \
+    gui/command/movenodecommand.cpp \
+    gui/command/removenodecommand.cpp \
         gui/mainwidget.cpp \
     gui/composerwidget.cpp \
     gui/composerscene.cpp \
@@ -121,6 +127,12 @@ SOURCES += main.cpp\
     processor/filter/applyroiprocessor.cpp
 
 HEADERS  += gui/mainwidget.h \
+    gui/command/commandid.h \
+    gui/command/createnodecommand.h \
+    gui/command/editconnectioncommand.h \
+    gui/command/editvaluecommand.h \
+    gui/command/movenodecommand.h \
+    gui/command/removenodecommand.h \
     gui/composerwidget.h \
     gui/composerscene.h \
     gui/plugitem.h \

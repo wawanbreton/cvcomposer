@@ -21,6 +21,8 @@
 
 #include <QSettings>
 
+class QUndoStack;
+
 namespace Ui { class MainWidget; }
 
 class MainWidget : public QMainWindow
@@ -69,4 +71,5 @@ class MainWidget : public QMainWindow
     private:
         Ui::MainWidget *_ui;
         QString _currentFilePath;
+        QUndoStack *const _commandsStack;
 };

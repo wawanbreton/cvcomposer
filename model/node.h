@@ -19,10 +19,12 @@
 
 #include <QObject>
 
+#include <opencv2/core/core.hpp>
+
+#include <QUuid>
+
 #include "global/properties.h"
 #include "processor/helpmessage.h"
-
-#include <opencv2/core/core.hpp>
 
 class Plug;
 
@@ -33,11 +35,14 @@ class Node : public QObject
     public:
         explicit Node(const QString &name,
                       const QString &userReadableName,
+                      const QUuid &uid,
                       QObject *parent = nullptr);
 
         const QString &getName() const;
 
         const QString &getUserReadableName() const;
+
+        const QUuid &getUid() const;
 
         const QList<Plug *> &getInputs() const;
 
@@ -63,6 +68,7 @@ class Node : public QObject
     private:
         const QString _name;
         const QString _userReadableName;
+        const QUuid _uid;
         QList<Plug *> _inputs;
         QList<Plug *> _outputs;
         Properties _properties;

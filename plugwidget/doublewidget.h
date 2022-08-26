@@ -36,7 +36,7 @@ class DoubleWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value) override;
+        virtual void setValueImpl(const QVariant &value) override;
 
     private:
         QDoubleSpinBox *const _spinBox;

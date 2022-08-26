@@ -40,6 +40,8 @@ class ComposerModel : public QObject
 
         QList<const Node *> getNodes() const;
 
+        QList<const Connection *> getConnections() const;
+
         void removeNode(Node *node);
 
         Node *findInputPlug(const Plug *plug) const;
@@ -50,6 +52,8 @@ class ComposerModel : public QObject
                        bool fromInputs = true,
                        bool fromOutputs = true) const;
 
+        Node *findNode(const QUuid &uid) const;
+
         const Connection *findConnectionToInput(const Plug *input) const;
 
         QSet<const Node *> findDirectDescendantNodes(const Plug *output) const;
@@ -57,6 +61,8 @@ class ComposerModel : public QObject
         QSet<const Node *> findDescendantNodes(const Node *node, bool includeParent = true) const;
 
         void addConnection(Plug *output, Plug *input);
+
+        const Connection *findConnection(Plug *output, Plug *input);
 
         void removeConnection(const Connection *connection);
 

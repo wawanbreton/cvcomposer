@@ -30,7 +30,7 @@ class BooleanWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value) override;
+        virtual void setValueImpl(const QVariant &value) override;
 
     private:
         QCheckBox *const _checkBox;

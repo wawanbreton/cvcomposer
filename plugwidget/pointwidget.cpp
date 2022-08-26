@@ -43,8 +43,8 @@ PointWidget::PointWidget(const Properties &properties, QWidget *parent) :
     layout->addWidget(label);
     layout->addWidget(_spinBoxY);
 
-    connect(_spinBoxX, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::valueChanged);
-    connect(_spinBoxY, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::valueChanged);
+    connect(_spinBoxX, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::onGuiValueChanged);
+    connect(_spinBoxY, qOverload<int>(&QSpinBox::valueChanged), this, &PointWidget::onGuiValueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {
@@ -68,7 +68,7 @@ QVariant PointWidget::getValue() const
     return QVariant::fromValue(point);
 }
 
-void PointWidget::setValue(const QVariant &value)
+void PointWidget::setValueImpl(const QVariant &value)
 {
     cv::Point point = value.value<cv::Point>();
 

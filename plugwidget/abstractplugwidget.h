@@ -31,7 +31,7 @@ class AbstractPlugWidget : public QWidget
     public:
         virtual QVariant getValue() const;
 
-        virtual void setValue(const QVariant &value);
+        void setValue(const QVariant &value);
 
         virtual QMap<QString, QString> save() const;
 
@@ -40,10 +40,17 @@ class AbstractPlugWidget : public QWidget
         virtual void onNodeProcessed(const Properties &inputs, const Properties &outputs);
 
     signals:
-        void valueChanged();
-
         void sizeHintChanged();
+
+        void valueChanged();
 
     protected:
         explicit AbstractPlugWidget(QWidget *parent = nullptr);
+
+        virtual void setValueImpl(const QVariant &value);
+
+        void onGuiValueChanged();
+
+    private:
+        bool _settingValue{false};
 };

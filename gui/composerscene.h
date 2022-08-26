@@ -22,6 +22,7 @@
 #include <QDomDocument>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMainWindow>
+#include <QUndoStack>
 
 #include "model/plug.h"
 
@@ -36,13 +37,16 @@ class ComposerScene : public QGraphicsScene
 {
     Q_OBJECT
     public:
-        explicit ComposerScene(QObject *parent = nullptr);
+        explicit ComposerScene(QUndoStack *commandsStack, QObject *parent = nullptr);
 
         explicit ComposerScene(const QDomDocument &doc,
                                QMainWindow *mainWindow,
+                               QUndoStack *commandsStack,
                                QObject *parent = nullptr);
 
         const QList<GenericNodeItem *> &getNodes() const;
+
+        GenericNodeItem *findNode(const QUuid &uid) const;
 
         const QList<ConnectionItem *> &getConnections() const;
 
@@ -50,13 +54,19 @@ class ComposerScene : public QGraphicsScene
 
         ComposerScheduler *accessScheduler();
 
-        GenericNodeItem *addNode(const QString &nodeName);
+        GenericNodeItem *addNode(const QString &nodeName, const QUuid &uid);
 
         const ComposerModel *getModel() const { return _model; }
+
+        ComposerModel *accessModel() { return _model; }
 
         void save(QDomDocument &doc, QMainWindow *mainWindow) const;
 
         void end();
+
+        void loadNode(const QDomElement &node);
+
+        static void saveNode(QDomDocument &doc, QDomElement &domNode, const GenericNodeItem *nodeItem);
 
     signals:
         void ended();
@@ -97,20 +107,28 @@ class ComposerScene : public QGraphicsScene
 
         void onNodeInvalid(const Node *node);
 
+        void onNodePropertyChanged(const QString &name, const QVariant &value);
+
+        void onPlugValueChanged(const QString &name, const QVariant &value);
+
         void init();
 
         void load(const QDomDocument &doc, QMainWindow *mainWindow);
 
         GenericNodeItem *findItem(const Node *node);
 
+        QUuid loadUid(const QDomElement &node, const QString &attributePrefix = "");
+
     private:
         struct EditedConnection
         {
             ConnectionItem *item;
+            ConnectionItem *initialItem;
             bool fromOutput;
             Plug *plugInput;
             Plug *plugOutput;
             Node *baseNode;
+            const Connection *initialConnection;
         };
 
         struct EditedNode
@@ -121,8 +139,9 @@ class ComposerScene : public QGraphicsScene
         };
 
     private:
-        ComposerModel *_model;
-        ComposerScheduler *_scheduler;
+        QUndoStack *const _commandsStack;
+        ComposerModel *const _model;
+        ComposerScheduler *const _scheduler;
         EditedConnection _editedConnection;
         EditedNode _editedNode;
         QList<ConnectionItem *> _connections;

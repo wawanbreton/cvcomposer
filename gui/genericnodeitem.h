@@ -74,6 +74,9 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         bool startDragging(const QPointF &mousePos);
 
+    signals:
+        void plugValueChanged(const QString &name, const QVariant &value);
+
     protected:
         virtual QRectF boundingRect() const override;
 

@@ -27,21 +27,23 @@
 
 
 Node::Node(const QString &name,
-                         const QString &userReadableName,
-                         QObject *parent) :
+           const QString &userReadableName,
+           const QUuid &uid,
+           QObject *parent) :
     QObject(parent),
     _name(name),
-    _userReadableName(userReadableName)
+    _userReadableName(userReadableName),
+    _uid(uid)
 {
     AbstractProcessor *processor = ProcessorsFactory::createProcessor(name);
     if(processor)
     {
-        for(const PlugDefinition input : processor->getInputs())
+        for(const PlugDefinition &input : processor->getInputs())
         {
             _inputs << new Plug(input, this);
             _properties.insert(input.name, input.defaultValue);
         }
-        for(const PlugDefinition output : processor->getOutputs())
+        for(const PlugDefinition &output : processor->getOutputs())
         {
             _outputs << new Plug(output, this);
             _properties.insert(output.name, output.defaultValue);
@@ -61,6 +63,11 @@ const QString &Node::getName() const
 const QString &Node::getUserReadableName() const
 {
     return _userReadableName;
+}
+
+const QUuid &Node::getUid() const
+{
+    return _uid;
 }
 
 const QList<Plug *> &Node::getInputs() const
