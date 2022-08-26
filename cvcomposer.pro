@@ -12,6 +12,7 @@ QMAKE_CXXFLAGS = -std=c++2a
 QMAKE_CXXFLAGS += -Werror=return-type
 QMAKE_CXXFLAGS += -Werror=shadow
 QMAKE_CXXFLAGS += -Wsuggest-override
+QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion
 
 win32 {
     DEFINES += "_GLIBCXX_USE_CXX11_ABI=0"

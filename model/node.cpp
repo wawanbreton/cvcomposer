@@ -38,12 +38,12 @@ Node::Node(const QString &name,
     AbstractProcessor *processor = ProcessorsFactory::createProcessor(name);
     if(processor)
     {
-        for(const PlugDefinition input : processor->getInputs())
+        for(const PlugDefinition &input : processor->getInputs())
         {
             _inputs << new Plug(input, this);
             _properties.insert(input.name, input.defaultValue);
         }
-        for(const PlugDefinition output : processor->getOutputs())
+        for(const PlugDefinition &output : processor->getOutputs())
         {
             _outputs << new Plug(output, this);
             _properties.insert(output.name, output.defaultValue);
