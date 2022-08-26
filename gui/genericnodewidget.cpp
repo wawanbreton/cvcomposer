@@ -364,7 +364,7 @@ void GenericNodeWidget::onWidgetValueChanged(const QString &propertyName)
     AbstractPlugWidget *plugWidget = qobject_cast<AbstractPlugWidget *>(widget);
     if(plugWidget)
     {
-        emit propertyChanged(propertyName, plugWidget->getValue());
+        emit plugValueChanged(propertyName, plugWidget->getValue());
     }
     else
     {

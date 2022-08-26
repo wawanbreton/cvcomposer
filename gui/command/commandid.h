@@ -2,5 +2,6 @@
 
 enum class CommandId
 {
-    MoveNode
+    MoveNode,
+    EditValue,
 };

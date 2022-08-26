@@ -45,7 +45,7 @@ PathWidget::PathWidget(const Properties &properties, QWidget *parent) :
     layout->addWidget(buttonBrowse);
     layout->setStretch(0, 1);
 
-    connect(_lineEdit,    &QLineEdit::editingFinished, this, &PathWidget::valueChanged);
+    connect(_lineEdit,    &QLineEdit::editingFinished, this, &PathWidget::onGuiValueChanged);
     connect(buttonBrowse, &QPushButton::clicked,       this, &PathWidget::onButtonPressed);
 }
 
@@ -54,7 +54,7 @@ QVariant PathWidget::getValue() const
     return _lineEdit->text();
 }
 
-void PathWidget::setValue(const QVariant &value)
+void PathWidget::setValueImpl(const QVariant &value)
 {
     _lineEdit->setText(value.toString());
 }
@@ -80,6 +80,6 @@ void PathWidget::onButtonPressed()
     if(not path.isEmpty())
     {
         _lineEdit->setText(path);
-        emit valueChanged();
+        onGuiValueChanged();
     }
 }

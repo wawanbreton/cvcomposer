@@ -50,7 +50,7 @@ QVariant ColorWidget::getValue() const
     return QVariant::fromValue(cv::Scalar(color.blue(), color.green(), color.red(), 255));
 }
 
-void ColorWidget::setValue(const QVariant &value)
+void ColorWidget::setValueImpl(const QVariant &value)
 {
     cv::Scalar color = value.value<cv::Scalar>();
     setColor(QColor::fromRgb(qBound(0.0, color[2], 255.0),
@@ -67,7 +67,7 @@ void ColorWidget::mousePressEvent(QMouseEvent *event)
         if(color.isValid())
         {
             setColor(color);
-            emit valueChanged();
+            onGuiValueChanged();
         }
     }
 }

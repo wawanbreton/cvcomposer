@@ -25,6 +25,7 @@ bool MoveNodeCommand::mergeWith(const QUndoCommand *other)
         if(moveNodeCommand->_nodeUid == _nodeUid)
         {
             _newPos = moveNodeCommand->_newPos;
+            setObsolete(_newPos == _oldPos);
             return true;
         }
     }

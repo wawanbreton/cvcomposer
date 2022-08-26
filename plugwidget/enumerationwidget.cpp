@@ -21,8 +21,6 @@
 
 #include <opencv2/core/core.hpp>
 
-#include "global/cvutils.h"
-
 
 EnumerationWidget::EnumerationWidget(const Properties &properties, QWidget *parent) :
     AbstractPlugWidget(parent),
@@ -33,7 +31,7 @@ EnumerationWidget::EnumerationWidget(const Properties &properties, QWidget *pare
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(_comboBox);
 
-    connect(_comboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &EnumerationWidget::valueChanged);
+    connect(_comboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &EnumerationWidget::onGuiValueChanged);
 
     for(auto iterator = properties.begin() ; iterator != properties.end() ; iterator++)
     {
@@ -64,7 +62,7 @@ QVariant EnumerationWidget::getValue() const
     return _comboBox->currentData();
 }
 
-void EnumerationWidget::setValue(const QVariant &value)
+void EnumerationWidget::setValueImpl(const QVariant &value)
 {
     _comboBox->setCurrentIndex(_comboBox->findData(value));
 }

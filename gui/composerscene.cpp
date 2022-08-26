@@ -34,6 +34,7 @@
 #include "gui/command/movenodecommand.h"
 #include "gui/command/createnodecommand.h"
 #include "gui/command/removenodecommand.h"
+#include "gui/command/editvaluecommand.h"
 #include "gui/genericnodeitem.h"
 #include "gui/customitems.h"
 #include "gui/connectionitem.h"
@@ -134,6 +135,9 @@ GenericNodeItem *ComposerScene::addNode(const QString &nodeName, const QUuid &ui
     GenericNodeItem *item = new GenericNodeItem(node);
     addItem(item);
     _nodes << item;
+
+    connect(item, &GenericNodeItem::plugValueChanged, this, &ComposerScene::onPlugValueChanged);
+    connect(node, &Node::propertyChanged, this, &ComposerScene::onNodePropertyChanged);
 
     // Give the node to the model only now so that we are ready to receive events
     _model->addNode(node);
@@ -849,6 +853,33 @@ void ComposerScene::onNodeInvalid(const Node *node)
     if((nodeItem = findItem(node)) != nullptr)
     {
         nodeItem->nodeInvalid();
+    }
+}
+
+void ComposerScene::onNodePropertyChanged(const QString &name, const QVariant &value)
+{
+    auto node = qobject_cast<Node *>(sender());
+    if(node)
+    {
+        GenericNodeItem *nodeItem;
+        if((nodeItem = findItem(node)))
+        {
+            nodeItem->setPlugProperty(name, value);
+        }
+    }
+}
+
+void ComposerScene::onPlugValueChanged(const QString &name, const QVariant &value)
+{
+    auto item = qobject_cast<GenericNodeItem *>(sender());
+    if(item)
+    {
+        auto node = item->getNode();
+        _commandsStack->push(new EditValueCommand(_model,
+                                                  node->getUid(),
+                                                  name,
+                                                  node->getProperties().value(name),
+                                                  value));
     }
 }
 

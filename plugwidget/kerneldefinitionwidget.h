@@ -40,7 +40,7 @@ class KernelDefinitionWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value) override;
+        virtual void setValueImpl(const QVariant &value) override;
 
         virtual QMap<QString, QString> save() const override;
 
@@ -57,6 +57,8 @@ class KernelDefinitionWidget : public AbstractPlugWidget
         };
 
     private:
+        void onTableSizeChanged();
+
         QSize tableSizeHint() const;
 
         void updateCellColors();

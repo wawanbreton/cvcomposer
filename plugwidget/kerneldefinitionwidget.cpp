@@ -119,7 +119,7 @@ QVariant KernelDefinitionWidget::getValue() const
     return QVariant::fromValue(mat);
 }
 
-void KernelDefinitionWidget::setValue(const QVariant &value)
+void KernelDefinitionWidget::setValueImpl(const QVariant &value)
 {
     cv::Mat mat = value.value<cv::Mat>();
     _table->setRowCount(mat.rows);
@@ -142,6 +142,7 @@ void KernelDefinitionWidget::setValue(const QVariant &value)
         }
     }
 
+    onTableSizeChanged();
     updateCellColors();
 }
 
@@ -168,6 +169,13 @@ void KernelDefinitionWidget::load(const QMap<QString, QString> &properties)
     {
         qWarning() << "Could not convert" << properties["symmetry"] << "to integer value";
     }
+}
+
+void KernelDefinitionWidget::onTableSizeChanged()
+{
+    _table->setFixedSize(tableSizeHint());
+    _layout->activate();
+    emit sizeHintChanged();
 }
 
 QSize KernelDefinitionWidget::tableSizeHint() const
@@ -222,14 +230,10 @@ void KernelDefinitionWidget::onSizeChanged()
         }
     }
 
-    _table->setFixedSize(tableSizeHint());
-    _layout->activate();
-
     updateCellColors();
     onSymmetryChanged();
-
-    emit sizeHintChanged();
-    emit valueChanged();
+    onTableSizeChanged();
+    onGuiValueChanged();
 }
 
 void KernelDefinitionWidget::onSymmetryChanged()
@@ -269,6 +273,8 @@ void KernelDefinitionWidget::onSymmetryChanged()
             onCellEdited(index, index.data().toDouble());
         }
     }
+
+    onGuiValueChanged();
 }
 
 void KernelDefinitionWidget::onCellEdited(const QModelIndex &index, double value)
@@ -300,5 +306,5 @@ void KernelDefinitionWidget::onCellEdited(const QModelIndex &index, double value
         }
     }
 
-    emit valueChanged();
+    onGuiValueChanged();
 }

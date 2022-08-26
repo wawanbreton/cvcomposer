@@ -107,6 +107,10 @@ class ComposerScene : public QGraphicsScene
 
         void onNodeInvalid(const Node *node);
 
+        void onNodePropertyChanged(const QString &name, const QVariant &value);
+
+        void onPlugValueChanged(const QString &name, const QVariant &value);
+
         void init();
 
         void load(const QDomDocument &doc, QMainWindow *mainWindow);

@@ -30,7 +30,7 @@ class ColorWidget : public AbstractPlugWidget
 
         virtual QVariant getValue() const override;
 
-        virtual void setValue(const QVariant &value) override;
+        virtual void setValueImpl(const QVariant &value) override;
 
     protected:
         virtual void mousePressEvent(QMouseEvent *event) override;

@@ -52,8 +52,8 @@ GenericNodeItem::GenericNodeItem(Node *node, QGraphicsItem *parent) :
     _widget->setAutoFillBackground(false);
     _widget->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
-    connect(_widget, &GenericNodeWidget::sizeHintChanged, this, &GenericNodeItem::recomputeSizes);
-    connect(_widget, &GenericNodeWidget::propertyChanged, _node, &Node::setProperty);
+    connect(_widget, &GenericNodeWidget::sizeHintChanged,  this, &GenericNodeItem::recomputeSizes);
+    connect(_widget, &GenericNodeWidget::plugValueChanged, this, &GenericNodeItem::plugValueChanged);
 
     _widgetProxy->setWidget(_widget);
     _widgetProxy->setPos(2 * PlugItem::radius, titleHeight + PlugItem::radius);

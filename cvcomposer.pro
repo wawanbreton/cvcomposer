@@ -29,6 +29,7 @@ else {
 SOURCES += main.cpp\
     gui/command/createnodecommand.cpp \
     gui/command/editconnectioncommand.cpp \
+    gui/command/editvaluecommand.cpp \
     gui/command/movenodecommand.cpp \
     gui/command/removenodecommand.cpp \
         gui/mainwidget.cpp \
@@ -129,6 +130,7 @@ HEADERS  += gui/mainwidget.h \
     gui/command/commandid.h \
     gui/command/createnodecommand.h \
     gui/command/editconnectioncommand.h \
+    gui/command/editvaluecommand.h \
     gui/command/movenodecommand.h \
     gui/command/removenodecommand.h \
     gui/composerwidget.h \
