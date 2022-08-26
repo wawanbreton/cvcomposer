@@ -30,6 +30,7 @@
 #include "model/connection.h"
 #include "model/node.h"
 #include "processor/processorsfactory.h"
+#include "gui/command/editconnectioncommand.h"
 #include "gui/command/movenodecommand.h"
 #include "gui/genericnodeitem.h"
 #include "gui/customitems.h"
@@ -437,6 +438,11 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 bool isInput = nodeInput != nullptr;
                 bool isOutput = nodeOutput != nullptr;
 
+                _editedConnection.item = nullptr;
+                _editedConnection.plugInput = nullptr;
+                _editedConnection.plugOutput = nullptr;
+                _editedConnection.initialItem = nullptr;
+                _editedConnection.initialConnection = nullptr;
                 _editedConnection.item = new ConnectionItem();
                 addItem(_editedConnection.item);
 
@@ -454,7 +460,9 @@ void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                             _editedConnection.item->setInput(event->scenePos());
                             _editedConnection.plugOutput = connection->getOutput();
                             _editedConnection.fromOutput = true;
-                            _model->removeConnection(connectionItem->getConnection());
+                            _editedConnection.initialItem = connectionItem;
+                            _editedConnection.initialItem->hide();
+                            _editedConnection.initialConnection = connection;
                             return;
                         }
                     }
@@ -635,9 +643,20 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     if(_editedConnection.item)
     {
-        if(_editedConnection.plugInput && _editedConnection.plugOutput)
+        auto command = EditConnectionCommand::makeMetaCommand(_model,
+                                                              _editedConnection.initialConnection,
+                                                              _editedConnection.plugOutput,
+                                                              _editedConnection.plugInput);
+
+        if(command)
         {
-            _model->addConnection(_editedConnection.plugOutput, _editedConnection.plugInput);
+            _commandsStack->push(command);
+        }
+
+        if(!command && _editedConnection.initialItem)
+        {
+            // Restore connection item
+            _editedConnection.initialItem->show();
         }
 
         removeItem(_editedConnection.item);
@@ -646,6 +665,8 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         _editedConnection.item = nullptr;
         _editedConnection.plugInput = nullptr;
         _editedConnection.plugOutput = nullptr;
+        _editedConnection.initialConnection = nullptr;
+        _editedConnection.initialItem = nullptr;
     }
     else if(_editedNode.item)
     {

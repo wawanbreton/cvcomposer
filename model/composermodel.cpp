@@ -170,28 +170,24 @@ QSet<const Node *> ComposerModel::findDescendantNodes(const Node *node, bool inc
 
 void ComposerModel::addConnection(Plug *output, Plug *input)
 {
-    #warning Do appropriate checks
-
-    QMutableListIterator<Connection *> iterator(_connections);
-    while(iterator.hasNext())
-    {
-        iterator.next();
-        if(iterator.value()->getInput() == input)
-        {
-            Connection *connection = iterator.value();
-            connection->getInput()->signalConnectedTo(nullptr);
-            connection->getOutput()->signalConnectedTo(nullptr);
-            iterator.remove();
-            emit connectionRemoved(connection);
-            delete connection;
-        }
-    }
-
     Connection *connection = new Connection(output, input, this);
     _connections << connection;
     input->signalConnectedTo(output);
     output->signalConnectedTo(input);
     emit connectionAdded(connection);
+}
+
+const Connection *ComposerModel::findConnection(Plug *output, Plug *input)
+{
+    for(auto connection : _connections)
+    {
+        if((!output || connection->getOutput() == output) && (!input || connection->getInput() == input))
+        {
+            return connection;
+        }
+    }
+
+    return nullptr;
 }
 
 void ComposerModel::removeConnection(const Connection *connection)

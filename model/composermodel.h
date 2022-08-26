@@ -60,6 +60,8 @@ class ComposerModel : public QObject
 
         void addConnection(Plug *output, Plug *input);
 
+        const Connection *findConnection(Plug *output, Plug *input);
+
         void removeConnection(const Connection *connection);
 
     signals:

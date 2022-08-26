@@ -113,10 +113,12 @@ class ComposerScene : public QGraphicsScene
         struct EditedConnection
         {
             ConnectionItem *item;
+            ConnectionItem *initialItem;
             bool fromOutput;
             Plug *plugInput;
             Plug *plugOutput;
             Node *baseNode;
+            const Connection *initialConnection;
         };
 
         struct EditedNode

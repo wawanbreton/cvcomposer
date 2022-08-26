@@ -26,6 +26,7 @@ else {
 
 
 SOURCES += main.cpp\
+    gui/command/editconnectioncommand.cpp \
     gui/command/movenodecommand.cpp \
         gui/mainwidget.cpp \
     gui/composerwidget.cpp \
@@ -123,6 +124,7 @@ SOURCES += main.cpp\
 
 HEADERS  += gui/mainwidget.h \
     gui/command/commandid.h \
+    gui/command/editconnectioncommand.h \
     gui/command/movenodecommand.h \
     gui/composerwidget.h \
     gui/composerscene.h \
