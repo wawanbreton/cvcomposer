@@ -12,13 +12,6 @@ class Plug;
 class EditConnectionCommand : public QUndoCommand
 {
     public:
-        enum class Action
-        {
-            Create,
-            Delete,
-        };
-
-    public:
         virtual void redo() override;
 
         virtual void undo() override;
@@ -26,9 +19,16 @@ class EditConnectionCommand : public QUndoCommand
         static QUndoCommand *makeMetaCommand(ComposerModel *model,
                                              const Connection *previousConnection,
                                              Plug *newPlugOutput,
-                                             Plug *newPlugInput);
+                                             Plug *newPlugInput,
+                                             QUndoCommand *parent = nullptr);
 
     private:
+        enum class Action
+        {
+            Create,
+            Delete,
+        };
+
         enum class PlugSource
         {
             Input,

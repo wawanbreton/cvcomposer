@@ -58,9 +58,15 @@ class ComposerScene : public QGraphicsScene
 
         const ComposerModel *getModel() const { return _model; }
 
+        ComposerModel *accessModel() { return _model; }
+
         void save(QDomDocument &doc, QMainWindow *mainWindow) const;
 
         void end();
+
+        void loadNode(const QDomElement &node);
+
+        static void saveNode(QDomDocument &doc, QDomElement &domNode, const GenericNodeItem *nodeItem);
 
     signals:
         void ended();

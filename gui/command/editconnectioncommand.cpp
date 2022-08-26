@@ -53,9 +53,10 @@ void EditConnectionCommand::undo()
 QUndoCommand *EditConnectionCommand::makeMetaCommand(ComposerModel *model,
                                                      const Connection *previousConnection,
                                                      Plug *newPlugOutput,
-                                                     Plug *newPlugInput)
+                                                     Plug *newPlugInput,
+                                                     QUndoCommand *parent)
 {
-    QUndoCommand *metaCommand = new QUndoCommand();
+    QUndoCommand *metaCommand = new QUndoCommand(parent);
 
     bool doSomething = false;
 

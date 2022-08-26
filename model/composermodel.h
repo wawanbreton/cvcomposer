@@ -40,6 +40,8 @@ class ComposerModel : public QObject
 
         QList<const Node *> getNodes() const;
 
+        QList<const Connection *> getConnections() const;
+
         void removeNode(Node *node);
 
         Node *findInputPlug(const Plug *plug) const;

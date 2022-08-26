@@ -50,6 +50,18 @@ QList<const Node *> ComposerModel::getNodes() const
     return nodes;
 }
 
+QList<const Connection *> ComposerModel::getConnections() const
+{
+    QList<const Connection *> connections;
+
+    for(const Connection *connection : _connections)
+    {
+        connections << connection;
+    }
+
+    return connections;
+}
+
 void ComposerModel::removeNode(Node *node)
 {
     for(Connection *connection : _connections)
@@ -57,7 +69,8 @@ void ComposerModel::removeNode(Node *node)
         if(node->getInputs().contains(connection->getInput()) ||
            node->getOutputs().contains(connection->getOutput()))
         {
-            removeConnection(connection);
+            qCritical() << "Node has connections, unable to remove";
+            return;
         }
     }
 
