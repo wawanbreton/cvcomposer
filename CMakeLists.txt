@@ -7,6 +7,19 @@ set(CMAKE_AUTOUIC ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Widgets Xml)
 
+if(DEFINED ENV{GITHUB_ACTIONS} AND DEFINED ENV{GITHUB_WORKSPACE})
+  set(ARTIFACTS_DIR "$ENV{GITHUB_WORKSPACE}/artifacts")
+  if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(OpenCV_DIR "${ARTIFACTS_DIR}/opencv/$ENV{opencv_tag}/windows-x64/x64/vc17/staticlib/")
+  elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(OpenCV_DIR "${ARTIFACTS_DIR}/opencv/$ENV{opencv_tag}/linux-x64/lib/cmake/opencv4")
+  elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(OpenCV_DIR "${ARTIFACTS_DIR}/opencv/$ENV{opencv_tag}/mac-x64/lib/cmake/opencv4")
+  endif()
+  find_package(OpenCV REQUIRED)
+endif()
+find_package(OpenCV REQUIRED)
+
 qt_standard_project_setup()
 
 qt_add_executable(cvcomposer
@@ -127,11 +140,14 @@ qt_add_executable(cvcomposer
     processor/viewer/imageviewerprocessor.cpp processor/viewer/imageviewerprocessor.h
 )
 
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 target_link_libraries(cvcomposer PRIVATE
     Qt::Core
     Qt::Gui
     Qt::Widgets
     Qt::Xml
+    ${OpenCV_LIBS}
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -160,43 +176,6 @@ qt_add_resources(cvcomposer "resources"
     FILES
         ${resources_resource_files}
 )
-
-if(WIN32)
-    target_include_directories(cvcomposer PRIVATE
-        C:/Program Files/opencv3.1.0/build-mingw64/include
-    )
-
-    target_compile_definitions(cvcomposer PRIVATE
-        _GLIBCXX_USE_CXX11_ABI=0
-    )
-
-    target_link_libraries(cvcomposer PRIVATE
-        # Remove: L"C:/Program Files/opencv3.1.0/build-mingw64/lib"
-        opencv_core310
-        opencv_highgui310
-        opencv_imgcodecs310
-        opencv_imgproc310
-        opencv_objdetect310
-        opencv_video310
-        opencv_videoio310
-    )
-endif()
-
-if(UNIX)
-    target_include_directories(cvcomposer PRIVATE
-        /usr/include/opencv4
-    )
-
-    target_link_libraries(cvcomposer PRIVATE
-        opencv_core
-        opencv_highgui
-        opencv_imgcodecs
-        opencv_imgproc
-        opencv_objdetect
-        opencv_video
-        opencv_videoio
-    )
-endif()
 
 install(TARGETS cvcomposer
     BUNDLE DESTINATION .

@@ -17,6 +17,12 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '6.3.1'
+        
+    - name: Install opencv
+      uses: cvpkg/opencv-action@main
+      with:
+        opencv_tag: '4.6.0'
+        BUILD_LIST: 'core,highgui,imgcodecs,imgproc,objdetect,video,videoio'
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
