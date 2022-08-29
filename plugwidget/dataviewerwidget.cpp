@@ -69,7 +69,6 @@ void DataViewerWidget::onNodeProcessed(const Properties &inputs, const Propertie
     {
         _text = QString::number(output.toDouble());
     }
-    #warning TBD display kernel
 
     update();
 }
