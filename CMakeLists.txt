@@ -134,13 +134,15 @@ target_link_libraries(cvcomposer PRIVATE
     Qt::Xml
 )
 
-target_compile_options(cvcomposer PRIVATE
-    -Werror=return-type
-    -Werror=shadow
-    -Wno-deprecated-enum-enum-conversion
-    -Wsuggest-override
-    -std=c++2a
-)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(cvcomposer PRIVATE
+        -Werror=return-type
+        -Werror=shadow
+        -Wno-deprecated-enum-enum-conversion
+        -Wsuggest-override
+        -std=c++2a
+    )
+endif()
 
 # Resources:
 set(resources_resource_files
