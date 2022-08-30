@@ -22,7 +22,7 @@ find_package(OpenCV REQUIRED)
 
 qt_standard_project_setup()
 
-qt_add_executable(cvcomposer
+qt_add_executable(cvcomposer WIN32
     execution/composerexecutor.cpp execution/composerexecutor.h
     execution/composerscheduler.cpp execution/composerscheduler.h
     execution/executorsettings.h

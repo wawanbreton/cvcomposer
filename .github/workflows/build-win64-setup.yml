@@ -30,3 +30,15 @@ jobs:
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Gather libraries
+      run: windeployqt --no-translations ${{github.workspace}}/build/Release/cvcomposer.exe
+
+    - name: Build setup
+      run: iscc.exe setup/cvcomposer.iss
+
+    - name: Archive setup
+      uses: actions/upload-artifact@v3
+      with:
+        name: setup
+        path: setup/Output/CvComposer-setup.exe
