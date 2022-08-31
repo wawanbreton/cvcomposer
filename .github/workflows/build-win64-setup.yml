@@ -1,0 +1,44 @@
+name: build-win64-setup
+
+on:
+  [push, pull_request]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.3.1'
+        
+    - name: Install opencv
+      uses: wawanbreton/opencv-action@main
+      with:
+        opencv_tag: '4.6.0'
+        BUILD_LIST: 'core,highgui,imgcodecs,imgproc,objdetect,video,videoio'
+        BUILD_SHARED_LIBS: 'ON'
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Gather libraries
+      run: windeployqt --no-translations ${{github.workspace}}/build/Release/cvcomposer.exe
+
+    - name: Build setup
+      run: iscc.exe setup/cvcomposer.iss
+
+    - name: Archive setup
+      uses: actions/upload-artifact@v3
+      with:
+        name: setup
+        path: setup/Output/CvComposer-setup.exe
