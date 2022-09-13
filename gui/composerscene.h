@@ -46,7 +46,7 @@ class ComposerScene : public QGraphicsScene
 
         const QList<GenericNodeItem *> &getNodes() const;
 
-        GenericNodeItem *findNode(const QUuid &uid) const;
+        void moveNode(const QUuid &uid, const QPointF &pos);
 
         const QList<ConnectionItem *> &getConnections() const;
 
@@ -54,7 +54,7 @@ class ComposerScene : public QGraphicsScene
 
         ComposerScheduler *accessScheduler();
 
-        GenericNodeItem *addNode(const QString &nodeName, const QUuid &uid);
+        void addNode(const QString &nodeName, const QUuid &uid, const QPointF &pos);
 
         const ComposerModel *getModel() const { return _model; }
 
@@ -119,6 +119,10 @@ class ComposerScene : public QGraphicsScene
 
         QUuid loadUid(const QDomElement &node, const QString &attributePrefix = "");
 
+        void computeOptimalSceneRect();
+
+        GenericNodeItem *addNode(const QString &nodeName, const QUuid &uid);
+
     private:
         struct EditedConnection
         {
@@ -146,4 +150,5 @@ class ComposerScene : public QGraphicsScene
         EditedNode _editedNode;
         QList<ConnectionItem *> _connections;
         QList<GenericNodeItem *> _nodes;
+        bool _mouseMoving{false};
 };

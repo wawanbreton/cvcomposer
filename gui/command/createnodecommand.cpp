@@ -16,7 +16,7 @@ CreateNodeCommand::CreateNodeCommand(ComposerScene *scene, const QString &nodeNa
 
 void CreateNodeCommand::redo()
 {
-    _scene->addNode(_nodeName, _nodeUid)->setPos(_pos);
+    _scene->addNode(_nodeName, _nodeUid, _pos);
 }
 
 void CreateNodeCommand::undo()

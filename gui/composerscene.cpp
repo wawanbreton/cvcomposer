@@ -55,6 +55,8 @@ ComposerScene::ComposerScene(QUndoStack *commandsStack, QObject *parent) :
     init();
 
     _scheduler->start();
+
+    computeOptimalSceneRect();
 }
 
 ComposerScene::ComposerScene(const QDomDocument &doc,
@@ -100,17 +102,17 @@ const QList<GenericNodeItem *> &ComposerScene::getNodes() const
     return _nodes;
 }
 
-GenericNodeItem *ComposerScene::findNode(const QUuid &uid) const
+void ComposerScene::moveNode(const QUuid &uid, const QPointF &pos)
 {
     for(GenericNodeItem *item : _nodes)
     {
         if(item->getNode()->getUid() == uid)
         {
-            return item;
+            item->setPos(pos);
+            computeOptimalSceneRect();
+            return;
         }
     }
-
-    return nullptr;
 }
 
 const QList<ConnectionItem *> &ComposerScene::getConnections() const
@@ -148,6 +150,12 @@ GenericNodeItem *ComposerScene::addNode(const QString &nodeName, const QUuid &ui
     }
 
     return item;
+}
+
+void ComposerScene::addNode(const QString &nodeName, const QUuid &uid, const QPointF &pos)
+{
+    addNode(nodeName, uid)->setPos(pos);
+    computeOptimalSceneRect();
 }
 
 void ComposerScene::save(QDomDocument &doc, QMainWindow *mainWindow) const
@@ -275,6 +283,8 @@ void ComposerScene::load(const QDomDocument &doc, QMainWindow *mainWindow)
             _scheduler->setSettings(settings);
         }
     }
+
+    computeOptimalSceneRect();
 }
 
 void ComposerScene::loadNode(const QDomElement &node)
@@ -431,6 +441,8 @@ void ComposerScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void ComposerScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    _mouseMoving = true;
+
     if(event->button() == Qt::LeftButton)
     {
         event->setModifiers(event->modifiers() & ~Qt::ControlModifier);
@@ -652,6 +664,8 @@ void ComposerScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    _mouseMoving = false;
+
     // Disable multi-selection
     event->setModifiers(event->modifiers() & ~Qt::ControlModifier);
 
@@ -686,6 +700,7 @@ void ComposerScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         _editedNode.item = nullptr;
         event->widget()->setCursor(Qt::OpenHandCursor);
+        computeOptimalSceneRect();
     }
     else
     {
@@ -724,6 +739,7 @@ void ComposerScene::onNodeRemoved(const Node *node)
             removeItem(nodeItem);
             delete nodeItem;
             _nodes.removeAll(nodeItem);
+            computeOptimalSceneRect();
             break;
         }
     }
@@ -911,4 +927,29 @@ QUuid ComposerScene::loadUid(const QDomElement &node, const QString &attributePr
     }
 
     return uid;
+}
+
+void ComposerScene::computeOptimalSceneRect()
+{
+    if(!_mouseMoving)
+    {
+        constexpr double extends = 1000;
+        QRectF rect;
+
+        for(const GenericNodeItem *item : _nodes)
+        {
+            QRectF itemRect = item->boundingRect();
+            itemRect.translate(item->pos());
+            if(rect.isEmpty())
+            {
+                rect = itemRect;
+            }
+            else
+            {
+                rect = rect.united(itemRect);
+            }
+        }
+
+        setSceneRect(rect.adjusted(-extends, -extends, extends, extends));
+    }
 }

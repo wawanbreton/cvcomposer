@@ -74,12 +74,12 @@ class GenericNodeItem : public QObject, public QGraphicsItem
 
         bool startDragging(const QPointF &mousePos);
 
+        virtual QRectF boundingRect() const override;
+
     signals:
         void plugValueChanged(const QString &name, const QVariant &value);
 
     protected:
-        virtual QRectF boundingRect() const override;
-
         virtual void paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget) override;

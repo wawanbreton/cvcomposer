@@ -26,7 +26,7 @@
 InteractiveGraphicsView::InteractiveGraphicsView(QWidget *parent) :
     QGraphicsView(parent),
     _zoom(0),
-    _minZoom(1),
+    _minZoom(0),
     _maxZoom(10)
 {
     resetZoom();

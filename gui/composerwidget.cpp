@@ -74,6 +74,4 @@ void ComposerWidget::replaceScene(ComposerScene *newScene)
     {
         _helpLabel->hide();
     }
-
-    setSceneRect(-3000, -3000, 6000, 6000);
 }

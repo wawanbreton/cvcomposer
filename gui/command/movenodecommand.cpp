@@ -35,9 +35,5 @@ bool MoveNodeCommand::mergeWith(const QUndoCommand *other)
 
 void MoveNodeCommand::moveToPos(const QPointF &pos)
 {
-    auto node = _composerScene->findNode(_nodeUid);
-    if(node)
-    {
-        node->setPos(pos);
-    }
+    _composerScene->moveNode(_nodeUid, pos);
 }
